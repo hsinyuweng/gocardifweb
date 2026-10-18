@@ -1,0 +1,7 @@
+node_modules/
+dist/
+*.tsbuildinfo
+.DS_Store
+
+# 待匯入報告（第 5 節）
+incoming/

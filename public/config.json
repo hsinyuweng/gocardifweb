@@ -1,0 +1,6 @@
+{
+  "dataSource": "static",
+  "apiBaseUrl": "",
+  "fallbackToStatic": true,
+  "showRoadmapNav": true
+}

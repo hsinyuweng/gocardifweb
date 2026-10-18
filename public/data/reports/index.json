@@ -1,0 +1,35 @@
+{
+  "generated_at": "2026-10-18T00:25:12.243Z",
+  "reports": [
+    {
+      "report_id": "fwd-jpy-single-premium-va",
+      "name": "FWD円建一時払変額年金",
+      "issuer": "FWD Life Insurance Japan",
+      "country": "JP",
+      "category": "年金險（變額年金）",
+      "recommendation": "hold_missing_info",
+      "label": "暫緩，待補資料",
+      "signal_color": "yellow",
+      "generated_date": "2026-10-11",
+      "module_summary": {
+        "market_demand": {
+          "signal": "green",
+          "text": "明確需求"
+        },
+        "actuarial": {
+          "signal": "yellow",
+          "research_status": "partial_evidence"
+        },
+        "regulatory": {
+          "signal": "yellow",
+          "overall_verdict": "待確認"
+        }
+      },
+      "blocker_counts": {
+        "critical": 0,
+        "blocking": 7,
+        "warning": 5
+      }
+    }
+  ]
+}
