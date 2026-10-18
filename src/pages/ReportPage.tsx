@@ -8,7 +8,13 @@ import type { ReportViewModel } from '../types/viewModel';
 import { zhTW } from '../i18n/zh-TW';
 import { orDash } from '../lib/format';
 import { readOwnerPreference, subscribeOwnerPreference } from '../lib/ownerPreference';
-import { OWNER_PARAM, ownerParamValue, readFromPath, requestedOwner as resolveOwner } from '../lib/ownerParam';
+import {
+  OWNER_PARAM,
+  ownerParamValue,
+  readFromPath,
+  readFromState,
+  requestedOwner as resolveOwner,
+} from '../lib/ownerParam';
 import { errorText, useBreadcrumb, usePageNotices } from './pageChrome';
 
 type ReportState =
@@ -43,7 +49,7 @@ export function ReportPage() {
   const from = readFromPath(location.state);
   const parent = from?.startsWith('/tasks')
     ? { label: zhTW.nav.tasks, to: from }
-    : { label: zhTW.nav.overview, to: from ?? '/' };
+    : { label: zhTW.nav.overview, to: from ?? '/cases', state: readFromState(location.state) };
   useBreadcrumb([parent, { label: vm ? orDash(vm.summary.name) : reportId }]);
   usePageNotices(vm?.schemaVersionMismatch ? [{ tone: 'warning', text: zhTW.schemaMismatch }] : []);
 

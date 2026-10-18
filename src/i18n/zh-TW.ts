@@ -8,15 +8,17 @@ export const zhTW = {
     none: '無',
     loading: '載入中…',
     roadmap: '規劃中',
-    backToOverview: '回到案件總覽',
+    backToHome: '回到市場總覽',
   },
 
   nav: {
+    home: '市場總覽',
     overview: '案件總覽',
     tasks: '我的待辦',
     guide: '使用說明',
     roadmapGroup: '規劃中',
-    roadmapItems: ['海外商品雷達', '市場趨勢報告', '法規變化追蹤', '跨部門審查'],
+    // 市場動態、市場脈動於階段 C 完成詳細頁後改為可點擊（2026-10-18 經確認）
+    roadmapItems: ['市場動態', '市場脈動', '跨部門審查'],
     dataUpdated: '資料更新：',
     dataSource: '資料來源：',
     dataSourceStatic: '離線資料',
@@ -102,6 +104,39 @@ export const zhTW = {
     openReport: '看報告 →',
     allUnits: '← 所有單位',
     partialFailure: (n: number, names: string) => `有 ${n} 份報告無法讀取，以下內容不包含：${names}。`,
+  },
+
+  // 市場總覽（首頁儀表板，2026-10-18 經確認）
+  home: {
+    title: '市場總覽',
+    updatedAt: (t: string) => `資料更新於 ${t}`,
+    pending: '資料準備中，後端提供後會自動顯示。',
+    cards: {
+      news: '新聞監控',
+      pulse: '市場脈動',
+      changes: '競品與法規異動',
+      watchlist: '我的追蹤清單',
+    },
+  },
+
+  watchlist: {
+    allCategories: '全部險種',
+    allCountries: '全部國家',
+    itemLabel: (category: string, country: string) => `${category}・${country}`,
+    productCount: (n: number) => `${n} 件商品`,
+    updatedToday: '今天更新',
+    updatedYesterday: '昨天更新',
+    updatedDaysAgo: (n: number) => `${n} 天前更新`,
+    updatedOn: (date: string) => `${date} 更新`,
+    noMatch: '目前沒有相符的案件',
+    empty: '還沒有追蹤項目。按「＋新增追蹤」選擇險種與市場。',
+    add: '＋ 新增追蹤',
+    confirmAdd: '加入',
+    cancel: '取消',
+    duplicate: '已在追蹤清單中',
+    remove: '移除追蹤',
+    categoryLabel: '險種',
+    countryLabel: '市場',
   },
 
   schemaMismatch: '報告格式版本不符，部分內容可能無法正確顯示',

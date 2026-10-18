@@ -114,6 +114,11 @@ export function Sidebar({ meta, showRoadmapNav, myUnit, mobileOpen, onClose }: S
         <ul className="space-y-1">
           <li>
             <NavLink to="/" end className={navClass}>
+              {t.home}
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/cases" className={navClass}>
               {t.overview}
             </NavLink>
           </li>

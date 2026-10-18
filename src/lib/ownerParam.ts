@@ -21,3 +21,8 @@ export function readFromPath(state: unknown): string | null {
   const from = (state as { from?: unknown } | null)?.from;
   return typeof from === 'string' && from.startsWith('/') ? from : null;
 }
+
+/** 來源頁面本身的 location.state（fromState），返回時一併帶回 */
+export function readFromState(state: unknown): unknown {
+  return (state as { fromState?: unknown } | null)?.fromState ?? null;
+}

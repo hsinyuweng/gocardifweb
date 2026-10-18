@@ -6,6 +6,8 @@ export interface BreadcrumbItem {
   label: string;
   /** 有值時可點擊 */
   to?: string;
+  /** 連結附帶的 location.state（讓上一層頁面的麵包屑也能接著返回） */
+  state?: unknown;
 }
 
 export interface TopBarNotice {
@@ -44,7 +46,7 @@ export function TopBar({ breadcrumb, notices, menuOpen, onMenuClick }: TopBarPro
             <Fragment key={`${i}-${item.label}`}>
               {i > 0 ? <span className="text-slate-300">/</span> : null}
               {item.to && !last ? (
-                <Link to={item.to} className="hover:text-navy-800 hover:underline">
+                <Link to={item.to} state={item.state} className="hover:text-navy-800 hover:underline">
                   {item.label}
                 </Link>
               ) : (

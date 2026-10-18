@@ -8,7 +8,7 @@ export function NotFoundPage() {
   return (
     <StatusMessage tone="info" message={zhTW.placeholder.notFound}>
       <Link to="/" className="text-navy-700 underline hover:text-navy-900">
-        {zhTW.common.backToOverview}
+        {zhTW.common.backToHome}
       </Link>
     </StatusMessage>
   );

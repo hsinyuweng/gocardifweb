@@ -45,8 +45,9 @@
 | 3 | 報告頁 E–F 區、小型視覺、列印樣式；新增 8 份報告 | ✅ 完成、已 push |
 | 4 | 使用說明頁、mock-api、api 模式與離線備援、RWD | ✅ 完成、已 push（190239a）；RWD 修正併入 538742b |
 | 5 | GitHub Actions 部署與 README | ✅ 完成、已 push（538742b）；repo 已公開、Pages 已設定，使用者 2026-10-18 驗證網站「一切正常」 |
-| 規格外 A | 我的待辦 `#/tasks` | 🟡 程式完成，待使用者瀏覽器驗證、commit + push（見第 5 節） |
-| 規格外 | 返回路徑修正、我的單位 | 🟡 程式完成，與我的待辦一起待驗證、commit + push（見第 5 節） |
+| 規格外 A | 我的待辦 `#/tasks` | ✅ 完成、已 push（8747f7d） |
+| 規格外 | 返回路徑修正、我的單位 | ✅ 完成、已 push（f6c540b、0f4f28a） |
+| 儀表板 A | 市場總覽首頁、案件總覽移到 `#/cases`、我的追蹤清單 | 🟡 程式完成，待使用者驗證、commit + push；下一步階段 B（feed／市場脈動資料層＋三張卡片） |
 
 ## 5. 已確認的決定（依階段）
 
@@ -96,6 +97,19 @@
 - 架構：全部報告改由 `RootLayout` 在需要時讀一次（`src/data/allReports.ts` 的 `loadAllReports`，經 Outlet context 的 `useAllReports()` 給我的待辦，並提供導覽列選項）；`lib/ownerPreference.ts` 改為可訂閱（`useSyncExternalStore`，含跨分頁 storage 事件）；新增 `lib/ownerParam.ts`。
 - 修改既有頁面（第 11.1 節例外，使用者同意）：OverviewPage、ReportPage、ReportView、DetailTabs、Sidebar、AppShell、RootLayout、pageChrome、overviewFilter。
 - Claude 驗證：headless Chrome 實際點擊五條路線（首頁篩選→報告→返回／麵包屑；待辦選單位→上一頁；所有單位→上一頁；待辦→報告→切換單位→麵包屑；看詳細內容→回到三面向；設定、取消我的單位後兩頁預設）全部符合預期。
+
+### 首頁改為「市場總覽」儀表板（2026-10-18 架構已核准，分 A–D 階段；A 已實作，待使用者驗證與 commit）
+- 使用者提供示意圖：四張卡片「新聞監控」「市場脈動」「競品與法規異動」「我的追蹤清單」。完整計畫：`/Users/hylweng/.claude/plans/groovy-petting-wren.md`（Claude 本機檔）。
+- 已確認：追蹤清單追蹤「險種＋市場」（存在瀏覽器，點擊連到 `#/cases?category=&country=`）；案件表格移到 `#/cases`；後端資料未到時三張卡片顯示「資料準備中」，示意資料只在本機 mock-api；趨勢小線圖用純 SVG，不裝套件。
+- 新路由：`#/` 市場總覽、`#/cases` 案件總覽、`#/feed?category=` 市場動態、`#/market` 市場脈動；導覽列規劃中只留「跨部門審查」（市場動態、市場脈動在 C 階段完成前仍列規劃中）。
+- 卡片分工：新聞監控＝feed 的 news、market；競品與法規異動＝product、regulation（避免重複）。
+- 資料層：DataSource 新增 `getFeed()`、`getMarketPulse()`（static：`data/feed.json`、`data/market-pulse.json`；api：`/api/v1/feed`、`/api/v1/market-pulse`）；404 → 卡片顯示資料準備中。
+- 階段：A 架構＋追蹤清單＋規格文件 → B 資料層＋三張卡片＋示意資料 → C 詳細頁 → D 接後端真實資料。後端需求文件需補：市場脈動格式、feed 的 `country`／`product_category`、更新頻率。
+- 這修改規格 D1（首頁型態）、第 10.1、11 節，使用者已同意（已改 `docs/web-spec.md`，D7 也同步改為「我的單位」）。
+- **階段 A 確認文字**：導覽列「市場總覽、案件總覽、我的待辦、使用說明」，規劃中「市場動態、市場脈動、跨部門審查」／首頁標題「市場總覽」＋「資料更新於 …」／卡片：新聞監控、市場脈動、競品與法規異動、我的追蹤清單（寬螢幕 2×2 照示意圖；窄螢幕追蹤清單第一）／資料準備中，後端提供後會自動顯示。／追蹤列「險種・國家」＋「N 件商品」，右側「今天更新／昨天更新／N 天前更新」（>30 天顯示「YYYY-MM-DD 更新」），沒有相符「目前沒有相符的案件」／空清單「還沒有追蹤項目。按「＋新增追蹤」選擇險種與市場。」／新增：險種（全部險種）＋市場（全部國家）下拉、加入、取消；兩個都全部不能加入；重複「已在追蹤清單中」／移除「×」（title「移除追蹤」，不確認）／預設空清單／從追蹤清單進案件總覽麵包屑「市場總覽 / 案件總覽」／找不到頁面「回到市場總覽」。
+- **階段 A 實作**：`pages/MarketHomePage.tsx`、`components/home/`（HomeCard＋PendingContent、WatchlistCard）、`lib/watchlist.ts`（localStorage key `gocardifweb.watchlist`，可訂閱）、`lib/format.ts`（`todayTaipei`、`daysAgo`、`updatedText`）；`main.tsx` 路由 `index`→市場總覽、`cases`→OverviewPage；Sidebar；NotFound；ReportPage 麵包屑預設 `/cases`。
+- 返回鏈：`BreadcrumbItem` 新增 `state`；OverviewPage 導到報告時帶 `fromState`（自己的 location.state），報告頁麵包屑回案件總覽時帶回，所以「市場總覽 → 案件總覽 → 報告 → 案件總覽」仍顯示「市場總覽 / 案件總覽」。OverviewPage 改篩選時保留 state。
+- Claude 驗證：build 通過；headless Chrome 測新增（全部＋全部不能加、重複提示）、移除、重新整理保留、追蹤列→案件總覽篩選與麵包屑、報告往返、404 連結、390px 無橫向捲動。
 
 ### 架構比較（2026-10-18）
 - 使用者貼了一份網站架構摘要（導覽列＋報告頁 A–F），與現有實作一致；用詞維持規格：「負責單位」（非「部門」）、「資料品質」（非「資料品質警示」）。

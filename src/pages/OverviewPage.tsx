@@ -7,6 +7,7 @@ import { StatusMessage } from '../components/common/StatusMessage';
 import { normalizeReportIndex } from '../data';
 import { zhTW } from '../i18n/zh-TW';
 import { orDash } from '../lib/format';
+import { readFromPath } from '../lib/ownerParam';
 import {
   DEFAULT_SORT_DIR,
   filterRows,
@@ -23,16 +24,22 @@ const t = zhTW.overview;
 
 /** 案件總覽（第 11.2 節） */
 export function OverviewPage() {
-  useBreadcrumb([{ label: zhTW.nav.overview }]);
   const navigate = useNavigate();
   const indexState = useIndexState();
 
   const location = useLocation();
+  // 從市場總覽（追蹤清單）進來時，麵包屑可以點回首頁
+  const fromHome = readFromPath(location.state) === '/';
+  useBreadcrumb(
+    fromHome ? [{ label: zhTW.nav.home, to: '/' }, { label: zhTW.nav.overview }] : [{ label: zhTW.nav.overview }],
+  );
   // 篩選與排序存在網址：進報告頁再返回時恢復（替換目前紀錄，不新增瀏覽紀錄）
   const [searchParams, setSearchParams] = useSearchParams();
   const urlState = useMemo(() => readOverviewParams(searchParams), [searchParams]);
   const { filters, sortKey, sortDir } = urlState;
-  const update = (next: OverviewUrlState) => setSearchParams(writeOverviewParams(next), { replace: true });
+  // 保留來源頁資訊，篩選後麵包屑不會跑掉
+  const update = (next: OverviewUrlState) =>
+    setSearchParams(writeOverviewParams(next), { replace: true, state: location.state });
 
   const vm = useMemo(
     () => (indexState.status === 'ok' ? normalizeReportIndex(indexState.index) : null),
@@ -84,7 +91,9 @@ export function OverviewPage() {
             sortDir={sortDir}
             onSort={handleSort}
             onOpen={(id) =>
-              navigate(`/report/${encodeURIComponent(id)}`, { state: { from: location.pathname + location.search } })
+              navigate(`/report/${encodeURIComponent(id)}`, {
+                state: { from: location.pathname + location.search, fromState: location.state },
+              })
             }
           />
         )}

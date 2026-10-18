@@ -5,6 +5,7 @@ import './index.css';
 import { ConfigProvider } from './config/ConfigContext';
 import { zhTW } from './i18n/zh-TW';
 import { RootLayout } from './pages/RootLayout';
+import { MarketHomePage } from './pages/MarketHomePage';
 import { OverviewPage } from './pages/OverviewPage';
 import { ReportPage } from './pages/ReportPage';
 import { TasksPage } from './pages/TasksPage';
@@ -18,7 +19,8 @@ createRoot(document.getElementById('root')!).render(
       <HashRouter>
         <Routes>
           <Route element={<RootLayout />}>
-            <Route index element={<OverviewPage />} />
+            <Route index element={<MarketHomePage />} />
+            <Route path="cases" element={<OverviewPage />} />
             <Route path="report/:reportId" element={<ReportPage />} />
             <Route path="tasks" element={<TasksPage />} />
             <Route path="guide" element={<GuidePage />} />
