@@ -11,12 +11,12 @@ export function DecisionSummary({ summary: s }: { summary: DecisionSummaryViewMo
 
   return (
     <section className="break-inside-avoid rounded border border-slate-200 bg-white px-5 py-4">
-      <div className="flex items-start justify-between gap-6">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between lg:gap-6">
         <div className="min-w-0">
           <h1 className="text-2xl font-semibold text-slate-900">{orDash(s.name)}</h1>
           <p className="mt-1 text-xs text-slate-500">{meta}</p>
         </div>
-        <div className="flex shrink-0 flex-col items-end gap-2">
+        <div className="flex shrink-0 flex-col items-start gap-2 lg:items-end">
           <button
             type="button"
             onClick={() => window.print()}
@@ -24,7 +24,7 @@ export function DecisionSummary({ summary: s }: { summary: DecisionSummaryViewMo
           >
             {t.print}
           </button>
-          <div className="text-right text-xs text-slate-500">
+          <div className="text-xs text-slate-500 lg:text-right">
             <div>{t.generatedDate(orDash(s.generatedDate))}</div>
             <div>
               {t.reviewDates}

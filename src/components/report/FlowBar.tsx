@@ -27,7 +27,7 @@ export function FlowBar({ provided, total }: { provided: number; total: number }
   ];
 
   return (
-    <ol className="flex h-10 items-center gap-2 rounded border border-slate-200 bg-white px-4">
+    <ol className="flex min-h-10 items-center gap-2 overflow-x-auto whitespace-nowrap rounded border border-slate-200 bg-white px-4 py-1.5">
       {steps.map((s, i) => (
         <Fragment key={s.label}>
           {i > 0 ? (

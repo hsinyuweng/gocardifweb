@@ -27,7 +27,7 @@ export function OverviewToolbar(props: OverviewToolbarProps) {
         onChange={(e) => props.onSearchChange(e.target.value)}
         placeholder={t.searchPlaceholder}
         aria-label={t.searchPlaceholder}
-        className={`${field} w-72`}
+        className={`${field} w-full sm:w-72`}
       />
       <select
         value={props.country}

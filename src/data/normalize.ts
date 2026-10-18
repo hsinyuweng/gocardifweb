@@ -384,10 +384,10 @@ export function normalizeReport(r: Report): ReportViewModel {
   };
 }
 
-/** 導覽列底部資訊；清單讀取失敗時 index 為 null */
-export function normalizeAppMeta(index: ReportIndex | null, config: AppConfig): AppMetaViewModel {
+/** 導覽列底部資訊；清單讀取失敗時 index 為 null；offline 表示 api 模式已改讀離線資料 */
+export function normalizeAppMeta(index: ReportIndex | null, config: AppConfig, offline: boolean): AppMetaViewModel {
   return {
     generatedAt: formatDateTimeTaipei(str(index?.generated_at)),
-    dataSource: config.dataSource,
+    dataSource: config.dataSource === 'api' && !offline ? 'api' : 'static',
   };
 }

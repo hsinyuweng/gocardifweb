@@ -8,6 +8,9 @@ const t = zhTW.nav;
 interface SidebarProps {
   meta: AppMetaViewModel;
   showRoadmapNav: boolean;
+  /** 1024px 以下：選單是否展開 */
+  mobileOpen: boolean;
+  onClose: () => void;
 }
 
 function navClass({ isActive }: { isActive: boolean }) {
@@ -17,11 +20,25 @@ function navClass({ isActive }: { isActive: boolean }) {
 }
 
 /** 左側固定導覽列（第 10.1 節） */
-export function Sidebar({ meta, showRoadmapNav }: SidebarProps) {
+export function Sidebar({ meta, showRoadmapNav, mobileOpen, onClose }: SidebarProps) {
   return (
-    <aside className="fixed inset-y-0 left-0 flex w-[232px] flex-col bg-navy-800 text-slate-100 print:hidden">
-      <div className="flex h-14 items-center border-b border-white/10 px-5 text-base font-semibold tracking-wide text-white">
+    <aside
+      className={`fixed inset-y-0 left-0 z-40 flex w-[232px] flex-col bg-navy-800 text-slate-100 transition-transform lg:translate-x-0 print:hidden ${
+        mobileOpen ? 'translate-x-0' : '-translate-x-full'
+      }`}
+    >
+      <div className="flex h-14 items-center justify-between border-b border-white/10 px-5 text-base font-semibold tracking-wide text-white">
         {zhTW.appName}
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label={zhTW.layout.closeMenu}
+          className="-mr-2 rounded p-1 text-slate-300 hover:bg-white/10 hover:text-white lg:hidden"
+        >
+          <svg viewBox="0 0 20 20" className="size-5" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
+            <path d="M5 5l10 10M15 5L5 15" strokeLinecap="round" />
+          </svg>
+        </button>
       </div>
 
       <nav className="flex-1 overflow-y-auto px-3 py-4">

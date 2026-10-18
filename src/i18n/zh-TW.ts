@@ -28,6 +28,30 @@ export const zhTW = {
     notFoundReport: '找不到此報告',
     invalidFormat: '資料格式錯誤，無法顯示。',
     server: '伺服器發生錯誤，請稍後再試。',
+    badRequest: '請求格式錯誤，無法取得資料。',
+    configError: '設定錯誤：config.json 的 dataSource 為 api，但 apiBaseUrl 是空的。',
+  },
+
+  offlineNotice: '目前無法連線後端，顯示的是離線資料',
+
+  layout: {
+    openMenu: '開啟選單',
+    closeMenu: '關閉選單',
+  },
+
+  // 第 11.4 節：使用說明頁（固定內容）
+  guide: {
+    title: '使用說明',
+    whatTitle: '這個網站做什麼',
+    whatBody: '彙整國外保險商品在台灣的市場需求、發生率暨獲利、法規適用三面向分析結果，並提供統整建議。',
+    flowTitle: '流程',
+    flowSteps: ['資料蒐集', '三面向分析', '統整建議', '部門審查（規劃中）'],
+    questionsTitle: '三個面向回答的問題',
+    questionsColumns: { module: '面向', question: '核心問題' },
+    howTitle: '怎麼看一份報告',
+    howBody: '先看最上方建議與理由；再看三面向燈號；接著依自己的部門篩選「待解決事項」；需要細節時看下方分頁。',
+    noteTitle: '注意',
+    noteBody: '本網站內容為 AI 輔助之內部初審，須經相關部門人員覆核；資料不足不代表負面結論。',
   },
 
   placeholder: {

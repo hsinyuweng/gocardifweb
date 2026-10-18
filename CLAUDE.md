@@ -4,8 +4,9 @@
 - 開發規格：`docs/web-spec.md`（唯一依據；第 0 節規則優先於一切）
 - 前後端約定：`docs/api-contract.md`
 - 報告範例：`docs/examples/summarizer-example-report.json`
+- **進度與決策紀錄：`docs/project-status.md`**（目前階段、所有已確認的決定與介面文字、與規格不同的實作、環境注意事項、待驗證步驟、未來方向、待確認事項）
 
-每個新對話開始時，先讀完以上文件再動手。規格與我在對話中的口頭指示衝突時，先停下來問我，不要自行選擇。
+每個新對話開始時，先讀完以上文件再動手，並依 `docs/project-status.md` 告訴我目前進度與下一步。每完成一個階段或做出新決定，都要更新 `docs/project-status.md`。規格與我在對話中的口頭指示衝突時，先停下來問我，不要自行選擇。
 
 ## 與我合作的方式
 - 我是網頁開發新手，有基本程式基礎。請用繁體中文溝通。
@@ -21,3 +22,8 @@
 - `npm run sync`：匯入 `incoming/` 的報告
 - `npm run mock-api`：本機模擬後端
 - `npm run build`：建置
+
+## 環境提醒（給 Claude）
+- Claude 的 Bash 環境沒有 `/opt/homebrew/bin`，執行 node／npm 前先 `export PATH="/opt/homebrew/bin:$PATH"`。
+- 家目錄 `/Users/hylweng` 本身是 git repo：git 指令只能在本資料夾內執行；不要自行處理家目錄的 repo。
+- 我會 commit 並 push 每個階段；commit 前提醒我確認 `public/config.json` 是 static 模式。

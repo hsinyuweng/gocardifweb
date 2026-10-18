@@ -61,7 +61,13 @@ export function errorText(err: unknown, notFoundMessage: string): { message: str
       case 'invalid_format':
         return { message: e.invalidFormat, detail: err.detail };
       case 'server':
-        return { message: e.server, detail: err.detail };
+        // 4xx（非 404）為請求錯誤，其餘為伺服器錯誤；detail 為後端回傳的 message
+        return {
+          message: err.status !== null && err.status < 500 ? e.badRequest : e.server,
+          detail: err.detail,
+        };
+      case 'config_error':
+        return { message: e.configError, detail: null };
     }
   }
   return { message: e.invalidFormat, detail: err instanceof Error ? err.message : null };
