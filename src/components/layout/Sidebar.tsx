@@ -48,6 +48,12 @@ export function Sidebar({ meta, showRoadmapNav, mobileOpen, onClose }: SidebarPr
               {t.overview}
             </NavLink>
           </li>
+          {/* 規格外新增（2026-10-18 經確認，修改第 10.1 節） */}
+          <li>
+            <NavLink to="/tasks" className={navClass}>
+              {t.tasks}
+            </NavLink>
+          </li>
           <li>
             <NavLink to="/guide" className={navClass}>
               {t.guide}

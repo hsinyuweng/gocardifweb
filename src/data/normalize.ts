@@ -227,6 +227,7 @@ function normalizeBlockers(r: Report): BlockerViewModel[] {
         order: severity !== null && severity in SEVERITY_ORDER ? SEVERITY_ORDER[severity]! : 3,
         vm: {
           id: str(b.id),
+          severityKey: severity,
           severity: { color: legendColor(legend, 'severity', severity), text: legendLabel(legend, 'severity', severity) },
           moduleLabel: legendLabel(legend, 'module', str(b.module)),
           title: str(b.title),

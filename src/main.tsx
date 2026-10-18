@@ -7,6 +7,7 @@ import { zhTW } from './i18n/zh-TW';
 import { RootLayout } from './pages/RootLayout';
 import { OverviewPage } from './pages/OverviewPage';
 import { ReportPage } from './pages/ReportPage';
+import { TasksPage } from './pages/TasksPage';
 import { GuidePage } from './pages/GuidePage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
@@ -19,6 +20,7 @@ createRoot(document.getElementById('root')!).render(
           <Route element={<RootLayout />}>
             <Route index element={<OverviewPage />} />
             <Route path="report/:reportId" element={<ReportPage />} />
+            <Route path="tasks" element={<TasksPage />} />
             <Route path="guide" element={<GuidePage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>

@@ -111,7 +111,7 @@ gocardifweb/
 └── src/
     ├── data/                      資料層：讀取、驗證、轉換（原始 JSON 欄位只在 normalize.ts 讀取）
     ├── components/                畫面元件（只接收整理好的資料）
-    ├── pages/                     頁面：案件總覽、報告頁、使用說明
+    ├── pages/                     頁面：案件總覽、報告頁、我的待辦、使用說明
     ├── i18n/zh-TW.ts              所有介面文字
     └── lib/                       格式化、燈號顏色等工具
 ```

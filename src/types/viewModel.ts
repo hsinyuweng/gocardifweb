@@ -108,6 +108,8 @@ export type ScorecardViewModel =
 
 export interface BlockerViewModel {
   id: string | null;
+  /** severity 原值，用於「我的待辦」計算重大件數 */
+  severityKey: string | null;
   severity: SignalText;
   moduleLabel: string | null;
   title: string | null;
@@ -234,6 +236,31 @@ export interface ReportViewModel {
   dataGaps: DataGapViewModel[];
   details: ReportDetailsViewModel;
   disclaimer: string | null;
+}
+
+// ───────── 我的待辦（規格外功能，2026-10-18 經確認） ─────────
+
+export interface OwnerCount {
+  owner: string;
+  /** 待解決事項＋建議下一步 */
+  count: number;
+}
+
+/** 一件商品中屬於所選負責單位的項目 */
+export interface TaskProductGroup {
+  reportId: string;
+  name: string | null;
+  issuer: string | null;
+  blockers: BlockerViewModel[];
+  nextSteps: NextStepViewModel[];
+  criticalCount: number;
+}
+
+export interface TaskSummary {
+  blockerCount: number;
+  criticalCount: number;
+  nextStepCount: number;
+  productCount: number;
 }
 
 export type DataSourceLabel = 'static' | 'api';

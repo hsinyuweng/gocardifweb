@@ -13,6 +13,7 @@ export const zhTW = {
 
   nav: {
     overview: '案件總覽',
+    tasks: '我的待辦',
     guide: '使用說明',
     roadmapGroup: '規劃中',
     roadmapItems: ['海外商品雷達', '市場趨勢報告', '法規變化追蹤', '跨部門審查'],
@@ -85,6 +86,16 @@ export const zhTW = {
     blockerWarning: (n: number) => `注意 ${n}`,
     sortAsc: '▲',
     sortDesc: '▼',
+  },
+
+  // 我的待辦（規格外功能，2026-10-18 經確認）
+  tasks: {
+    title: '我的待辦',
+    choosePrompt: '請選擇負責單位，查看各商品需要處理的事項。',
+    summary: (blockers: number, critical: number, steps: number, products: number) =>
+      `待解決事項 ${blockers}（重大 ${critical}）· 建議下一步 ${steps} · 涉及 ${products} 件商品`,
+    openReport: '看報告 →',
+    partialFailure: (n: number, names: string) => `有 ${n} 份報告無法讀取，以下內容不包含：${names}。`,
   },
 
   schemaMismatch: '報告格式版本不符，部分內容可能無法正確顯示',

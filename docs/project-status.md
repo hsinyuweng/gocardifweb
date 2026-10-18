@@ -3,7 +3,7 @@
 > 給之後的 Claude Code 對話：每次新對話開始，讀完 `CLAUDE.md` 列的必讀文件後，**一定要讀這份**。
 > 這裡記錄規格以外、在對話中確認過的所有決定、進度、與規格不同的實作、待辦與未來方向。
 > 每完成一個階段或做出新決定，都要更新這份文件（並提醒使用者 commit）。
-> 最後更新：2026-10-18（階段 1–5 全部完成並部署；網站已上線、使用者驗證正常）。
+> 最後更新：2026-10-18（階段 1–5 全部完成並部署；規格外功能「我的待辦」程式完成，待驗證）。
 
 ---
 
@@ -44,6 +44,7 @@
 | 3 | 報告頁 E–F 區、小型視覺、列印樣式；新增 8 份報告 | ✅ 完成、已 push |
 | 4 | 使用說明頁、mock-api、api 模式與離線備援、RWD | ✅ 完成、已 push（190239a）；RWD 修正併入 538742b |
 | 5 | GitHub Actions 部署與 README | ✅ 完成、已 push（538742b）；repo 已公開、Pages 已設定，使用者 2026-10-18 驗證網站「一切正常」 |
+| 規格外 A | 我的待辦 `#/tasks` | 🟡 程式完成，待使用者瀏覽器驗證、commit + push（見第 5 節） |
 
 ## 5. 已確認的決定（依階段）
 
@@ -73,10 +74,14 @@
 - 使用者決定：GitHub repo 改為**公開**（免費帳號 Pages 需公開 repo；docs/、project-status.md 也會公開）；GitHub Actions 用 **Node 24 LTS**。
 - 實作：`.github/workflows/deploy.yml`（push main 與手動觸發 → npm ci → npm run build → 發布 dist/）、繁中 README（網址、本機開發、首次部署設定、新增報告、切換資料來源、mock-api、專案結構、未來規劃）、`vite.config.ts` 註解 lsjle → hsinyuweng。
 
-### 規格外功能 A「我的待辦」（2026-10-18 計畫中，等使用者確認介面文字）
+### 規格外功能 A「我的待辦」（2026-10-18 已確認並實作，待使用者瀏覽器驗證與 commit）
 - 新頁面 `#/tasks?owner=<單位>`：跨 9 份報告彙整某負責單位的待解決事項（blockers）與建議下一步（next_steps）。讀 index 後同時讀全部報告；部分讀取失敗時其餘照常顯示並註明。
 - 使用者已選：**依商品分組**（每件商品一塊：名稱連到報告頁並帶 `?owner=`、該單位的待解決事項表、建議下一步）；**未選單位或選「全部」時提示先選單位**，顯示各單位件數按鈕；**導覽列「案件總覽」下方新增「我的待辦」**（修改規格第 10.1 節，經使用者同意）。
 - 負責單位與報告頁共用 localStorage 記憶；沿用列印；「上游（顏）」與「上游」照原樣分開顯示。
+- 確認文字：導覽列／標題／麵包屑「我的待辦」／請選擇負責單位，查看各商品需要處理的事項。／單位按鈕「法遵 85」（件數＝待解決＋下一步，多到少）／摘要「待解決事項 N（**重大** N）· 建議下一步 N · 涉及 N 件商品」（使用者選「重大」，與首頁及 legend.severity 一致）／商品標題「名稱（發行公司）」＋「看報告 →」（帶 `?owner=`）／區內沿用報告頁小標與欄位，某類無項目顯示「無」／此負責單位沒有相關項目。／有 N 份報告無法讀取，以下內容不包含：○○、○○。／列印標題旁「篩選：負責單位＝○○」。
+- 排序：商品依重大件數多到少，同數依案件總覽預設順序（產出日期新到舊）；缺 report_id 的清單列略過；完全沒有報告時沿用首頁「目前沒有報告」。
+- 檔案：新增 `src/pages/TasksPage.tsx`、`src/components/tasks/`（OwnerPicker、TaskGroupCard）、`src/lib/tasks.ts`；修改 `main.tsx`（路由）、`Sidebar.tsx`（導覽項目）、`zh-TW.ts`（`nav.tasks`、`tasks`）、`viewModel.ts`（`BlockerViewModel.severityKey`、`OwnerCount`／`TaskProductGroup`／`TaskSummary`）、`normalize.ts`（填 severityKey）、README 專案結構。重用報告頁的 `OwnerFilter`、`BlockersTable`、`NextStepsList`（未修改）。
+- Claude 驗證：真實資料彙整（法遵 54＋31＝85，與統計一致）；headless Chrome 390／1440px 無整頁橫向捲動。
 
 ### 架構比較（2026-10-18）
 - 使用者貼了一份網站架構摘要（導覽列＋報告頁 A–F），與現有實作一致；用詞維持規格：「負責單位」（非「部門」）、「資料品質」（非「資料品質警示」）。
