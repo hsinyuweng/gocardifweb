@@ -3,14 +3,14 @@
 > 給之後的 Claude Code 對話：每次新對話開始，讀完 `CLAUDE.md` 列的必讀文件後，**一定要讀這份**。
 > 這裡記錄規格以外、在對話中確認過的所有決定、進度、與規格不同的實作、待辦與未來方向。
 > 每完成一個階段或做出新決定，都要更新這份文件（並提醒使用者 commit）。
-> 最後更新：2026-10-18（階段 5 程式完成；等待使用者 push、設定 Pages、驗證部署）。
+> 最後更新：2026-10-18（階段 1–5 全部完成並部署；網站已上線、使用者驗證正常）。
 
 ---
 
 ## 1. 專案概要
 
 - 前端 repo：`https://github.com/hsinyuweng/gocardifweb`（分支 `main`）
-- 網站網址（階段 5 部署後）：`https://hsinyuweng.github.io/gocardifweb/`
+- 網站網址（已上線）：`https://hsinyuweng.github.io/gocardifweb/`
   - 2026-10-18 使用者決定用 hsinyuweng 帳號，已改掉規格原本寫的 `lsjle`（`docs/web-spec.md` 第 5 節與驗收第 13 點、`docs/api-contract.md` 的 CORS 網域）。
   - 使用者說「之後可能會和其他 repo 合併，但很久以後」。屆時要再改上述三處；程式內路徑是 `/gocardifweb/`，與帳號無關。
 - 本機路徑：`/Users/hylweng/Downloads/Projects/20260919-0000_法巴/Website/gocardifweb`
@@ -42,8 +42,8 @@
 | 1 | 專案建立、AppShell、config、資料層、sync、首頁表格 | ✅ 完成、已 push |
 | 2 | 報告頁 A–D 區 | ✅ 完成、已 push |
 | 3 | 報告頁 E–F 區、小型視覺、列印樣式；新增 8 份報告 | ✅ 完成、已 push |
-| 4 | 使用說明頁、mock-api、api 模式與離線備援、RWD | ✅ 已 push（190239a）；之後使用者回報「沒有 RWD」，已修正（見第 6 節 RWD 修正），待驗證與 commit |
-| 5 | GitHub Actions 部署與 README | 🟡 程式完成（deploy.yml、README）；**等待使用者把 repo 改公開、設定 Pages、commit + push、驗證網站**（步驟見第 9 節） |
+| 4 | 使用說明頁、mock-api、api 模式與離線備援、RWD | ✅ 完成、已 push（190239a）；RWD 修正併入 538742b |
+| 5 | GitHub Actions 部署與 README | ✅ 完成、已 push（538742b）；repo 已公開、Pages 已設定，使用者 2026-10-18 驗證網站「一切正常」 |
 
 ## 5. 已確認的決定（依階段）
 
@@ -116,7 +116,7 @@ pages/GuidePage   ─ 固定內容（i18n）
   - 負責單位有「上游（顏）」這類非單位名稱。
 - **競品比較：現有 JSON 都沒有競品資料**（只有 `source_ref` 指向 `market_demand:competitor_comparison`），需後端在 summarizer 報告加入。
 
-## 9. 階段 5 待使用者完成與驗證的步驟（下一個對話若使用者尚未完成，請引導）
+## 9. 階段 5 部署驗證步驟（✅ 2026-10-18 使用者已全部完成，留作日後重新部署參考）
 
 （階段 4 已驗證並 push；RWD 修正與階段 5 一起 commit。）
 1. 瀏覽器檢查 RWD 修正：`npm run dev`，Chrome 開發者工具手機模式 768／390px，報告頁「待解決事項」只在框內橫向捲動、整頁不左右晃；首頁建議按鈕不被擠扁。
@@ -130,7 +130,7 @@ pages/GuidePage   ─ 固定內容（i18n）
 ## 10. 待辦與未來方向
 
 ### 接下來
-1. 階段 5 部署驗證（第 9 節）。
+1. ✅ 階段 5 部署驗證（2026-10-18 完成）。規格第 18 節五個階段全部完成。
 2. （已完成）階段 5：`.github/workflows/deploy.yml`（push main → `npm ci`、`npm run build`、發布 `dist/`）＋ README（Settings → Pages → Source 選 GitHub Actions、如何新增報告、如何切換資料來源、如何用 mock-api 測試、未來規劃）。部署網址 `https://hsinyuweng.github.io/gocardifweb/`。先輸出計畫等確認。
 
 ### 未來方向（使用者 2026-10-18 提出；階段 5 之後）
@@ -148,7 +148,7 @@ pages/GuidePage   ─ 固定內容（i18n）
 - **首頁大改成以圖表為主**：使用者 2026-10-18 決定要做，但**等後端提供未來方向的資料後再改**。屆時會牽涉規格 D1（首頁型態）修改、圖表套件選擇（規格第 4、14 節，需使用者同意安裝）。
 
 ### 之後要和使用者確認的事項
-- [ ] 階段 5 部署驗證結果（第 9 節）。
+- [x] 階段 5 部署驗證結果（2026-10-18：一切正常）。
 - [ ] 後端回覆需求文件後：各新功能的計畫與介面文字。
 - [ ] 首頁圖表化：D1 是否修改、要哪些圖表、圖表套件選擇。
 - [ ] 台灣地圖的實作方式（靜態 SVG vs 套件）。
