@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect } from 'react';
 import { useOutletContext } from 'react-router';
 import type { BreadcrumbItem, TopBarNotice } from '../components/layout/TopBar';
 import type { ReportIndex } from '../types/reportIndex';
-import { DataSourceError } from '../data';
+import { DataSourceError, type AllReportsResult } from '../data';
 import { zhTW } from '../i18n/zh-TW';
 
 // 頁面與 RootLayout 之間的小型共用狀態：麵包屑、頂部列提示、報告清單讀取結果
@@ -41,12 +41,28 @@ export type IndexState =
   | { status: 'ok'; index: ReportIndex }
   | { status: 'error'; error: unknown };
 
+/** 全部報告（我的待辦、我的單位選項）：有頁面或導覽列需要時才讀取 */
+export type AllReportsState =
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { status: 'ok'; result: AllReportsResult }
+  | { status: 'error'; error: unknown };
+
 export interface LayoutOutletContext {
   indexState: IndexState;
+  allReportsState: AllReportsState;
+  requestAllReports: () => void;
 }
 
 export function useIndexState(): IndexState {
   return useOutletContext<LayoutOutletContext>().indexState;
+}
+
+/** 取得全部報告；第一次呼叫時開始讀取 */
+export function useAllReports(): AllReportsState {
+  const { allReportsState, requestAllReports } = useOutletContext<LayoutOutletContext>();
+  useEffect(() => requestAllReports(), [requestAllReports]);
+  return allReportsState;
 }
 
 /** DataSourceError → 給使用者看的訊息（第 0 節第 9 點） */

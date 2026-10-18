@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { useLocation } from 'react-router';
 import type { AppMetaViewModel } from '../../types/viewModel';
-import { Sidebar } from './Sidebar';
+import { Sidebar, type MyUnitControl } from './Sidebar';
 import { TopBar, type BreadcrumbItem, type TopBarNotice } from './TopBar';
 
 interface AppShellProps {
@@ -9,6 +9,7 @@ interface AppShellProps {
   showRoadmapNav: boolean;
   breadcrumb: BreadcrumbItem[];
   notices: TopBarNotice[];
+  myUnit: MyUnitControl;
   children: ReactNode;
 }
 
@@ -16,7 +17,7 @@ interface AppShellProps {
  * 所有頁面共用版面（第 10 節）：只接收 props，不取資料。
  * 寬度 1024px 以下：側邊導覽收合為選單按鈕，點開後由左側滑出（第 4 節 RWD）。
  */
-export function AppShell({ meta, showRoadmapNav, breadcrumb, notices, children }: AppShellProps) {
+export function AppShell({ meta, showRoadmapNav, breadcrumb, notices, myUnit, children }: AppShellProps) {
   const [navOpen, setNavOpen] = useState(false);
   const location = useLocation();
 
@@ -37,7 +38,13 @@ export function AppShell({ meta, showRoadmapNav, breadcrumb, notices, children }
 
   return (
     <div className="min-h-screen">
-      <Sidebar meta={meta} showRoadmapNav={showRoadmapNav} mobileOpen={navOpen} onClose={() => setNavOpen(false)} />
+      <Sidebar
+        meta={meta}
+        showRoadmapNav={showRoadmapNav}
+        myUnit={myUnit}
+        mobileOpen={navOpen}
+        onClose={() => setNavOpen(false)}
+      />
       {navOpen ? (
         <div aria-hidden className="fixed inset-0 z-30 bg-slate-900/40 lg:hidden" onClick={() => setNavOpen(false)} />
       ) : null}

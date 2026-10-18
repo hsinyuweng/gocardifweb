@@ -3,6 +3,7 @@ import type { ModuleKey, ReportDetailsViewModel } from '../../types/viewModel';
 import { MarketDemandDetail } from './MarketDemandDetail';
 import { ActuarialDetail } from './ActuarialDetail';
 import { RegulatoryDetail } from './RegulatoryDetail';
+import { zhTW } from '../../i18n/zh-TW';
 
 const ORDER: readonly ModuleKey[] = ['market_demand', 'actuarial', 'regulatory'];
 
@@ -10,6 +11,8 @@ interface DetailTabsProps {
   details: ReportDetailsViewModel;
   active: ModuleKey;
   onChange: (key: ModuleKey) => void;
+  /** 捲回 C 區三面向（從「看詳細內容」跳下來後可以回去） */
+  onBackToCards: () => void;
   ref?: Ref<HTMLElement>;
 }
 
@@ -17,10 +20,11 @@ interface DetailTabsProps {
  * E 區各面向詳細內容（第 11.3 節 E）：全寬分頁籤。
  * 三個分頁都會渲染，畫面上只顯示目前分頁；列印時全部依序展開（第 12 節）。
  */
-export function DetailTabs({ details, active, onChange, ref }: DetailTabsProps) {
+export function DetailTabs({ details, active, onChange, onBackToCards, ref }: DetailTabsProps) {
   return (
     <section ref={ref} className="scroll-mt-20 rounded border border-slate-200 bg-white">
-      <div role="tablist" className="flex border-b border-slate-200 px-2 print:hidden">
+      <div className="flex items-center justify-between gap-2 border-b border-slate-200 px-2 print:hidden">
+      <div role="tablist" className="flex min-w-0 overflow-x-auto">
         {ORDER.map((key) => {
           const selected = key === active;
           return (
@@ -42,6 +46,14 @@ export function DetailTabs({ details, active, onChange, ref }: DetailTabsProps) 
             </button>
           );
         })}
+      </div>
+        <button
+          type="button"
+          onClick={onBackToCards}
+          className="shrink-0 px-2 whitespace-nowrap text-navy-700 hover:text-navy-900 hover:underline"
+        >
+          {zhTW.report.backToCards}
+        </button>
       </div>
 
       {ORDER.map((key) => (

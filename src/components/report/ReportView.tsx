@@ -54,6 +54,7 @@ function emptyText(total: number) {
 export function ReportView({ vm, owner, onOwnerChange }: ReportViewProps) {
   const [activeTab, setActiveTab] = useState<ModuleKey>('market_demand');
   const detailsRef = useRef<HTMLElement>(null);
+  const cardsRef = useRef<HTMLDivElement>(null);
 
   const blockers = vm.blockers.filter((b) => matchesOwner(b.owners, owner));
   const nextSteps = vm.nextSteps.filter((s) => matchesOwner(s.owners, owner));
@@ -68,7 +69,9 @@ export function ReportView({ vm, owner, onOwnerChange }: ReportViewProps) {
     <div className="space-y-4">
       <FlowBar provided={vm.analysisProvided} total={vm.analysisTotal} />
       <DecisionSummary summary={vm.summary} />
-      <ScorecardRow cards={vm.moduleCards} onShowDetail={showDetail} />
+      <div ref={cardsRef} className="scroll-mt-20">
+        <ScorecardRow cards={vm.moduleCards} onShowDetail={showDetail} />
+      </div>
 
       {/* D 區：1280px 以上主欄 2/3、側欄 1/3。
           grid-cols-1 與 min-w-0 讓欄寬不被表格最小寬度撐開，表格才會在框內橫向捲動 */}
@@ -95,7 +98,13 @@ export function ReportView({ vm, owner, onOwnerChange }: ReportViewProps) {
         </div>
       </div>
 
-      <DetailTabs ref={detailsRef} details={vm.details} active={activeTab} onChange={setActiveTab} />
+      <DetailTabs
+        ref={detailsRef}
+        details={vm.details}
+        active={activeTab}
+        onChange={setActiveTab}
+        onBackToCards={() => cardsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+      />
       <ReportFooter disclaimer={vm.disclaimer} />
     </div>
   );

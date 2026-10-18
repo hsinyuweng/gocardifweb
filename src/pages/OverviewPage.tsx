@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useMemo } from 'react';
+import { useLocation, useNavigate, useSearchParams } from 'react-router';
 import { RecommendationBar } from '../components/overview/RecommendationBar';
 import { OverviewToolbar } from '../components/overview/OverviewToolbar';
 import { ReportTable } from '../components/overview/ReportTable';
@@ -8,12 +8,13 @@ import { normalizeReportIndex } from '../data';
 import { zhTW } from '../i18n/zh-TW';
 import { orDash } from '../lib/format';
 import {
-  DEFAULT_FILTERS,
   DEFAULT_SORT_DIR,
   filterRows,
+  readOverviewParams,
   sortRows,
+  writeOverviewParams,
   type OverviewFilters,
-  type SortDir,
+  type OverviewUrlState,
   type SortKey,
 } from '../lib/overviewFilter';
 import { errorText, useBreadcrumb, useIndexState } from './pageChrome';
@@ -26,9 +27,12 @@ export function OverviewPage() {
   const navigate = useNavigate();
   const indexState = useIndexState();
 
-  const [filters, setFilters] = useState<OverviewFilters>(DEFAULT_FILTERS);
-  const [sortKey, setSortKey] = useState<SortKey>('generatedDate');
-  const [sortDir, setSortDir] = useState<SortDir>(DEFAULT_SORT_DIR.generatedDate);
+  const location = useLocation();
+  // 篩選與排序存在網址：進報告頁再返回時恢復（替換目前紀錄，不新增瀏覽紀錄）
+  const [searchParams, setSearchParams] = useSearchParams();
+  const urlState = useMemo(() => readOverviewParams(searchParams), [searchParams]);
+  const { filters, sortKey, sortDir } = urlState;
+  const update = (next: OverviewUrlState) => setSearchParams(writeOverviewParams(next), { replace: true });
 
   const vm = useMemo(
     () => (indexState.status === 'ok' ? normalizeReportIndex(indexState.index) : null),
@@ -40,14 +44,10 @@ export function OverviewPage() {
   );
 
   const handleSort = (key: SortKey) => {
-    if (key === sortKey) {
-      setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortKey(key);
-      setSortDir(DEFAULT_SORT_DIR[key]);
-    }
+    if (key === sortKey) update({ ...urlState, sortDir: sortDir === 'asc' ? 'desc' : 'asc' });
+    else update({ ...urlState, sortKey: key, sortDir: DEFAULT_SORT_DIR[key] });
   };
-  const patch = (p: Partial<OverviewFilters>) => setFilters((f) => ({ ...f, ...p }));
+  const patch = (p: Partial<OverviewFilters>) => update({ ...urlState, filters: { ...filters, ...p } });
 
   let body;
   if (indexState.status === 'loading') {
@@ -83,7 +83,9 @@ export function OverviewPage() {
             sortKey={sortKey}
             sortDir={sortDir}
             onSort={handleSort}
-            onOpen={(id) => navigate(`/report/${encodeURIComponent(id)}`)}
+            onOpen={(id) =>
+              navigate(`/report/${encodeURIComponent(id)}`, { state: { from: location.pathname + location.search } })
+            }
           />
         )}
       </div>

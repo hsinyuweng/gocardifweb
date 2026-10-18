@@ -45,3 +45,43 @@ export function sortRows(rows: OverviewRow[], key: SortKey, dir: SortDir): Overv
     return sign * va.localeCompare(vb, 'zh-Hant-TW');
   });
 }
+
+// 篩選與排序寫入網址：從報告頁返回時恢復原本狀態（導覽原則，2026-10-18 經確認）。預設值不寫入。
+const P = { search: 'q', country: 'country', category: 'category', rec: 'rec', sort: 'sort', dir: 'dir' } as const;
+/** recommendation 缺漏者的網址值 */
+const REC_MISSING = '__missing__';
+
+export interface OverviewUrlState {
+  filters: OverviewFilters;
+  sortKey: SortKey;
+  sortDir: SortDir;
+}
+
+export function readOverviewParams(params: URLSearchParams): OverviewUrlState {
+  const rec = params.get(P.rec);
+  const sortParam = params.get(P.sort);
+  const sortKey: SortKey = sortParam === 'name' || sortParam === 'generatedDate' ? sortParam : 'generatedDate';
+  const dirParam = params.get(P.dir);
+  return {
+    filters: {
+      recommendation: rec === null ? null : { key: rec === REC_MISSING ? null : rec },
+      search: params.get(P.search) ?? '',
+      country: params.get(P.country) ?? '',
+      category: params.get(P.category) ?? '',
+    },
+    sortKey,
+    sortDir: dirParam === 'asc' || dirParam === 'desc' ? dirParam : DEFAULT_SORT_DIR[sortKey],
+  };
+}
+
+export function writeOverviewParams(s: OverviewUrlState): URLSearchParams {
+  const p = new URLSearchParams();
+  const f = s.filters;
+  if (f.search !== '') p.set(P.search, f.search);
+  if (f.country !== '') p.set(P.country, f.country);
+  if (f.category !== '') p.set(P.category, f.category);
+  if (f.recommendation !== null) p.set(P.rec, f.recommendation.key ?? REC_MISSING);
+  if (s.sortKey !== 'generatedDate') p.set(P.sort, s.sortKey);
+  if (s.sortDir !== DEFAULT_SORT_DIR[s.sortKey]) p.set(P.dir, s.sortDir);
+  return p;
+}

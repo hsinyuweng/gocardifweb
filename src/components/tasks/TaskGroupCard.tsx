@@ -23,6 +23,8 @@ function SubSection({ title, children }: { title: string; children: ReactNode })
 /** 一件商品中屬於所選負責單位的待解決事項與建議下一步 */
 export function TaskGroupCard({ group: g, owner }: TaskGroupCardProps) {
   const reportUrl = `/report/${encodeURIComponent(g.reportId)}?owner=${encodeURIComponent(owner)}`;
+  // 報告頁麵包屑據此回到同一個單位的我的待辦
+  const from = `/tasks?owner=${encodeURIComponent(owner)}`;
   const none = <p className="text-slate-600">{zhTW.common.none}</p>;
 
   return (
@@ -32,7 +34,7 @@ export function TaskGroupCard({ group: g, owner }: TaskGroupCardProps) {
           {orDash(g.name)}
           {g.issuer ? <span className="ml-1 font-normal text-slate-500">（{g.issuer}）</span> : null}
         </h2>
-        <Link to={reportUrl} className="shrink-0 text-navy-700 hover:underline print:hidden">
+        <Link to={reportUrl} state={{ from }} className="shrink-0 text-navy-700 hover:underline print:hidden">
           {zhTW.tasks.openReport}
         </Link>
       </header>

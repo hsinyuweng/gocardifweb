@@ -26,3 +26,4 @@ export { DataSourceError } from './DataSource';
 export type { DataSourceErrorKind } from './DataSource';
 export { isOffline, subscribeConnection } from './connectionStatus';
 export { normalizeReportIndex, normalizeReport, normalizeAppMeta } from './normalize';
+export { loadAllReports, type AllReportsResult } from './allReports';

@@ -1,11 +1,13 @@
-import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { Outlet } from 'react-router';
 import { AppShell } from '../components/layout/AppShell';
 import type { BreadcrumbItem, TopBarNotice } from '../components/layout/TopBar';
 import { useConfig } from '../config/ConfigContext';
-import { getDataSource, isOffline, normalizeAppMeta, subscribeConnection } from '../data';
+import { getDataSource, isOffline, loadAllReports, normalizeAppMeta, subscribeConnection } from '../data';
 import { zhTW } from '../i18n/zh-TW';
-import { PageChromeContext, type IndexState, type LayoutOutletContext } from './pageChrome';
+import { readOwnerPreference, subscribeOwnerPreference, writeOwnerPreference } from '../lib/ownerPreference';
+import { countOwners } from '../lib/tasks';
+import { PageChromeContext, type AllReportsState, type IndexState, type LayoutOutletContext } from './pageChrome';
 
 /** 共用版面：讀取報告清單一次，提供給導覽列（更新時間、資料來源）與各頁面 */
 export function RootLayout() {
@@ -15,6 +17,10 @@ export function RootLayout() {
   const [pageNotices, setPageNotices] = useState<TopBarNotice[]>([]);
   // api 模式改讀離線資料時為 true（第 6.3 節）
   const offline = useSyncExternalStore(subscribeConnection, isOffline);
+  const myUnit = useSyncExternalStore(subscribeOwnerPreference, readOwnerPreference);
+  // 全部報告只在需要時讀取一次（我的待辦、設定我的單位）
+  const [allRequested, setAllRequested] = useState(false);
+  const [allReportsState, setAllReportsState] = useState<AllReportsState>({ status: 'idle' });
 
   useEffect(() => {
     let alive = true;
@@ -27,6 +33,25 @@ export function RootLayout() {
     };
   }, [config]);
 
+  useEffect(() => {
+    if (!allRequested) return;
+    if (indexState.status === 'error') {
+      setAllReportsState({ status: 'error', error: indexState.error });
+      return;
+    }
+    if (indexState.status !== 'ok') return;
+    let alive = true;
+    setAllReportsState({ status: 'loading' });
+    loadAllReports(getDataSource(config), indexState.index)
+      .then((result) => alive && setAllReportsState({ status: 'ok', result }))
+      .catch((error: unknown) => alive && setAllReportsState({ status: 'error', error }));
+    return () => {
+      alive = false;
+    };
+  }, [allRequested, indexState, config]);
+
+  const requestAllReports = useCallback(() => setAllRequested(true), []);
+
   const meta = useMemo(
     () => normalizeAppMeta(indexState.status === 'ok' ? indexState.index : null, config, offline),
     [indexState, config, offline],
@@ -35,12 +60,27 @@ export function RootLayout() {
     () => (offline ? [{ tone: 'warning', text: zhTW.offlineNotice }, ...pageNotices] : pageNotices),
     [offline, pageNotices],
   );
+  const unitOptions = useMemo(
+    () => (allReportsState.status === 'ok' ? countOwners(allReportsState.result.reports).map((c) => c.owner) : null),
+    [allReportsState],
+  );
   const chrome = useMemo(() => ({ setBreadcrumb, setPageNotices }), []);
-  const outletContext: LayoutOutletContext = { indexState };
+  const outletContext: LayoutOutletContext = { indexState, allReportsState, requestAllReports };
 
   return (
     <PageChromeContext.Provider value={chrome}>
-      <AppShell meta={meta} showRoadmapNav={config.showRoadmapNav} breadcrumb={breadcrumb} notices={notices}>
+      <AppShell
+        meta={meta}
+        showRoadmapNav={config.showRoadmapNav}
+        breadcrumb={breadcrumb}
+        notices={notices}
+        myUnit={{
+          value: myUnit,
+          options: unitOptions,
+          onRequestOptions: requestAllReports,
+          onChange: writeOwnerPreference,
+        }}
+      >
         <Outlet context={outletContext} />
       </AppShell>
     </PageChromeContext.Provider>

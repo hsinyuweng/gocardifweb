@@ -21,6 +21,11 @@ export const zhTW = {
     dataSource: '資料來源：',
     dataSourceStatic: '離線資料',
     dataSourceApi: '後端連線',
+    myUnit: '我的單位：',
+    myUnitUnset: '未設定',
+    myUnitSet: '設定',
+    myUnitChange: '更改',
+    myUnitCancel: '取消',
   },
 
   errors: {
@@ -95,6 +100,7 @@ export const zhTW = {
     summary: (blockers: number, critical: number, steps: number, products: number) =>
       `待解決事項 ${blockers}（重大 ${critical}）· 建議下一步 ${steps} · 涉及 ${products} 件商品`,
     openReport: '看報告 →',
+    allUnits: '← 所有單位',
     partialFailure: (n: number, names: string) => `有 ${n} 份報告無法讀取，以下內容不包含：${names}。`,
   },
 
@@ -149,6 +155,7 @@ export const zhTW = {
     },
     dataGapsTitle: '資料缺口',
     showDetail: '看詳細內容',
+    backToCards: '↑ 回到三面向',
     printOwnerNote: (owner: string) => `篩選：負責單位＝${owner}`,
     details: {
       summary: '摘要',

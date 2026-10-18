@@ -25,6 +25,7 @@
 - 階段完成後：3–5 句說明做了什麼、改了哪些檔案；需要使用者操作的事列成**編號步驟**，寫明**在哪個應用程式（VS Code 終端機）、哪個資料夾（完整路徑＋先給 `cd` 指令）**、輸入什麼、預期看到什麼。
 - 使用者驗證後提醒 commit **並 push**（使用者已決定每階段或每次 session 後 commit + push），附建議 commit 訊息與完整指令。
 - 指令路徑含中文，`cd` 時要加引號。
+- **導覽原則（使用者 2026-10-18 要求，往後所有功能都適用）**：每個能到下一頁或下一步的地方，都要能往回走——畫面上有可點的返回（麵包屑或連結）、瀏覽器「上一頁」有效，而且回到原本的狀態（篩選、選擇保留）。規劃新功能時要在計畫中寫出返回方式。
 - 使用者會換對話：重要資訊要寫進這份文件或 CLAUDE.md，不要只留在對話裡。
 
 ## 3. 環境注意事項
@@ -45,6 +46,7 @@
 | 4 | 使用說明頁、mock-api、api 模式與離線備援、RWD | ✅ 完成、已 push（190239a）；RWD 修正併入 538742b |
 | 5 | GitHub Actions 部署與 README | ✅ 完成、已 push（538742b）；repo 已公開、Pages 已設定，使用者 2026-10-18 驗證網站「一切正常」 |
 | 規格外 A | 我的待辦 `#/tasks` | 🟡 程式完成，待使用者瀏覽器驗證、commit + push（見第 5 節） |
+| 規格外 | 返回路徑修正、我的單位 | 🟡 程式完成，與我的待辦一起待驗證、commit + push（見第 5 節） |
 
 ## 5. 已確認的決定（依階段）
 
@@ -83,6 +85,18 @@
 - 檔案：新增 `src/pages/TasksPage.tsx`、`src/components/tasks/`（OwnerPicker、TaskGroupCard）、`src/lib/tasks.ts`；修改 `main.tsx`（路由）、`Sidebar.tsx`（導覽項目）、`zh-TW.ts`（`nav.tasks`、`tasks`）、`viewModel.ts`（`BlockerViewModel.severityKey`、`OwnerCount`／`TaskProductGroup`／`TaskSummary`）、`normalize.ts`（填 severityKey）、README 專案結構。重用報告頁的 `OwnerFilter`、`BlockersTable`、`NextStepsList`（未修改）。
 - Claude 驗證：真實資料彙整（法遵 54＋31＝85，與統計一致）；headless Chrome 390／1440px 無整頁橫向捲動。
 
+### 返回路徑修正與「我的單位」（2026-10-18 已確認並實作，與「我的待辦」一起待驗證、commit）
+- 返回路徑（依第 2 節導覽原則）：
+  1. 首頁搜尋、篩選、排序寫入網址（`q`、`country`、`category`、`rec`（缺漏建議為 `__missing__`）、`sort`、`dir`；預設值不寫；用 replace 不新增紀錄）。進報告頁時以 `location.state.from` 帶上來源網址，麵包屑「案件總覽」回到原狀態，瀏覽器上一頁也恢復。
+  2. 從我的待辦進報告頁：麵包屑「我的待辦 / 商品名稱」，回到同一單位（`state.from`）；報告頁切換單位時保留 state。
+  3. 我的待辦：點單位按鈕**新增**瀏覽紀錄（上一頁回選單位畫面）；下拉切換用 replace；摘要旁「← 所有單位」連到 `#/tasks?owner=`。
+  4. 報告頁 E 區分頁列右側「↑ 回到三面向」，捲回 C 區。
+- 「我的單位」（使用者選方案乙；丙「真正的個人待辦」需後端登入，長期項目）：導覽列底部「我的單位：法遵 更改」／未設定時「我的單位：未設定 設定」；按下後變下拉（第一項「未設定」）＋「取消」。選項為全部報告的負責單位（依件數）。
+- **D7 調整（使用者確認）**：localStorage（沿用 key `gocardifweb.owner`）改存「我的單位」，**只有導覽列設定會改**；報告頁與我的待辦的下拉只改網址。預設順序：網址 → 我的單位 → 全部。網址 `?owner=`（空值）表示明確選「全部」，不套用我的單位；報告頁選「全部」也寫成 `?owner=`。
+- 架構：全部報告改由 `RootLayout` 在需要時讀一次（`src/data/allReports.ts` 的 `loadAllReports`，經 Outlet context 的 `useAllReports()` 給我的待辦，並提供導覽列選項）；`lib/ownerPreference.ts` 改為可訂閱（`useSyncExternalStore`，含跨分頁 storage 事件）；新增 `lib/ownerParam.ts`。
+- 修改既有頁面（第 11.1 節例外，使用者同意）：OverviewPage、ReportPage、ReportView、DetailTabs、Sidebar、AppShell、RootLayout、pageChrome、overviewFilter。
+- Claude 驗證：headless Chrome 實際點擊五條路線（首頁篩選→報告→返回／麵包屑；待辦選單位→上一頁；所有單位→上一頁；待辦→報告→切換單位→麵包屑；看詳細內容→回到三面向；設定、取消我的單位後兩頁預設）全部符合預期。
+
 ### 架構比較（2026-10-18）
 - 使用者貼了一份網站架構摘要（導覽列＋報告頁 A–F），與現有實作一致；用詞維持規格：「負責單位」（非「部門」）、「資料品質」（非「資料品質警示」）。
 
@@ -92,7 +106,7 @@
 - 清單項目缺 `report_id` 時該列仍顯示但不可點擊（`OverviewRow.reportId` 可為 null）。
 - 報告清單由 `pages/RootLayout.tsx` 讀一次，經 Outlet context 給首頁與報告頁（導覽列也需要 generated_at）。
 - 畫面資料欄位 `moduleCards`（原 `scorecards`），避免驗收第 11 點文字搜尋 `scorecard` 誤判；`KeyPointList` 註解避免出現 `key_points`。
-- 負責單位從 localStorage 取得時也同步寫進網址（`replace`，不新增瀏覽紀錄）。
+- 負責單位從「我的單位」（localStorage）取得時也同步寫進網址（`replace`，不新增瀏覽紀錄）。2026-10-18 起 localStorage 只存導覽列設定的我的單位（見第 5 節）。
 - 法規燈號篩選選項：legend.light 各值；legend 缺漏時改用 findings 中出現的值。
 - `DataSourceError` 新增 `status`（HTTP 狀態碼）與第五種 kind `config_error`（規格第 6.1 節只列四種；階段 4 計畫中說明並經確認）。4xx（非 404）歸為 `server` 但帶 status，**只有 network 與 5xx 觸發離線備援**。
 - 離線狀態用 `src/data/connectionStatus.ts` 的訂閱，RootLayout 以 `useSyncExternalStore` 讀取；後端成功讀取時清除離線標記。
