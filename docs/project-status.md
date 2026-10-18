@@ -169,6 +169,7 @@ pages/GuidePage   ─ 固定內容（i18n）
   - 風險：公開網站、新聞著作權（只存標題＋連結＋摘要）、AI 摘要需附原文連結、歷史版本儲存。
   - 建議順序：階段 4–5 → 競品比較 → 法規變化／市場動態（每日快照）→ 地區分布與台灣地圖 → api 即時、歷史比較、追蹤清單。
 - **給後端組員的需求文件**（Claude Doc，使用者擁有）：「gocardifweb 未來方向：後端資料需求」 https://claude.ai/code/artifact/91c6050f-8416-40cc-b0f1-76e3f79b7c62 。內容：總覽表、共通原則、競品比較 JSON（建議 `sections.market_demand.competitor_comparison`）、`feed.json`（category: regulation/market/product/news）與週報、`sections.market_demand.target_segment`（22 縣市、內政部行政區代碼）、報告歷史（`version_id`、`history/<report_id>.json`）、首頁圖表需要的彙總資料、兩階段交付架構圖與 API 端點、待後端回覆問題。文件預設私人，要使用者自己分享給組員。
+- 2026-10-18 改版：依 Summarizer（S1–S9）、市場需求（M1–M4）、發生率暨獲利（A1）、法規適用（R1–R3）、長期（L1）分類，開頭有 18 項追蹤表（優先 P1/P2/P3、狀態下拉）。P1：S1 負責單位固定清單、S2 項目 id 跨版本不變、M3 市場規模單位、R1 重跑 Singlife 法規、R2 findings 負責單位與 id。新增需求：S3 `next_steps.related_blocker_ids`、A1 競品 `metrics`、L1 個人待辦（登入、assignee、status、API）。
 - **首頁大改成以圖表為主**：使用者 2026-10-18 決定要做，但**等後端提供未來方向的資料後再改**。屆時會牽涉規格 D1（首頁型態）修改、圖表套件選擇（規格第 4、14 節，需使用者同意安裝）。
 
 ### 之後要和使用者確認的事項
