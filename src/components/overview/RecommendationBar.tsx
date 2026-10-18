@@ -10,14 +10,15 @@ interface RecommendationBarProps {
   onSelect: (next: { key: string | null } | null) => void;
 }
 
-const base = 'inline-flex h-7 items-center gap-1.5 rounded-full px-3 ring-1 transition-colors';
+// shrink-0 + whitespace-nowrap：窄螢幕時按鈕不被擠扁，整列改為橫向捲動
+const base = 'inline-flex h-7 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3 ring-1 transition-colors';
 const on = 'bg-navy-800 text-white ring-navy-800';
 const off = 'bg-white text-slate-700 ring-slate-300 hover:ring-slate-400';
 
 /** 建議分布列（第 11.2 節第 2 點）：點擊篩選，再點一次取消 */
 export function RecommendationBar({ groups, selected, onSelect }: RecommendationBarProps) {
   return (
-    <div className="flex h-12 items-center gap-2 overflow-x-auto">
+    <div className="flex h-12 items-center gap-2 overflow-x-auto px-px">
       <button type="button" className={`${base} ${selected === null ? on : off}`} onClick={() => onSelect(null)}>
         {zhTW.overview.all}
       </button>

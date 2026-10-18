@@ -70,9 +70,10 @@ export function ReportView({ vm, owner, onOwnerChange }: ReportViewProps) {
       <DecisionSummary summary={vm.summary} />
       <ScorecardRow cards={vm.moduleCards} onShowDetail={showDetail} />
 
-      {/* D 區：1280px 以上主欄 2/3、側欄 1/3 */}
-      <div className="grid gap-4 xl:grid-cols-3">
-        <div className="space-y-4 xl:col-span-2">
+      {/* D 區：1280px 以上主欄 2/3、側欄 1/3。
+          grid-cols-1 與 min-w-0 讓欄寬不被表格最小寬度撐開，表格才會在框內橫向捲動 */}
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
+        <div className="min-w-0 space-y-4 xl:col-span-2">
           <Panel
             title={t.blockersTitle}
             printNote={ownerNote}
@@ -84,7 +85,7 @@ export function ReportView({ vm, owner, onOwnerChange }: ReportViewProps) {
             {nextSteps.length > 0 ? <NextStepsList steps={nextSteps} /> : emptyText(vm.nextSteps.length)}
           </Panel>
         </div>
-        <div className="space-y-4">
+        <div className="min-w-0 space-y-4">
           <Panel title={t.dataQualityTitle}>
             <DataQualityPanel dq={vm.dataQuality} />
           </Panel>

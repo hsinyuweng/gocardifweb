@@ -3,7 +3,7 @@
 > 給之後的 Claude Code 對話：每次新對話開始，讀完 `CLAUDE.md` 列的必讀文件後，**一定要讀這份**。
 > 這裡記錄規格以外、在對話中確認過的所有決定、進度、與規格不同的實作、待辦與未來方向。
 > 每完成一個階段或做出新決定，都要更新這份文件（並提醒使用者 commit）。
-> 最後更新：2026-10-18（階段 4 程式完成、等待使用者驗證）。
+> 最後更新：2026-10-18（階段 5 程式完成；等待使用者 push、設定 Pages、驗證部署）。
 
 ---
 
@@ -42,8 +42,8 @@
 | 1 | 專案建立、AppShell、config、資料層、sync、首頁表格 | ✅ 完成、已 push |
 | 2 | 報告頁 A–D 區 | ✅ 完成、已 push |
 | 3 | 報告頁 E–F 區、小型視覺、列印樣式；新增 8 份報告 | ✅ 完成、已 push |
-| 4 | 使用說明頁、mock-api、api 模式與離線備援、RWD | 🟡 程式完成、build 通過；**等待使用者在瀏覽器驗證、commit、push**（驗證步驟見第 9 節） |
-| 5 | GitHub Actions 部署與 README | ⬜ 未開始（需先輸出計畫） |
+| 4 | 使用說明頁、mock-api、api 模式與離線備援、RWD | ✅ 已 push（190239a）；之後使用者回報「沒有 RWD」，已修正（見第 6 節 RWD 修正），待驗證與 commit |
+| 5 | GitHub Actions 部署與 README | 🟡 程式完成（deploy.yml、README）；**等待使用者把 repo 改公開、設定 Pages、commit + push、驗證網站**（步驟見第 9 節） |
 
 ## 5. 已確認的決定（依階段）
 
@@ -69,6 +69,10 @@
 ### 階段 4
 - 確認文字：設定錯誤：config.json 的 dataSource 為 api，但 apiBaseUrl 是空的。／後端回 400：「請求格式錯誤，無法取得資料。」＋後端 message，**不**觸發離線備援／選單按鈕 aria-label：開啟選單、關閉選單／使用說明頁標題「使用說明」／使用說明核心問題表欄名「面向／核心問題」，面向名稱用首頁欄名（市場需求、發生率暨獲利、法規適用）／mock-api 未定義路徑回 404 `NOT_FOUND`。
 
+### 階段 5（已確認並實作）
+- 使用者決定：GitHub repo 改為**公開**（免費帳號 Pages 需公開 repo；docs/、project-status.md 也會公開）；GitHub Actions 用 **Node 24 LTS**。
+- 實作：`.github/workflows/deploy.yml`（push main 與手動觸發 → npm ci → npm run build → 發布 dist/）、繁中 README（網址、本機開發、首次部署設定、新增報告、切換資料來源、mock-api、專案結構、未來規劃）、`vite.config.ts` 註解 lsjle → hsinyuweng。
+
 ### 架構比較（2026-10-18）
 - 使用者貼了一份網站架構摘要（導覽列＋報告頁 A–F），與現有實作一致；用詞維持規格：「負責單位」（非「部門」）、「資料品質」（非「資料品質警示」）。
 
@@ -83,6 +87,8 @@
 - `DataSourceError` 新增 `status`（HTTP 狀態碼）與第五種 kind `config_error`（規格第 6.1 節只列四種；階段 4 計畫中說明並經確認）。4xx（非 404）歸為 `server` 但帶 status，**只有 network 與 5xx 觸發離線備援**。
 - 離線狀態用 `src/data/connectionStatus.ts` 的訂閱，RootLayout 以 `useSyncExternalStore` 讀取；後端成功讀取時清除離線標記。
 - RWD 斷點用 Tailwind `lg`（≥1024px 顯示側邊導覽）；C 區三欄 `lg` 以下改單欄，列印時強制三欄（`print:grid-cols-3`）；D 區兩欄在 `xl`（≥1280px）。
+- **RWD 修正（2026-10-18）**：使用者回報窄螢幕沒有 RWD。原因：報告頁 D 區與 C 區的 grid 沒有指定欄寬，隱含欄寬被表格 `min-w-[720px]` 撐開，造成整頁橫向捲動、表格框內捲動失效。修正：`ReportView` D 區加 `grid-cols-1`、兩個子欄加 `min-w-0`；`ScorecardRow` 加 `grid-cols-1`；首頁 `RecommendationBar` 按鈕加 `shrink-0 whitespace-nowrap`（窄螢幕時整列橫向捲動、不擠扁）。Claude 用 headless Chrome 裝置模擬驗證 390／768／1440px：三頁 `scrollWidth` 等於畫面寬度。
+- Claude 的截圖驗證方法：`npx vite preview --port 4173` 後，以 Chrome `--remote-debugging-port` ＋ Node 內建 WebSocket 呼叫 `Emulation.setDeviceMetricsOverride`（`--window-size` 在無頭模式下最小寬度約 500px，iframe 內資料不會載入，皆不可靠）。
 - 規格文件本身的修改：只有網址 lsjle → hsinyuweng（三處）。
 
 ## 7. 架構速覽
@@ -110,22 +116,22 @@ pages/GuidePage   ─ 固定內容（i18n）
   - 負責單位有「上游（顏）」這類非單位名稱。
 - **競品比較：現有 JSON 都沒有競品資料**（只有 `source_ref` 指向 `market_demand:competitor_comparison`），需後端在 summarizer 報告加入。
 
-## 9. 階段 4 待使用者驗證的步驟（下一個對話若使用者尚未驗證，請引導）
+## 9. 階段 5 待使用者完成與驗證的步驟（下一個對話若使用者尚未完成，請引導）
 
-在 VS Code 終端機、`gocardifweb` 資料夾：
-1. `npm run dev`，開 `http://localhost:5173/gocardifweb/#/guide`：使用說明五段內容。
-2. 瀏覽器寬度縮到約 768px：側邊導覽收合、頂部列左側有選單按鈕；點開由左滑出，點背景／Esc／換頁會關閉；報告頁 C 區改上下排列、表格可橫向捲動（驗收第 12 點）。
-3. 另開一個終端機執行 `npm run mock-api`；把 `public/config.json` 改成 `"dataSource": "api"`、`"apiBaseUrl": "http://localhost:8787"`，重新整理：畫面與 static 相同、導覽列「資料來源：後端連線」。
-4. 在 mock-api 的終端機按 Ctrl + C 停掉，重新整理：頂部列出現「目前無法連線後端，顯示的是離線資料」，畫面仍顯示資料、導覽列「資料來源：離線資料」（驗收第 9 點）。
-5. 把 `apiBaseUrl` 改成 `""`，重新整理：出現設定錯誤說明。
-6. **務必把 `public/config.json` 改回** `"dataSource": "static"`、`"apiBaseUrl": ""`，commit 前用 `git status` 確認 config.json 沒有出現在變更清單（或內容與原本相同）。
-7. 建議 commit：`feat: 階段4 使用說明頁、mock-api、api 模式與離線備援、RWD`，然後 `git push`。
+（階段 4 已驗證並 push；RWD 修正與階段 5 一起 commit。）
+1. 瀏覽器檢查 RWD 修正：`npm run dev`，Chrome 開發者工具手機模式 768／390px，報告頁「待解決事項」只在框內橫向捲動、整頁不左右晃；首頁建議按鈕不被擠扁。
+2. GitHub repo → Settings → General → 最下方 Danger Zone → Change visibility → Public。
+3. Settings → Pages → Build and deployment → Source 選「GitHub Actions」。
+4. 在 `gocardifweb` 資料夾 `git status` 確認 `public/config.json` 不在變更清單，然後 `git add -A`、`git commit -m "feat: 階段5 GitHub Actions 部署與 README；修正窄螢幕 RWD"`、`git push`。
+5. repo 的 Actions 分頁：「Deploy to GitHub Pages」build、deploy 兩個 job 都是綠色勾勾。
+6. 驗收第 13 點：開 `https://hsinyuweng.github.io/gocardifweb/`，點進一份報告後按重新整理不會 404；開發者工具 Console 沒有紅色錯誤。
+- 技術註記：CI 用 Node 24；react-router 8.4 要求 Node ≥ 22.22，vite 8 要求 ^20.19 或 ≥22.12。Claude 已在 scratchpad 以同一份 package-lock 跑 `npm ci` 成功、`npm run build` 通過。
 
 ## 10. 待辦與未來方向
 
 ### 接下來
-1. 階段 4 驗證與 commit（第 9 節）。
-2. 階段 5：`.github/workflows/deploy.yml`（push main → `npm ci`、`npm run build`、發布 `dist/`）＋ README（Settings → Pages → Source 選 GitHub Actions、如何新增報告、如何切換資料來源、如何用 mock-api 測試、未來規劃）。部署網址 `https://hsinyuweng.github.io/gocardifweb/`。先輸出計畫等確認。
+1. 階段 5 部署驗證（第 9 節）。
+2. （已完成）階段 5：`.github/workflows/deploy.yml`（push main → `npm ci`、`npm run build`、發布 `dist/`）＋ README（Settings → Pages → Source 選 GitHub Actions、如何新增報告、如何切換資料來源、如何用 mock-api 測試、未來規劃）。部署網址 `https://hsinyuweng.github.io/gocardifweb/`。先輸出計畫等確認。
 
 ### 未來方向（使用者 2026-10-18 提出；階段 5 之後）
 - 使用者的目標：要有「追蹤市場資訊」「實時追蹤」的感覺、呈現多種資訊、隨時持續更新、**每天都要用的必要性**；每日／每週市場資訊與新聞；抓產品目標客群與地區分布；**台灣地圖視覺化**；**競品比較**（使用者說之後會加入）。
@@ -142,8 +148,7 @@ pages/GuidePage   ─ 固定內容（i18n）
 - **首頁大改成以圖表為主**：使用者 2026-10-18 決定要做，但**等後端提供未來方向的資料後再改**。屆時會牽涉規格 D1（首頁型態）修改、圖表套件選擇（規格第 4、14 節，需使用者同意安裝）。
 
 ### 之後要和使用者確認的事項
-- [ ] 階段 4 驗證結果（第 9 節）。
-- [ ] 階段 5 計畫。
+- [ ] 階段 5 部署驗證結果（第 9 節）。
 - [ ] 後端回覆需求文件後：各新功能的計畫與介面文字。
 - [ ] 首頁圖表化：D1 是否修改、要哪些圖表、圖表套件選擇。
 - [ ] 台灣地圖的實作方式（靜態 SVG vs 套件）。

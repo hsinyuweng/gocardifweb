@@ -82,7 +82,7 @@ interface ScorecardRowProps {
 /** C 區三面向計分列（第 11.3 節 C）：三欄等寬、高度一致 */
 export function ScorecardRow({ cards, onShowDetail }: ScorecardRowProps) {
   return (
-    <div className="grid gap-4 lg:grid-cols-3 print:grid-cols-3">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 print:grid-cols-3">
       {cards.map((c) => (
         <ScorecardCard key={c.moduleKey} card={c} onShowDetail={() => onShowDetail(c.moduleKey)} />
       ))}
