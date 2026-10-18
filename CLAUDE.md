@@ -25,5 +25,5 @@
 
 ## 環境提醒（給 Claude）
 - Claude 的 Bash 環境沒有 `/opt/homebrew/bin`，執行 node／npm 前先 `export PATH="/opt/homebrew/bin:$PATH"`。
-- 家目錄 `/Users/hylweng` 本身是 git repo：git 指令只能在本資料夾內執行；不要自行處理家目錄的 repo。
+- git 指令只在本資料夾內執行（家目錄原本誤設的 repo 已於 2026-10-18 移除）。
 - 我會 commit 並 push 每個階段；commit 前提醒我確認 `public/config.json` 是 static 模式。

@@ -31,7 +31,7 @@
 
 - Node.js 用 Homebrew 安裝：v26.12.0、npm 11.20.0（2026-10-18）。
 - **Claude 的 Bash 環境 PATH 沒有 `/opt/homebrew/bin`**：執行 node/npm 前要先 `export PATH="/opt/homebrew/bin:$PATH"`。使用者自己的終端機正常。
-- **使用者的家目錄 `/Users/hylweng` 本身是一個 git repo**（可能是以前誤用 `git init`）。在 `gocardifweb` 以外的資料夾執行 git 指令會作用在整個家目錄上。所有 git 指令一定要在 `gocardifweb` 內執行。是否清除家目錄的 repo 尚未處理，**未經使用者同意不要動它**。
+- 家目錄 `/Users/hylweng` 原本誤設為 git repo（0 個 commit、無遠端）；2026-10-18 經使用者同意，Claude 把 `/Users/hylweng/.git` 移到垃圾桶（`~/.Trash/home-dot-git-<時間>`），沒有直接刪除。git 指令仍一律在 `gocardifweb` 內執行。
 - 套件版本（package-lock.json 鎖定）：react／react-dom 19.3、react-router 8.4（HashRouter 從 `react-router` 匯入）、vite 8.3、@vitejs/plugin-react 6.1、typescript 7.0、tailwindcss 4.3 + @tailwindcss/vite。**沒有 ESLint**（使用者決定移除）。不得安裝其他執行期套件，需要時先問。
 - 驗證資料邏輯的方法（Claude 無法開瀏覽器）：在 scratchpad 寫腳本，用 `vite` 的 `createServer(...).ssrLoadModule('/src/data/normalize.ts')` 載入真實程式碼，對 `public/data/reports/*.json` 跑檢查。畫面與列印效果請使用者在瀏覽器驗證。
 
@@ -72,6 +72,11 @@
 ### 階段 5（已確認並實作）
 - 使用者決定：GitHub repo 改為**公開**（免費帳號 Pages 需公開 repo；docs/、project-status.md 也會公開）；GitHub Actions 用 **Node 24 LTS**。
 - 實作：`.github/workflows/deploy.yml`（push main 與手動觸發 → npm ci → npm run build → 發布 dist/）、繁中 README（網址、本機開發、首次部署設定、新增報告、切換資料來源、mock-api、專案結構、未來規劃）、`vite.config.ts` 註解 lsjle → hsinyuweng。
+
+### 規格外功能 A「我的待辦」（2026-10-18 計畫中，等使用者確認介面文字）
+- 新頁面 `#/tasks?owner=<單位>`：跨 9 份報告彙整某負責單位的待解決事項（blockers）與建議下一步（next_steps）。讀 index 後同時讀全部報告；部分讀取失敗時其餘照常顯示並註明。
+- 使用者已選：**依商品分組**（每件商品一塊：名稱連到報告頁並帶 `?owner=`、該單位的待解決事項表、建議下一步）；**未選單位或選「全部」時提示先選單位**，顯示各單位件數按鈕；**導覽列「案件總覽」下方新增「我的待辦」**（修改規格第 10.1 節，經使用者同意）。
+- 負責單位與報告頁共用 localStorage 記憶；沿用列印；「上游（顏）」與「上游」照原樣分開顯示。
 
 ### 架構比較（2026-10-18）
 - 使用者貼了一份網站架構摘要（導覽列＋報告頁 A–F），與現有實作一致；用詞維持規格：「負責單位」（非「部門」）、「資料品質」（非「資料品質警示」）。
@@ -152,6 +157,6 @@ pages/GuidePage   ─ 固定內容（i18n）
 - [ ] 後端回覆需求文件後：各新功能的計畫與介面文字。
 - [ ] 首頁圖表化：D1 是否修改、要哪些圖表、圖表套件選擇。
 - [ ] 台灣地圖的實作方式（靜態 SVG vs 套件）。
-- [ ] 家目錄 `/Users/hylweng` 的 git repo 要不要清除（只提醒，不要自行處理）。
+- [x] 家目錄 git repo 已清除（2026-10-18，移到垃圾桶）。
 - [ ] 未來合併 repo 時更新網址三處。
 - [ ] 資料公開性：真實內部資料若不能公開，需改有存取控管的架構。
