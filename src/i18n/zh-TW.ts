@@ -63,6 +63,69 @@ export const zhTW = {
     sortDesc: '▼',
   },
 
+  schemaMismatch: '報告格式版本不符，部分內容可能無法正確顯示',
+
+  report: {
+    flow: {
+      collect: '資料蒐集',
+      analysis: '三面向分析',
+      synthesis: '統整建議',
+      review: '部門審查',
+      done: '完成',
+      analysisProgress: (n: number, total: number) => `${n}／${total} 完成`,
+    },
+    print: '列印／另存 PDF',
+    generatedDate: (d: string) => `產出日期 ${d}`,
+    reviewDates: '審閱日期：',
+    reasons: '判定理由',
+    mechanism: '商品機制',
+    notProvided: '未提供',
+    rawStatus: (s: string) => `（原始值：${s}）`,
+    indicators: {
+      demandLevel: '需求等級',
+      confidence: '信心等級',
+      researchStatus: '研究狀態',
+      comparability: '可比程度',
+      pricingFlagCount: '定價提示數',
+    },
+    blockersTitle: '待解決事項',
+    nextStepsTitle: '建議下一步',
+    ownerFilter: '負責單位',
+    ownerAll: '全部',
+    ownerUnassigned: '未指定',
+    noOwnerMatch: '此負責單位沒有相關項目。',
+    blockerColumns: {
+      severity: '嚴重度',
+      module: '面向',
+      title: '事項',
+      owner: '負責單位',
+      action: '處理方式',
+    },
+    nextStepOwner: '負責單位：',
+    nextStepSource: '來源面向：',
+    dataQualityTitle: '資料品質',
+    suspectedInputErrors: '疑似輸入錯誤',
+    moreDataQuality: '更多資料品質註記',
+    dataQualityGroups: {
+      conflicts: '資料衝突',
+      evidence_mismatch: '證據不一致',
+      missing_fields: '缺漏欄位',
+      notes: '備註',
+    },
+    dataGapsTitle: '資料缺口',
+  },
+
+  charts: {
+    noData: '無資料',
+  },
+
+  // 第 9.1 節：各模組核心問題
+  coreQuestion: {
+    market_demand: '產品是否有需求',
+    actuarial: '產品是否能獲利',
+    regulatory: '產品是否能引入',
+  },
+
   // 第 9.1 節：research_status 固定標籤（legend 查不到時使用）
   researchStatus: {
     sufficient_evidence: '證據充分',

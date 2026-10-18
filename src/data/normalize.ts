@@ -3,17 +3,30 @@
 
 import type { AppConfig } from '../config/appConfig';
 import type { RawReportIndexEntry, ReportIndex } from '../types/reportIndex';
+import { MODULE_KEYS, type ModuleKey, type RawLegend, type Report } from '../types/report';
 import type {
   AppMetaViewModel,
+  BlockerViewModel,
+  DataGapViewModel,
+  DataQualityGroupKey,
+  DataQualityViewModel,
+  DecisionSummaryViewModel,
+  DistributionSegment,
   FilterOption,
+  NextStepViewModel,
   OverviewRow,
   OverviewViewModel,
   RecommendationGroup,
+  ReportViewModel,
+  ScorecardViewModel,
 } from '../types/viewModel';
 import { countryLabel } from '../lib/country';
 import { formatDateTimeTaipei } from '../lib/format';
+import { legendColor, legendLabel } from '../lib/legend';
+import { collectOwnerOptions, splitOwners } from '../lib/owner';
 import { researchStatusLabel } from '../lib/researchStatus';
 import { toSignalColor } from '../lib/signalColor';
+import { isSchemaVersionSupported } from './validate';
 
 function str(v: unknown): string | null {
   return typeof v === 'string' && v !== '' ? v : null;
@@ -21,6 +34,20 @@ function str(v: unknown): string | null {
 
 function count(v: unknown): number {
   return typeof v === 'number' && Number.isFinite(v) ? v : 0;
+}
+
+function num(v: unknown): number | null {
+  return typeof v === 'number' && Number.isFinite(v) ? v : null;
+}
+
+/** 只保留非空字串 */
+function strList(v: unknown): string[] {
+  return Array.isArray(v) ? v.filter((s): s is string => typeof s === 'string' && s !== '') : [];
+}
+
+/** 只保留物件元素 */
+function objList<T>(v: T[] | null | undefined): T[] {
+  return Array.isArray(v) ? v.filter((x) => typeof x === 'object' && x !== null) : [];
 }
 
 function normalizeIndexEntry(entry: RawReportIndexEntry): OverviewRow {
@@ -99,6 +126,172 @@ export function normalizeReportIndex(index: ReportIndex): OverviewViewModel {
     recommendationGroups: groupRecommendations(rows),
     countryOptions: uniqueOptions(rows.map((r) => [r.countryCode, r.countryLabel])),
     categoryOptions: uniqueOptions(rows.map((r) => [r.category, r.category])),
+  };
+}
+
+// ───────── 報告頁 ─────────
+
+const PROVIDED = 'provided';
+
+function moduleLabel(legend: RawLegend | null | undefined, key: ModuleKey): string {
+  return legendLabel(legend, 'module', key) ?? key;
+}
+
+function normalizeSummary(r: Report): DecisionSummaryViewModel {
+  const snap = r.product_snapshot;
+  const head = r.headline;
+  const sources = r.report_meta.source_files;
+  return {
+    name: str(snap?.name),
+    issuer: str(snap?.issuer),
+    countryLabel: countryLabel(str(snap?.country)),
+    category: str(snap?.category),
+    currency: str(snap?.currency),
+    premiumMode: str(snap?.premium_mode),
+    mechanismSummary: str(snap?.mechanism_summary),
+    recommendation: { color: toSignalColor(head.signal_color), text: str(head.label) },
+    oneLineSummary: str(head.one_line_summary),
+    reasons: strList(head.reasons),
+    generatedDate: str(r.report_meta.generated_date),
+    reviewDates: MODULE_KEYS.map((k) => ({
+      moduleLabel: moduleLabel(r.legend, k),
+      date: str(sources?.[k]?.review_date),
+    })),
+  };
+}
+
+// 法規燈號分布條的順序與 counts 欄位一致
+const LIGHT_KEYS = ['red', 'yellow', 'green', 'pending', 'not_applicable'] as const;
+
+function normalizeScorecards(r: Report): ScorecardViewModel[] {
+  const sc = r.scorecard;
+  const sec = r.sections;
+  const legend = r.legend;
+
+  const md = sc?.market_demand;
+  const ac = sc?.actuarial;
+  const rg = sc?.regulatory;
+  const base = (key: ModuleKey, status: unknown, summary: unknown) => ({
+    moduleLabel: moduleLabel(legend, key),
+    provided: status === PROVIDED,
+    rawStatus: str(status),
+    summary: str(summary),
+  });
+
+  const distribution: DistributionSegment[] = LIGHT_KEYS.map((k) => ({
+    key: k,
+    label: legendLabel(legend, 'light', k) ?? k,
+    color: legendColor(legend, 'light', k),
+    count: count(rg?.counts?.[k]),
+  }));
+
+  return [
+    {
+      ...base('market_demand', md?.status, sec?.market_demand?.summary),
+      moduleKey: 'market_demand',
+      signal: {
+        color: toSignalColor(md?.signal),
+        text: legendLabel(legend, 'demand_level', str(md?.level)) ?? str(md?.label),
+      },
+      confidence: str(md?.confidence),
+    },
+    {
+      ...base('actuarial', ac?.status, sec?.actuarial?.summary),
+      moduleKey: 'actuarial',
+      signal: { color: toSignalColor(ac?.signal), text: researchStatusLabel(str(ac?.research_status), legend) },
+      comparability: str(ac?.comparability),
+      pricingFlagCount: num(ac?.pricing_flag_count),
+    },
+    {
+      ...base('regulatory', rg?.status, sec?.regulatory?.summary),
+      moduleKey: 'regulatory',
+      signal: { color: toSignalColor(rg?.signal), text: str(rg?.overall_verdict) },
+      distribution,
+    },
+  ];
+}
+
+const SEVERITY_ORDER: Record<string, number> = { critical: 0, blocking: 1, warning: 2 };
+
+function normalizeBlockers(r: Report): BlockerViewModel[] {
+  const legend = r.legend;
+  return objList(r.blockers)
+    .map((b) => {
+      const severity = str(b.severity);
+      const ownerText = str(b.owner);
+      return {
+        order: severity !== null && severity in SEVERITY_ORDER ? SEVERITY_ORDER[severity]! : 3,
+        vm: {
+          id: str(b.id),
+          severity: { color: legendColor(legend, 'severity', severity), text: legendLabel(legend, 'severity', severity) },
+          moduleLabel: legendLabel(legend, 'module', str(b.module)),
+          title: str(b.title),
+          ownerText,
+          owners: splitOwners(ownerText),
+          action: str(b.action),
+        },
+      };
+    })
+    .sort((a, b) => a.order - b.order) // Array.sort 為穩定排序，同級保持原順序
+    .map((x) => x.vm);
+}
+
+function normalizeNextSteps(r: Report): NextStepViewModel[] {
+  return objList(r.next_steps)
+    .map((s) => {
+      const ownerText = str(s.owner);
+      return {
+        id: str(s.id),
+        priority: num(s.priority),
+        action: str(s.action),
+        ownerText,
+        owners: splitOwners(ownerText),
+        sourceModuleLabel: legendLabel(r.legend, 'module', str(s.source_module)),
+      };
+    })
+    .sort((a, b) => {
+      if (a.priority === b.priority) return 0;
+      if (a.priority === null) return 1;
+      if (b.priority === null) return -1;
+      return a.priority - b.priority;
+    });
+}
+
+const MORE_DQ_KEYS: readonly DataQualityGroupKey[] = ['conflicts', 'evidence_mismatch', 'missing_fields', 'notes'];
+
+function normalizeDataQuality(r: Report): DataQualityViewModel {
+  const dq = r.data_quality;
+  return {
+    suspectedInputErrors: strList(dq?.suspected_input_errors),
+    moreGroups: MORE_DQ_KEYS.map((key) => ({ key, items: strList(dq?.[key]) })).filter((g) => g.items.length > 0),
+  };
+}
+
+function normalizeDataGaps(r: Report): DataGapViewModel[] {
+  const md = moduleLabel(r.legend, 'market_demand');
+  const ac = moduleLabel(r.legend, 'actuarial');
+  return [
+    ...strList(r.sections?.market_demand?.data_gaps).map((text) => ({ moduleLabel: md, text })),
+    ...strList(r.sections?.actuarial?.evidence_gaps).map((text) => ({ moduleLabel: ac, text })),
+  ];
+}
+
+export function normalizeReport(r: Report): ReportViewModel {
+  const sources = r.report_meta.source_files;
+  const blockers = normalizeBlockers(r);
+  const nextSteps = normalizeNextSteps(r);
+  return {
+    reportId: r.report_meta.report_id,
+    schemaVersionMismatch: !isSchemaVersionSupported(r.report_meta.schema_version),
+    analysisProvided: MODULE_KEYS.filter((k) => sources?.[k]?.status === PROVIDED).length,
+    analysisTotal: MODULE_KEYS.length,
+    summary: normalizeSummary(r),
+    moduleCards: normalizeScorecards(r),
+    ownerOptions: collectOwnerOptions([...blockers.map((b) => b.owners), ...nextSteps.map((s) => s.owners)]),
+    blockers,
+    nextSteps,
+    dataQuality: normalizeDataQuality(r),
+    dataGaps: normalizeDataGaps(r),
   };
 }
 

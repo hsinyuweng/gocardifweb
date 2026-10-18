@@ -10,4 +10,4 @@ export function getDataSource(_config: AppConfig): DataSource {
 
 export { DataSourceError } from './DataSource';
 export type { DataSourceErrorKind } from './DataSource';
-export { normalizeReportIndex, normalizeAppMeta } from './normalize';
+export { normalizeReportIndex, normalizeReport, normalizeAppMeta } from './normalize';

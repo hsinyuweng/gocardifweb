@@ -1,0 +1,75 @@
+import type { ReactNode } from 'react';
+import type { ReportViewModel } from '../../types/viewModel';
+import { zhTW } from '../../i18n/zh-TW';
+import { matchesOwner } from '../../lib/owner';
+import { FlowBar } from './FlowBar';
+import { DecisionSummary } from './DecisionSummary';
+import { ScorecardRow } from './ScorecardRow';
+import { OwnerFilter } from './OwnerFilter';
+import { BlockersTable } from './BlockersTable';
+import { NextStepsList } from './NextStepsList';
+import { DataQualityPanel } from './DataQualityPanel';
+import { DataGapsPanel } from './DataGapsPanel';
+
+const t = zhTW.report;
+
+interface ReportViewProps {
+  vm: ReportViewModel;
+  /** 負責單位篩選；null 表示「全部」 */
+  owner: string | null;
+  onOwnerChange: (owner: string | null) => void;
+}
+
+function Panel({ title, action, children }: { title: string; action?: ReactNode; children: ReactNode }) {
+  return (
+    <section className="rounded border border-slate-200 bg-white">
+      <header className="flex min-h-11 items-center justify-between gap-3 border-b border-slate-100 px-4 py-2">
+        <h2 className="text-base font-semibold text-slate-900">{title}</h2>
+        {action}
+      </header>
+      <div className="px-4 py-3">{children}</div>
+    </section>
+  );
+}
+
+/** 篩選後沒有項目時：原本就沒有 →「無」；被篩掉 → 提示 */
+function emptyText(total: number) {
+  return <p className="text-slate-600">{total === 0 ? zhTW.common.none : t.noOwnerMatch}</p>;
+}
+
+/** 報告頁內容（第 11.3 節）：只接收 ViewModel */
+export function ReportView({ vm, owner, onOwnerChange }: ReportViewProps) {
+  const blockers = vm.blockers.filter((b) => matchesOwner(b.owners, owner));
+  const nextSteps = vm.nextSteps.filter((s) => matchesOwner(s.owners, owner));
+
+  return (
+    <div className="space-y-4">
+      <FlowBar provided={vm.analysisProvided} total={vm.analysisTotal} />
+      <DecisionSummary summary={vm.summary} />
+      <ScorecardRow cards={vm.moduleCards} />
+
+      {/* D 區：1280px 以上主欄 2/3、側欄 1/3 */}
+      <div className="grid gap-4 xl:grid-cols-3">
+        <div className="space-y-4 xl:col-span-2">
+          <Panel
+            title={t.blockersTitle}
+            action={<OwnerFilter options={vm.ownerOptions} selected={owner} onChange={onOwnerChange} />}
+          >
+            {blockers.length > 0 ? <BlockersTable blockers={blockers} /> : emptyText(vm.blockers.length)}
+          </Panel>
+          <Panel title={t.nextStepsTitle}>
+            {nextSteps.length > 0 ? <NextStepsList steps={nextSteps} /> : emptyText(vm.nextSteps.length)}
+          </Panel>
+        </div>
+        <div className="space-y-4">
+          <Panel title={t.dataQualityTitle}>
+            <DataQualityPanel dq={vm.dataQuality} />
+          </Panel>
+          <Panel title={t.dataGapsTitle}>
+            <DataGapsPanel gaps={vm.dataGaps} />
+          </Panel>
+        </div>
+      </div>
+    </div>
+  );
+}

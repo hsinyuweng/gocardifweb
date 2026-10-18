@@ -1,21 +1,39 @@
 import { createContext, useContext, useEffect } from 'react';
 import { useOutletContext } from 'react-router';
-import type { BreadcrumbItem } from '../components/layout/TopBar';
+import type { BreadcrumbItem, TopBarNotice } from '../components/layout/TopBar';
 import type { ReportIndex } from '../types/reportIndex';
 import { DataSourceError } from '../data';
 import { zhTW } from '../i18n/zh-TW';
 
-// 頁面與 RootLayout 之間的小型共用狀態：麵包屑、報告清單讀取結果
+// 頁面與 RootLayout 之間的小型共用狀態：麵包屑、頂部列提示、報告清單讀取結果
 
-export const BreadcrumbContext = createContext<(items: BreadcrumbItem[]) => void>(() => {});
+export interface PageChromeSetters {
+  setBreadcrumb: (items: BreadcrumbItem[]) => void;
+  setPageNotices: (notices: TopBarNotice[]) => void;
+}
+
+export const PageChromeContext = createContext<PageChromeSetters>({
+  setBreadcrumb: () => {},
+  setPageNotices: () => {},
+});
 
 /** 頁面呼叫此 hook 設定頂部列麵包屑 */
 export function useBreadcrumb(items: BreadcrumbItem[]) {
-  const setBreadcrumb = useContext(BreadcrumbContext);
+  const { setBreadcrumb } = useContext(PageChromeContext);
   const key = JSON.stringify(items);
   useEffect(() => {
     setBreadcrumb(JSON.parse(key) as BreadcrumbItem[]);
   }, [key, setBreadcrumb]);
+}
+
+/** 頁面呼叫此 hook 設定頂部列狀態提示；離開頁面時清除 */
+export function usePageNotices(notices: TopBarNotice[]) {
+  const { setPageNotices } = useContext(PageChromeContext);
+  const key = JSON.stringify(notices);
+  useEffect(() => {
+    setPageNotices(JSON.parse(key) as TopBarNotice[]);
+    return () => setPageNotices([]);
+  }, [key, setPageNotices]);
 }
 
 export type IndexState =
