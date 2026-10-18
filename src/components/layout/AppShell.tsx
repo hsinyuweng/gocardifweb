@@ -16,10 +16,10 @@ export function AppShell({ meta, showRoadmapNav, breadcrumb, notices, children }
   return (
     <div className="min-h-screen">
       <Sidebar meta={meta} showRoadmapNav={showRoadmapNav} />
-      <div className="ml-[232px] flex min-h-screen flex-col">
+      <div className="ml-[232px] flex min-h-screen flex-col print:ml-0 print:block print:min-h-0">
         <TopBar breadcrumb={breadcrumb} notices={notices} />
-        {/* 主內容：左右內距 24px，超過 1600px 置中（第 10.3 節） */}
-        <main className="mx-auto w-full max-w-[1600px] flex-1 px-6 py-6">{children}</main>
+        {/* 主內容：左右內距 24px，超過 1600px 置中（第 10.3 節）；列印時全寬 */}
+        <main className="mx-auto w-full max-w-[1600px] flex-1 px-6 py-6 print:max-w-none print:p-0">{children}</main>
       </div>
     </div>
   );

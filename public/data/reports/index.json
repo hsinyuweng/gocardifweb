@@ -1,6 +1,36 @@
 {
-  "generated_at": "2026-10-18T00:25:12.243Z",
+  "generated_at": "2026-10-18T03:24:22.598Z",
   "reports": [
+    {
+      "report_id": "chakin",
+      "name": "Chakin（チャキン）",
+      "issuer": "住友生命保険相互会社",
+      "country": "JP",
+      "category": "傳統壽險（生死合險/養老險）",
+      "recommendation": "hold_missing_info",
+      "label": "暫緩，待補資料",
+      "signal_color": "yellow",
+      "generated_date": "2026-10-11",
+      "module_summary": {
+        "market_demand": {
+          "signal": "yellow",
+          "text": "有限需求"
+        },
+        "actuarial": {
+          "signal": "yellow",
+          "research_status": "partial_evidence"
+        },
+        "regulatory": {
+          "signal": "yellow",
+          "overall_verdict": "待確認"
+        }
+      },
+      "blocker_counts": {
+        "critical": 0,
+        "blocking": 4,
+        "warning": 11
+      }
+    },
     {
       "report_id": "fwd-jpy-single-premium-va",
       "name": "FWD円建一時払変額年金",
@@ -29,6 +59,216 @@
         "critical": 0,
         "blocking": 7,
         "warning": 5
+      }
+    },
+    {
+      "report_id": "kyobo-modu-jikim-whole-life",
+      "name": "Kyobo Modu Jikim Whole Life Insurance",
+      "issuer": "Kyobo Life Insurance（教保人壽）",
+      "country": "KR",
+      "category": "傳統壽險（終身壽險）",
+      "recommendation": "hold_missing_info",
+      "label": "暫緩，待補資料",
+      "signal_color": "yellow",
+      "generated_date": "2026-10-11",
+      "module_summary": {
+        "market_demand": {
+          "signal": "yellow",
+          "text": "有限需求"
+        },
+        "actuarial": {
+          "signal": "yellow",
+          "research_status": "partial_evidence"
+        },
+        "regulatory": {
+          "signal": "yellow",
+          "overall_verdict": "待確認"
+        }
+      },
+      "blocker_counts": {
+        "critical": 0,
+        "blocking": 5,
+        "warning": 3
+      }
+    },
+    {
+      "report_id": "oriance",
+      "name": "Oriance",
+      "issuer": "Crédit Agricole Assurances（由 Predica 承保）",
+      "country": "FR",
+      "category": "投資型壽險（其他投資型）",
+      "recommendation": "hold_missing_info",
+      "label": "暫緩，待補資料",
+      "signal_color": "yellow",
+      "generated_date": "2026-10-11",
+      "module_summary": {
+        "market_demand": {
+          "signal": "yellow",
+          "text": "有限需求"
+        },
+        "actuarial": {
+          "signal": "yellow",
+          "research_status": "partial_evidence"
+        },
+        "regulatory": {
+          "signal": "yellow",
+          "overall_verdict": "待確認"
+        }
+      },
+      "blocker_counts": {
+        "critical": 0,
+        "blocking": 8,
+        "warning": 8
+      }
+    },
+    {
+      "report_id": "policyme-guaranteed-issue-life-insurance",
+      "name": "PolicyMe Guaranteed Issue Life Insurance",
+      "issuer": "Securian Canada",
+      "country": "CA",
+      "category": "傳統壽險（終身壽險）",
+      "recommendation": "hold_resolve_red_flag",
+      "label": "暫緩，須先釐清疑似紅燈",
+      "signal_color": "red",
+      "generated_date": "2026-10-11",
+      "module_summary": {
+        "market_demand": {
+          "signal": "green",
+          "text": "明確需求"
+        },
+        "actuarial": {
+          "signal": "yellow",
+          "research_status": "partial_evidence"
+        },
+        "regulatory": {
+          "signal": "red",
+          "overall_verdict": "待確認"
+        }
+      },
+      "blocker_counts": {
+        "critical": 1,
+        "blocking": 9,
+        "warning": 2
+      }
+    },
+    {
+      "report_id": "secure-horizon-iul",
+      "name": "Secure Horizon Indexed Universal Life Insurance",
+      "issuer": "North American Company for Life and Health Insurance",
+      "country": "US",
+      "category": "投資型壽險（IUL，指數連結型）",
+      "recommendation": "hold_missing_info",
+      "label": "暫緩，待補資料",
+      "signal_color": "yellow",
+      "generated_date": "2026-10-11",
+      "module_summary": {
+        "market_demand": {
+          "signal": "green",
+          "text": "明確需求"
+        },
+        "actuarial": {
+          "signal": "yellow",
+          "research_status": "partial_evidence"
+        },
+        "regulatory": {
+          "signal": "yellow",
+          "overall_verdict": "待確認"
+        }
+      },
+      "blocker_counts": {
+        "critical": 0,
+        "blocking": 5,
+        "warning": 16
+      }
+    },
+    {
+      "report_id": "singlife-heritage-reserve",
+      "name": "Singlife HeritageReserve",
+      "issuer": "新加坡人壽",
+      "country": "SG",
+      "category": "傳統壽險（終身壽險）",
+      "recommendation": "incomplete_review",
+      "label": "審查未完成",
+      "signal_color": "gray",
+      "generated_date": "2026-10-11",
+      "module_summary": {
+        "market_demand": {
+          "signal": "yellow",
+          "text": "有限需求"
+        },
+        "actuarial": {
+          "signal": "yellow",
+          "research_status": "partial_evidence"
+        },
+        "regulatory": {
+          "signal": "gray",
+          "overall_verdict": null
+        }
+      },
+      "blocker_counts": {
+        "critical": 0,
+        "blocking": 0,
+        "warning": 4
+      }
+    },
+    {
+      "report_id": "surely-life-certua-uk",
+      "name": "Surely Life",
+      "issuer": "Certua Life Limited",
+      "country": "UK",
+      "category": "定期壽險",
+      "recommendation": "hold_missing_info",
+      "label": "暫緩，待補資料",
+      "signal_color": "yellow",
+      "generated_date": "2026-10-11",
+      "module_summary": {
+        "market_demand": {
+          "signal": "green",
+          "text": "明確需求"
+        },
+        "actuarial": {
+          "signal": "green",
+          "research_status": "sufficient_evidence"
+        },
+        "regulatory": {
+          "signal": "yellow",
+          "overall_verdict": "待確認"
+        }
+      },
+      "blocker_counts": {
+        "critical": 0,
+        "blocking": 9,
+        "warning": 3
+      }
+    },
+    {
+      "report_id": "wealth-term-insurance",
+      "name": "Wealth Term Insurance",
+      "issuer": "Dai-ichi Life",
+      "country": "JP",
+      "category": "定期壽險",
+      "recommendation": "not_recommended",
+      "label": "不建議引進",
+      "signal_color": "red",
+      "generated_date": "2026-10-11",
+      "module_summary": {
+        "market_demand": {
+          "signal": "yellow",
+          "text": "有限需求"
+        },
+        "actuarial": {
+          "signal": "yellow",
+          "research_status": "partial_evidence"
+        },
+        "regulatory": {
+          "signal": "red",
+          "overall_verdict": "不可引進"
+        }
+      },
+      "blocker_counts": {
+        "critical": 1,
+        "blocking": 13,
+        "warning": 2
       }
     }
   ]

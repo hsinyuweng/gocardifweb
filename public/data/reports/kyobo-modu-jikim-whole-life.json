@@ -1,0 +1,607 @@
+{
+  "report_meta": {
+    "schema_version": "1.0",
+    "language": "zh-Hant",
+    "generated_date": "2026-10-11",
+    "report_id": "kyobo-modu-jikim-whole-life",
+    "source_files": {
+      "market_demand": {
+        "status": "provided",
+        "file": "kyobo_modu_jikim_whole_life.json",
+        "review_date": "2026-10-11"
+      },
+      "actuarial": {
+        "status": "provided",
+        "file": "Kyobo_Modu_Jikim_Whole_Life_Insurance.json",
+        "review_date": "2026-10-11"
+      },
+      "regulatory": {
+        "status": "provided",
+        "file": "Kyobo_Modu_Jikim_Whole_Life.json",
+        "review_date": "2026-10-10"
+      }
+    }
+  },
+  "product_snapshot": {
+    "name": "Kyobo Modu Jikim Whole Life Insurance",
+    "issuer": "Kyobo Life Insurance（教保人壽）",
+    "country": "KR",
+    "category": "傳統壽險（終身壽險）",
+    "currency": null,
+    "premium_mode": "期繳",
+    "mechanism_summary": "保費繳清後可領回已繳保費作為生活資金，同時維持死亡保障"
+  },
+  "headline": {
+    "recommendation": "hold_missing_info",
+    "label": "暫緩，待補資料",
+    "signal_color": "yellow",
+    "matched_rule": 4,
+    "one_line_summary": "需求有限，法規關鍵資料缺漏，暫無法判定",
+    "reasons": [
+      "regulatory：5 項阻斷性待補（G-AGE-01、G-AGE-02、G-RATE-01、G-GUAR-01、LIFE-01）",
+      "regulatory：2 項黃燈（G-CLS-01、G-CCY-01）、12 項待補"
+    ]
+  },
+  "scorecard": {
+    "market_demand": {
+      "status": "provided",
+      "level": "limited",
+      "label": "有限需求",
+      "confidence": "B",
+      "signal": "yellow"
+    },
+    "actuarial": {
+      "status": "provided",
+      "research_status": "partial_evidence",
+      "comparability": "中度可比",
+      "pricing_flag_count": 2,
+      "signal": "yellow"
+    },
+    "regulatory": {
+      "status": "provided",
+      "overall_verdict": "待確認",
+      "counts": {
+        "red": 0,
+        "yellow": 2,
+        "green": 4,
+        "pending": 12,
+        "not_applicable": 3
+      },
+      "signal": "yellow"
+    }
+  },
+  "sections": {
+    "market_demand": {
+      "summary": "台灣超高齡化下的退休規劃需求明確，本商品「保費返還＋維持身故保障」機制在台無直接競品，但機制複雜且上游資料不完整，需求面判定為有限需求",
+      "market_sizing": {
+        "methodology": "保障缺口法",
+        "target_population": 7291797,
+        "estimate_low": 145800000000,
+        "estimate_mid": 291600000000,
+        "estimate_high": 583200000000,
+        "reported_unit": "新台幣元",
+        "confidence": "B"
+      },
+      "key_points": [
+        {
+          "id": "md-1",
+          "text": "壽險業2025年新契約保費年增19.7%，傳統型壽險年增18.8%",
+          "evidence_scheme": "market_abc",
+          "evidence_level": "A",
+          "source": "壽險公會2025年統計，中央社/UDN Money轉述",
+          "source_ref": "market_demand:market_growth[0..2]"
+        },
+        {
+          "id": "md-2",
+          "text": "目標客群45-64歲2026年729萬人，佔總人口31.44%",
+          "evidence_scheme": "market_abc",
+          "evidence_level": "A",
+          "source": "NDC人口推估",
+          "source_ref": "market_demand:audience"
+        },
+        {
+          "id": "md-3",
+          "text": "台灣無「繳完保費後仍可領取生活費用」雙軌機制商品",
+          "evidence_scheme": "market_abc",
+          "evidence_level": "B",
+          "source": "保司公開商品資訊",
+          "source_ref": "market_demand:competitor_comparison.gap_analysis"
+        },
+        {
+          "id": "md-4",
+          "text": "國人平均死亡給付僅60.3萬元，低於平均年薪73.2萬元",
+          "evidence_scheme": "market_abc",
+          "evidence_level": "A",
+          "source": "壽險公會2023年統計，中央社轉述",
+          "source_ref": "market_demand:consumer_pain_points[0]"
+        },
+        {
+          "id": "md-5",
+          "text": "機制複雜且上游資料不完整，需求面判定為有限需求",
+          "evidence_scheme": "market_abc",
+          "evidence_level": "B",
+          "source": "綜合評估",
+          "source_ref": "market_demand:verdict"
+        }
+      ],
+      "handoffs": {
+        "to_actuarial": "COI費用結構、精算假設（發生率、利率假設）；Kyobo Modu Jikim的保費結構與解約費用率精算驗證；台灣外幣保單匯率風險評估",
+        "to_regulatory": "韓國Kyobo Life Insurance在台灣設立據點或代理業務的法規適用性；外幣保單銷售適配性評估（外幣保險商品管理辦法）；金管會對境外保險商品進口審查規定"
+      },
+      "data_gaps": [
+        "Kyobo Modu Jikim詳細解約費用率、保單管理費、投保年齡限制等精算細節無法從公開來源取得（韓國商品規範PDF非公開）",
+        "台灣市場對韓國外資壽險商品的接受度無量化數據",
+        "Kyobo商品在台灣的定價（保費）無參考基準",
+        "目標客群對「生活費用提取型」終身壽險的需求強度僅有產業一般認識，無直接消費者調查數據",
+        "Kyobo Life Insurance在台灣的營運據點或代理伙伴資訊查無公開資料"
+      ],
+      "tag_update_suggestion": {
+        "new_tags": ["[生活費用提取]"],
+        "reason": "Kyobo Modu Jikim核心機制為「繳完保費後提取生活費用＋維持死亡保障」，此機制在既有標籤庫中無對應（[躉繳/期繳]僅描述繳費方式，[終身/定期]僅描述保障期間）。此標籤能區分純保障型與具備現金流提取功能的終身壽險，建議加入[保障與給付]分類。"
+      }
+    },
+    "actuarial": {
+      "summary": "台灣標準化死亡率連續3年下降，台韓平均餘命差距約2.4歲，死亡率假設需獨立評估；IFRS 17於2026年接軌影響傳統壽險準備金結構。",
+      "key_points": [
+        {
+          "id": "ac-1",
+          "text": "台灣標準化死亡率連續3年下降（2023-2025年下降3.6%），第七回生命表改善約10%",
+          "evidence_scheme": "actuarial_tier",
+          "evidence_level": null,
+          "source": null,
+          "source_ref": "actuarial:incidence_time_series"
+        },
+        {
+          "id": "ac-2",
+          "text": "台灣標準化死亡率395.3/十萬顯著高於韓國294.6/十萬，台韓平均餘命差距約2.4歲",
+          "evidence_scheme": "actuarial_tier",
+          "evidence_level": null,
+          "source": null,
+          "source_ref": "actuarial:comparability_assessment"
+        },
+        {
+          "id": "ac-3",
+          "text": "韓國FSC自2026年8月起允許壽險保戶將最高90%死亡保險金轉換為年金",
+          "evidence_scheme": "actuarial_tier",
+          "evidence_level": null,
+          "source": null,
+          "source_ref": "actuarial:international_precedent[1]"
+        },
+        {
+          "id": "ac-4",
+          "text": "IFRS 17於2026年接軌，傳統壽險準備金與利潤認列受影響",
+          "evidence_scheme": "actuarial_tier",
+          "evidence_level": null,
+          "source": null,
+          "source_ref": "actuarial:economic_regulatory_context"
+        },
+        {
+          "id": "ac-5",
+          "text": "上游風險欄位為'test'非真實風險，研究對齊商品實際死亡風險",
+          "evidence_scheme": "actuarial_tier",
+          "evidence_level": null,
+          "source": null,
+          "source_ref": "actuarial:upstream_confidence_flag"
+        }
+      ],
+      "pricing_flags": [
+        {
+          "topic": "死亡率假設",
+          "direction": "下調空間",
+          "source_count": null
+        },
+        {
+          "topic": "死亡率假設與準備金提列",
+          "direction": "需進一步評估",
+          "source_count": null
+        }
+      ],
+      "evidence_gaps": [
+        "缺台灣本土終身壽險投保年齡分布、理賠經驗與費率調整歷程",
+        "韓國終身壽險完整理賠率與費率調整歷史僅有片段資訊"
+      ]
+    },
+    "regulatory": {
+      "summary": "無紅燈；商品機制描述為test且關鍵合規欄位未提供，5項阻斷性待補、2項黃燈，無法完成紅黃綠判定。",
+      "findings": [
+        {
+          "item_id": "G-CLS-01",
+          "title": "險種歸類與可銷售性",
+          "light": "yellow",
+          "suspected_red": false,
+          "law": "臺灣保險法規對人壽保險（含終身壽險）有明確規範，商品型態可對應",
+          "remedy": "請上游提供真實之商品機制描述（mechanism.summary），確認是否涉及分紅、萬能、投資連結等可能影響分類之設計",
+          "owner": "商品",
+          "source_ref": "regulatory:findings[G-CLS-01]"
+        },
+        {
+          "item_id": "G-AGE-01",
+          "title": "未滿15歲被保險人身故給付",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "保險法第107條：未滿15歲之未成年人為被保險人訂立之人壽保險契約，其死亡給付於被保險人滿15歲之日起發生效力；被保險人滿15歲前死亡者，保險人得加計利息退還所繳保險費，或返還保險金額。死亡給付金額上限為遺產稅喪葬費扣除額之一半。",
+          "remedy": "請上游提供 min_insured_age、minor_death_benefit_type 及身故給付設計內容",
+          "owner": "商品",
+          "source_ref": "regulatory:findings[G-AGE-01]"
+        },
+        {
+          "item_id": "G-AGE-02",
+          "title": "受監護宣告者與其他限制行為能力者",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "保險法第107條適用範圍是否涵蓋受監護宣告者，需當次查證",
+          "remedy": "請上游提供 special_population_rules 或確認商品是否銷售予受監護宣告者",
+          "owner": "商品",
+          "source_ref": "regulatory:findings[G-AGE-02]"
+        },
+        {
+          "item_id": "G-AGE-03",
+          "title": "高齡客群銷售管控",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "保險業招攬及核保理賠辦法第6條、第7條：銷售有解約金之保險商品予65歲以上客戶，應經客戶同意後以錄音或錄影方式保留紀錄，並進行承保前電訪",
+          "remedy": "請上游提供 target_customer_analysis，確認目標客群年齡範圍",
+          "owner": "商品",
+          "source_ref": "regulatory:findings[G-AGE-03]"
+        },
+        {
+          "item_id": "G-DIV-01",
+          "title": "分紅機制",
+          "light": "not_applicable",
+          "suspected_red": false,
+          "law": null,
+          "remedy": null,
+          "owner": null,
+          "source_ref": "regulatory:findings[G-DIV-01]"
+        },
+        {
+          "item_id": "G-RATE-01",
+          "title": "保證利率／預定利率",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "金管會對責任準備金預定利率訂有上限，各幣別上限不同",
+          "remedy": "請上游提供 guaranteed_return_rate 及計價幣別，以利與臺灣對應幣別之責任準備金預定利率上限比較",
+          "owner": "精算",
+          "source_ref": "regulatory:findings[G-RATE-01]"
+        },
+        {
+          "item_id": "G-GUAR-01",
+          "title": "保證給付機制",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "TW-ICS／IFRS 17 資本與準備金規範",
+          "remedy": "請上游提供 guaranteed_benefits_flag 及 guarantee_features 內容",
+          "owner": "精算",
+          "source_ref": "regulatory:findings[G-GUAR-01]"
+        },
+        {
+          "item_id": "G-PAY-01",
+          "title": "躉繳／短年期儲蓄結構",
+          "light": "green",
+          "suspected_red": false,
+          "law": "無特定法規限制期繳終身壽險",
+          "remedy": null,
+          "owner": null,
+          "source_ref": "regulatory:findings[G-PAY-01]"
+        },
+        {
+          "item_id": "G-CCY-01",
+          "title": "外幣計價",
+          "light": "yellow",
+          "suspected_red": false,
+          "law": "人身保險業辦理以外幣收付之非投資型人身保險業務應具備資格條件及注意事項；保險業辦理國外投資管理辦法第15條之2",
+          "remedy": "請上游提供 currency_denomination，並確認：(1) 銷售通路是否具備外幣保單銷售資格；(2) 是否提供匯率風險說明書；(3) 業務員是否具備外幣測驗資格及完成每年1小時匯率風險訓練；(4) 準備金是否符合臺灣外幣保單規範",
+          "owner": "法遵",
+          "source_ref": "regulatory:findings[G-CCY-01]"
+        },
+        {
+          "item_id": "G-TAX-01",
+          "title": "稅務待確認事項",
+          "light": "green",
+          "suspected_red": false,
+          "law": "遺產稅、所得基本稅額條例",
+          "remedy": null,
+          "owner": "稅務",
+          "source_ref": "regulatory:findings[G-TAX-01]"
+        },
+        {
+          "item_id": "G-AML-01",
+          "title": "反洗錢與跨境",
+          "light": "green",
+          "suspected_red": false,
+          "law": "洗錢防制法、保險業防制洗錢及打擊資恐注意事項",
+          "remedy": null,
+          "owner": "風控",
+          "source_ref": "regulatory:findings[G-AML-01]"
+        },
+        {
+          "item_id": "LIFE-01",
+          "title": "保險利益與被保險人書面同意",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "保險法第105條：他人身故保險之被保險人須書面同意",
+          "remedy": "請上游提供要保人與被保險人關係及書面同意規定",
+          "owner": "法遵",
+          "source_ref": "regulatory:findings[LIFE-01]"
+        },
+        {
+          "item_id": "LIFE-02",
+          "title": "核保與道德風險",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "保險業招攬及核保理賠辦法",
+          "remedy": "請上游提供核保機制相關資料",
+          "owner": "風控",
+          "source_ref": "regulatory:findings[LIFE-02]"
+        },
+        {
+          "item_id": "LIFE-03",
+          "title": "契約基本條款",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "保險法、定型化契約應記載與不得記載事項",
+          "remedy": "請上游提供 contract_terms（自殺條款、不可抗辯、猶豫期、保單借款、解約金）",
+          "owner": "法遵",
+          "source_ref": "regulatory:findings[LIFE-03]"
+        },
+        {
+          "item_id": "LIFE-04",
+          "title": "年金生命表",
+          "light": "not_applicable",
+          "suspected_red": false,
+          "law": null,
+          "remedy": null,
+          "owner": null,
+          "source_ref": "regulatory:findings[LIFE-04]"
+        },
+        {
+          "item_id": "LIFE-05",
+          "title": "利變型宣告利率",
+          "light": "not_applicable",
+          "suspected_red": false,
+          "law": null,
+          "remedy": null,
+          "owner": null,
+          "source_ref": "regulatory:findings[LIFE-05]"
+        },
+        {
+          "item_id": "C-01",
+          "title": "目標客群與非目標客群",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "保險商品銷售前程序作業準則",
+          "remedy": "請上游提供 target_customer_analysis",
+          "owner": "商品",
+          "source_ref": "regulatory:findings[C-01]"
+        },
+        {
+          "item_id": "C-02",
+          "title": "誤導風險",
+          "light": "green",
+          "suspected_red": false,
+          "law": "保險業招攬及核保理診辦法、公平待客原則",
+          "remedy": null,
+          "owner": "法遵",
+          "source_ref": "regulatory:findings[C-02]"
+        },
+        {
+          "item_id": "C-03",
+          "title": "資訊揭露格式",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "保險商品銷售前程序作業準則、人身保險商品應記載與不得記載事項",
+          "remedy": "請上游提供資訊揭露文件",
+          "owner": "商品",
+          "source_ref": "regulatory:findings[C-03]"
+        },
+        {
+          "item_id": "C-04",
+          "title": "通路與佣金",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "保險業招攬及核保理診辦法、保險業務員管理規則",
+          "remedy": "請上游提供通路與佣金結構",
+          "owner": "商品",
+          "source_ref": "regulatory:findings[C-04]"
+        },
+        {
+          "item_id": "C-05",
+          "title": "條款中文化與系統可落地性",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "保險商品審查相關規定",
+          "remedy": "請上游提供條款中文化與系統可落地性評估",
+          "owner": "IT",
+          "source_ref": "regulatory:findings[C-05]"
+        }
+      ],
+      "key_laws": [
+        "保險法第107條（未滿15歲被保險人身故給付限制）",
+        "保險業招攬及核保理賠辦法（高齡者銷售管控）",
+        "人身保險業辦理以外幣收付之非投資型人身保險業務應具備資格條件及注意事項",
+        "保險業辦理國外投資管理辦法第15條之2（外幣保單準備金）",
+        "保險法第105條（他人身故保險之書面同意）"
+      ]
+    }
+  },
+  "blockers": [
+    {
+      "id": "bl-reg-G-AGE-01",
+      "module": "regulatory",
+      "title": "未滿15歲被保險人身故給付",
+      "severity": "blocking",
+      "owner": "商品",
+      "action": "請上游提供 min_insured_age、minor_death_benefit_type 及身故給付設計內容"
+    },
+    {
+      "id": "bl-reg-G-AGE-02",
+      "module": "regulatory",
+      "title": "受監護宣告者與其他限制行為能力者",
+      "severity": "blocking",
+      "owner": "商品",
+      "action": "請上游提供 special_population_rules 或確認商品是否銷售予受監護宣告者"
+    },
+    {
+      "id": "bl-reg-G-RATE-01",
+      "module": "regulatory",
+      "title": "保證利率／預定利率",
+      "severity": "blocking",
+      "owner": "精算",
+      "action": "請上游提供 guaranteed_return_rate 及計價幣別"
+    },
+    {
+      "id": "bl-reg-G-GUAR-01",
+      "module": "regulatory",
+      "title": "保證給付機制",
+      "severity": "blocking",
+      "owner": "精算",
+      "action": "請上游提供 guaranteed_benefits_flag 及 guarantee_features 內容"
+    },
+    {
+      "id": "bl-reg-LIFE-01",
+      "module": "regulatory",
+      "title": "保險利益與被保險人書面同意",
+      "severity": "blocking",
+      "owner": "法遵",
+      "action": "請上游提供要保人與被保險人關係及書面同意規定"
+    },
+    {
+      "id": "bl-reg-G-CLS-01",
+      "module": "regulatory",
+      "title": "險種歸類與可銷售性",
+      "severity": "warning",
+      "owner": "商品",
+      "action": "請上游提供真實之商品機制描述（mechanism.summary）"
+    },
+    {
+      "id": "bl-reg-G-CCY-01",
+      "module": "regulatory",
+      "title": "外幣計價",
+      "severity": "warning",
+      "owner": "法遵",
+      "action": "請上游提供 currency_denomination，並確認外幣保單銷售資格與準備金規範"
+    },
+    {
+      "id": "bl-act-1",
+      "module": "actuarial",
+      "title": "缺台灣本土終身壽險投保年齡分布、理賠經驗與費率調整歷程",
+      "severity": "warning",
+      "owner": "精算",
+      "action": "向精算部門取得內部經驗資料"
+    }
+  ],
+  "next_steps": [
+    {
+      "priority": 1,
+      "action": "提供真實之商品機制描述（mechanism.summary）",
+      "owner": "商品",
+      "source_module": "regulatory"
+    },
+    {
+      "priority": 2,
+      "action": "提供 min_insured_age、minor_death_benefit_type 及身故給付設計內容",
+      "owner": "商品",
+      "source_module": "regulatory"
+    },
+    {
+      "priority": 3,
+      "action": "提供 special_population_rules 或確認商品是否銷售予受監護宣告者",
+      "owner": "商品",
+      "source_module": "regulatory"
+    },
+    {
+      "priority": 4,
+      "action": "提供 guaranteed_return_rate 及計價幣別",
+      "owner": "精算",
+      "source_module": "regulatory"
+    },
+    {
+      "priority": 5,
+      "action": "提供 guaranteed_benefits_flag 及 guarantee_features 內容",
+      "owner": "精算",
+      "source_module": "regulatory"
+    },
+    {
+      "priority": 6,
+      "action": "提供要保人與被保險人關係及書面同意規定",
+      "owner": "法遵",
+      "source_module": "regulatory"
+    },
+    {
+      "priority": 7,
+      "action": "提供 currency_denomination 並確認外幣保單銷售資格與準備金規範",
+      "owner": "法遵",
+      "source_module": "regulatory"
+    },
+    {
+      "priority": 8,
+      "action": "提供 contract_terms（自殺條款、不可抗辯、猶豫期、保單借款、解約金）",
+      "owner": "法遵",
+      "source_module": "regulatory"
+    }
+  ],
+  "data_quality": {
+    "conflicts": [],
+    "suspected_input_errors": [
+      "mechanism.summary 值為 'test'，明顯為測試資料，非真實商品機制描述",
+      "上游風險欄位為 'test'，非真實風險名稱（塗模組註明）"
+    ],
+    "evidence_mismatch": [
+      "塗的研究以上游風險欄位 'test' 為核心，但實際商品承保的是死亡風險，兩者非同一件事"
+    ],
+    "missing_fields": [
+      "mechanism.summary（真實商品機制描述）",
+      "currency_denomination",
+      "min_insured_age",
+      "minor_death_benefit_type",
+      "special_population_rules",
+      "target_customer_analysis",
+      "guaranteed_return_rate",
+      "guaranteed_benefits_flag",
+      "guarantee_features",
+      "contract_terms",
+      "underwriting",
+      "disclosure_documents",
+      "sales_channel_and_commission"
+    ],
+    "notes": [
+      "翁 estimate_*_ntd 以新台幣元填入（145800000000 = 1458億），與其他商品可能以億元填入不同，跨商品比較前須先統一單位",
+      "塗：兩則定價提示的來源數量上游僅描述為「各至少2個獨立來源」，未提供逐則數字，故 source_count 為 null",
+      "孫：mechanism.summary 為 'test' 且關鍵合規欄位均未提供，無法完成紅黃綠判定"
+    ]
+  },
+  "legend": {
+    "recommendation": {
+      "go": {"label": "可推進", "color": "green"},
+      "conditional_go": {"label": "有條件推進", "color": "yellow"},
+      "hold_missing_info": {"label": "暫緩，待補資料", "color": "yellow"},
+      "hold_resolve_red_flag": {"label": "暫緩，須先釐清疑似紅燈", "color": "red"},
+      "not_recommended": {"label": "不建議引進", "color": "red"},
+      "incomplete_review": {"label": "審查未完成", "color": "gray"}
+    },
+    "severity": {
+      "critical": {"label": "重大", "color": "red"},
+      "blocking": {"label": "阻斷", "color": "orange"},
+      "warning": {"label": "注意", "color": "yellow"}
+    },
+    "light": {
+      "red": {"label": "紅燈", "color": "red"},
+      "yellow": {"label": "黃燈", "color": "yellow"},
+      "green": {"label": "綠燈", "color": "green"},
+      "pending": {"label": "待補", "color": "gray"},
+      "not_applicable": {"label": "不適用", "color": "gray"}
+    },
+    "module": {
+      "market_demand": {"label": "市場需求（翁）"},
+      "actuarial": {"label": "發生率暨獲利調查（塗）"},
+      "regulatory": {"label": "法規適用（孫）"}
+    },
+    "demand_level": {
+      "strong": {"label": "明確需求", "color": "green"},
+      "limited": {"label": "有限需求", "color": "yellow"},
+      "weak": {"label": "需求不足", "color": "red"},
+      "unclear": {"label": "結論不明", "color": "gray"}
+    }
+  },
+  "disclaimer": "本報告為上游三個模組輸出之整合摘要，非法律意見、非精算意見，亦未重新查證；最終判定須經法遵／法務／精算人員覆核。"
+}

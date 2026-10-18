@@ -19,7 +19,7 @@ function navClass({ isActive }: { isActive: boolean }) {
 /** 左側固定導覽列（第 10.1 節） */
 export function Sidebar({ meta, showRoadmapNav }: SidebarProps) {
   return (
-    <aside className="fixed inset-y-0 left-0 flex w-[232px] flex-col bg-navy-800 text-slate-100">
+    <aside className="fixed inset-y-0 left-0 flex w-[232px] flex-col bg-navy-800 text-slate-100 print:hidden">
       <div className="flex h-14 items-center border-b border-white/10 px-5 text-base font-semibold tracking-wide text-white">
         {zhTW.appName}
       </div>

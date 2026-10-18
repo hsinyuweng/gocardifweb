@@ -10,7 +10,7 @@ interface OwnerFilterProps {
 /** 負責單位篩選（D7） */
 export function OwnerFilter({ options, selected, onChange }: OwnerFilterProps) {
   return (
-    <label className="inline-flex items-center gap-2 text-slate-600">
+    <label className="inline-flex items-center gap-2 text-slate-600 print:hidden">
       {zhTW.report.ownerFilter}
       <select
         value={selected ?? ''}

@@ -1,4 +1,4 @@
-import type { ScorecardViewModel } from '../../types/viewModel';
+import type { ModuleKey, ScorecardViewModel } from '../../types/viewModel';
 import { zhTW } from '../../i18n/zh-TW';
 import { orDash } from '../../lib/format';
 import { SignalLabel } from '../common/SignalLabel';
@@ -35,9 +35,9 @@ function Indicators({ card }: { card: ScorecardViewModel }) {
   }
 }
 
-function ScorecardCard({ card }: { card: ScorecardViewModel }) {
+function ScorecardCard({ card, onShowDetail }: { card: ScorecardViewModel; onShowDetail: () => void }) {
   return (
-    <article className="flex flex-col rounded border border-slate-200 bg-white px-4 py-3">
+    <article className="flex break-inside-avoid flex-col rounded border border-slate-200 bg-white px-4 py-3">
       <header>
         <h2 className="text-base font-semibold text-slate-900">{card.moduleLabel}</h2>
         <p className="text-xs text-slate-500">{zhTW.coreQuestion[card.moduleKey]}</p>
@@ -62,16 +62,29 @@ function ScorecardCard({ card }: { card: ScorecardViewModel }) {
           {t.rawStatus(orDash(card.rawStatus))}
         </p>
       )}
+
+      {/* 推到底部，三欄的連結對齊 */}
+      <div className="mt-auto pt-2 print:hidden">
+        <button type="button" onClick={onShowDetail} className="text-navy-700 hover:text-navy-900 hover:underline">
+          {t.showDetail} →
+        </button>
+      </div>
     </article>
   );
 }
 
+interface ScorecardRowProps {
+  cards: ScorecardViewModel[];
+  /** 點「看詳細內容」：切換 E 區分頁並捲動過去 */
+  onShowDetail: (key: ModuleKey) => void;
+}
+
 /** C 區三面向計分列（第 11.3 節 C）：三欄等寬、高度一致 */
-export function ScorecardRow({ cards }: { cards: ScorecardViewModel[] }) {
+export function ScorecardRow({ cards, onShowDetail }: ScorecardRowProps) {
   return (
     <div className="grid grid-cols-3 gap-4">
       {cards.map((c) => (
-        <ScorecardCard key={c.moduleKey} card={c} />
+        <ScorecardCard key={c.moduleKey} card={c} onShowDetail={() => onShowDetail(c.moduleKey)} />
       ))}
     </div>
   );

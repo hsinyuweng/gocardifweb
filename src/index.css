@@ -16,3 +16,30 @@ html {
 body {
   @apply bg-slate-50 text-slate-800 antialiased;
 }
+
+/* 列印樣式（第 12 節）；隱藏導覽列、按鈕、篩選器等以 print:hidden 標在各元件上 */
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  html {
+    font-size: 11px;
+  }
+
+  body {
+    background: white;
+  }
+
+  /* 保留燈號色點與標籤底色 */
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* 表格列不從中間斷開 */
+  tr {
+    break-inside: avoid;
+  }
+}

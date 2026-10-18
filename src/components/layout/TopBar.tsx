@@ -21,7 +21,7 @@ interface TopBarProps {
 /** 頂部列（第 10.2 節） */
 export function TopBar({ breadcrumb, notices }: TopBarProps) {
   return (
-    <header className="sticky top-0 z-10 flex h-14 items-center justify-between border-b border-slate-200 bg-white px-6">
+    <header className="sticky top-0 z-10 flex h-14 items-center justify-between border-b border-slate-200 bg-white px-6 print:hidden">
       <nav aria-label="breadcrumb" className="flex min-w-0 items-center gap-2 text-slate-500">
         {breadcrumb.map((item, i) => {
           const last = i === breadcrumb.length - 1;

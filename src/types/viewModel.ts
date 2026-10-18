@@ -140,6 +140,81 @@ export interface DataGapViewModel {
   text: string;
 }
 
+// ───────── E 區各面向詳細內容 ─────────
+
+export interface KeyPointViewModel {
+  id: string | null;
+  text: string | null;
+  source: string | null;
+  /** null 時不顯示證據等級標籤（第 9.4 節） */
+  evidenceLevel: string | null;
+}
+
+export interface MarketEstimate {
+  /** 原始數值，用於區間條定位 */
+  value: number | null;
+  /** 已格式化文字（第 9.3 節） */
+  text: string | null;
+}
+
+export interface MarketSizingViewModel {
+  methodology: string | null;
+  /** 已格式化，例如「7,291,797 人」 */
+  targetPopulation: string | null;
+  low: MarketEstimate;
+  mid: MarketEstimate;
+  high: MarketEstimate;
+  confidence: string | null;
+}
+
+export interface PricingFlagViewModel {
+  topic: string | null;
+  direction: string | null;
+  sourceCount: number | null;
+}
+
+export interface FindingViewModel {
+  itemId: string | null;
+  title: string | null;
+  /** light 原值，用於燈號篩選 */
+  lightKey: string | null;
+  light: SignalText;
+  suspectedRed: boolean;
+  law: string | null;
+  remedy: string | null;
+  owner: string | null;
+}
+
+export interface LightFilterOption {
+  key: string;
+  label: string;
+  color: SignalColor;
+  count: number;
+}
+
+export interface ReportDetailsViewModel {
+  market_demand: {
+    moduleLabel: string;
+    summary: string | null;
+    sizing: MarketSizingViewModel;
+    keyPoints: KeyPointViewModel[];
+  };
+  actuarial: {
+    moduleLabel: string;
+    summary: string | null;
+    keyPoints: KeyPointViewModel[];
+    pricingFlags: PricingFlagViewModel[];
+  };
+  regulatory: {
+    moduleLabel: string;
+    summary: string | null;
+    /** legend.light 各值；legend 缺漏時改用 findings 中出現的值 */
+    lightOptions: LightFilterOption[];
+    findings: FindingViewModel[];
+    keyLaws: string[];
+  };
+}
+
 export interface ReportViewModel {
   reportId: string;
   schemaVersionMismatch: boolean;
@@ -157,6 +232,8 @@ export interface ReportViewModel {
   nextSteps: NextStepViewModel[];
   dataQuality: DataQualityViewModel;
   dataGaps: DataGapViewModel[];
+  details: ReportDetailsViewModel;
+  disclaimer: string | null;
 }
 
 export type DataSourceLabel = 'static' | 'api';

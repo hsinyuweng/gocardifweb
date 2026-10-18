@@ -3,7 +3,7 @@
 
 import type { AppConfig } from '../config/appConfig';
 import type { RawReportIndexEntry, ReportIndex } from '../types/reportIndex';
-import { MODULE_KEYS, type ModuleKey, type RawLegend, type Report } from '../types/report';
+import { MODULE_KEYS, type ModuleKey, type RawKeyPoint, type RawLegend, type Report } from '../types/report';
 import type {
   AppMetaViewModel,
   BlockerViewModel,
@@ -13,15 +13,19 @@ import type {
   DecisionSummaryViewModel,
   DistributionSegment,
   FilterOption,
+  FindingViewModel,
+  KeyPointViewModel,
+  LightFilterOption,
   NextStepViewModel,
   OverviewRow,
   OverviewViewModel,
   RecommendationGroup,
+  ReportDetailsViewModel,
   ReportViewModel,
   ScorecardViewModel,
 } from '../types/viewModel';
 import { countryLabel } from '../lib/country';
-import { formatDateTimeTaipei } from '../lib/format';
+import { formatDateTimeTaipei, formatMarketEstimate, formatPopulation } from '../lib/format';
 import { legendColor, legendLabel } from '../lib/legend';
 import { collectOwnerOptions, splitOwners } from '../lib/owner';
 import { researchStatusLabel } from '../lib/researchStatus';
@@ -276,6 +280,89 @@ function normalizeDataGaps(r: Report): DataGapViewModel[] {
   ];
 }
 
+function normalizeKeyPoints(list: RawKeyPoint[] | null | undefined): KeyPointViewModel[] {
+  // 不同 evidence_scheme 不得一起排序或比較（第 9.4 節）：保持原順序
+  return objList(list).map((k) => ({
+    id: str(k.id),
+    text: str(k.text),
+    source: str(k.source),
+    evidenceLevel: str(k.evidence_level),
+  }));
+}
+
+function normalizeDetails(r: Report): ReportDetailsViewModel {
+  const legend = r.legend;
+  const md = r.sections?.market_demand;
+  const ac = r.sections?.actuarial;
+  const rg = r.sections?.regulatory;
+  const ms = md?.market_sizing;
+  const unit = str(ms?.reported_unit);
+  const estimate = (v: unknown) => {
+    const value = num(v);
+    return { value, text: formatMarketEstimate(value, unit) };
+  };
+
+  const findings: FindingViewModel[] = objList(rg?.findings).map((f) => {
+    const lightKey = str(f.light);
+    return {
+      itemId: str(f.item_id),
+      title: str(f.title),
+      lightKey,
+      light: { color: legendColor(legend, 'light', lightKey), text: legendLabel(legend, 'light', lightKey) },
+      suspectedRed: f.suspected_red === true,
+      law: str(f.law),
+      remedy: str(f.remedy),
+      owner: str(f.owner),
+    };
+  });
+
+  // 燈號篩選選項：legend.light 各值；legend 缺漏時改用 findings 中出現的值
+  const legendLights = legend?.light ? Object.keys(legend.light) : [];
+  const lightKeys =
+    legendLights.length > 0
+      ? legendLights
+      : [...new Set(findings.map((f) => f.lightKey).filter((k): k is string => k !== null))];
+  const lightOptions: LightFilterOption[] = lightKeys.map((key) => ({
+    key,
+    label: legendLabel(legend, 'light', key) ?? key,
+    color: legendColor(legend, 'light', key),
+    count: findings.filter((f) => f.lightKey === key).length,
+  }));
+
+  return {
+    market_demand: {
+      moduleLabel: moduleLabel(legend, 'market_demand'),
+      summary: str(md?.summary),
+      sizing: {
+        methodology: str(ms?.methodology),
+        targetPopulation: formatPopulation(num(ms?.target_population)),
+        low: estimate(ms?.estimate_low),
+        mid: estimate(ms?.estimate_mid),
+        high: estimate(ms?.estimate_high),
+        confidence: str(ms?.confidence),
+      },
+      keyPoints: normalizeKeyPoints(md?.key_points),
+    },
+    actuarial: {
+      moduleLabel: moduleLabel(legend, 'actuarial'),
+      summary: str(ac?.summary),
+      keyPoints: normalizeKeyPoints(ac?.key_points),
+      pricingFlags: objList(ac?.pricing_flags).map((p) => ({
+        topic: str(p.topic),
+        direction: str(p.direction),
+        sourceCount: num(p.source_count),
+      })),
+    },
+    regulatory: {
+      moduleLabel: moduleLabel(legend, 'regulatory'),
+      summary: str(rg?.summary),
+      lightOptions,
+      findings,
+      keyLaws: strList(rg?.key_laws),
+    },
+  };
+}
+
 export function normalizeReport(r: Report): ReportViewModel {
   const sources = r.report_meta.source_files;
   const blockers = normalizeBlockers(r);
@@ -292,6 +379,8 @@ export function normalizeReport(r: Report): ReportViewModel {
     nextSteps,
     dataQuality: normalizeDataQuality(r),
     dataGaps: normalizeDataGaps(r),
+    details: normalizeDetails(r),
+    disclaimer: str(r.disclaimer),
   };
 }
 

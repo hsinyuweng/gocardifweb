@@ -10,7 +10,7 @@ export function DecisionSummary({ summary: s }: { summary: DecisionSummaryViewMo
   const meta = [s.issuer, s.countryLabel, s.category, s.currency, s.premiumMode].map(orDash).join(' · ');
 
   return (
-    <section className="rounded border border-slate-200 bg-white px-5 py-4">
+    <section className="break-inside-avoid rounded border border-slate-200 bg-white px-5 py-4">
       <div className="flex items-start justify-between gap-6">
         <div className="min-w-0">
           <h1 className="text-2xl font-semibold text-slate-900">{orDash(s.name)}</h1>
@@ -20,7 +20,7 @@ export function DecisionSummary({ summary: s }: { summary: DecisionSummaryViewMo
           <button
             type="button"
             onClick={() => window.print()}
-            className="h-8 rounded border border-slate-300 bg-white px-3 text-slate-700 hover:border-navy-600 hover:text-navy-800"
+            className="h-8 rounded border border-slate-300 bg-white px-3 text-slate-700 hover:border-navy-600 hover:text-navy-800 print:hidden"
           >
             {t.print}
           </button>

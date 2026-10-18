@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react';
-import type { ReportViewModel } from '../../types/viewModel';
+import { useRef, useState, type ReactNode } from 'react';
+import type { ModuleKey, ReportViewModel } from '../../types/viewModel';
 import { zhTW } from '../../i18n/zh-TW';
 import { matchesOwner } from '../../lib/owner';
 import { FlowBar } from './FlowBar';
@@ -10,6 +10,8 @@ import { BlockersTable } from './BlockersTable';
 import { NextStepsList } from './NextStepsList';
 import { DataQualityPanel } from './DataQualityPanel';
 import { DataGapsPanel } from './DataGapsPanel';
+import { DetailTabs } from './DetailTabs';
+import { ReportFooter } from './ReportFooter';
 
 const t = zhTW.report;
 
@@ -20,11 +22,22 @@ interface ReportViewProps {
   onOwnerChange: (owner: string | null) => void;
 }
 
-function Panel({ title, action, children }: { title: string; action?: ReactNode; children: ReactNode }) {
+interface PanelProps {
+  title: string;
+  action?: ReactNode;
+  /** 只在列印時顯示於標題旁（例如目前的篩選條件） */
+  printNote?: string | null;
+  children: ReactNode;
+}
+
+function Panel({ title, action, printNote, children }: PanelProps) {
   return (
-    <section className="rounded border border-slate-200 bg-white">
+    <section className="break-inside-avoid rounded border border-slate-200 bg-white">
       <header className="flex min-h-11 items-center justify-between gap-3 border-b border-slate-100 px-4 py-2">
-        <h2 className="text-base font-semibold text-slate-900">{title}</h2>
+        <h2 className="text-base font-semibold text-slate-900">
+          {title}
+          {printNote ? <span className="ml-3 hidden text-xs font-normal text-slate-600 print:inline">{printNote}</span> : null}
+        </h2>
         {action}
       </header>
       <div className="px-4 py-3">{children}</div>
@@ -39,25 +52,35 @@ function emptyText(total: number) {
 
 /** 報告頁內容（第 11.3 節）：只接收 ViewModel */
 export function ReportView({ vm, owner, onOwnerChange }: ReportViewProps) {
+  const [activeTab, setActiveTab] = useState<ModuleKey>('market_demand');
+  const detailsRef = useRef<HTMLElement>(null);
+
   const blockers = vm.blockers.filter((b) => matchesOwner(b.owners, owner));
   const nextSteps = vm.nextSteps.filter((s) => matchesOwner(s.owners, owner));
+  const ownerNote = owner !== null ? t.printOwnerNote(owner) : null;
+
+  const showDetail = (key: ModuleKey) => {
+    setActiveTab(key);
+    detailsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   return (
     <div className="space-y-4">
       <FlowBar provided={vm.analysisProvided} total={vm.analysisTotal} />
       <DecisionSummary summary={vm.summary} />
-      <ScorecardRow cards={vm.moduleCards} />
+      <ScorecardRow cards={vm.moduleCards} onShowDetail={showDetail} />
 
       {/* D 區：1280px 以上主欄 2/3、側欄 1/3 */}
       <div className="grid gap-4 xl:grid-cols-3">
         <div className="space-y-4 xl:col-span-2">
           <Panel
             title={t.blockersTitle}
+            printNote={ownerNote}
             action={<OwnerFilter options={vm.ownerOptions} selected={owner} onChange={onOwnerChange} />}
           >
             {blockers.length > 0 ? <BlockersTable blockers={blockers} /> : emptyText(vm.blockers.length)}
           </Panel>
-          <Panel title={t.nextStepsTitle}>
+          <Panel title={t.nextStepsTitle} printNote={ownerNote}>
             {nextSteps.length > 0 ? <NextStepsList steps={nextSteps} /> : emptyText(vm.nextSteps.length)}
           </Panel>
         </div>
@@ -70,6 +93,9 @@ export function ReportView({ vm, owner, onOwnerChange }: ReportViewProps) {
           </Panel>
         </div>
       </div>
+
+      <DetailTabs ref={detailsRef} details={vm.details} active={activeTab} onChange={setActiveTab} />
+      <ReportFooter disclaimer={vm.disclaimer} />
     </div>
   );
 }
