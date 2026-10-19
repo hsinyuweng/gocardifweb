@@ -12,6 +12,7 @@ import { DataQualityPanel } from './DataQualityPanel';
 import { DataGapsPanel } from './DataGapsPanel';
 import { DetailTabs } from './DetailTabs';
 import { ReportFooter } from './ReportFooter';
+import { WatchlistButton, type WatchlistControl } from './WatchlistButton';
 
 const t = zhTW.report;
 
@@ -20,6 +21,7 @@ interface ReportViewProps {
   /** 負責單位篩選；null 表示「全部」 */
   owner: string | null;
   onOwnerChange: (owner: string | null) => void;
+  watchlist: WatchlistControl;
 }
 
 interface PanelProps {
@@ -51,7 +53,7 @@ function emptyText(total: number) {
 }
 
 /** 報告頁內容（第 11.3 節）：只接收 ViewModel */
-export function ReportView({ vm, owner, onOwnerChange }: ReportViewProps) {
+export function ReportView({ vm, owner, onOwnerChange, watchlist }: ReportViewProps) {
   const [activeTab, setActiveTab] = useState<ModuleKey>('market_demand');
   const detailsRef = useRef<HTMLElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
@@ -105,6 +107,7 @@ export function ReportView({ vm, owner, onOwnerChange }: ReportViewProps) {
         onChange={setActiveTab}
         onBackToCards={() => cardsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
       />
+      <WatchlistButton {...watchlist} />
       <ReportFooter disclaimer={vm.disclaimer} />
     </div>
   );

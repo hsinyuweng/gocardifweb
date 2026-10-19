@@ -9,6 +9,7 @@ import { zhTW } from '../i18n/zh-TW';
 import { orDash } from '../lib/format';
 import { readOwnerPreference, subscribeOwnerPreference } from '../lib/ownerPreference';
 import { markReviewed } from '../lib/reviewed';
+import { addToWatchlist, readWatchlist, removeFromWatchlist, subscribeWatchlist } from '../lib/watchlist';
 import {
   OWNER_PARAM,
   ownerParamValue,
@@ -31,6 +32,7 @@ export function ReportPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
   const myUnit = useSyncExternalStore(subscribeOwnerPreference, readOwnerPreference);
+  const watchlist = useSyncExternalStore(subscribeWatchlist, readWatchlist);
 
   useEffect(() => {
     let alive = true;
@@ -57,13 +59,15 @@ export function ReportPage() {
     markReviewed(reportId, row ? row.generatedDate : vm.summary.generatedDate);
   }, [vm, indexState, reportId]);
 
-  // 從我的待辦、市場總覽進來時麵包屑回到該頁；從競品研究進來時回到原本的篩選狀態
+  // 從我的待辦、市場總覽進來時麵包屑回到該頁；從追蹤清單、競品研究進來時連來源頁的狀態一起帶回
   const from = readFromPath(location.state);
   const parent = from?.startsWith('/tasks')
     ? { label: zhTW.nav.tasks, to: from }
     : from === '/'
       ? { label: zhTW.nav.home, to: '/' }
-      : { label: zhTW.nav.overview, to: from ?? '/research', state: readFromState(location.state) };
+      : from?.startsWith('/watchlist')
+        ? { label: zhTW.nav.watchlist, to: from, state: readFromState(location.state) }
+        : { label: zhTW.nav.overview, to: from ?? '/research', state: readFromState(location.state) };
   useBreadcrumb([parent, { label: vm ? orDash(vm.summary.name) : reportId }]);
   usePageNotices(vm?.schemaVersionMismatch ? [{ tone: 'warning', text: zhTW.schemaMismatch }] : []);
 
@@ -100,5 +104,21 @@ export function ReportPage() {
     const { message, detail } = errorText(state.error, zhTW.errors.notFoundReport);
     return <StatusMessage tone="error" message={message} detail={detail} />;
   }
-  return <ReportView vm={state.vm} owner={owner} onOwnerChange={setOwnerParam} />;
+  return (
+    <ReportView
+      vm={state.vm}
+      owner={owner}
+      onOwnerChange={setOwnerParam}
+      watchlist={{
+        added: watchlist.includes(reportId),
+        onAdd: () => addToWatchlist(reportId),
+        onRemove: () => removeFromWatchlist(reportId),
+        listLinkState: {
+          from: location.pathname + location.search,
+          fromState: location.state,
+          fromLabel: orDash(state.vm.summary.name),
+        },
+      }}
+    />
+  );
 }

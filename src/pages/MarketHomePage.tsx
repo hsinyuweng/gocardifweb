@@ -1,6 +1,6 @@
 import { useMemo, useSyncExternalStore, type ReactNode } from 'react';
 import { HomeCard, PendingContent, type HomeCardIcon } from '../components/home/HomeCard';
-import { WatchlistCard } from '../components/home/WatchlistCard';
+import { WatchlistCardContent } from '../components/home/WatchlistCard';
 import { NewsList } from '../components/home/NewsList';
 import { PulseList } from '../components/home/PulseList';
 import { ResearchList } from '../components/home/ResearchList';
@@ -9,7 +9,9 @@ import { DataSourceError, normalizeReportIndex } from '../data';
 import { zhTW } from '../i18n/zh-TW';
 import { orDash } from '../lib/format';
 import { isUnreviewed, readReviewed, subscribeReviewed } from '../lib/reviewed';
-import { addWatchItem, matchWatchItem, readWatchlist, removeWatchItem, subscribeWatchlist } from '../lib/watchlist';
+import { buildCandidates } from '../lib/score';
+import { readWatchlist, subscribeWatchlist } from '../lib/watchlist';
+import { readWeights, subscribeWeights } from '../lib/weights';
 import { errorText, useBreadcrumb, useFeed, useIndexState, useMarketPulse } from './pageChrome';
 import type { LoadState } from './useOnDemand';
 
@@ -40,7 +42,7 @@ function Card({ icon, title, children }: { icon: HomeCardIcon; title: string; ch
 
 /**
  * 市場總覽（首頁，2026-10-20 新規劃，規格 D1）。
- * 新聞與法規監控讀動態清單；市場脈動讀市場指標；追蹤清單用報告清單（＋動態日期）；競品研究列未審閱報告。
+ * 新聞與法規監控讀動態清單；市場脈動讀市場指標；追蹤清單、競品研究用報告清單。
  */
 export function MarketHomePage() {
   useBreadcrumb([{ label: zhTW.nav.home }]);
@@ -48,6 +50,7 @@ export function MarketHomePage() {
   const feedState = useFeed();
   const pulseState = useMarketPulse();
   const watchlist = useSyncExternalStore(subscribeWatchlist, readWatchlist);
+  const weights = useSyncExternalStore(subscribeWeights, readWeights);
   const reviewed = useSyncExternalStore(subscribeReviewed, readReviewed);
 
   const vm = useMemo(
@@ -62,45 +65,23 @@ export function MarketHomePage() {
         .sort((a, b) => (b.generatedDate ?? '').localeCompare(a.generatedDate ?? '')),
     [vm, reviewed],
   );
-  const feedItems = useMemo(() => (feedState.status === 'ok' ? feedState.data.items : []), [feedState]);
-  const watchItems = useMemo(
-    () => watchlist.map((item) => ({ item, match: matchWatchItem(item, vm?.rows ?? [], feedItems) })),
-    [watchlist, vm, feedItems],
-  );
+  const candidates = useMemo(() => buildCandidates(watchlist, vm?.rows ?? [], weights), [watchlist, vm, weights]);
 
-  let watchCard;
-  if (indexState.status === 'loading') {
-    watchCard = (
-      <Card icon="watchlist" title={t.cards.watchlist}>
-        <p className="text-slate-500">{zhTW.common.loading}</p>
-      </Card>
-    );
-  } else if (indexState.status === 'error') {
-    const { message, detail } = errorText(indexState.error, zhTW.errors.notFoundIndex);
-    watchCard = (
-      <Card icon="watchlist" title={t.cards.watchlist}>
-        <StatusMessage tone="error" message={message} detail={detail} />
-      </Card>
-    );
-  } else {
-    watchCard = (
-      <WatchlistCard
-        items={watchItems}
-        categoryOptions={vm?.categoryOptions ?? []}
-        countryOptions={vm?.countryOptions ?? []}
-        onAdd={addWatchItem}
-        onRemove={removeWatchItem}
-      />
-    );
-  }
-
-  let researchBody;
-  if (indexState.status === 'loading') researchBody = <p className="text-slate-500">{zhTW.common.loading}</p>;
+  // 追蹤清單、競品研究都靠報告清單：載入中與錯誤時顯示相同訊息
+  let indexPending: ReactNode = null;
+  if (indexState.status === 'loading') indexPending = <p className="text-slate-500">{zhTW.common.loading}</p>;
   else if (indexState.status === 'error') {
     const { message, detail } = errorText(indexState.error, zhTW.errors.notFoundIndex);
-    researchBody = <StatusMessage tone="error" message={message} detail={detail} />;
-  } else if (vm && vm.rows.length === 0) researchBody = <p className="text-slate-500">{zhTW.overview.empty}</p>;
-  else researchBody = <ResearchList rows={unreviewedRows} />;
+    indexPending = <StatusMessage tone="error" message={message} detail={detail} />;
+  }
+  const watchBody = indexPending ?? <WatchlistCardContent ranked={candidates.ranked} />;
+  const researchBody =
+    indexPending ??
+    (vm && vm.rows.length === 0 ? (
+      <p className="text-slate-500">{zhTW.overview.empty}</p>
+    ) : (
+      <ResearchList rows={unreviewedRows} />
+    ));
 
   return (
     <div className="space-y-4">
@@ -122,7 +103,11 @@ export function MarketHomePage() {
             ))}
           </Card>
         </div>
-        <div className="order-2 min-w-0 lg:order-3">{watchCard}</div>
+        <div className="order-2 min-w-0 lg:order-3">
+          <Card icon="watchlist" title={t.cards.watchlist}>
+            {watchBody}
+          </Card>
+        </div>
         <div className="order-1 min-w-0 lg:order-4">
           <Card icon="research" title={t.cards.research}>
             {researchBody}

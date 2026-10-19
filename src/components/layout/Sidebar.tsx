@@ -118,6 +118,11 @@ export function Sidebar({ meta, showRoadmapNav, myUnit, mobileOpen, onClose }: S
             </NavLink>
           </li>
           <li>
+            <NavLink to="/watchlist" className={navClass}>
+              {t.watchlist}
+            </NavLink>
+          </li>
+          <li>
             <NavLink to="/research" className={navClass}>
               {t.overview}
             </NavLink>

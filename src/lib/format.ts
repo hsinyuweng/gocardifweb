@@ -76,16 +76,6 @@ export function daysAgo(date: string, now: Date = new Date()): number | null {
   return Math.max(0, Math.round((today - d) / 86_400_000));
 }
 
-/** 追蹤清單的更新時間：今天／昨天／N 天前；超過 30 天或無法解析時顯示日期 */
-export function updatedText(date: string, now: Date = new Date()): string {
-  const t = zhTW.watchlist;
-  const n = daysAgo(date, now);
-  if (n === null || n > 30) return t.updatedOn(date);
-  if (n === 0) return t.updatedToday;
-  if (n === 1) return t.updatedYesterday;
-  return t.updatedDaysAgo(n);
-}
-
 /**
  * 動態的相對時間：有時間的顯示「N 分鐘前」「N 小時前」，超過一天或只有日期的顯示「今天」「昨天」「N 天前」；
  * 超過 30 天顯示日期；無法解析時顯示原文。未來的時間視為剛發布。
