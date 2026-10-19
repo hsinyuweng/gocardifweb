@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import { createPortal } from 'react-dom';
 import { useLocation, useParams, useSearchParams } from 'react-router';
 import { StatusMessage } from '../components/common/StatusMessage';
 import { ReportView } from '../components/report/ReportView';
+import { WatchlistButton } from '../components/report/WatchlistButton';
 import { useConfig } from '../config/ConfigContext';
 import { getDataSource, normalizeReport, normalizeReportIndex } from '../data';
 import type { ReportViewModel } from '../types/viewModel';
@@ -17,7 +19,7 @@ import {
   readFromState,
   requestedOwner as resolveOwner,
 } from '../lib/ownerParam';
-import { errorText, useBreadcrumb, useIndexState, usePageNotices } from './pageChrome';
+import { errorText, useBreadcrumb, useIndexState, usePageActionSlot, usePageNotices } from './pageChrome';
 
 type ReportState =
   | { status: 'loading' }
@@ -33,6 +35,7 @@ export function ReportPage() {
   const location = useLocation();
   const myUnit = useSyncExternalStore(subscribeOwnerPreference, readOwnerPreference);
   const watchlist = useSyncExternalStore(subscribeWatchlist, readWatchlist);
+  const actionSlot = usePageActionSlot();
 
   useEffect(() => {
     let alive = true;
@@ -67,7 +70,9 @@ export function ReportPage() {
       ? { label: zhTW.nav.home, to: '/' }
       : from?.startsWith('/watchlist')
         ? { label: zhTW.nav.watchlist, to: from, state: readFromState(location.state) }
-        : { label: zhTW.nav.overview, to: from ?? '/research', state: readFromState(location.state) };
+        : from?.startsWith('/news')
+          ? { label: zhTW.nav.news, to: from, state: readFromState(location.state) }
+          : { label: zhTW.nav.overview, to: from ?? '/research', state: readFromState(location.state) };
   useBreadcrumb([parent, { label: vm ? orDash(vm.summary.name) : reportId }]);
   usePageNotices(vm?.schemaVersionMismatch ? [{ tone: 'warning', text: zhTW.schemaMismatch }] : []);
 
@@ -105,20 +110,23 @@ export function ReportPage() {
     return <StatusMessage tone="error" message={message} detail={detail} />;
   }
   return (
-    <ReportView
-      vm={state.vm}
-      owner={owner}
-      onOwnerChange={setOwnerParam}
-      watchlist={{
-        added: watchlist.includes(reportId),
-        onAdd: () => addToWatchlist(reportId),
-        onRemove: () => removeFromWatchlist(reportId),
-        listLinkState: {
-          from: location.pathname + location.search,
-          fromState: location.state,
-          fromLabel: orDash(state.vm.summary.name),
-        },
-      }}
-    />
+    <>
+      {actionSlot
+        ? createPortal(
+            <WatchlistButton
+              added={watchlist.includes(reportId)}
+              onAdd={() => addToWatchlist(reportId)}
+              onRemove={() => removeFromWatchlist(reportId)}
+              listLinkState={{
+                from: location.pathname + location.search,
+                fromState: location.state,
+                fromLabel: orDash(state.vm.summary.name),
+              }}
+            />,
+            actionSlot,
+          )
+        : null}
+      <ReportView vm={state.vm} owner={owner} onOwnerChange={setOwnerParam} />
+    </>
   );
 }

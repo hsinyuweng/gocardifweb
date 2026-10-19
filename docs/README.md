@@ -5,13 +5,13 @@
 ## 1. 現況
 
 - 網站：https://hsinyuweng.github.io/gocardifweb/（repo `hsinyuweng/gocardifweb`，`main` push 後自動部署）
-- 頁面：首頁「市場總覽」四區塊、追蹤清單 `#/watchlist`、競品研究 `#/research`、報告頁、我的待辦、使用說明（見 `architecture/overview.md`）
-- 2026-10-20 新規劃：階段 1（導覽與競品研究）、階段 2（追蹤清單候選商品＋權重）已完成
+- 頁面：首頁「市場總覽」四區塊、新聞與法規監控 `#/news`、追蹤清單 `#/watchlist`、競品研究 `#/research`、報告頁、我的待辦、使用說明（見 `architecture/overview.md`）
+- 2026-10-20 新規劃：階段 1（導覽與競品研究）、2（追蹤清單）、3（新聞與法規監控；加入追蹤按鈕移到固定頂部列）已完成
 - 市場資料（`feed.json`、`market-pulse.json`）後端尚未提供：線上顯示「資料準備中」，本機 mock-api 用 `examples/` 示意資料
 
 ## 2. 下一步
 
-依使用者 2026-10-20 新規劃（`architecture/diagrams/2026-10-20_網頁規劃說明.md`）改版。剩餘階段在 `backlog/roadmap.md`。**下一步：階段 3「新聞與法規監控」**，先列介面文字表等使用者「確認」。
+依使用者 2026-10-20 新規劃（`architecture/diagrams/2026-10-20_網頁規劃說明.md`）改版。剩餘階段在 `backlog/roadmap.md`。**下一步：階段 4「市場脈動」**，先列介面文字表等使用者「確認」。
 
 ## 3. 改動前：依範圍讀
 

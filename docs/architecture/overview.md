@@ -7,6 +7,7 @@
 | 路徑 | 頁面 | 檔案 |
 |---|---|---|
 | `#/` | 市場總覽：四區塊（新聞與法規監控、市場脈動、追蹤清單、競品研究） | `pages/MarketHomePage.tsx` |
+| `#/news` | 新聞與法規監控：頁籤、影響篩選寫進網址（`tab`、`affects`） | `pages/NewsPage.tsx` |
 | `#/watchlist` | 追蹤清單：權重滑桿、綜合分數排序 | `pages/WatchlistPage.tsx` |
 | `#/research` | 競品研究：全部報告，篩選與排序寫進網址（`q`、`country`、`category`、`rec`、`unread`、`sort`、`dir`） | `pages/OverviewPage.tsx` |
 | `#/cases` | 舊網址，replace 轉到 `#/research`（保留查詢字串） | `main.tsx` |
@@ -19,8 +20,9 @@
 
 ## 2. 導覽列（Sidebar）
 
-- 可點擊的項目依序為：市場總覽、追蹤清單、競品研究、我的待辦、使用說明。
-- 規劃中（灰色、不可點）：新聞與法規監控、市場脈動、跨部門審查。
+- 可點擊的項目依序為：市場總覽、新聞與法規監控、追蹤清單、競品研究、我的待辦、使用說明。
+- 規劃中（灰色、不可點）：市場脈動、跨部門審查。
+- 頂部列右側：狀態提示；報告頁的「加入追蹤清單」（頁面以 portal 放入動作區）。
 - 底部：我的單位（設定／更改）、資料更新時間、資料來源（離線資料／後端連線）。
 
 ## 3. 頁面之間的連結與返回路徑
@@ -30,8 +32,10 @@
         ─ 競品研究「看全部 →」▶ 競品研究?unread=1               麵包屑「市場總覽 / 競品研究」
         ─ 追蹤清單一則 ───────▶ 報告頁                          麵包屑「市場總覽 / 商品」
         ─ 追蹤清單「看全部 →」▶ 追蹤清單                        麵包屑「市場總覽 / 追蹤清單」
+        ─ 新聞「看全部 →」───▶ 新聞與法規監控                  麵包屑「市場總覽 / 新聞與法規監控」
         ─ 新聞標題 ───────────▶ 外部原文（新分頁）
 競品研究 ─ 點一列 ───────────▶ 報告頁                          麵包屑「競品研究 / 商品」，回到原篩選
+新聞頁 ─ 受影響商品 ─────────▶ 報告頁                          麵包屑「新聞與法規監控 / 商品」，回到原頁籤
 追蹤清單 ─ 商品名稱 ─────────▶ 報告頁                          麵包屑「追蹤清單 / 商品」，權重不變
 報告頁 ─ 看追蹤清單 → ───────▶ 追蹤清單                        麵包屑「商品 / 追蹤清單」
 我的待辦 ─ 看報告 → ─────────▶ 報告頁（帶 ?owner=）             麵包屑「我的待辦 / 商品」
@@ -48,7 +52,7 @@ public/config.json ─ loadConfig ─▶ ConfigContext
 pages/RootLayout ─ getDataSource(config) ─▶ Static / Api / Fallback(Api→Static) / ConfigError
   ├─ listReports（一次）─▶ normalizeAppMeta ─▶ AppShell（Sidebar、TopBar）
   ├─ allReports（需要時才讀）─▶ 我的待辦、我的單位選項
-  ├─ feed（需要時才讀）──────▶ 市場總覽（新聞與法規監控）
+  ├─ feed（需要時才讀）──────▶ 市場總覽、新聞與法規監控
   └─ marketPulse（需要時才讀）▶ 市場總覽（市場脈動）
 （以上經 Outlet context 傳出：useIndexState、useAllReports、useFeed、useMarketPulse）
 pages/* ─ normalize* ─▶ ViewModel ─▶ components/*
@@ -80,6 +84,7 @@ src/
 │   ├── layout/              AppShell、Sidebar、TopBar
 │   ├── common/              SignalLabel、StatusMessage
 │   ├── charts/              MarketSizingBar、RegulatoryDistributionBar、Sparkline（純 CSS／SVG，不用套件）
+│   ├── news/                新聞與法規監控（標籤、每則）
 │   ├── home/                市場總覽卡片
 │   ├── overview/            競品研究頁（原案件總覽）
 │   ├── report/              報告頁 A–F 區

@@ -22,10 +22,12 @@ interface TopBarProps {
   /** 1024px 以下的選單按鈕 */
   menuOpen: boolean;
   onMenuClick: () => void;
+  /** 頁面動作區（頁面以 portal 放入內容） */
+  actionSlotRef: (el: HTMLDivElement | null) => void;
 }
 
 /** 頂部列（第 10.2 節） */
-export function TopBar({ breadcrumb, notices, menuOpen, onMenuClick }: TopBarProps) {
+export function TopBar({ breadcrumb, notices, menuOpen, onMenuClick, actionSlotRef }: TopBarProps) {
   return (
     <header className="sticky top-0 z-20 flex h-14 items-center justify-between gap-3 border-b border-slate-200 bg-white px-6 print:hidden">
       <button
@@ -72,6 +74,8 @@ export function TopBar({ breadcrumb, notices, menuOpen, onMenuClick }: TopBarPro
           ))}
         </div>
       ) : null}
+      {/* 頁面動作區（2026-10-20 經確認，修改第 10.2 節）：報告頁的加入追蹤清單 */}
+      <div ref={actionSlotRef} className="flex shrink-0 items-center empty:hidden" />
     </header>
   );
 }

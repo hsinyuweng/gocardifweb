@@ -1,12 +1,31 @@
 import type { Feed, RawFeedItem } from '../types/feed';
 import type { MarketPulse, RawPulseMetric } from '../types/marketPulse';
-import type { FeedItemViewModel, FeedViewModel, MarketPulseViewModel, PulseMetricViewModel } from '../types/viewModel';
+import type {
+  FeedDomain,
+  FeedItemViewModel,
+  FeedViewModel,
+  MarketPulseViewModel,
+  PulseMetricViewModel,
+} from '../types/viewModel';
 import { formatDateTimeTaipei } from '../lib/format';
 import { num, objList, str, strList } from './normalize';
 
 // 動態清單與市場脈動的原始欄位只在這裡讀取（正式格式未定版，改格式時改這裡）
 
 const DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/;
+
+const DOMAINS: readonly FeedDomain[] = ['product_channel', 'market_macro', 'regulation', 'claims_consumer', 'customer_brand'];
+
+function feedKind(item: RawFeedItem): 'news' | 'regulation' {
+  const kind = str(item.kind);
+  if (kind === 'news' || kind === 'regulation') return kind;
+  return str(item.category) === 'regulation' ? 'regulation' : 'news';
+}
+
+function feedDomain(v: unknown): FeedDomain | null {
+  const s = str(v);
+  return DOMAINS.includes(s as FeedDomain) ? (s as FeedDomain) : null;
+}
 
 /** 只有日期時視為台北時間當天 0 點 */
 function parsePublished(v: string | null): { time: number | null; dateOnly: boolean } {
@@ -26,7 +45,8 @@ function normalizeFeedItem(item: RawFeedItem, i: number): FeedItemViewModel {
   const { time, dateOnly } = parsePublished(publishedAt);
   return {
     id: str(item.id) ?? `feed-${i}`,
-    category: str(item.category),
+    kind: feedKind(item),
+    domain: feedDomain(item.domain),
     title: str(item.title),
     summary: str(item.summary),
     source: str(item.source),

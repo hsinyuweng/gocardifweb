@@ -14,12 +14,13 @@ export const zhTW = {
   nav: {
     home: '市場總覽',
     overview: '競品研究',
+    news: '新聞與法規監控',
     watchlist: '追蹤清單',
     tasks: '我的待辦',
     guide: '使用說明',
     roadmapGroup: '規劃中',
-    // 2026-10-20 新規劃：前兩項的頁面完成後改為可點擊
-    roadmapItems: ['新聞與法規監控', '市場脈動', '跨部門審查'],
+    // 2026-10-20 新規劃：市場脈動的頁面完成後改為可點擊
+    roadmapItems: ['市場脈動', '跨部門審查'],
     dataUpdated: '資料更新：',
     dataSource: '資料來源：',
     dataSourceStatic: '離線資料',
@@ -55,7 +56,7 @@ export const zhTW = {
     whatBody: '彙整國外保險商品在台灣的市場需求、發生率暨獲利、法規適用三面向分析結果，並提供統整建議。',
     homeTitle: '首頁四區塊',
     homeBlocks: [
-      { name: '新聞與法規監控', body: '最新的新聞與法規，一行一則。（完整分類頁規劃中）' },
+      { name: '新聞與法規監控', body: '最新的新聞與法規，依六個分類瀏覽；可只看影響追蹤清單商品的項目。' },
       { name: '市場脈動', body: '保險市場的關鍵指標與趨勢。（完整儀表板規劃中）' },
       { name: '追蹤清單', body: '你加入的候選商品，可拖動權重滑桿，依你重視的面向排序。' },
       { name: '競品研究', body: '已完成、你還沒打開過的商品報告；點進去看完整報告，覺得值得參考就在頁面底部加入追蹤清單。' },
@@ -140,6 +141,24 @@ export const zhTW = {
     changeFlat: '— 0%',
   },
 
+  // 新聞與法規監控（2026-10-20 經確認）
+  news: {
+    title: '新聞與法規監控',
+    tabs: {
+      all: '全部',
+      product_channel: '商品與通路動態',
+      market_macro: '市場與總經情勢',
+      regulation: '監理法規',
+      claims_consumer: '理賠與消保',
+      customer_brand: '客群經營與品牌公關',
+    },
+    affectsToggle: '只看影響追蹤清單商品',
+    affects: (n: number) => `影響追蹤清單 ${n} 項商品`,
+    showMore: '顯示更多',
+    emptyTab: '這個分類目前沒有項目。',
+    emptyAffects: '目前沒有影響追蹤清單商品的項目。',
+  },
+
   // 相對時間（市場總覽動態）
   time: {
     minutesAgo: (n: number) => `${n} 分鐘前`,
@@ -174,6 +193,7 @@ export const zhTW = {
     homeMeta: (country: string) => `${country} · 綜合分數`,
     add: '＋ 加入追蹤清單',
     added: '✓ 已在追蹤清單',
+    addedShort: '✓ 已追蹤',
     viewList: '看追蹤清單 →',
   },
 

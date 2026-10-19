@@ -10,6 +10,7 @@ import { OverviewPage } from './pages/OverviewPage';
 import { ReportPage } from './pages/ReportPage';
 import { TasksPage } from './pages/TasksPage';
 import { WatchlistPage } from './pages/WatchlistPage';
+import { NewsPage } from './pages/NewsPage';
 import { GuidePage } from './pages/GuidePage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
@@ -27,6 +28,7 @@ createRoot(document.getElementById('root')!).render(
         <Routes>
           <Route element={<RootLayout />}>
             <Route index element={<MarketHomePage />} />
+            <Route path="news" element={<NewsPage />} />
             <Route path="watchlist" element={<WatchlistPage />} />
             <Route path="research" element={<OverviewPage />} />
             <Route path="cases" element={<CasesRedirect />} />

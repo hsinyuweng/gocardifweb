@@ -12,12 +12,20 @@ import { zhTW } from '../i18n/zh-TW';
 export interface PageChromeSetters {
   setBreadcrumb: (items: BreadcrumbItem[]) => void;
   setPageNotices: (notices: TopBarNotice[]) => void;
+  /** 頂部列右側的頁面動作區（例如報告頁的加入追蹤清單）；頁面以 createPortal 放入 */
+  actionSlot: HTMLElement | null;
 }
 
 export const PageChromeContext = createContext<PageChromeSetters>({
   setBreadcrumb: () => {},
   setPageNotices: () => {},
+  actionSlot: null,
 });
+
+/** 頂部列右側的頁面動作區；尚未掛上時為 null */
+export function usePageActionSlot(): HTMLElement | null {
+  return useContext(PageChromeContext).actionSlot;
+}
 
 /** 頁面呼叫此 hook 設定頂部列麵包屑 */
 export function useBreadcrumb(items: BreadcrumbItem[]) {

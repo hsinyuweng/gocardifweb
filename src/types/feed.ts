@@ -4,7 +4,11 @@ type Nullable<T> = T | null | undefined;
 
 export interface RawFeedItem {
   id?: Nullable<string>;
-  /** regulation、market、product、news */
+  /** news、regulation（2026-10-20 新格式草案）；缺漏時由 category 推得 */
+  kind?: Nullable<string>;
+  /** product_channel、market_macro、regulation、claims_consumer、customer_brand（2026-10-20 新格式草案） */
+  domain?: Nullable<string>;
+  /** 舊格式：regulation、market、product、news */
   category?: Nullable<string>;
   title?: Nullable<string>;
   summary?: Nullable<string>;

@@ -88,9 +88,14 @@
 
 | 端點 | 靜態檔（static 模式） | 必要欄位 | 用在 |
 |---|---|---|---|
-| `GET /api/v1/feed` | `public/data/feed.json` | `items` 陣列 | 新聞監控（news、market）、競品與法規異動（product、regulation）、追蹤清單更新時間 |
+| `GET /api/v1/feed` | `public/data/feed.json` | `items` 陣列 | 首頁新聞區塊、新聞與法規監控頁 |
 | `GET /api/v1/market-pulse` | `public/data/market-pulse.json` | `metrics` 陣列 | 市場脈動 |
 
+- `feed.json` 每則（2026-10-20 新格式草案）：
+  - `kind`：`news`（新聞）或 `regulation`（法規）。缺漏時前端用舊欄位 `category` 推得（`regulation` 為法規，其餘為新聞）。
+  - `domain`：`product_channel` 商品與通路動態、`market_macro` 市場與總經情勢、`regulation` 監理法規、`claims_consumer` 理賠與消保、`customer_brand` 客群經營與品牌公關。缺漏或其他值只出現在「全部」。
+  - `related_report_ids`：法規影響的商品 report_id（用於「只看影響追蹤清單商品」）。
+  - 其他欄位不變：`id`、`title`、`summary`、`source`、`url`、`published_at`、`country`、`product_category`。
 - 尚未提供時回 404（`NOT_FOUND`）：前端該卡片顯示「資料準備中」，不視為錯誤。
 - 錯誤格式與離線備援規則同第 1 節。
 - 正式格式若與草案不同，前端只需調整 `src/types/feed.ts`、`src/types/marketPulse.ts`、`src/data/validate.ts`、`src/data/normalizeMarket.ts`。

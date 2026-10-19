@@ -1,10 +1,12 @@
 {
-  "_comment": "示意資料：內容為捏造，只用於本機 mock-api 檢查畫面，不是實際新聞或公告。正式格式以後端定版為準。",
+  "_comment": "示意資料：內容為捏造，只用於本機 mock-api 檢查畫面，不是實際新聞或公告。kind／domain 為 2026-10-20 新格式草案，正式格式以後端定版為準。",
   "schema_version": "1.0",
   "generated_at": "2026-10-18T10:00:00+08:00",
   "items": [
     {
       "id": "demo-001",
+      "kind": "news",
+      "domain": "market_macro",
       "category": "news",
       "title": "日本大型壽險公司調降儲蓄型商品宣告利率，市場轉向保障型商品",
       "summary": "示意摘要：多家日本壽險公司下修儲蓄型商品宣告利率，業界預期保障型商品銷售比重上升。",
@@ -13,15 +15,21 @@
       "url": "https://example.com/demo-001",
       "region": "JP",
       "importance": "medium",
-      "tags": ["儲蓄型保險"],
+      "tags": [
+        "儲蓄型保險"
+      ],
       "related_report_ids": [],
-      "related_modules": ["market_demand"],
+      "related_modules": [
+        "market_demand"
+      ],
       "owner_hint": "商品",
       "country": "JP",
       "product_category": null
     },
     {
       "id": "demo-002",
+      "kind": "news",
+      "domain": "market_macro",
       "category": "market",
       "title": "9 月外幣保單新契約保費年增 12%，美元保單占比最高",
       "summary": "示意摘要：外幣保單新契約保費持續成長。",
@@ -30,15 +38,21 @@
       "url": "https://example.com/demo-002",
       "region": "TW",
       "importance": "medium",
-      "tags": ["外幣保單"],
+      "tags": [
+        "外幣保單"
+      ],
       "related_report_ids": [],
-      "related_modules": ["market_demand"],
+      "related_modules": [
+        "market_demand"
+      ],
       "owner_hint": "市場研究",
       "country": "TW",
       "product_category": null
     },
     {
       "id": "demo-003",
+      "kind": "news",
+      "domain": "product_channel",
       "category": "news",
       "title": "美國指數型萬能壽險銷售連續三季成長",
       "summary": "示意摘要：IUL 銷售成長，主要來自高資產客群。",
@@ -47,15 +61,21 @@
       "url": "https://example.com/demo-003",
       "region": "US",
       "importance": "low",
-      "tags": ["IUL"],
+      "tags": [
+        "IUL"
+      ],
       "related_report_ids": [],
-      "related_modules": ["market_demand"],
+      "related_modules": [
+        "market_demand"
+      ],
       "owner_hint": "商品",
       "country": "US",
       "product_category": "投資型壽險（IUL，指數連結型）"
     },
     {
       "id": "demo-004",
+      "kind": "regulation",
+      "domain": "regulation",
       "category": "news",
       "title": "韓國金融委員會研議放寬高齡者投保年齡上限",
       "summary": "示意摘要：韓國研議調整高齡投保規範。",
@@ -64,15 +84,21 @@
       "url": "https://example.com/demo-004",
       "region": "KR",
       "importance": "low",
-      "tags": ["高齡"],
+      "tags": [
+        "高齡"
+      ],
       "related_report_ids": [],
-      "related_modules": ["regulatory"],
+      "related_modules": [
+        "regulatory"
+      ],
       "owner_hint": "法遵",
       "country": "KR",
       "product_category": null
     },
     {
       "id": "demo-005",
+      "kind": "news",
+      "domain": "product_channel",
       "category": "product",
       "title": "FWD 日本推出円建一時払変額年金，台灣尚無相似商品",
       "summary": "示意摘要：躉繳日圓變額年金，附最低保證。",
@@ -81,15 +107,23 @@
       "url": "https://example.com/demo-005",
       "region": "JP",
       "importance": "high",
-      "tags": ["變額年金"],
-      "related_report_ids": ["fwd-jpy-single-premium-va"],
-      "related_modules": ["market_demand"],
+      "tags": [
+        "變額年金"
+      ],
+      "related_report_ids": [
+        "fwd-jpy-single-premium-va"
+      ],
+      "related_modules": [
+        "market_demand"
+      ],
       "owner_hint": "商品",
       "country": "JP",
       "product_category": "年金險（變額年金）"
     },
     {
       "id": "demo-006",
+      "kind": "news",
+      "domain": "product_channel",
       "category": "product",
       "title": "新加坡壽險業者推出結合財富傳承的新型終身壽險",
       "summary": "示意摘要：結合傳承規劃的終身壽險。",
@@ -98,15 +132,24 @@
       "url": "https://example.com/demo-006",
       "region": "SG",
       "importance": "medium",
-      "tags": ["終身壽險", "財富傳承"],
-      "related_report_ids": ["singlife-heritage-reserve"],
-      "related_modules": ["market_demand"],
+      "tags": [
+        "終身壽險",
+        "財富傳承"
+      ],
+      "related_report_ids": [
+        "singlife-heritage-reserve"
+      ],
+      "related_modules": [
+        "market_demand"
+      ],
       "owner_hint": "商品",
       "country": "SG",
       "product_category": "傳統壽險（終身壽險）"
     },
     {
       "id": "demo-007",
+      "kind": "regulation",
+      "domain": "regulation",
       "category": "regulation",
       "title": "金管會預告修正分紅保單紅利分配揭露規定",
       "summary": "示意摘要：預告修正分紅保單資訊揭露，可能影響既有評估。",
@@ -115,15 +158,26 @@
       "url": "https://example.com/demo-007",
       "region": "TW",
       "importance": "high",
-      "tags": ["分紅保單", "資訊揭露"],
-      "related_report_ids": ["kyobo-modu-jikim-whole-life", "singlife-heritage-reserve", "chakin"],
-      "related_modules": ["regulatory"],
+      "tags": [
+        "分紅保單",
+        "資訊揭露"
+      ],
+      "related_report_ids": [
+        "kyobo-modu-jikim-whole-life",
+        "singlife-heritage-reserve",
+        "chakin"
+      ],
+      "related_modules": [
+        "regulatory"
+      ],
       "owner_hint": "法遵",
       "country": "TW",
       "product_category": "傳統壽險（終身壽險）"
     },
     {
       "id": "demo-008",
+      "kind": "regulation",
+      "domain": "regulation",
       "category": "regulation",
       "title": "外幣保險商品資訊揭露注意事項修正發布",
       "summary": "示意摘要：外幣保單匯率風險揭露規定修正。",
@@ -132,10 +186,74 @@
       "url": "https://example.com/demo-008",
       "region": "TW",
       "importance": "medium",
-      "tags": ["外幣保單"],
+      "tags": [
+        "外幣保單"
+      ],
       "related_report_ids": [],
-      "related_modules": ["regulatory"],
+      "related_modules": [
+        "regulatory"
+      ],
       "owner_hint": "法遵",
+      "country": "TW",
+      "product_category": null
+    },
+    {
+      "id": "demo-009",
+      "kind": "news",
+      "domain": "claims_consumer",
+      "category": "news",
+      "title": "上半年壽險理賠申訴件數較去年同期下降",
+      "summary": "示意摘要：評議案件以醫療險理賠爭議為主。",
+      "published_at": "2026-10-16",
+      "source": "示意資料（金融消費評議中心）",
+      "url": "https://example.com/demo-009",
+      "related_report_ids": [],
+      "region": "TW",
+      "importance": "medium",
+      "tags": [],
+      "related_modules": [],
+      "owner_hint": null,
+      "country": "TW",
+      "product_category": null
+    },
+    {
+      "id": "demo-010",
+      "kind": "news",
+      "domain": "customer_brand",
+      "category": "news",
+      "title": "同業推出高齡客群數位投保服務，強化品牌形象",
+      "summary": "示意摘要：結合視訊核保與家屬協助功能。",
+      "published_at": "2026-10-15",
+      "source": "示意資料（保險雜誌）",
+      "url": "https://example.com/demo-010",
+      "related_report_ids": [],
+      "region": "TW",
+      "importance": "medium",
+      "tags": [],
+      "related_modules": [],
+      "owner_hint": null,
+      "country": "TW",
+      "product_category": null
+    },
+    {
+      "id": "demo-011",
+      "kind": "regulation",
+      "domain": "claims_consumer",
+      "category": "regulation",
+      "title": "保險業理賠作業公平待客原則修正草案預告",
+      "summary": "示意摘要：要求簡化保證發行壽險與小額終老保險的理賠文件。",
+      "published_at": "2026-10-14",
+      "source": "示意資料（金管會保險局）",
+      "url": "https://example.com/demo-011",
+      "related_report_ids": [
+        "policyme-guaranteed-issue-life-insurance",
+        "surely-life-certua-uk"
+      ],
+      "region": "TW",
+      "importance": "medium",
+      "tags": [],
+      "related_modules": [],
+      "owner_hint": null,
       "country": "TW",
       "product_category": null
     }

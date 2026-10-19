@@ -24,6 +24,8 @@ export function RootLayout() {
   const [indexState, setIndexState] = useState<IndexState>({ status: 'loading' });
   const [breadcrumb, setBreadcrumb] = useState<BreadcrumbItem[]>([]);
   const [pageNotices, setPageNotices] = useState<TopBarNotice[]>([]);
+  // 頂部列的頁面動作區：掛上後才讓頁面放入內容
+  const [actionSlot, setActionSlot] = useState<HTMLElement | null>(null);
   // api 模式改讀離線資料時為 true（第 6.3 節）
   const offline = useSyncExternalStore(subscribeConnection, isOffline);
   const myUnit = useSyncExternalStore(subscribeOwnerPreference, readOwnerPreference);
@@ -82,7 +84,7 @@ export function RootLayout() {
     () => (allReportsState.status === 'ok' ? countOwners(allReportsState.result.reports).map((c) => c.owner) : null),
     [allReportsState],
   );
-  const chrome = useMemo(() => ({ setBreadcrumb, setPageNotices }), []);
+  const chrome = useMemo(() => ({ setBreadcrumb, setPageNotices, actionSlot }), [actionSlot]);
   const outletContext: LayoutOutletContext = {
     indexState,
     allReportsState,
@@ -106,6 +108,7 @@ export function RootLayout() {
           onRequestOptions: requestAllReports,
           onChange: writeOwnerPreference,
         }}
+        actionSlotRef={setActionSlot}
       >
         <Outlet context={outletContext} />
       </AppShell>

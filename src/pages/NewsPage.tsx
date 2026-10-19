@@ -1,0 +1,158 @@
+import { useMemo, useState, useSyncExternalStore } from 'react';
+import { useLocation, useSearchParams } from 'react-router';
+import { PendingContent } from '../components/home/HomeCard';
+import { StatusMessage } from '../components/common/StatusMessage';
+import { NewsItem } from '../components/news/NewsItem';
+import { DataSourceError, normalizeReportIndex } from '../data';
+import type { FeedDomain, FeedItemViewModel } from '../types/viewModel';
+import { zhTW } from '../i18n/zh-TW';
+import { orDash } from '../lib/format';
+import { readFromPath } from '../lib/ownerParam';
+import { readWatchlist, subscribeWatchlist } from '../lib/watchlist';
+import { errorText, useBreadcrumb, useFeed, useIndexState } from './pageChrome';
+
+const t = zhTW.news;
+const TABS: ReadonlyArray<FeedDomain | 'all'> = [
+  'all',
+  'product_channel',
+  'market_macro',
+  'regulation',
+  'claims_consumer',
+  'customer_brand',
+];
+const PAGE_SIZE = 30;
+
+// 頁籤與開關寫進網址（tab、affects=1），切換用 replace，不新增瀏覽紀錄
+function readTab(v: string | null): FeedDomain | 'all' {
+  return TABS.includes(v as FeedDomain) ? (v as FeedDomain) : 'all';
+}
+
+const chipBase = 'inline-flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3 ring-1 transition-colors';
+const chipOn = 'bg-navy-800 text-white ring-navy-800';
+const chipOff = 'bg-white text-slate-700 ring-slate-300 hover:ring-slate-400';
+
+/** 新聞與法規監控（2026-10-20 新規劃）：6 個頁籤、只看影響追蹤清單商品、法規展開受影響商品 */
+export function NewsPage() {
+  const location = useLocation();
+  const fromHome = readFromPath(location.state) === '/';
+  useBreadcrumb(fromHome ? [{ label: zhTW.nav.home, to: '/' }, { label: zhTW.nav.news }] : [{ label: zhTW.nav.news }]);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tab = readTab(searchParams.get('tab'));
+  const affectsOnly = searchParams.get('affects') === '1';
+  const update = (nextTab: FeedDomain | 'all', nextAffects: boolean) => {
+    const p = new URLSearchParams();
+    if (nextTab !== 'all') p.set('tab', nextTab);
+    if (nextAffects) p.set('affects', '1');
+    setSearchParams(p, { replace: true, state: location.state });
+  };
+
+  const feedState = useFeed();
+  const indexState = useIndexState();
+  const watchlist = useSyncExternalStore(subscribeWatchlist, readWatchlist);
+  // 換頁籤或開關時回到前 30 則
+  const [limit, setLimit] = useState({ key: '', n: PAGE_SIZE });
+  const filterKey = `${tab}|${affectsOnly}`;
+  const shown = limit.key === filterKey ? limit.n : PAGE_SIZE;
+
+  const names = useMemo(
+    () =>
+      new Map(
+        (indexState.status === 'ok' ? normalizeReportIndex(indexState.index).rows : []).flatMap((r) =>
+          r.reportId ? [[r.reportId, r.name ?? r.reportId] as const] : [],
+        ),
+      ),
+    [indexState],
+  );
+  /** 法規影響的追蹤清單商品 */
+  const affectedOf = useMemo(() => {
+    const watched = new Set(watchlist);
+    return (item: FeedItemViewModel) =>
+      item.kind === 'regulation'
+        ? item.relatedReportIds.filter((id) => watched.has(id)).map((id) => ({ id, name: names.get(id) ?? id }))
+        : [];
+  }, [watchlist, names]);
+
+  const items = feedState.status === 'ok' ? feedState.data.items : [];
+  const pool = affectsOnly ? items.filter((i) => affectedOf(i).length > 0) : items;
+  const counts = new Map<FeedDomain | 'all', number>([['all', pool.length]]);
+  for (const i of pool) if (i.domain) counts.set(i.domain, (counts.get(i.domain) ?? 0) + 1);
+  const visible = tab === 'all' ? pool : pool.filter((i) => i.domain === tab);
+  const linkState = { from: location.pathname + location.search, fromState: location.state };
+
+  let body;
+  if (feedState.status === 'error') {
+    if (feedState.error instanceof DataSourceError && feedState.error.kind === 'not_found') body = <PendingContent />;
+    else {
+      const { message, detail } = errorText(feedState.error, zhTW.home.pending);
+      body = <StatusMessage tone="error" message={message} detail={detail} />;
+    }
+  } else if (feedState.status !== 'ok') {
+    body = <StatusMessage tone="info" message={zhTW.common.loading} />;
+  } else {
+    body = (
+      <div className="space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+          <div role="tablist" className="flex min-w-0 items-center gap-2 overflow-x-auto px-px py-1">
+            {TABS.map((key) => (
+              <button
+                key={key}
+                type="button"
+                role="tab"
+                aria-selected={tab === key}
+                onClick={() => update(key, affectsOnly)}
+                className={`${chipBase} ${tab === key ? chipOn : chipOff}`}
+              >
+                <span>{t.tabs[key]}</span>
+                <span className={tab === key ? 'text-white/80' : 'text-slate-500'}>{counts.get(key) ?? 0}</span>
+              </button>
+            ))}
+          </div>
+          <label className="flex shrink-0 cursor-pointer items-center gap-2 text-slate-700">
+            <input
+              type="checkbox"
+              checked={affectsOnly}
+              onChange={(e) => update(tab, e.target.checked)}
+              className="size-4 accent-navy-700"
+            />
+            {t.affectsToggle}
+          </label>
+        </div>
+        {visible.length === 0 ? (
+          <StatusMessage tone="info" message={affectsOnly ? t.emptyAffects : t.emptyTab} />
+        ) : (
+          <>
+            <ul className="divide-y divide-slate-100 rounded border border-slate-200 bg-white">
+              {visible.slice(0, shown).map((item) => (
+                <NewsItem key={item.id} item={item} affected={affectedOf(item)} linkState={linkState} />
+              ))}
+            </ul>
+            {visible.length > shown ? (
+              <div className="text-center">
+                <button
+                  type="button"
+                  onClick={() => setLimit({ key: filterKey, n: shown + PAGE_SIZE })}
+                  className="h-9 rounded border border-slate-300 bg-white px-4 text-slate-700 hover:border-navy-600 hover:text-navy-800"
+                >
+                  {t.showMore}
+                </button>
+              </div>
+            ) : null}
+          </>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <h1 className="text-xl font-semibold text-slate-900">{t.title}</h1>
+        {feedState.status === 'ok' ? (
+          <span className="text-xs text-slate-500">{zhTW.home.updatedAt(orDash(feedState.data.generatedAt))}</span>
+        ) : null}
+      </div>
+      {body}
+    </div>
+  );
+}

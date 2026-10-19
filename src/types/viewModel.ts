@@ -265,10 +265,15 @@ export interface TaskSummary {
 
 // ───────── 市場總覽：動態清單與市場脈動 ─────────
 
+/** 新聞與法規監控的 5 個領域（頁籤「全部」以外） */
+export type FeedDomain = 'product_channel' | 'market_macro' | 'regulation' | 'claims_consumer' | 'customer_brand';
+
 export interface FeedItemViewModel {
   id: string;
-  /** category 原值（news、market、product、regulation） */
-  category: string | null;
+  /** 新聞或法規；原始 kind 缺漏時，category 為 regulation 視為法規，其餘視為新聞 */
+  kind: 'news' | 'regulation';
+  /** 不在 5 個領域內時為 null（只出現在「全部」頁籤） */
+  domain: FeedDomain | null;
   title: string | null;
   summary: string | null;
   source: string | null;
