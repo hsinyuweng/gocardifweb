@@ -1,0 +1,89 @@
+{
+  "_comment": "示意資料：數字為捏造，只用於本機 mock-api 檢查畫面，不是實際統計。正式格式以後端定版為準。",
+  "schema_version": "1.0",
+  "generated_at": "2026-10-18T10:00:00+08:00",
+  "metrics": [
+    {
+      "key": "fx_policy_new_premium",
+      "label": "外幣保單新契約保費",
+      "unit": "新台幣元",
+      "latest_value": 41800000000,
+      "change_pct": 3.2,
+      "change_label": "本週",
+      "series": [
+        { "period": "2026-W35", "value": 37900000000 },
+        { "period": "2026-W36", "value": 38300000000 },
+        { "period": "2026-W37", "value": 38100000000 },
+        { "period": "2026-W38", "value": 39200000000 },
+        { "period": "2026-W39", "value": 39800000000 },
+        { "period": "2026-W40", "value": 39600000000 },
+        { "period": "2026-W41", "value": 40500000000 },
+        { "period": "2026-W42", "value": 41800000000 }
+      ],
+      "source": "示意資料（壽險公會）",
+      "source_url": "https://example.com/pulse-1",
+      "as_of": "2026-10-17"
+    },
+    {
+      "key": "investment_linked_new_premium",
+      "label": "投資型保單新契約保費",
+      "unit": "新台幣元",
+      "latest_value": 18500000000,
+      "change_pct": 1.1,
+      "change_label": "本週",
+      "series": [
+        { "period": "2026-W35", "value": 18100000000 },
+        { "period": "2026-W36", "value": 17900000000 },
+        { "period": "2026-W37", "value": 18400000000 },
+        { "period": "2026-W38", "value": 18200000000 },
+        { "period": "2026-W39", "value": 18000000000 },
+        { "period": "2026-W40", "value": 18600000000 },
+        { "period": "2026-W41", "value": 18300000000 },
+        { "period": "2026-W42", "value": 18500000000 }
+      ],
+      "source": "示意資料（壽險公會）",
+      "source_url": "https://example.com/pulse-2",
+      "as_of": "2026-10-17"
+    },
+    {
+      "key": "traditional_life_new_premium",
+      "label": "傳統型壽險新契約保費",
+      "unit": "新台幣元",
+      "latest_value": 52300000000,
+      "change_pct": -0.8,
+      "change_label": "本週",
+      "series": [
+        { "period": "2026-W35", "value": 54100000000 },
+        { "period": "2026-W36", "value": 53800000000 },
+        { "period": "2026-W37", "value": 53900000000 },
+        { "period": "2026-W38", "value": 53200000000 },
+        { "period": "2026-W39", "value": 53000000000 },
+        { "period": "2026-W40", "value": 52900000000 },
+        { "period": "2026-W41", "value": 52700000000 },
+        { "period": "2026-W42", "value": 52300000000 }
+      ],
+      "source": "示意資料（壽險公會）",
+      "source_url": "https://example.com/pulse-3",
+      "as_of": "2026-10-17"
+    },
+    {
+      "key": "annuity_new_premium",
+      "label": "年金險新契約保費",
+      "unit": "新台幣元",
+      "latest_value": 9600000000,
+      "change_pct": 0,
+      "change_label": "本月",
+      "series": [
+        { "period": "2026-05", "value": 9100000000 },
+        { "period": "2026-06", "value": 9400000000 },
+        { "period": "2026-07", "value": 9300000000 },
+        { "period": "2026-08", "value": 9600000000 },
+        { "period": "2026-09", "value": 9600000000 },
+        { "period": "2026-10", "value": 9600000000 }
+      ],
+      "source": "示意資料（保發中心）",
+      "source_url": "https://example.com/pulse-4",
+      "as_of": "2026-10-15"
+    }
+  ]
+}

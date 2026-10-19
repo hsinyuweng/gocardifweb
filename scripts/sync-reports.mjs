@@ -1,4 +1,5 @@
 // 匯入 summarizer 報告到 public/data/reports/，並重新產生 index.json（第 7 節）
+// 市場總覽資料：來源資料夾若有 feed.json、market-pulse.json，檢查基本結構後複製到 public/data/
 // 用法：npm run sync            （讀 incoming/）
 //       npm run sync -- --from <路徑>
 // 只使用 Node.js 內建模組。
@@ -10,6 +11,9 @@ import { fileURLToPath } from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const REPORTS_DIR = path.join(ROOT, 'public', 'data', 'reports');
 const INDEX_FILE = 'index.json';
+const DATA_DIR = path.join(ROOT, 'public', 'data');
+/** 檔名 → 必須存在的陣列欄位（正式格式未定版，改格式時一併調整） */
+const MARKET_FILES = { 'feed.json': 'items', 'market-pulse.json': 'metrics' };
 
 function parseArgs(argv) {
   const i = argv.indexOf('--from');
@@ -81,6 +85,22 @@ function toIndexEntry(report) {
   };
 }
 
+/** 市場總覽資料：檢查是 JSON 物件且有對應陣列，原樣複製；不合格只警告 */
+async function importMarketFiles(fromDir, files) {
+  for (const [file, key] of Object.entries(MARKET_FILES)) {
+    if (!files.includes(file)) continue;
+    try {
+      const data = await readJson(path.join(fromDir, file));
+      if (!isObject(data) || !Array.isArray(data[key])) throw new Error(`缺少 ${key} 陣列`);
+      await mkdir(DATA_DIR, { recursive: true });
+      await copyFile(path.join(fromDir, file), path.join(DATA_DIR, file));
+      console.log(`  匯入 ${file} → public/data/${file}`);
+    } catch (e) {
+      warn(file, e.message);
+    }
+  }
+}
+
 async function importBatch(fromDir) {
   let files;
   try {
@@ -93,6 +113,8 @@ async function importBatch(fromDir) {
   const rel = path.relative(ROOT, fromDir);
   const shown = rel && !rel.startsWith('..') ? rel : fromDir;
   console.log(`來源：${shown}（${files.length} 個 .json）`);
+  await importMarketFiles(fromDir, files);
+  files = files.filter((f) => !(f in MARKET_FILES));
 
   // 1. 整批先驗證，全部通過才複製
   const accepted = []; // { file, id }

@@ -85,3 +85,29 @@ export function updatedText(date: string, now: Date = new Date()): string {
   if (n === 1) return t.updatedYesterday;
   return t.updatedDaysAgo(n);
 }
+
+/**
+ * 動態的相對時間：有時間的顯示「N 分鐘前」「N 小時前」，超過一天或只有日期的顯示「今天」「昨天」「N 天前」；
+ * 超過 30 天顯示日期；無法解析時顯示原文。未來的時間視為剛發布。
+ */
+export function relativeTimeText(time: number | null, dateOnly: boolean, raw: string | null, now: Date = new Date()): string {
+  if (time === null) return orDash(raw);
+  const t = zhTW.time;
+  const diff = now.getTime() - time;
+  if (!dateOnly && diff < 3_600_000) return t.minutesAgo(Math.max(1, Math.floor(diff / 60_000)));
+  if (!dateOnly && diff < 86_400_000) return t.hoursAgo(Math.floor(diff / 3_600_000));
+  const date = todayTaipei(new Date(time));
+  const n = daysAgo(date, now);
+  if (n === null || n > 30) return date;
+  if (n === 0) return t.today;
+  if (n === 1) return t.yesterday;
+  return t.daysAgo(n);
+}
+
+/** 市場脈動的變化：▲ 3.2%、▼ 1.1%、— 0%；null 顯示「—」 */
+export function changePctText(pct: number | null): string {
+  if (pct === null) return zhTW.common.dash;
+  const abs = new Intl.NumberFormat('zh-TW', { maximumFractionDigits: 1, minimumFractionDigits: 1 }).format(Math.abs(pct));
+  if (Math.abs(pct) < 0.05) return zhTW.home.changeFlat;
+  return pct > 0 ? zhTW.home.changeUp(abs) : zhTW.home.changeDown(abs);
+}

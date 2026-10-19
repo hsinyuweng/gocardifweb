@@ -1,6 +1,7 @@
-import type { OverviewRow } from '../types/viewModel';
+import type { FeedItemViewModel, OverviewRow } from '../types/viewModel';
 import { zhTW } from '../i18n/zh-TW';
 import { countryLabel } from './country';
+import { todayTaipei } from './format';
 import { DEFAULT_FILTERS, DEFAULT_SORT_DIR, writeOverviewParams } from './overviewFilter';
 
 // 我的追蹤清單（市場總覽，2026-10-18 經確認）：追蹤「險種＋市場」，存在瀏覽器。
@@ -97,17 +98,27 @@ export function watchItemCasesPath(item: WatchItem): string {
 }
 
 export interface WatchMatch {
+  /** 相符的報告件數 */
   count: number;
-  /** 相符報告中最新的產出日期（YYYY-MM-DD）；沒有相符時為 null */
+  /** 相符報告的產出日期與相符動態的發布日期中最新的一個（YYYY-MM-DD，台北時間）；都沒有時為 null */
   latestDate: string | null;
 }
 
-export function matchWatchItem(item: WatchItem, rows: OverviewRow[]): WatchMatch {
+/** 只比對追蹤項目有指定的欄位；動態的 country／product_category 為 null 時對不上指定的欄位 */
+export function matchWatchItem(item: WatchItem, rows: OverviewRow[], feedItems: FeedItemViewModel[] = []): WatchMatch {
   const matched = rows.filter(
     (r) =>
       (item.category === null || r.category === item.category) &&
       (item.country === null || r.countryCode === item.country),
   );
-  const dates = matched.map((r) => r.generatedDate).filter((d): d is string => d !== null);
+  const feedDates = feedItems
+    .filter(
+      (f) =>
+        f.publishedTime !== null &&
+        (item.category === null || f.productCategory === item.category) &&
+        (item.country === null || f.country === item.country),
+    )
+    .map((f) => todayTaipei(new Date(f.publishedTime!)));
+  const dates = [...matched.map((r) => r.generatedDate).filter((d): d is string => d !== null), ...feedDates];
   return { count: matched.length, latestDate: dates.length > 0 ? dates.sort().at(-1)! : null };
 }

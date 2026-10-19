@@ -117,6 +117,22 @@ export const zhTW = {
       changes: '競品與法規異動',
       watchlist: '我的追蹤清單',
     },
+    noFeedItems: '目前沒有新的動態。',
+    noMetrics: '目前沒有指標資料。',
+    changeTags: { product: '新商品', regulation: '法規' } as Record<string, string>,
+    affects: (n: number) => `影響 ${n} 項既有商品評估`,
+    changeUp: (pct: string) => `▲ ${pct}%`,
+    changeDown: (pct: string) => `▼ ${pct}%`,
+    changeFlat: '— 0%',
+  },
+
+  // 相對時間（市場總覽動態）
+  time: {
+    minutesAgo: (n: number) => `${n} 分鐘前`,
+    hoursAgo: (n: number) => `${n} 小時前`,
+    today: '今天',
+    yesterday: '昨天',
+    daysAgo: (n: number) => `${n} 天前`,
   },
 
   watchlist: {

@@ -3,6 +3,8 @@ import { useOutletContext } from 'react-router';
 import type { BreadcrumbItem, TopBarNotice } from '../components/layout/TopBar';
 import type { ReportIndex } from '../types/reportIndex';
 import { DataSourceError, type AllReportsResult } from '../data';
+import type { FeedViewModel, MarketPulseViewModel } from '../types/viewModel';
+import type { LoadState } from './useOnDemand';
 import { zhTW } from '../i18n/zh-TW';
 
 // 頁面與 RootLayout 之間的小型共用狀態：麵包屑、頂部列提示、報告清單讀取結果
@@ -52,10 +54,28 @@ export interface LayoutOutletContext {
   indexState: IndexState;
   allReportsState: AllReportsState;
   requestAllReports: () => void;
+  feedState: LoadState<FeedViewModel>;
+  requestFeed: () => void;
+  pulseState: LoadState<MarketPulseViewModel>;
+  requestPulse: () => void;
 }
 
 export function useIndexState(): IndexState {
   return useOutletContext<LayoutOutletContext>().indexState;
+}
+
+/** 取得動態清單；第一次呼叫時開始讀取 */
+export function useFeed(): LoadState<FeedViewModel> {
+  const { feedState, requestFeed } = useOutletContext<LayoutOutletContext>();
+  useEffect(() => requestFeed(), [requestFeed]);
+  return feedState;
+}
+
+/** 取得市場脈動；第一次呼叫時開始讀取 */
+export function useMarketPulse(): LoadState<MarketPulseViewModel> {
+  const { pulseState, requestPulse } = useOutletContext<LayoutOutletContext>();
+  useEffect(() => requestPulse(), [requestPulse]);
+  return pulseState;
 }
 
 /** 取得全部報告；第一次呼叫時開始讀取 */

@@ -1,5 +1,7 @@
 import type { Report } from '../types/report';
 import type { ReportIndex } from '../types/reportIndex';
+import type { Feed } from '../types/feed';
+import type { MarketPulse } from '../types/marketPulse';
 import { shouldFallback, type DataSource } from './DataSource';
 import { setOffline } from './connectionStatus';
 
@@ -34,5 +36,13 @@ export class FallbackDataSource implements DataSource {
 
   getReport(reportId: string): Promise<Report> {
     return this.run((s) => s.getReport(reportId));
+  }
+
+  getFeed(): Promise<Feed> {
+    return this.run((s) => s.getFeed());
+  }
+
+  getMarketPulse(): Promise<MarketPulse> {
+    return this.run((s) => s.getMarketPulse());
   }
 }

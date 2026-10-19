@@ -32,7 +32,7 @@ import { researchStatusLabel } from '../lib/researchStatus';
 import { toSignalColor } from '../lib/signalColor';
 import { isSchemaVersionSupported } from './validate';
 
-function str(v: unknown): string | null {
+export function str(v: unknown): string | null {
   return typeof v === 'string' && v !== '' ? v : null;
 }
 
@@ -40,17 +40,17 @@ function count(v: unknown): number {
   return typeof v === 'number' && Number.isFinite(v) ? v : 0;
 }
 
-function num(v: unknown): number | null {
+export function num(v: unknown): number | null {
   return typeof v === 'number' && Number.isFinite(v) ? v : null;
 }
 
 /** 只保留非空字串 */
-function strList(v: unknown): string[] {
+export function strList(v: unknown): string[] {
   return Array.isArray(v) ? v.filter((s): s is string => typeof s === 'string' && s !== '') : [];
 }
 
 /** 只保留物件元素 */
-function objList<T>(v: T[] | null | undefined): T[] {
+export function objList<T>(v: T[] | null | undefined): T[] {
   return Array.isArray(v) ? v.filter((x) => typeof x === 'object' && x !== null) : [];
 }
 

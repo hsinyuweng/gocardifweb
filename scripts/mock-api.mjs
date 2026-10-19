@@ -1,4 +1,4 @@
-// 本機模擬後端（第 6.6 節）：只實作 docs/api-contract.md 第 2 節的兩個端點
+// 本機模擬後端（第 6.6 節）：docs/api-contract.md 第 2 節的報告端點，以及市場總覽的 feed、market-pulse
 // 用法：npm run mock-api → http://localhost:8787
 // 資料讀自 public/data/reports/（先執行 npm run sync）。只使用 Node.js 內建模組。
 
@@ -10,6 +10,11 @@ import { fileURLToPath } from 'node:url';
 const PORT = 8787;
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const REPORTS_DIR = path.join(ROOT, 'public', 'data', 'reports');
+// 市場總覽：public/data/ 有正式檔就用正式檔，否則用 docs/examples/ 的示意資料
+const MARKET_ENDPOINTS = {
+  '/api/v1/feed': ['feed.json', 'feed-example.json'],
+  '/api/v1/market-pulse': ['market-pulse.json', 'market-pulse-example.json'],
+};
 
 const HEADERS = {
   'Content-Type': 'application/json; charset=utf-8',
@@ -46,6 +51,13 @@ const server = http.createServer(async (req, res) => {
         status = 500;
         sendError(res, 500, 'INTERNAL_ERROR', '找不到 public/data/reports/index.json，請先執行 npm run sync');
       }
+    } else if (req.method === 'GET' && pathname in MARKET_ENDPOINTS) {
+      const [real, example] = MARKET_ENDPOINTS[pathname];
+      try {
+        await sendFile(res, path.join(ROOT, 'public', 'data', real));
+      } catch {
+        await sendFile(res, path.join(ROOT, 'docs', 'examples', example));
+      }
     } else if (req.method === 'GET' && pathname.startsWith('/api/v1/reports/')) {
       const id = decodeURIComponent(pathname.slice('/api/v1/reports/'.length));
       const safe = id !== '' && id !== 'index' && !/[/\\]|\.\./.test(id);
@@ -69,5 +81,7 @@ server.listen(PORT, () => {
   console.log(`mock-api 已啟動：http://localhost:${PORT}`);
   console.log(`  GET /api/v1/reports`);
   console.log(`  GET /api/v1/reports/<report_id>`);
+  console.log(`  GET /api/v1/feed            （沒有 public/data/feed.json 時用示意資料）`);
+  console.log(`  GET /api/v1/market-pulse    （沒有 public/data/market-pulse.json 時用示意資料）`);
   console.log('按 Ctrl + C 停止。');
 });

@@ -91,7 +91,9 @@ push 到 `main` 分支後，GitHub Actions（[`.github/workflows/deploy.yml`](.g
 4. 在 mock-api 的終端機按 `Ctrl + C` 停掉，重新整理：頂部列出現離線提示，畫面改顯示靜態資料，導覽列顯示「資料來源：離線資料」。
 5. 測完把 `config.json` 改回 `"dataSource": "static"`、`"apiBaseUrl": ""`。
 
-mock-api 只實作 [`docs/api-contract.md`](docs/api-contract.md) 第 2 節的兩個端點：`GET /api/v1/reports`、`GET /api/v1/reports/<report_id>`。
+mock-api 實作 [`docs/api-contract.md`](docs/api-contract.md) 第 2 節的兩個報告端點，以及第 2A 節市場總覽的 `GET /api/v1/feed`、`GET /api/v1/market-pulse`。後兩者在 `public/data/` 沒有正式檔時，改回傳 `docs/examples/` 的**示意資料**（捏造的內容，只用來看畫面）。
+
+**用示意資料看市場總覽**：照上面的步驟開 mock-api、把 `public/config.json` 改成 api 模式，首頁三張卡片就會顯示示意內容；看完記得把設定改回 static。
 
 ---
 

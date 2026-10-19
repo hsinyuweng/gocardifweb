@@ -12,6 +12,12 @@ class ConfigErrorDataSource implements DataSource {
   async getReport(): Promise<never> {
     throw new DataSourceError('config_error');
   }
+  async getFeed(): Promise<never> {
+    throw new DataSourceError('config_error');
+  }
+  async getMarketPulse(): Promise<never> {
+    throw new DataSourceError('config_error');
+  }
 }
 
 /** 頁面透過這裡取得資料來源（第 6.1 節：元件與頁面不得直接呼叫 fetch） */
@@ -27,3 +33,4 @@ export type { DataSourceErrorKind } from './DataSource';
 export { isOffline, subscribeConnection } from './connectionStatus';
 export { normalizeReportIndex, normalizeReport, normalizeAppMeta } from './normalize';
 export { loadAllReports, type AllReportsResult } from './allReports';
+export { normalizeFeed, normalizeMarketPulse } from './normalizeMarket';

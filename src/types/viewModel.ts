@@ -263,6 +263,53 @@ export interface TaskSummary {
   productCount: number;
 }
 
+// ───────── 市場總覽：動態清單與市場脈動 ─────────
+
+export interface FeedItemViewModel {
+  id: string;
+  /** category 原值（news、market、product、regulation） */
+  category: string | null;
+  title: string | null;
+  summary: string | null;
+  source: string | null;
+  /** 只接受 http(s) 網址，其餘為 null */
+  url: string | null;
+  /** published_at 原文 */
+  publishedAt: string | null;
+  /** 排序與相對時間用（毫秒）；無法解析時為 null */
+  publishedTime: number | null;
+  /** published_at 只有日期、沒有時間 */
+  dateOnly: boolean;
+  relatedReportIds: string[];
+  country: string | null;
+  productCategory: string | null;
+}
+
+export interface FeedViewModel {
+  generatedAt: string | null;
+  /** 新到舊；無法解析時間的排最後 */
+  items: FeedItemViewModel[];
+}
+
+export interface PulseMetricViewModel {
+  key: string;
+  label: string | null;
+  unit: string | null;
+  latestValue: number | null;
+  changePct: number | null;
+  changeLabel: string | null;
+  /** 由舊到新，已排除非數字 */
+  series: number[];
+  source: string | null;
+  sourceUrl: string | null;
+  asOf: string | null;
+}
+
+export interface MarketPulseViewModel {
+  generatedAt: string | null;
+  metrics: PulseMetricViewModel[];
+}
+
 export type DataSourceLabel = 'static' | 'api';
 
 /** 導覽列底部所需資訊 */

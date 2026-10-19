@@ -1,10 +1,14 @@
 import type { Report } from '../types/report';
 import type { ReportIndex } from '../types/reportIndex';
+import type { Feed } from '../types/feed';
+import type { MarketPulse } from '../types/marketPulse';
 
-// 第 6.1 節
+// 第 6.1 節；getFeed、getMarketPulse 為市場總覽新增（2026-10-18 經確認）
 export interface DataSource {
   listReports(): Promise<ReportIndex>;
   getReport(reportId: string): Promise<Report>;
+  getFeed(): Promise<Feed>;
+  getMarketPulse(): Promise<MarketPulse>;
 }
 
 /**
@@ -53,6 +57,8 @@ export async function fetchJson(url: string): Promise<unknown> {
     // 400 等其他 4xx 也歸為 server，但帶 status，備援只對 5xx 觸發
     throw new DataSourceError('server', message ?? `HTTP ${res.status}`, res.status);
   }
+  // 本機開發伺服器（vite dev／preview）對不存在的檔案會回傳首頁 HTML 而非 404；資料端點不會回傳 HTML，視為不存在
+  if (res.headers.get('content-type')?.includes('text/html')) throw new DataSourceError('not_found', url, 404);
 
   const text = await res.text();
   try {

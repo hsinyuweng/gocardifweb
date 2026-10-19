@@ -82,6 +82,19 @@
 
 ---
 
+## 2A. 市場總覽資料（2026-10-18 新增，格式草案，待後端定版）
+
+首頁「市場總覽」使用。回應內容與靜態檔相同，原樣回傳；格式細節見後端需求文件 S7、M5，示意檔在 `docs/examples/feed-example.json`、`docs/examples/market-pulse-example.json`。
+
+| 端點 | 靜態檔（static 模式） | 必要欄位 | 用在 |
+|---|---|---|---|
+| `GET /api/v1/feed` | `public/data/feed.json` | `items` 陣列 | 新聞監控（news、market）、競品與法規異動（product、regulation）、追蹤清單更新時間 |
+| `GET /api/v1/market-pulse` | `public/data/market-pulse.json` | `metrics` 陣列 | 市場脈動 |
+
+- 尚未提供時回 404（`NOT_FOUND`）：前端該卡片顯示「資料準備中」，不視為錯誤。
+- 錯誤格式與離線備援規則同第 1 節。
+- 正式格式若與草案不同，前端只需調整 `src/types/feed.ts`、`src/types/marketPulse.ts`、`src/data/validate.ts`、`src/data/normalizeMarket.ts`。
+
 ## 3. 模組詳細資料（草案，未實作）
 
 - 用途：未來呈現模組層級的細節與圖表，例如發生率暨獲利模組的 `incidence_time_series`（可畫成趨勢線圖）。

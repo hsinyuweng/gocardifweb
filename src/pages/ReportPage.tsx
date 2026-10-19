@@ -45,11 +45,13 @@ export function ReportPage() {
 
   const vm = state.status === 'ok' ? state.vm : null;
 
-  // 從我的待辦進來時麵包屑回到我的待辦；從首頁進來時回到原本的篩選狀態
+  // 從我的待辦、市場總覽進來時麵包屑回到該頁；從案件總覽進來時回到原本的篩選狀態
   const from = readFromPath(location.state);
   const parent = from?.startsWith('/tasks')
     ? { label: zhTW.nav.tasks, to: from }
-    : { label: zhTW.nav.overview, to: from ?? '/cases', state: readFromState(location.state) };
+    : from === '/'
+      ? { label: zhTW.nav.home, to: '/' }
+      : { label: zhTW.nav.overview, to: from ?? '/cases', state: readFromState(location.state) };
   useBreadcrumb([parent, { label: vm ? orDash(vm.summary.name) : reportId }]);
   usePageNotices(vm?.schemaVersionMismatch ? [{ tone: 'warning', text: zhTW.schemaMismatch }] : []);
 

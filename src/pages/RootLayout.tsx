@@ -3,10 +3,19 @@ import { Outlet } from 'react-router';
 import { AppShell } from '../components/layout/AppShell';
 import type { BreadcrumbItem, TopBarNotice } from '../components/layout/TopBar';
 import { useConfig } from '../config/ConfigContext';
-import { getDataSource, isOffline, loadAllReports, normalizeAppMeta, subscribeConnection } from '../data';
+import {
+  getDataSource,
+  isOffline,
+  loadAllReports,
+  normalizeAppMeta,
+  normalizeFeed,
+  normalizeMarketPulse,
+  subscribeConnection,
+} from '../data';
 import { zhTW } from '../i18n/zh-TW';
 import { readOwnerPreference, subscribeOwnerPreference, writeOwnerPreference } from '../lib/ownerPreference';
 import { countOwners } from '../lib/tasks';
+import { useOnDemand } from './useOnDemand';
 import { PageChromeContext, type AllReportsState, type IndexState, type LayoutOutletContext } from './pageChrome';
 
 /** 共用版面：讀取報告清單一次，提供給導覽列（更新時間、資料來源）與各頁面 */
@@ -52,6 +61,15 @@ export function RootLayout() {
 
   const requestAllReports = useCallback(() => setAllRequested(true), []);
 
+  // 市場總覽資料（動態清單、市場脈動）：有頁面需要時才讀取
+  const loadFeed = useCallback(async () => normalizeFeed(await getDataSource(config).getFeed()), [config]);
+  const loadPulse = useCallback(
+    async () => normalizeMarketPulse(await getDataSource(config).getMarketPulse()),
+    [config],
+  );
+  const [feedState, requestFeed] = useOnDemand(loadFeed);
+  const [pulseState, requestPulse] = useOnDemand(loadPulse);
+
   const meta = useMemo(
     () => normalizeAppMeta(indexState.status === 'ok' ? indexState.index : null, config, offline),
     [indexState, config, offline],
@@ -65,7 +83,15 @@ export function RootLayout() {
     [allReportsState],
   );
   const chrome = useMemo(() => ({ setBreadcrumb, setPageNotices }), []);
-  const outletContext: LayoutOutletContext = { indexState, allReportsState, requestAllReports };
+  const outletContext: LayoutOutletContext = {
+    indexState,
+    allReportsState,
+    requestAllReports,
+    feedState,
+    requestFeed,
+    pulseState,
+    requestPulse,
+  };
 
   return (
     <PageChromeContext.Provider value={chrome}>

@@ -1,5 +1,7 @@
 import type { Report } from '../types/report';
 import type { ReportIndex } from '../types/reportIndex';
+import type { Feed } from '../types/feed';
+import type { MarketPulse } from '../types/marketPulse';
 import { DataSourceError } from './DataSource';
 
 // 第 6.4 節：只檢查最基本結構，其餘欄位交給 normalize 容錯處理
@@ -27,4 +29,16 @@ export function validateReportIndex(raw: unknown): ReportIndex {
   if (!isObject(raw)) throw new DataSourceError('invalid_format', '報告清單不是 JSON 物件');
   if (!Array.isArray(raw.reports)) throw new DataSourceError('invalid_format', '報告清單缺少 reports 陣列');
   return raw as unknown as ReportIndex;
+}
+
+export function validateFeed(raw: unknown): Feed {
+  if (!isObject(raw)) throw new DataSourceError('invalid_format', '動態清單不是 JSON 物件');
+  if (!Array.isArray(raw.items)) throw new DataSourceError('invalid_format', '動態清單缺少 items 陣列');
+  return raw as unknown as Feed;
+}
+
+export function validateMarketPulse(raw: unknown): MarketPulse {
+  if (!isObject(raw)) throw new DataSourceError('invalid_format', '市場脈動不是 JSON 物件');
+  if (!Array.isArray(raw.metrics)) throw new DataSourceError('invalid_format', '市場脈動缺少 metrics 陣列');
+  return raw as unknown as MarketPulse;
 }
