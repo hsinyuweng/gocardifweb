@@ -1,0 +1,97 @@
+# 網頁架構總覽（第 2 層）
+
+> 這份記錄網頁**現在**的樣子：有哪些頁、怎麼連、資料怎麼流、程式放在哪。
+> 有新增或修改路由、導覽列、頁面之間的連結、資料流時，都要更新這份。
+> 使用者提供的架構圖放在 [diagrams/](diagrams/)。圖和這份文件不一致時，先問使用者以哪個為準。
+> 最後更新：2026-10-20（儀表板 B 完成後）
+
+## 1. 路由與頁面
+
+| 路徑 | 頁面 | 檔案 | 狀態 |
+|---|---|---|---|
+| `#/` | 市場總覽：四張卡片（新聞監控、市場脈動、競品與法規異動、我的追蹤清單） | `pages/MarketHomePage.tsx` | ✅ |
+| `#/cases` | 案件總覽：篩選與排序寫進網址（`q`、`country`、`category`、`rec`、`sort`、`dir`） | `pages/OverviewPage.tsx` | ✅ |
+| `#/report/:reportId` | 報告頁，A–F 區，可帶 `?owner=` | `pages/ReportPage.tsx` | ✅ |
+| `#/tasks` | 我的待辦，可帶 `?owner=` | `pages/TasksPage.tsx` | ✅ |
+| `#/guide` | 使用說明 | `pages/GuidePage.tsx` | ✅（C 階段要補新頁面說明） |
+| `#/feed?category=` | 市場動態：完整清單，可依類別篩選 | — | ⏭ 儀表板 C |
+| `#/market` | 市場脈動：全部指標，大趨勢圖＋數值表 | — | ⏭ 儀表板 C |
+| `*` | 找不到此頁面，連「回到市場總覽」 | `pages/NotFoundPage.tsx` | ✅ |
+
+路由定義在 `src/main.tsx`。新增頁面時只新增路由與頁面檔（規格第 11.1 節）。
+
+## 2. 導覽列（Sidebar）
+
+- 可點擊的項目依序為：市場總覽、案件總覽、我的待辦、使用說明。
+- 規劃中（灰色、不可點）：市場動態、市場脈動、跨部門審查。前兩項在 C 階段完成後改成可點擊。
+- 底部：我的單位（設定／更改）、資料更新時間、資料來源（離線資料／後端連線）。
+
+## 3. 頁面之間的連結與返回路徑
+
+導覽原則：每個能到下一頁或下一步的地方都要能回來。詳細規則見 [guides/collaboration.md](../guides/collaboration.md)。
+
+```
+市場總覽 ─ 追蹤清單一列 ─────▶ 案件總覽（帶 category、country）   麵包屑「市場總覽 / 案件總覽」
+        ─ 影響 N 項 → 商品 ──▶ 報告頁                          麵包屑「市場總覽 / 商品」
+        ─ 新聞、異動標題 ────▶ 外部原文（新分頁）
+        ─ 看全部 →（C 階段）─▶ 市場動態、市場脈動                 麵包屑「市場總覽 / 頁名」
+案件總覽 ─ 點一列 ───────────▶ 報告頁                          麵包屑「案件總覽 / 商品」，回到原篩選
+我的待辦 ─ 看報告 → ─────────▶ 報告頁（帶 ?owner=）             麵包屑「我的待辦 / 商品」
+報告頁 E 區 ─ ↑ 回到三面向 ──▶ 同頁 C 區
+```
+
+- 實作方式：導過去時把來源網址放進 `location.state.from`，麵包屑由它決定上一層（`lib/ownerParam.ts` 的 `readFromPath`、`readFromState`）。
+- `BreadcrumbItem.state` 讓麵包屑可以把上一層的 state 帶回去，所以多層返回不會斷。
+
+## 4. 資料流
+
+```
+public/config.json ─ loadConfig ─▶ ConfigContext
+pages/RootLayout ─ getDataSource(config) ─▶ Static / Api / Fallback(Api→Static) / ConfigError
+  ├─ listReports（一次）─▶ normalizeAppMeta ─▶ AppShell（Sidebar、TopBar）
+  ├─ allReports（需要時才讀）─▶ 我的待辦、我的單位選項
+  ├─ feed（需要時才讀）──────▶ 市場總覽（新聞監控、競品與法規異動、追蹤清單日期）
+  └─ marketPulse（需要時才讀）▶ 市場總覽（市場脈動）
+（以上經 Outlet context 傳出：useIndexState、useAllReports、useFeed、useMarketPulse）
+pages/* ─ normalize* ─▶ ViewModel ─▶ components/*
+```
+
+| 資料 | static 模式 | api 模式 | 原始格式只在這些檔案出現 |
+|---|---|---|---|
+| 報告清單 | `data/reports/index.json` | `/api/v1/reports` | `types/reportIndex.ts`、`validate.ts`、`normalize.ts` |
+| 單份報告 | `data/reports/<id>.json` | `/api/v1/reports/<id>` | `types/report.ts`、`validate.ts`、`normalize.ts` |
+| 動態清單 | `data/feed.json` | `/api/v1/feed` | `types/feed.ts`、`validate.ts`、`normalizeMarket.ts` |
+| 市場脈動 | `data/market-pulse.json` | `/api/v1/market-pulse` | `types/marketPulse.ts`、`validate.ts`、`normalizeMarket.ts` |
+
+- 元件只收 ViewModel（`types/viewModel.ts`）。後端格式改變時只改上表最右欄的檔案。
+- 資料檔不存在（404）時，卡片顯示「資料準備中」。本機 vite 對不存在的檔案回傳 HTML，也當作 404 處理（`fetchJson`）。
+- 只有網路錯誤與 5xx 會改讀靜態檔（離線備援）。
+- 瀏覽器存放的資料：`gocardifweb.owner`（我的單位）、`gocardifweb.watchlist`（追蹤清單）。
+
+## 5. 程式目錄
+
+```
+src/
+├── main.tsx                 路由
+├── config/                  config.json 讀取
+├── data/                    DataSource 四種實作、validate、normalize、normalizeMarket、allReports、connectionStatus
+├── types/                   原始 JSON 型別（report、reportIndex、feed、marketPulse）、viewModel
+├── lib/                     格式、國家、篩選、負責單位、追蹤清單、待辦彙整等工具
+├── i18n/zh-TW.ts            所有介面文字
+├── components/
+│   ├── layout/              AppShell、Sidebar、TopBar
+│   ├── common/              SignalLabel、StatusMessage
+│   ├── charts/              MarketSizingBar、RegulatoryDistributionBar、Sparkline（純 CSS／SVG，不用套件）
+│   ├── home/                市場總覽卡片
+│   ├── overview/            案件總覽
+│   ├── report/              報告頁 A–F 區
+│   └── tasks/               我的待辦
+└── pages/                   各頁面、RootLayout、pageChrome（共用狀態 hooks）、useOnDemand
+scripts/                     sync-reports.mjs（匯入報告、feed、market-pulse）、mock-api.mjs（本機模擬後端）
+```
+
+## 6. 視覺規則摘要
+
+- 綠、黃、橘、紅只用在燈號（D4）。市場脈動的漲跌用海軍藍加 ▲▼。
+- 寬度 ≥1024px（`lg`）才顯示側邊導覽。市場總覽在寬螢幕排成 2×2，窄螢幕排成一欄，追蹤清單放第一。
+- 每個頁面在 390px 寬時都不能整頁左右捲動。

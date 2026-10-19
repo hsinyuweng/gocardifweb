@@ -1,4 +1,4 @@
-// 本機模擬後端（第 6.6 節）：docs/api-contract.md 第 2 節的報告端點，以及市場總覽的 feed、market-pulse
+// 本機模擬後端（第 6.6 節）：docs/spec/api-contract.md 第 2 節的報告端點，以及市場總覽的 feed、market-pulse
 // 用法：npm run mock-api → http://localhost:8787
 // 資料讀自 public/data/reports/（先執行 npm run sync）。只使用 Node.js 內建模組。
 

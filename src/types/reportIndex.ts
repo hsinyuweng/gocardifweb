@@ -1,4 +1,4 @@
-// 報告清單型別（docs/api-contract.md 第 2.1 節）
+// 報告清單型別（docs/spec/api-contract.md 第 2.1 節）
 
 type Nullable<T> = T | null | undefined;
 

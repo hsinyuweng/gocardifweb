@@ -4,7 +4,7 @@
 
 - 網站：<https://hsinyuweng.github.io/gocardifweb/>
 - 技術：React + TypeScript + Vite + Tailwind CSS，純靜態網站，以 GitHub Actions 發布到 GitHub Pages。
-- 開發規格：[`docs/web-spec.md`](docs/web-spec.md)；前後端約定：[`docs/api-contract.md`](docs/api-contract.md)；進度紀錄：[`docs/project-status.md`](docs/project-status.md)。
+- 開發規格：[`docs/spec/web-spec.md`](docs/spec/web-spec.md)；前後端約定：[`docs/spec/api-contract.md`](docs/spec/api-contract.md)；進度與決策紀錄：從 [`docs/README.md`](docs/README.md) 開始。
 
 > 網站內容為 AI 輔助之內部初審，須經相關部門人員覆核。
 
@@ -91,7 +91,7 @@ push 到 `main` 分支後，GitHub Actions（[`.github/workflows/deploy.yml`](.g
 4. 在 mock-api 的終端機按 `Ctrl + C` 停掉，重新整理：頂部列出現離線提示，畫面改顯示靜態資料，導覽列顯示「資料來源：離線資料」。
 5. 測完把 `config.json` 改回 `"dataSource": "static"`、`"apiBaseUrl": ""`。
 
-mock-api 實作 [`docs/api-contract.md`](docs/api-contract.md) 第 2 節的兩個報告端點，以及第 2A 節市場總覽的 `GET /api/v1/feed`、`GET /api/v1/market-pulse`。後兩者在 `public/data/` 沒有正式檔時，改回傳 `docs/examples/` 的**示意資料**（捏造的內容，只用來看畫面）。
+mock-api 實作 [`docs/spec/api-contract.md`](docs/spec/api-contract.md) 第 2 節的兩個報告端點，以及第 2A 節市場總覽的 `GET /api/v1/feed`、`GET /api/v1/market-pulse`。後兩者在 `public/data/` 沒有正式檔時，改回傳 `docs/examples/` 的**示意資料**（捏造的內容，只用來看畫面）。
 
 **用示意資料看市場總覽**：照上面的步驟開 mock-api、把 `public/config.json` 改成 api 模式，首頁三張卡片就會顯示示意內容；看完記得把設定改回 static。
 
@@ -102,7 +102,7 @@ mock-api 實作 [`docs/api-contract.md`](docs/api-contract.md) 第 2 節的兩�
 ```
 gocardifweb/
 ├── .github/workflows/deploy.yml   自動部署
-├── docs/                          規格、API 約定、範例報告、進度紀錄
+├── docs/                          規格、架構、決策、進度紀錄（入口 docs/README.md）
 ├── incoming/                      待匯入報告（不 commit）
 ├── public/
 │   ├── config.json                執行期設定
@@ -127,4 +127,4 @@ gocardifweb/
 - **市場動態**：每日／每週市場資訊與法規變化；先以 GitHub Actions 定時抓取後端資料並重建網站（每日快照），之後再改為 api 即時模式。
 - **目標客群與地區分布**：台灣縣市地圖視覺化。
 - **市場總覽**：首頁已改為四張卡片（新聞監控、市場脈動、競品與法規異動、我的追蹤清單）；前三張在後端提供資料前顯示「資料準備中」。
-- **後端連線**：`dataSource` 改為 `api`，經 Cloudflare tunnel 連到 Controller（見 `docs/api-contract.md`）。
+- **後端連線**：`dataSource` 改為 `api`，經 Cloudflare tunnel 連到 Controller（見 `docs/spec/api-contract.md`）。

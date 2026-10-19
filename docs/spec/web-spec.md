@@ -8,9 +8,9 @@
 ## 0. 嚴格規則（優先於本文件其他所有內容）
 
 1. 本文件若出現「【待填」或「【待確認」字樣，先停止並詢問，不得自行假設。
-2. 報告資料格式以 `docs/examples/summarizer-example-report.json` 與第 8 節為準；後端 API 格式以 `docs/api-contract.md` 為準。不得自行發明欄位、檔名、路徑、判定用語、顏色、數字或文案。本文件未提供的介面文字，先列出來詢問。
+2. 報告資料格式以 `docs/examples/summarizer-example-report.json` 與第 8 節為準；後端 API 格式以 `docs/spec/api-contract.md` 為準。不得自行發明欄位、檔名、路徑、判定用語、顏色、數字或文案。本文件未提供的介面文字，先列出來詢問。
 3. 本階段只實作「讀取並呈現報告」。不得實作資料輸入表單、分析任務送出、審查流程、登入或任何寫入後端的功能。
-4. 前端程式碼與設定檔中不得出現 API 金鑰、token 或密碼。不得呼叫 `docs/api-contract.md` 以外的端點。
+4. 前端程式碼與設定檔中不得出現 API 金鑰、token 或密碼。不得呼叫 `docs/spec/api-contract.md` 以外的端點。
 5. 不得修改報告 JSON 的內容。
 6. 只能在本前端專案資料夾內新增或修改檔案。
 7. 開始實作前先輸出實作計畫（檔案結構、元件拆分、資料流），等我回覆「確認」後才寫程式。
@@ -85,7 +85,7 @@
 ```
 瀏覽器（GitHub Pages）──HTTPS──▶ Cloudflare tunnel ──▶ Controller（REST API）──▶ Hermes／PostgreSQL
 ```
-端點定義見 `docs/api-contract.md`。
+端點定義見 `docs/spec/api-contract.md`。
 
 ---
 
@@ -118,9 +118,9 @@
 gocardifweb/
 ├── CLAUDE.md
 ├── .github/workflows/deploy.yml
-├── docs/
-│   ├── web-spec.md
-│   ├── api-contract.md
+├── docs/                            # 結構與閱讀順序見 docs/README.md（2026-10-20 經使用者要求整理）
+│   ├── README.md                    # 入口：目前狀態、改動前要讀哪些檔、改動後要更新哪些檔
+│   ├── spec/web-spec.md、spec/api-contract.md
 │   └── examples/summarizer-example-report.json
 ├── incoming/                        # 待匯入報告（加入 .gitignore）
 ├── public/
@@ -203,7 +203,7 @@ interface DataSource {
 - ViewModel 中所有可能缺漏的值型別必須允許 null。
 
 ### 6.6 mock-api.mjs
-- Node.js 內建模組，`npm run mock-api` 監聽 `http://localhost:8787`，只實作 `docs/api-contract.md` 第 2 節兩個端點，資料讀自 `public/data/reports/`，回應帶 `Access-Control-Allow-Origin: *`。
+- Node.js 內建模組，`npm run mock-api` 監聽 `http://localhost:8787`，只實作 `docs/spec/api-contract.md` 第 2 節兩個端點，資料讀自 `public/data/reports/`，回應帶 `Access-Control-Allow-Origin: *`。
 
 ---
 
@@ -215,7 +215,7 @@ interface DataSource {
   2. `report_meta.schema_version` 不以 `1.` 開頭者略過並警告。
   3. 以 `report_meta.report_id` 為檔名複製到 `public/data/reports/`，覆蓋同名檔。
   4. 同批次 report_id 重複時停止並印出檔名。
-  5. 掃描 `public/data/reports/` 全部報告（不含 index.json），重新產生 `index.json`，格式見 `docs/api-contract.md` 第 2.1 節。缺少的欄位填 null，計數缺少時填 0。
+  5. 掃描 `public/data/reports/` 全部報告（不含 index.json），重新產生 `index.json`，格式見 `docs/spec/api-contract.md` 第 2.1 節。缺少的欄位填 null，計數缺少時填 0。
 
 ---
 
@@ -419,7 +419,7 @@ ReportPage 只負責取資料與載入／錯誤狀態，成功後渲染 `<Report
 - 新頁面：依第 11.1 節規則新增；導覽列的「規劃中」項目屆時改為可點擊。
 - 新資料：報告格式微調時只改 `types/report.ts` 與 `normalize.ts`。
 - 圖表：未來需要正式圖表時，再選定套件並放入 `components/charts/`。
-- 後端互動：依 `docs/api-contract.md` 第 3、4 節，屆時再排入。
+- 後端互動：依 `docs/spec/api-contract.md` 第 3、4 節，屆時再排入。
 - 英文介面：新增 `src/i18n/en.ts`。
 
 ---

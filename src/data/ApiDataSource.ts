@@ -5,7 +5,7 @@ import type { MarketPulse } from '../types/marketPulse';
 import { fetchJson, type DataSource } from './DataSource';
 import { validateFeed, validateMarketPulse, validateReport, validateReportIndex } from './validate';
 
-// 第 6.2 節 api 模式：端點見 docs/api-contract.md 第 2 節
+// 第 6.2 節 api 模式：端點見 docs/spec/api-contract.md 第 2 節
 export class ApiDataSource implements DataSource {
   private readonly base: string;
   private readonly root: string;

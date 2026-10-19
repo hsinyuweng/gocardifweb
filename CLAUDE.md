@@ -1,12 +1,12 @@
 # gocardifweb 專案說明（Claude Code 每次啟動自動讀取）
 
 ## 必讀文件
-- 開發規格：`docs/web-spec.md`（唯一依據；第 0 節規則優先於一切）
-- 前後端約定：`docs/api-contract.md`
-- 報告範例：`docs/examples/summarizer-example-report.json`
-- **進度與決策紀錄：`docs/project-status.md`**（目前階段、所有已確認的決定與介面文字、與規格不同的實作、環境注意事項、待驗證步驟、未來方向、待確認事項）
+- **每個新對話先讀 `docs/README.md`**（文件入口），裡面有目前進度、下一步、資料夾結構。依它告訴我目前進度與下一步。
+- 其他文件**依改動範圍**讀（`docs/README.md` 第 3 節的對照表），不用每次全部讀完。
+- 正式規格：`docs/spec/web-spec.md`（唯一依據；第 0 節規則優先於一切）、`docs/spec/api-contract.md`；報告範例：`docs/examples/summarizer-example-report.json`。
+- 我提供的架構圖、示意圖放在 `docs/architecture/diagrams/`。
 
-每個新對話開始時，先讀完以上文件再動手，並依 `docs/project-status.md` 告訴我目前進度與下一步。每完成一個階段或做出新決定，都要更新 `docs/project-status.md`。規格與我在對話中的口頭指示衝突時，先停下來問我，不要自行選擇。
+**紀錄規則**：對網頁本身或整體設計的任何更動，都要直接寫進 `docs/` 的紀錄檔，依改動大小更新（`docs/README.md` 第 4 節），不能只留在對話裡。規格與我在對話中的口頭指示衝突時，先停下來問我，不要自行選擇。
 
 ## 與我合作的方式
 - 我是網頁開發新手，有基本程式基礎。請用繁體中文溝通。
