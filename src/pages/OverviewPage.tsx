@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useSyncExternalStore } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router';
 import { RecommendationBar } from '../components/overview/RecommendationBar';
 import { OverviewToolbar } from '../components/overview/OverviewToolbar';
@@ -8,6 +8,7 @@ import { normalizeReportIndex } from '../data';
 import { zhTW } from '../i18n/zh-TW';
 import { orDash } from '../lib/format';
 import { readFromPath } from '../lib/ownerParam';
+import { isUnreviewed, readReviewed, subscribeReviewed } from '../lib/reviewed';
 import {
   DEFAULT_SORT_DIR,
   filterRows,
@@ -22,13 +23,13 @@ import { errorText, useBreadcrumb, useIndexState } from './pageChrome';
 
 const t = zhTW.overview;
 
-/** 案件總覽（第 11.2 節） */
+/** 競品研究：全部報告表格（第 11.2 節，原案件總覽） */
 export function OverviewPage() {
   const navigate = useNavigate();
   const indexState = useIndexState();
 
   const location = useLocation();
-  // 從市場總覽（追蹤清單）進來時，麵包屑可以點回首頁
+  // 從市場總覽進來時，麵包屑可以點回首頁
   const fromHome = readFromPath(location.state) === '/';
   useBreadcrumb(
     fromHome ? [{ label: zhTW.nav.home, to: '/' }, { label: zhTW.nav.overview }] : [{ label: zhTW.nav.overview }],
@@ -45,9 +46,21 @@ export function OverviewPage() {
     () => (indexState.status === 'ok' ? normalizeReportIndex(indexState.index) : null),
     [indexState],
   );
+  const reviewed = useSyncExternalStore(subscribeReviewed, readReviewed);
+  const unreadIds = useMemo(
+    () => new Set((vm?.rows ?? []).filter((r) => isUnreviewed(r, reviewed)).map((r) => r.reportId as string)),
+    [vm, reviewed],
+  );
   const visibleRows = useMemo(
-    () => (vm ? sortRows(filterRows(vm.rows, filters), sortKey, sortDir) : []),
-    [vm, filters, sortKey, sortDir],
+    () =>
+      vm
+        ? sortRows(
+            filterRows(vm.rows, filters, (r) => r.reportId !== null && unreadIds.has(r.reportId)),
+            sortKey,
+            sortDir,
+          )
+        : [],
+    [vm, filters, sortKey, sortDir, unreadIds],
   );
 
   const handleSort = (key: SortKey) => {
@@ -71,6 +84,9 @@ export function OverviewPage() {
           groups={vm.recommendationGroups}
           selected={filters.recommendation}
           onSelect={(recommendation) => patch({ recommendation })}
+          unreadCount={unreadIds.size}
+          unreadOn={filters.unread}
+          onToggleUnread={() => patch({ unread: !filters.unread })}
         />
         <OverviewToolbar
           search={filters.search}
@@ -90,6 +106,7 @@ export function OverviewPage() {
             sortKey={sortKey}
             sortDir={sortDir}
             onSort={handleSort}
+            unreadIds={unreadIds}
             onOpen={(id) =>
               navigate(`/report/${encodeURIComponent(id)}`, {
                 state: { from: location.pathname + location.search, fromState: location.state },

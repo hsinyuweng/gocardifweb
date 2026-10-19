@@ -6,7 +6,7 @@ import type { DataSource } from './DataSource';
 import { normalizeReport, normalizeReportIndex } from './normalize';
 
 export interface AllReportsResult {
-  /** 依案件總覽預設順序（產出日期新到舊） */
+  /** 依競品研究頁預設順序（產出日期新到舊） */
   reports: ReportViewModel[];
   /** 讀取或格式檢查失敗的報告名稱 */
   failedNames: string[];

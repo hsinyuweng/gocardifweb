@@ -15,6 +15,8 @@ interface ReportTableProps {
   sortDir: SortDir;
   onSort: (key: SortKey) => void;
   onOpen: (reportId: string) => void;
+  /** 未審閱的 report_id */
+  unreadIds: ReadonlySet<string>;
 }
 
 function SortHeader({
@@ -63,7 +65,7 @@ function BlockerCell({ counts }: { counts: BlockerCounts }) {
 }
 
 /** 案件表格（第 11.2 節第 4 點） */
-export function ReportTable({ rows, sortKey, sortDir, onSort, onOpen }: ReportTableProps) {
+export function ReportTable({ rows, sortKey, sortDir, onSort, onOpen, unreadIds }: ReportTableProps) {
   const handleKey = (e: KeyboardEvent, id: string | null) => {
     if (id && (e.key === 'Enter' || e.key === ' ')) {
       e.preventDefault();
@@ -102,7 +104,14 @@ export function ReportTable({ rows, sortKey, sortDir, onSort, onOpen }: ReportTa
                 }`}
               >
                 <td className="px-3 py-2">
-                  <div className="font-semibold text-slate-900">{orDash(r.name)}</div>
+                  <div className="font-semibold text-slate-900">
+                    {orDash(r.name)}
+                    {r.reportId !== null && unreadIds.has(r.reportId) ? (
+                      <span className="ml-2 inline-block rounded bg-slate-100 px-1.5 py-0.5 align-middle text-xs font-medium text-navy-700 ring-1 ring-slate-200">
+                        {t.unread}
+                      </span>
+                    ) : null}
+                  </div>
                   <div className="text-xs text-slate-500">{orDash(r.issuer)}</div>
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap">{orDash(r.countryLabel)}</td>

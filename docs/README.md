@@ -5,12 +5,13 @@
 ## 1. 現況
 
 - 網站：https://hsinyuweng.github.io/gocardifweb/（repo `hsinyuweng/gocardifweb`，`main` push 後自動部署）
-- 頁面：首頁「市場總覽」四張卡片、案件總覽 `#/cases`、報告頁、我的待辦、使用說明（見 `architecture/overview.md`）
+- 頁面：首頁「市場總覽」四區塊、競品研究 `#/research`、報告頁、我的待辦、使用說明（見 `architecture/overview.md`）
+- 2026-10-20 新規劃：階段 1（導覽與競品研究）已完成
 - 市場資料（`feed.json`、`market-pulse.json`）後端尚未提供：線上顯示「資料準備中」，本機 mock-api 用 `examples/` 示意資料
 
 ## 2. 下一步
 
-依使用者 2026-10-20 新規劃（`architecture/diagrams/2026-10-20_網頁規劃說明.md`）改版。差異與分階段計畫在 `backlog/roadmap.md`（方向已確認）。**下一步：階段 1「導覽與競品研究」**，先列介面文字表等使用者「確認」。
+依使用者 2026-10-20 新規劃（`architecture/diagrams/2026-10-20_網頁規劃說明.md`）改版。剩餘階段在 `backlog/roadmap.md`。**下一步：階段 2「追蹤清單改為候選商品」**，先列介面文字表等使用者「確認」。
 
 ## 3. 改動前：依範圍讀
 
@@ -19,7 +20,7 @@
 | 任何介面文字、新畫面 | `guides/collaboration.md`、對應的 `decisions/*.md` |
 | 頁面、路由、導覽、頁面間連結 | `architecture/overview.md`、`spec/web-spec.md` 第 10–11 節 |
 | 首頁四區塊、新聞、市場脈動、追蹤清單 | `decisions/market-dashboard.md`、`spec/api-contract.md` 第 2A 節、`backlog/roadmap.md` |
-| 案件總覽、報告頁 | `spec/web-spec.md` 第 9、11 節、`decisions/spec-stages.md`、`decisions/deviations.md` |
+| 競品研究頁、報告頁 | `spec/web-spec.md` 第 9、11 節、`decisions/spec-stages.md`、`decisions/deviations.md` |
 | 我的待辦、負責單位、麵包屑 | `decisions/tasks-owner-backnav.md` |
 | 資料層、JSON、後端串接 | `spec/web-spec.md` 第 6–8 節、`spec/api-contract.md`、`progress/data-status.md` |
 | 部署、套件、測試 | `guides/environment.md` |

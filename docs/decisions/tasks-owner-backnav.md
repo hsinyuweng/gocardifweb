@@ -16,7 +16,7 @@
 
 ## 返回路徑（導覽原則的實作）
 
-- 案件總覽的搜尋、篩選、排序寫進網址（`q`、`country`、`category`、`rec`（缺漏＝`__missing__`）、`sort`、`dir`；預設值不寫；replace）。
+- 競品研究頁的搜尋、篩選、排序寫進網址（`q`、`country`、`category`、`rec`（缺漏＝`__missing__`）、`unread`、`sort`、`dir`；預設值不寫；replace）。
 - 進下一頁時用 `location.state.from` 帶來源網址，麵包屑據此決定上一層（`lib/ownerParam.ts` 的 `readFromPath`、`readFromState`）。
 - 我的待辦：點單位按鈕 push（上一頁回選單位畫面）；下拉切換 replace。
 - 報告頁 E 區分頁列右側「↑ 回到三面向」捲回 C 區。

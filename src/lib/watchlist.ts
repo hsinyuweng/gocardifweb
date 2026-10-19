@@ -86,7 +86,7 @@ export function watchItemLabel(item: WatchItem): string {
   return t.itemLabel(item.category ?? t.allCategories, countryLabel(item.country) ?? t.allCountries);
 }
 
-/** 連到案件總覽並帶好篩選 */
+/** 連到競品研究（全部報告）並帶好篩選 */
 export function watchItemCasesPath(item: WatchItem): string {
   const params = writeOverviewParams({
     filters: { ...DEFAULT_FILTERS, category: item.category ?? '', country: item.country ?? '' },
@@ -94,7 +94,7 @@ export function watchItemCasesPath(item: WatchItem): string {
     sortDir: DEFAULT_SORT_DIR.generatedDate,
   });
   const qs = params.toString();
-  return qs ? `/cases?${qs}` : '/cases';
+  return qs ? `/research?${qs}` : '/research';
 }
 
 export interface WatchMatch {

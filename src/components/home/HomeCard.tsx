@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { zhTW } from '../../i18n/zh-TW';
 
-export type HomeCardIcon = 'news' | 'pulse' | 'changes' | 'watchlist';
+export type HomeCardIcon = 'news' | 'pulse' | 'research' | 'watchlist';
 
 // 簡單線條圖示（currentColor），對應示意圖
 const ICON_PATHS: Record<HomeCardIcon, ReactNode> = {
@@ -12,10 +12,10 @@ const ICON_PATHS: Record<HomeCardIcon, ReactNode> = {
     </>
   ),
   pulse: <path d="M3 15l4-5 3 3 4-6 3 3M3 17h14" />,
-  changes: (
+  research: (
     <>
-      <path d="M6 14V9a4 4 0 0 1 8 0v5l1.5 1.5h-11L6 14z" />
-      <path d="M8.5 17.5a1.5 1.5 0 0 0 3 0" />
+      <circle cx="8.5" cy="8.5" r="5" />
+      <path d="M12.2 12.2L17 17" />
     </>
   ),
   watchlist: <path d="M10 3l2.1 4.4 4.9.7-3.5 3.4.8 4.8L10 14l-4.3 2.3.8-4.8L3 8.1l4.9-.7L10 3z" />,

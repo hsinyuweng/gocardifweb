@@ -3,11 +3,12 @@ import { useLocation, useParams, useSearchParams } from 'react-router';
 import { StatusMessage } from '../components/common/StatusMessage';
 import { ReportView } from '../components/report/ReportView';
 import { useConfig } from '../config/ConfigContext';
-import { getDataSource, normalizeReport } from '../data';
+import { getDataSource, normalizeReport, normalizeReportIndex } from '../data';
 import type { ReportViewModel } from '../types/viewModel';
 import { zhTW } from '../i18n/zh-TW';
 import { orDash } from '../lib/format';
 import { readOwnerPreference, subscribeOwnerPreference } from '../lib/ownerPreference';
+import { markReviewed } from '../lib/reviewed';
 import {
   OWNER_PARAM,
   ownerParamValue,
@@ -15,7 +16,7 @@ import {
   readFromState,
   requestedOwner as resolveOwner,
 } from '../lib/ownerParam';
-import { errorText, useBreadcrumb, usePageNotices } from './pageChrome';
+import { errorText, useBreadcrumb, useIndexState, usePageNotices } from './pageChrome';
 
 type ReportState =
   | { status: 'loading' }
@@ -45,13 +46,24 @@ export function ReportPage() {
 
   const vm = state.status === 'ok' ? state.vm : null;
 
-  // 從我的待辦、市場總覽進來時麵包屑回到該頁；從案件總覽進來時回到原本的篩選狀態
+  // 成功顯示即記為已審閱；日期用報告清單的產出日期，與競品研究的未審閱判斷一致
+  const indexState = useIndexState();
+  useEffect(() => {
+    if (!vm || indexState.status === 'loading') return;
+    const row =
+      indexState.status === 'ok'
+        ? normalizeReportIndex(indexState.index).rows.find((r) => r.reportId === reportId)
+        : undefined;
+    markReviewed(reportId, row ? row.generatedDate : vm.summary.generatedDate);
+  }, [vm, indexState, reportId]);
+
+  // 從我的待辦、市場總覽進來時麵包屑回到該頁；從競品研究進來時回到原本的篩選狀態
   const from = readFromPath(location.state);
   const parent = from?.startsWith('/tasks')
     ? { label: zhTW.nav.tasks, to: from }
     : from === '/'
       ? { label: zhTW.nav.home, to: '/' }
-      : { label: zhTW.nav.overview, to: from ?? '/cases', state: readFromState(location.state) };
+      : { label: zhTW.nav.overview, to: from ?? '/research', state: readFromState(location.state) };
   useBreadcrumb([parent, { label: vm ? orDash(vm.summary.name) : reportId }]);
   usePageNotices(vm?.schemaVersionMismatch ? [{ tone: 'warning', text: zhTW.schemaMismatch }] : []);
 

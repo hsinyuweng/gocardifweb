@@ -84,7 +84,7 @@ function AddForm({
   );
 }
 
-/** 我的追蹤清單卡片：每列連到案件總覽並帶好篩選 */
+/** 追蹤清單卡片：每列連到競品研究並帶好篩選 */
 export function WatchlistCard({ items, categoryOptions, countryOptions, onAdd, onRemove }: WatchlistCardProps) {
   const [adding, setAdding] = useState(false);
 

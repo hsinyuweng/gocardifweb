@@ -8,6 +8,10 @@ interface RecommendationBarProps {
   /** null 表示目前為「全部」 */
   selected: { key: string | null } | null;
   onSelect: (next: { key: string | null } | null) => void;
+  /** 未審閱開關（與建議篩選可同時使用） */
+  unreadCount: number;
+  unreadOn: boolean;
+  onToggleUnread: () => void;
 }
 
 // shrink-0 + whitespace-nowrap：窄螢幕時按鈕不被擠扁，整列改為橫向捲動
@@ -16,9 +20,21 @@ const on = 'bg-navy-800 text-white ring-navy-800';
 const off = 'bg-white text-slate-700 ring-slate-300 hover:ring-slate-400';
 
 /** 建議分布列（第 11.2 節第 2 點）：點擊篩選，再點一次取消 */
-export function RecommendationBar({ groups, selected, onSelect }: RecommendationBarProps) {
+export function RecommendationBar({
+  groups,
+  selected,
+  onSelect,
+  unreadCount,
+  unreadOn,
+  onToggleUnread,
+}: RecommendationBarProps) {
   return (
     <div className="flex h-12 items-center gap-2 overflow-x-auto px-px">
+      <button type="button" aria-pressed={unreadOn} className={`${base} ${unreadOn ? on : off}`} onClick={onToggleUnread}>
+        <span>{zhTW.overview.unread}</span>
+        <span className={unreadOn ? 'text-white/80' : 'text-slate-500'}>{unreadCount}</span>
+      </button>
+      <span aria-hidden className="h-5 w-px shrink-0 bg-slate-300" />
       <button type="button" className={`${base} ${selected === null ? on : off}`} onClick={() => onSelect(null)}>
         {zhTW.overview.all}
       </button>

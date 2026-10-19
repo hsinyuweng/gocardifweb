@@ -16,7 +16,7 @@ export function countOwners(reports: ReportViewModel[]): OwnerCount[] {
 
 /**
  * 依商品分組；沒有項目的商品不列出。
- * reports 需已依案件總覽順序排列；重大件數多的商品排前面，同數保持原順序。
+ * reports 需已依競品研究頁順序排列；重大件數多的商品排前面，同數保持原順序。
  */
 export function groupTasks(reports: ReportViewModel[], owner: string): TaskProductGroup[] {
   return reports

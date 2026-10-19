@@ -37,7 +37,17 @@ export function GuidePage() {
         <p>{t.whatBody}</p>
       </Section>
 
-      <Section n={2} title={t.flowTitle}>
+      <Section n={2} title={t.homeTitle}>
+        <ul className="space-y-1">
+          {t.homeBlocks.map((b) => (
+            <li key={b.name}>
+              <span className="font-medium text-slate-900">{b.name}</span>：{b.body}
+            </li>
+          ))}
+        </ul>
+      </Section>
+
+      <Section n={3} title={t.flowTitle}>
         <ol className="flex flex-wrap items-center gap-2">
           {t.flowSteps.map((step, i) => (
             <li key={step} className="flex items-center gap-2">
@@ -58,7 +68,7 @@ export function GuidePage() {
         </ol>
       </Section>
 
-      <Section n={3} title={t.questionsTitle}>
+      <Section n={4} title={t.questionsTitle}>
         <table className="w-full max-w-md border-collapse text-left">
           <thead className="border-b border-slate-200 text-slate-600">
             <tr className="h-9">
@@ -77,11 +87,11 @@ export function GuidePage() {
         </table>
       </Section>
 
-      <Section n={4} title={t.howTitle}>
+      <Section n={5} title={t.howTitle}>
         <p>{t.howBody}</p>
       </Section>
 
-      <Section n={5} title={t.noteTitle}>
+      <Section n={6} title={t.noteTitle}>
         <p>{t.noteBody}</p>
       </Section>
     </div>

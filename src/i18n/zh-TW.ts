@@ -13,12 +13,12 @@ export const zhTW = {
 
   nav: {
     home: '市場總覽',
-    overview: '案件總覽',
+    overview: '競品研究',
     tasks: '我的待辦',
     guide: '使用說明',
     roadmapGroup: '規劃中',
-    // 市場動態、市場脈動於階段 C 完成詳細頁後改為可點擊（2026-10-18 經確認）
-    roadmapItems: ['市場動態', '市場脈動', '跨部門審查'],
+    // 2026-10-20 新規劃：前三項的頁面完成後改為可點擊
+    roadmapItems: ['新聞與法規監控', '市場脈動', '追蹤清單', '跨部門審查'],
     dataUpdated: '資料更新：',
     dataSource: '資料來源：',
     dataSourceStatic: '離線資料',
@@ -52,6 +52,13 @@ export const zhTW = {
     title: '使用說明',
     whatTitle: '這個網站做什麼',
     whatBody: '彙整國外保險商品在台灣的市場需求、發生率暨獲利、法規適用三面向分析結果，並提供統整建議。',
+    homeTitle: '首頁四區塊',
+    homeBlocks: [
+      { name: '新聞與法規監控', body: '最新的新聞與法規，一行一則。（完整分類頁規劃中）' },
+      { name: '市場脈動', body: '保險市場的關鍵指標與趨勢。（完整儀表板規劃中）' },
+      { name: '追蹤清單', body: '值得考慮引入的候選商品，依你重視的面向排序。（規劃中）' },
+      { name: '競品研究', body: '已完成、你還沒打開過的商品報告；點進去看完整報告。' },
+    ],
     flowTitle: '流程',
     flowSteps: ['資料蒐集', '三面向分析', '統整建議', '部門審查（規劃中）'],
     questionsTitle: '三個面向回答的問題',
@@ -68,7 +75,7 @@ export const zhTW = {
   },
 
   overview: {
-    title: '案件總覽',
+    title: '競品研究',
     total: (n: number) => `共 ${n} 件`,
     updatedAt: (t: string) => `資料更新於 ${t}`,
     all: '全部',
@@ -77,6 +84,7 @@ export const zhTW = {
     allCategories: '全部險種',
     empty: '目前沒有報告。新增方式請見 README。',
     noMatch: '沒有符合條件的案件。',
+    unread: '未審閱',
     columns: {
       product: '商品',
       country: '國家',
@@ -106,21 +114,26 @@ export const zhTW = {
     partialFailure: (n: number, names: string) => `有 ${n} 份報告無法讀取，以下內容不包含：${names}。`,
   },
 
-  // 市場總覽（首頁儀表板，2026-10-18 經確認）
+  // 市場總覽（首頁，2026-10-20 新規劃）
   home: {
     title: '市場總覽',
     updatedAt: (t: string) => `資料更新於 ${t}`,
     pending: '資料準備中，後端提供後會自動顯示。',
     cards: {
-      news: '新聞監控',
+      news: '新聞與法規監控',
       pulse: '市場脈動',
-      changes: '競品與法規異動',
-      watchlist: '我的追蹤清單',
+      watchlist: '追蹤清單',
+      research: '競品研究',
     },
     noFeedItems: '目前沒有新的動態。',
     noMetrics: '目前沒有指標資料。',
-    changeTags: { product: '新商品', regulation: '法規' } as Record<string, string>,
-    affects: (n: number) => `影響 ${n} 項既有商品評估`,
+    newsTag: '新聞',
+    regulationTag: '法規',
+    researchMeta: (country: string, date: string) => `${country} · 完成於 ${date}`,
+    moreUnread: (n: number) => `還有 ${n} 份未審閱`,
+    allReviewed: '所有報告都已審閱。',
+    seeAll: '看全部 →',
+    seeAllReports: '看全部報告 →',
     changeUp: (pct: string) => `▲ ${pct}%`,
     changeDown: (pct: string) => `▼ ${pct}%`,
     changeFlat: '— 0%',

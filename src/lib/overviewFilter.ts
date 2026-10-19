@@ -1,6 +1,6 @@
 import type { OverviewRow } from '../types/viewModel';
 
-// 案件總覽的篩選與排序（只處理 ViewModel，不讀原始 JSON）
+// 競品研究（全部報告）的篩選與排序（只處理 ViewModel，不讀原始 JSON）
 
 export type SortKey = 'name' | 'generatedDate';
 export type SortDir = 'asc' | 'desc';
@@ -12,16 +12,26 @@ export interface OverviewFilters {
   /** 空字串表示全部 */
   country: string;
   category: string;
+  /** 只看未審閱（2026-10-20 經確認） */
+  unread: boolean;
 }
 
-export const DEFAULT_FILTERS: OverviewFilters = { recommendation: null, search: '', country: '', category: '' };
+export const DEFAULT_FILTERS: OverviewFilters = {
+  recommendation: null,
+  search: '',
+  country: '',
+  category: '',
+  unread: false,
+};
 
 /** 切換欄位時的預設方向：商品 A→Z、產出日期新→舊 */
 export const DEFAULT_SORT_DIR: Record<SortKey, SortDir> = { name: 'asc', generatedDate: 'desc' };
 
-export function filterRows(rows: OverviewRow[], f: OverviewFilters): OverviewRow[] {
+/** isUnread：判斷某列是否未審閱（未審閱篩選開啟時使用） */
+export function filterRows(rows: OverviewRow[], f: OverviewFilters, isUnread: (r: OverviewRow) => boolean): OverviewRow[] {
   const q = f.search.trim().toLowerCase();
   return rows.filter((r) => {
+    if (f.unread && !isUnread(r)) return false;
     if (f.recommendation && r.recommendationKey !== f.recommendation.key) return false;
     if (f.country && r.countryCode !== f.country) return false;
     if (f.category && r.category !== f.category) return false;
@@ -47,7 +57,15 @@ export function sortRows(rows: OverviewRow[], key: SortKey, dir: SortDir): Overv
 }
 
 // 篩選與排序寫入網址：從報告頁返回時恢復原本狀態（導覽原則，2026-10-18 經確認）。預設值不寫入。
-const P = { search: 'q', country: 'country', category: 'category', rec: 'rec', sort: 'sort', dir: 'dir' } as const;
+const P = {
+  search: 'q',
+  country: 'country',
+  category: 'category',
+  rec: 'rec',
+  unread: 'unread',
+  sort: 'sort',
+  dir: 'dir',
+} as const;
 /** recommendation 缺漏者的網址值 */
 const REC_MISSING = '__missing__';
 
@@ -68,6 +86,7 @@ export function readOverviewParams(params: URLSearchParams): OverviewUrlState {
       search: params.get(P.search) ?? '',
       country: params.get(P.country) ?? '',
       category: params.get(P.category) ?? '',
+      unread: params.get(P.unread) === '1',
     },
     sortKey,
     sortDir: dirParam === 'asc' || dirParam === 'desc' ? dirParam : DEFAULT_SORT_DIR[sortKey],
@@ -81,6 +100,7 @@ export function writeOverviewParams(s: OverviewUrlState): URLSearchParams {
   if (f.country !== '') p.set(P.country, f.country);
   if (f.category !== '') p.set(P.category, f.category);
   if (f.recommendation !== null) p.set(P.rec, f.recommendation.key ?? REC_MISSING);
+  if (f.unread) p.set(P.unread, '1');
   if (s.sortKey !== 'generatedDate') p.set(P.sort, s.sortKey);
   if (s.sortDir !== DEFAULT_SORT_DIR[s.sortKey]) p.set(P.dir, s.sortDir);
   return p;
