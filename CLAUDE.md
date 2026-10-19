@@ -6,7 +6,7 @@
 - 正式規格：`docs/spec/web-spec.md`（唯一依據；第 0 節規則優先於一切）、`docs/spec/api-contract.md`；報告範例：`docs/examples/summarizer-example-report.json`。
 - 我提供的架構圖、示意圖放在 `docs/architecture/diagrams/`。
 
-**紀錄規則**：對網頁本身或整體設計的任何更動，都要直接寫進 `docs/` 的紀錄檔，依改動大小更新（`docs/README.md` 第 4 節），不能只留在對話裡。規格與我在對話中的口頭指示衝突時，先停下來問我，不要自行選擇。
+**紀錄規則**：對網頁本身或整體設計的任何更動，都要寫進 `docs/`（依 `docs/README.md` 第 4 節），不能只留在對話裡。紀錄要精簡：只寫現況與未來架構，不寫修改過程（git log 已有），過時內容直接改掉。規格與我在對話中的口頭指示衝突時，先停下來問我，不要自行選擇。
 
 ## 與我合作的方式
 - 我是網頁開發新手，有基本程式基礎。請用繁體中文溝通。
@@ -25,5 +25,5 @@
 
 ## 環境提醒（給 Claude）
 - Claude 的 Bash 環境沒有 `/opt/homebrew/bin`，執行 node／npm 前先 `export PATH="/opt/homebrew/bin:$PATH"`。
-- git 指令只在本資料夾內執行（家目錄原本誤設的 repo 已於 2026-10-18 移除）。
+- git 指令只在本資料夾內執行。
 - 我會 commit 並 push 每個階段；commit 前提醒我確認 `public/config.json` 是 static 模式。
