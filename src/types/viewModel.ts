@@ -296,22 +296,86 @@ export interface FeedViewModel {
   items: FeedItemViewModel[];
 }
 
-export interface PulseMetricViewModel {
+/** 市場脈動五組（顯示順序） */
+export type PulseGroup = 'growth' | 'pricing' | 'channel' | 'health' | 'brand';
+
+export interface PulsePointViewModel {
+  period: string | null;
+  value: number;
+}
+
+export interface PulseLineViewModel {
+  name: string | null;
+  /** 由舊到新，已排除非數字 */
+  points: PulsePointViewModel[];
+}
+
+export interface PulsePartViewModel {
+  name: string | null;
+  sharePct: number;
+  growthPct: number | null;
+}
+
+export interface PulseSharePeriodViewModel {
+  period: string | null;
+  parts: PulsePartViewModel[];
+}
+
+export interface PulseEventViewModel {
+  date: string | null;
+  title: string | null;
+  /** upcoming：預計；其他一律視為已發生 */
+  upcoming: boolean;
+  note: string | null;
+}
+
+interface PulseMetricBase {
   key: string;
+  group: PulseGroup;
+  featured: boolean;
   label: string | null;
   unit: string | null;
-  latestValue: number | null;
-  changePct: number | null;
-  changeLabel: string | null;
-  /** 由舊到新，已排除非數字 */
-  series: number[];
   source: string | null;
   sourceUrl: string | null;
   asOf: string | null;
 }
 
+export interface PulseTrendViewModel extends PulseMetricBase {
+  type: 'trend';
+  latestValue: number | null;
+  change: number | null;
+  /** pp：百分點；pct：百分比 */
+  changeUnit: 'pct' | 'pp';
+  changeLabel: string | null;
+  points: PulsePointViewModel[];
+}
+
+export interface PulseMultiLineViewModel extends PulseMetricBase {
+  type: 'multi_line';
+  lines: PulseLineViewModel[];
+}
+
+export interface PulseShareViewModel extends PulseMetricBase {
+  type: 'share';
+  /** 由舊到新 */
+  periods: PulseSharePeriodViewModel[];
+}
+
+export interface PulseTimelineViewModel extends PulseMetricBase {
+  type: 'timeline';
+  /** 依日期由舊到新 */
+  events: PulseEventViewModel[];
+}
+
+export type PulseMetricViewModel =
+  | PulseTrendViewModel
+  | PulseMultiLineViewModel
+  | PulseShareViewModel
+  | PulseTimelineViewModel;
+
 export interface MarketPulseViewModel {
   generatedAt: string | null;
+  focus: { text: string; asOf: string | null } | null;
   metrics: PulseMetricViewModel[];
 }
 

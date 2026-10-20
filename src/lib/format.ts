@@ -94,10 +94,63 @@ export function relativeTimeText(time: number | null, dateOnly: boolean, raw: st
   return t.daysAgo(n);
 }
 
-/** 市場脈動的變化：▲ 3.2%、▼ 1.1%、— 0%；null 顯示「—」 */
-export function changePctText(pct: number | null): string {
-  if (pct === null) return zhTW.common.dash;
-  const abs = new Intl.NumberFormat('zh-TW', { maximumFractionDigits: 1, minimumFractionDigits: 1 }).format(Math.abs(pct));
-  if (Math.abs(pct) < 0.05) return zhTW.home.changeFlat;
-  return pct > 0 ? zhTW.home.changeUp(abs) : zhTW.home.changeDown(abs);
+function fixed(value: number, digits: number): string {
+  return new Intl.NumberFormat('zh-TW', { maximumFractionDigits: digits, minimumFractionDigits: digits }).format(value);
+}
+
+/**
+ * 市場脈動的變化：百分比「▲ 3.2%」（1 位小數）、百分點「▲ 0.05 個百分點」（2 位小數）；
+ * 四捨五入後為 0 顯示「— 0%」「— 0 個百分點」；null 顯示「—」
+ */
+export function pulseChangeText(change: number | null, unit: 'pct' | 'pp' = 'pct'): string {
+  const t = zhTW.market.change;
+  if (change === null) return zhTW.common.dash;
+  const digits = unit === 'pp' ? 2 : 1;
+  if (Math.abs(change) < 0.5 * 10 ** -digits) return unit === 'pp' ? t.flatPp : t.flatPct;
+  // 百分點去掉多餘的 0（1.5、0.05）；百分比固定 1 位（3.2、8.0）
+  const abs =
+    unit === 'pp'
+      ? new Intl.NumberFormat('zh-TW', { maximumFractionDigits: 2 }).format(Math.abs(change))
+      : fixed(Math.abs(change), digits);
+  if (unit === 'pp') return change > 0 ? t.upPp(abs) : t.downPp(abs);
+  return change > 0 ? t.upPct(abs) : t.downPct(abs);
+}
+
+/** 有效位數：整數部分 ≥ 100 不留小數，≥ 10 留 1 位，其餘留 2 位（去掉多餘的 0） */
+function compact(value: number): string {
+  const abs = Math.abs(value);
+  const digits = abs >= 100 ? 0 : abs >= 10 ? 1 : 2;
+  return new Intl.NumberFormat('zh-TW', { maximumFractionDigits: digits }).format(value);
+}
+
+/**
+/** 占比：固定 1 位小數「8.0%」 */
+export function formatSharePct(value: number): string {
+  return `${fixed(value, 1)}%`;
+}
+
+/**
+ * 圖表 y 軸刻度：% 與新台幣元同 formatPulseValue，其他單位只顯示數字（單位已在圖例或數值上）
+ */
+export function formatPulseTick(value: number, unit: string | null): string {
+  if (unit === '%' || unit === zhTW.units.ntd) return formatPulseValue(value, unit);
+  return compact(value);
+}
+
+/**
+ * 市場脈動的數值：
+ * 新台幣元 → 1 億以上「418 億元」、1 萬以上「9,600 萬元」、其餘「500 元」；
+ * % → 「1.72%」；其他單位 → 數字＋單位原文；沒有單位只顯示數字。
+ */
+export function formatPulseValue(value: number | null, unit: string | null): string {
+  const u = zhTW.units;
+  if (value === null) return zhTW.common.dash;
+  if (unit === u.ntd) {
+    const abs = Math.abs(value);
+    if (abs >= 100_000_000) return `${compact(value / 100_000_000)} ${u.hundredMillion}`;
+    if (abs >= 10_000) return `${compact(value / 10_000)} ${u.tenThousandNtd}`;
+    return `${compact(value)} ${u.ntdShort}`;
+  }
+  if (unit === '%') return `${compact(value)}%`;
+  return unit ? `${compact(value)} ${unit}` : compact(value);
 }

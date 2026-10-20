@@ -89,13 +89,21 @@
 | 端點 | 靜態檔（static 模式） | 必要欄位 | 用在 |
 |---|---|---|---|
 | `GET /api/v1/feed` | `public/data/feed.json` | `items` 陣列 | 首頁新聞區塊、新聞與法規監控頁 |
-| `GET /api/v1/market-pulse` | `public/data/market-pulse.json` | `metrics` 陣列 | 市場脈動 |
+| `GET /api/v1/market-pulse` | `public/data/market-pulse.json` | `metrics` 陣列 | 首頁市場脈動區塊、市場脈動頁 |
 
 - `feed.json` 每則（2026-10-20 新格式草案）：
   - `kind`：`news`（新聞）或 `regulation`（法規）。缺漏時前端用舊欄位 `category` 推得（`regulation` 為法規，其餘為新聞）。
   - `domain`：`product_channel` 商品與通路動態、`market_macro` 市場與總經情勢、`regulation` 監理法規、`claims_consumer` 理賠與消保、`customer_brand` 客群經營與品牌公關。缺漏或其他值只出現在「全部」。
   - `related_report_ids`：法規影響的商品 report_id（用於「只看影響追蹤清單商品」）。
   - 其他欄位不變：`id`、`title`、`summary`、`source`、`url`、`published_at`、`country`、`product_category`。
+- `market-pulse.json`（2026-10-20 schema 2.0 草案）：
+  - 檔案：`schema_version`（`"2.0"`）、`generated_at`、`focus_summary`（`{ "text", "as_of" }`，也接受純字串；缺漏時不顯示本月焦點）、`metrics`。
+  - 每個指標共同欄位：`key`、`group`（`growth` 成長動能、`pricing` 定價環境、`channel` 通路結構、`health` 健康度、`brand` 品牌聲量；缺漏或其他值當作 `growth`）、`type`（`trend`、`multi_line`、`share`、`timeline`；缺漏或其他值當作 `trend`）、`featured`（`true` 顯示在首頁，只限 `trend`，最多 2 個）、`label`、`unit`、`source`、`source_url`、`as_of`。
+  - `trend`：`latest_value`、`change_pct`、`change_unit`（`pct` 百分比，預設；`pp` 百分點）、`change_label`、`series`（`[{ period, value }]`，由舊到新）。
+  - `multi_line`：`lines`（`[{ name, series }]`，最多 4 條，共用同一個 `unit`）。
+  - `share`：`periods`（`[{ period, parts: [{ name, share_pct, growth_pct? }] }]`，由舊到新；最多 4 項，超過的前端合併為「其他」）。
+  - `timeline`：`events`（`[{ date, title, status: done|upcoming, note? }]`）。
+  - 沒有任何 `featured` 時，首頁顯示成長動能組的前 2 個 `trend`。schema 1.0（沒有 `group`、`type`）仍可顯示。
 - 尚未提供時回 404（`NOT_FOUND`）：前端該卡片顯示「資料準備中」，不視為錯誤。
 - 錯誤格式與離線備援規則同第 1 節。
 - 正式格式若與草案不同，前端只需調整 `src/types/feed.ts`、`src/types/marketPulse.ts`、`src/data/validate.ts`、`src/data/normalizeMarket.ts`。

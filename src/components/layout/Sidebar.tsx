@@ -123,6 +123,11 @@ export function Sidebar({ meta, showRoadmapNav, myUnit, mobileOpen, onClose }: S
             </NavLink>
           </li>
           <li>
+            <NavLink to="/market" className={navClass}>
+              {t.market}
+            </NavLink>
+          </li>
+          <li>
             <NavLink to="/watchlist" className={navClass}>
               {t.watchlist}
             </NavLink>

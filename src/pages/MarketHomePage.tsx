@@ -9,6 +9,7 @@ import { DataSourceError, normalizeReportIndex } from '../data';
 import { zhTW } from '../i18n/zh-TW';
 import { orDash } from '../lib/format';
 import { isUnreviewed, readReviewed, subscribeReviewed } from '../lib/reviewed';
+import { homeMetrics } from '../lib/pulse';
 import { buildCandidates } from '../lib/score';
 import { readWatchlist, subscribeWatchlist } from '../lib/watchlist';
 import { readWeights, subscribeWeights } from '../lib/weights';
@@ -19,7 +20,6 @@ const t = zhTW.home;
 
 // 新聞與法規監控：先顯示全部動態（2026-10-20 新規劃階段 1；6 領域頁籤待新格式）
 const NEWS_LIMIT = 5;
-const PULSE_LIMIT = 4;
 
 /** 卡片內容依讀取狀態切換：載入中／資料準備中（檔案不存在）／錯誤（只影響這張卡片）／內容 */
 function cardBody<T>(state: LoadState<T>, render: (data: T) => ReactNode): ReactNode {
@@ -99,7 +99,7 @@ export function MarketHomePage() {
         <div className="order-4 min-w-0 lg:order-2">
           <Card icon="pulse" title={t.cards.pulse}>
             {cardBody(pulseState, (pulse) => (
-              <PulseList metrics={pulse.metrics.slice(0, PULSE_LIMIT)} />
+              <PulseList metrics={homeMetrics(pulse.metrics)} />
             ))}
           </Card>
         </div>

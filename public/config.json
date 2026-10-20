@@ -1,6 +1,6 @@
 {
-  "dataSource": "static",
-  "apiBaseUrl": "",
+  "dataSource": "api",
+  "apiBaseUrl": "http://localhost:8787",
   "fallbackToStatic": true,
   "showRoadmapNav": true
 }

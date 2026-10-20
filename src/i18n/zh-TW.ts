@@ -15,12 +15,12 @@ export const zhTW = {
     home: '市場總覽',
     overview: '競品研究',
     news: '新聞與法規監控',
+    market: '市場脈動',
     watchlist: '追蹤清單',
     tasks: '我的待辦',
     guide: '使用說明',
     roadmapGroup: '規劃中',
-    // 2026-10-20 新規劃：市場脈動的頁面完成後改為可點擊
-    roadmapItems: ['市場脈動', '跨部門審查'],
+    roadmapItems: ['跨部門審查'],
     dataUpdated: '資料更新：',
     dataSource: '資料來源：',
     dataSourceStatic: '離線資料',
@@ -57,7 +57,7 @@ export const zhTW = {
     homeTitle: '首頁四區塊',
     homeBlocks: [
       { name: '新聞與法規監控', body: '最新的新聞與法規，依六個分類瀏覽；可只看影響追蹤清單商品的項目。' },
-      { name: '市場脈動', body: '保險市場的關鍵指標與趨勢。（完整儀表板規劃中）' },
+      { name: '市場脈動', body: '保險市場的關鍵指標與趨勢：本月焦點，以及成長動能、定價環境、通路結構、健康度、品牌聲量五組指標。' },
       { name: '追蹤清單', body: '你加入的候選商品，可拖動權重滑桿，依你重視的面向排序。' },
       { name: '競品研究', body: '已完成、你還沒打開過的商品報告；點進去看完整報告，覺得值得參考就在頁面底部加入追蹤清單。' },
     ],
@@ -136,9 +136,38 @@ export const zhTW = {
     allReviewed: '所有報告都已審閱。',
     seeAll: '看全部 →',
     seeAllReports: '看全部報告 →',
-    changeUp: (pct: string) => `▲ ${pct}%`,
-    changeDown: (pct: string) => `▼ ${pct}%`,
-    changeFlat: '— 0%',
+  },
+
+  // 市場脈動（2026-10-20 經確認）
+  market: {
+    title: '市場脈動',
+    focusLabel: '本月焦點',
+    focusMeta: (asOf: string | null) => (asOf ? `自動產生 · ${asOf}` : '自動產生'),
+    jumpLabel: '跳到',
+    groups: {
+      growth: { title: '成長動能', desc: '新契約保費年增率與各險別占比' },
+      pricing: { title: '定價環境', desc: '利率走勢與會計／資本制度時程' },
+      channel: { title: '通路結構', desc: '業務員、銀行保險、數位通路占比' },
+      health: { title: '健康度', desc: '全行業解約率與繼續率' },
+      brand: { title: '品牌聲量', desc: '同業品牌與商品關鍵字搜尋熱度' },
+    },
+    emptyGroup: '這組指標尚無資料。',
+    noChartData: '資料不足，無法畫圖。',
+    source: '來源：',
+    asOf: (d: string) => `資料日期 ${d}`,
+    other: '其他',
+    shareTable: { name: '項目', share: '占比', growth: '成長率' },
+    shareLatest: (period: string) => `${period} 占比`,
+    upcoming: '預計',
+    moreLines: (n: number) => `另有 ${n} 條未顯示`,
+    change: {
+      upPct: (v: string) => `▲ ${v}%`,
+      downPct: (v: string) => `▼ ${v}%`,
+      flatPct: '— 0%',
+      upPp: (v: string) => `▲ ${v} 個百分點`,
+      downPp: (v: string) => `▼ ${v} 個百分點`,
+      flatPp: '— 0 個百分點',
+    },
   },
 
   // 新聞與法規監控（2026-10-20 經確認）
@@ -286,6 +315,8 @@ export const zhTW = {
     hundredMillion: '億元',
     /** 第 9.3 節：需換算為億元的原始單位 */
     ntd: '新台幣元',
+    tenThousandNtd: '萬元',
+    ntdShort: '元',
   },
 
   charts: {

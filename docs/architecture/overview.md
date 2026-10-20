@@ -8,6 +8,7 @@
 |---|---|---|
 | `#/` | 市場總覽：四區塊（新聞與法規監控、市場脈動、追蹤清單、競品研究） | `pages/MarketHomePage.tsx` |
 | `#/news` | 新聞與法規監控：頁籤、影響篩選寫進網址（`tab`、`affects`） | `pages/NewsPage.tsx` |
+| `#/market` | 市場脈動：本月焦點＋五組指標 | `pages/MarketPage.tsx` |
 | `#/watchlist` | 追蹤清單：權重滑桿、綜合分數排序 | `pages/WatchlistPage.tsx` |
 | `#/research` | 競品研究：全部報告，篩選與排序寫進網址（`q`、`country`、`category`、`rec`、`unread`、`sort`、`dir`） | `pages/OverviewPage.tsx` |
 | `#/cases` | 舊網址，replace 轉到 `#/research`（保留查詢字串） | `main.tsx` |
@@ -20,8 +21,8 @@
 
 ## 2. 導覽列（Sidebar）
 
-- 可點擊的項目依序為：市場總覽、新聞與法規監控、追蹤清單、競品研究、我的待辦、使用說明。
-- 規劃中（灰色、不可點）：市場脈動、跨部門審查。
+- 可點擊的項目依序為：市場總覽、新聞與法規監控、市場脈動、追蹤清單、競品研究、我的待辦、使用說明。
+- 規劃中（灰色、不可點）：跨部門審查。
 - 頂部列右側：狀態提示；報告頁的「加入追蹤清單」（頁面以 portal 放入動作區）。
 - 底部：我的單位（設定／更改）、資料更新時間、資料來源（離線資料／後端連線）。
 
@@ -33,6 +34,7 @@
         ─ 追蹤清單一則 ───────▶ 報告頁                          麵包屑「市場總覽 / 商品」
         ─ 追蹤清單「看全部 →」▶ 追蹤清單                        麵包屑「市場總覽 / 追蹤清單」
         ─ 新聞「看全部 →」───▶ 新聞與法規監控                  麵包屑「市場總覽 / 新聞與法規監控」
+        ─ 市場脈動「看全部 →」▶ 市場脈動                        麵包屑「市場總覽 / 市場脈動」
         ─ 新聞標題 ───────────▶ 外部原文（新分頁）
 競品研究 ─ 點一列 ───────────▶ 報告頁                          麵包屑「競品研究 / 商品」，回到原篩選
 新聞頁 ─ 受影響商品 ─────────▶ 報告頁                          麵包屑「新聞與法規監控 / 商品」，回到原頁籤
@@ -53,7 +55,7 @@ pages/RootLayout ─ getDataSource(config) ─▶ Static / Api / Fallback(Api→
   ├─ listReports（一次）─▶ normalizeAppMeta ─▶ AppShell（Sidebar、TopBar）
   ├─ allReports（需要時才讀）─▶ 我的待辦、我的單位選項
   ├─ feed（需要時才讀）──────▶ 市場總覽、新聞與法規監控
-  └─ marketPulse（需要時才讀）▶ 市場總覽（市場脈動）
+  └─ marketPulse（需要時才讀）▶ 市場總覽（市場脈動）、市場脈動頁
 （以上經 Outlet context 傳出：useIndexState、useAllReports、useFeed、useMarketPulse）
 pages/* ─ normalize* ─▶ ViewModel ─▶ components/*
 ```
@@ -83,7 +85,8 @@ src/
 ├── components/
 │   ├── layout/              AppShell、Sidebar、TopBar
 │   ├── common/              SignalLabel、StatusMessage
-│   ├── charts/              MarketSizingBar、RegulatoryDistributionBar、Sparkline（純 CSS／SVG，不用套件）
+│   ├── charts/              MarketSizingBar、RegulatoryDistributionBar、Sparkline、LineChart、ShareBars、Timeline（純 CSS／SVG，不用套件）
+│   ├── market/              市場脈動頁的指標卡片
 │   ├── news/                新聞與法規監控（標籤、每則）
 │   ├── home/                市場總覽卡片
 │   ├── overview/            競品研究頁（原案件總覽）
@@ -96,6 +99,6 @@ scripts/                     sync-reports.mjs（匯入報告、feed、market-pul
 
 ## 6. 視覺規則摘要
 
-- 綠、黃、橘、紅只用在燈號（D4）。市場脈動的漲跌用海軍藍加 ▲▼。
+- 綠、黃、橘、紅只用在燈號（D4）。市場脈動的漲跌用海軍藍加 ▲▼；多系列圖表用藍紫系 4 色（`lib/chartPalette.ts`）。
 - 寬度 ≥1024px（`lg`）才顯示側邊導覽。市場總覽寬螢幕 2×2，窄螢幕一欄（競品研究第一）。
 - 每個頁面在 390px 寬時都不能整頁左右捲動。
