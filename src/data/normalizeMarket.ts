@@ -10,7 +10,7 @@ import type {
   PulsePointViewModel,
 } from '../types/viewModel';
 import { formatDateTimeTaipei } from '../lib/format';
-import { num, objList, str, strList } from './normalize';
+import { num, objList, safeUrl, str, strList } from './normalize';
 
 // 動態清單與市場脈動的原始欄位只在這裡讀取（正式格式未定版，改格式時改這裡）
 
@@ -35,11 +35,6 @@ function parsePublished(v: string | null): { time: number | null; dateOnly: bool
   const dateOnly = DATE_ONLY.test(v);
   const time = Date.parse(dateOnly ? `${v}T00:00:00+08:00` : v);
   return { time: Number.isNaN(time) ? null : time, dateOnly };
-}
-
-function safeUrl(v: unknown): string | null {
-  const s = str(v);
-  return s !== null && /^https?:\/\//i.test(s) ? s : null;
 }
 
 function normalizeFeedItem(item: RawFeedItem, i: number): FeedItemViewModel {

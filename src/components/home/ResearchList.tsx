@@ -34,7 +34,7 @@ export function ResearchList({ rows }: { rows: OverviewRow[] }) {
             >
               {orDash(r.name)}
             </Link>
-            <p className="mt-0.5 text-xs text-slate-500">{t.researchMeta(orDash(r.countryLabel), orDash(r.generatedDate))}</p>
+            <p className="mt-0.5 text-xs text-slate-500">{t.researchMeta(orDash(r.countryLabel), orDash(r.generatedAt ?? r.generatedDate))}</p>
           </li>
         ))}
       </ul>

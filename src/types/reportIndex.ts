@@ -1,5 +1,7 @@
 // 報告清單型別（docs/spec/api-contract.md 第 2.1 節）
 
+import type { RawDimensionScores } from './report';
+
 type Nullable<T> = T | null | undefined;
 
 export interface RawReportIndexEntry {
@@ -12,6 +14,10 @@ export interface RawReportIndexEntry {
   label?: Nullable<string>;
   signal_color?: Nullable<string>;
   generated_date?: Nullable<string>;
+  /** 報告 report_meta.generated_at（sync 複製） */
+  generated_at?: Nullable<string>;
+  /** 報告 dimension_scores（sync 原樣複製） */
+  dimension_scores?: Nullable<RawDimensionScores>;
   module_summary?: Nullable<{
     market_demand?: Nullable<{ signal?: Nullable<string>; text?: Nullable<string> }>;
     actuarial?: Nullable<{ signal?: Nullable<string>; research_status?: Nullable<string> }>;

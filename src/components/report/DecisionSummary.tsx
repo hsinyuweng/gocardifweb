@@ -45,6 +45,21 @@ export function DecisionSummary({ summary: s }: { summary: DecisionSummaryViewMo
         </span>
         <p className="text-base text-slate-800">{orDash(s.oneLineSummary)}</p>
       </div>
+      {s.brandNote ? (
+        <p className="mt-2 text-sm text-slate-600">
+          {t.brandNote}
+          {s.brandNote.text}
+          {s.brandNote.source?.url ? (
+            <>
+              {'（'}
+              <a href={s.brandNote.source.url} target="_blank" rel="noopener noreferrer" className="text-navy-700 hover:underline">
+                {t.brandNoteSource}
+              </a>
+              {'）'}
+            </>
+          ) : null}
+        </p>
+      ) : null}
 
       <div className="mt-3">
         <h2 className="text-xs font-medium text-slate-500">{t.reasons}</h2>

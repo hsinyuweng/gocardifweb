@@ -3,14 +3,24 @@
 
 import type { AppConfig } from '../config/appConfig';
 import type { RawReportIndexEntry, ReportIndex } from '../types/reportIndex';
-import { MODULE_KEYS, type ModuleKey, type RawKeyPoint, type RawLegend, type Report } from '../types/report';
+import {
+  MODULE_KEYS,
+  type ModuleKey,
+  type RawDimensionScores,
+  type RawKeyPoint,
+  type RawLegend,
+  type RawSourceRef,
+  type Report,
+} from '../types/report';
 import type {
   AppMetaViewModel,
+  BackendDimensionScores,
   BlockerViewModel,
   DataGapViewModel,
   DataQualityGroupKey,
   DataQualityViewModel,
   DecisionSummaryViewModel,
+  DimensionKey,
   DistributionSegment,
   FilterOption,
   FindingViewModel,
@@ -23,6 +33,7 @@ import type {
   ReportDetailsViewModel,
   ReportViewModel,
   ScorecardViewModel,
+  SourceRefViewModel,
 } from '../types/viewModel';
 import { countryLabel } from '../lib/country';
 import { formatDateTimeTaipei, formatMarketEstimate, formatPopulation } from '../lib/format';
@@ -38,6 +49,12 @@ export function str(v: unknown): string | null {
 
 function count(v: unknown): number {
   return typeof v === 'number' && Number.isFinite(v) ? v : 0;
+}
+
+/** 只接受 http(s) 連結，其他（例如 javascript:）視為沒有 */
+export function safeUrl(v: unknown): string | null {
+  const s = str(v);
+  return s !== null && /^https?:\/\//i.test(s) ? s : null;
 }
 
 export function num(v: unknown): number | null {
@@ -89,7 +106,52 @@ function normalizeIndexEntry(entry: RawReportIndexEntry): OverviewRow {
       warning: count(bc?.warning),
     },
     generatedDate: str(entry.generated_date),
+    generatedAt: formatDateTimeTaipei(str(entry.generated_at)),
+    generatedTime: timeOf(str(entry.generated_at)),
+    dimensionScores: normalizeDimensionScores(entry.dimension_scores),
   };
+}
+
+function timeOf(iso: string | null): number | null {
+  if (iso === null) return null;
+  const t = new Date(iso).getTime();
+  return Number.isNaN(t) ? null : t;
+}
+
+const DIMENSION_RAW_KEYS: ReadonlyArray<[DimensionKey, keyof RawDimensionScores]> = [
+  ['feasibility', 'feasibility'],
+  ['profitability', 'profitability'],
+  ['saturation', 'saturation'],
+  ['brandFit', 'brand_fit'],
+];
+
+/** S10：只收物件形式的維度；score 不是 0–100 的數字時視為無資料 */
+function normalizeDimensionScores(raw: RawDimensionScores | null | undefined): BackendDimensionScores | null {
+  if (typeof raw !== 'object' || raw === null) return null;
+  const out: BackendDimensionScores = {};
+  for (const [key, rawKey] of DIMENSION_RAW_KEYS) {
+    const d = raw[rawKey];
+    if (typeof d !== 'object' || d === null) continue;
+    const s = num(d.score);
+    out[key] = {
+      score: s !== null && s >= 0 && s <= 100 ? Math.round(s) : null,
+      rationale: str(d.rationale),
+      confidence: str(d.confidence),
+    };
+  }
+  return Object.keys(out).length > 0 ? out : null;
+}
+
+/** legend.evidence_<scheme>.<level>.label；查不到時為 null（不像 legendLabel 會退回原值） */
+function evidenceLabel(legend: RawLegend | null | undefined, scheme: string | null, level: string | null): string | null {
+  if (scheme === null || level === null) return null;
+  return str(legend?.[`evidence_${scheme}`]?.[level]?.label);
+}
+
+function sourceRef(raw: RawSourceRef | null | undefined): SourceRefViewModel | null {
+  if (typeof raw !== 'object' || raw === null) return null;
+  const ref = { name: str(raw.name), url: safeUrl(raw.url), asOf: str(raw.as_of) };
+  return ref.name || ref.url ? ref : null;
 }
 
 function groupRecommendations(rows: OverviewRow[]): RecommendationGroup[] {
@@ -156,6 +218,7 @@ function normalizeSummary(r: Report): DecisionSummaryViewModel {
     recommendation: { color: toSignalColor(head.signal_color), text: str(head.label) },
     oneLineSummary: str(head.one_line_summary),
     reasons: strList(head.reasons),
+    brandNote: str(head.brand_note) ? { text: str(head.brand_note)!, source: sourceRef(head.brand_note_source) } : null,
     generatedDate: str(r.report_meta.generated_date),
     reviewDates: MODULE_KEYS.map((k) => ({
       moduleLabel: moduleLabel(r.legend, k),
@@ -179,6 +242,7 @@ function normalizeScorecards(r: Report): ScorecardViewModel[] {
     moduleLabel: moduleLabel(legend, key),
     provided: status === PROVIDED,
     rawStatus: str(status),
+    skipReason: str(r.report_meta.source_files?.[key]?.skip_reason),
     summary: str(summary),
   });
 
@@ -287,6 +351,8 @@ function normalizeKeyPoints(list: RawKeyPoint[] | null | undefined): KeyPointVie
     id: str(k.id),
     text: str(k.text),
     source: str(k.source),
+    sourceUrl: safeUrl(k.source_url),
+    asOf: str(k.as_of),
     evidenceLevel: str(k.evidence_level),
   }));
 }
@@ -314,6 +380,10 @@ function normalizeDetails(r: Report): ReportDetailsViewModel {
       law: str(f.law),
       remedy: str(f.remedy),
       owner: str(f.owner),
+      sources: objList(f.sources).flatMap((s) => sourceRef(s) ?? []),
+      evidenceLevel: str(f.evidence_level),
+      // legend 的群組名為 evidence_<scheme>（例如 evidence_regulatory_abc）
+      evidenceLabel: evidenceLabel(legend, str(f.evidence_scheme), str(f.evidence_level)),
     };
   });
 

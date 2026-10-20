@@ -72,6 +72,9 @@ function toIndexEntry(report) {
     label: orNull(head.label),
     signal_color: orNull(head.signal_color),
     generated_date: orNull(meta.generated_date),
+    generated_at: orNull(meta.generated_at),
+    // 追蹤清單的數值分數（後端需求 S10）：原樣複製，前端 normalize 時容錯
+    dimension_scores: isObject(report.dimension_scores) ? report.dimension_scores : null,
     module_summary: {
       market_demand: { signal: orNull(md.signal), text: orNull(md.label) },
       actuarial: { signal: orNull(ac.signal), research_status: orNull(ac.research_status) },

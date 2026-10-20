@@ -59,7 +59,7 @@ function ScorecardCard({ card, onShowDetail }: { card: ScorecardViewModel; onSho
       ) : (
         <p className="mt-2 text-slate-600">
           {t.notProvided}
-          {t.rawStatus(orDash(card.rawStatus))}
+          {card.skipReason ? t.skipReason(card.skipReason) : t.rawStatus(orDash(card.rawStatus))}
         </p>
       )}
 

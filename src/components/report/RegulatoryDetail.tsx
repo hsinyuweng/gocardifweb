@@ -5,6 +5,7 @@ import { orDash } from '../../lib/format';
 import { DOT_CLASS } from '../../lib/signalColor';
 import { SignalLabel } from '../common/SignalLabel';
 import { DetailBlock } from './DetailBlock';
+import { SourceRefText } from './SourceRefText';
 
 const t = zhTW.report.details;
 const c = t.findingColumns;
@@ -25,25 +26,58 @@ function FindingsTable({ findings }: { findings: FindingViewModel[] }) {
         </thead>
         <tbody>
           {findings.map((f, i) => (
-            <tr key={f.itemId ?? `f-${i}`} className="border-b border-slate-100 align-top last:border-b-0">
-              <td className="px-3 py-2 whitespace-nowrap text-slate-600 tabular-nums">{orDash(f.itemId)}</td>
-              <td className="px-3 py-2 text-slate-900">
-                {orDash(f.title)}
-                {f.suspectedRed ? (
-                  <span className="ml-2 inline-block rounded bg-red-50 px-1.5 py-0.5 text-xs font-semibold text-red-700 ring-1 ring-red-200">
-                    {t.suspectedRed}
-                  </span>
-                ) : null}
-              </td>
-              <td className="px-3 py-2"><SignalLabel signal={f.light} /></td>
-              <td className="px-3 py-2 text-slate-700">{orDash(f.law)}</td>
-              <td className="px-3 py-2 text-slate-700">{orDash(f.remedy)}</td>
-              <td className="px-3 py-2 whitespace-nowrap">{orDash(f.owner)}</td>
-            </tr>
+            <FindingRow key={f.itemId ?? `f-${i}`} f={f} />
           ))}
         </tbody>
       </table>
     </div>
+  );
+}
+
+/** 一筆 finding；有來源或可信度時標題下方可展開「來源 ▾」（列印時一律展開） */
+function FindingRow({ f }: { f: FindingViewModel }) {
+  const [open, setOpen] = useState(false);
+  const hasDetail = f.sources.length > 0 || f.evidenceLevel !== null;
+  return (
+    <tr className="border-b border-slate-100 align-top last:border-b-0">
+      <td className="px-3 py-2 whitespace-nowrap text-slate-600 tabular-nums">{orDash(f.itemId)}</td>
+      <td className="px-3 py-2 text-slate-900">
+        {orDash(f.title)}
+        {f.suspectedRed ? (
+          <span className="ml-2 inline-block rounded bg-red-50 px-1.5 py-0.5 text-xs font-semibold text-red-700 ring-1 ring-red-200">
+            {t.suspectedRed}
+          </span>
+        ) : null}
+        {hasDetail ? (
+          <div className="mt-1 text-xs">
+            <button
+              type="button"
+              aria-expanded={open}
+              onClick={() => setOpen((v) => !v)}
+              className="text-navy-700 hover:underline print:hidden"
+            >
+              {t.findingSources} {open ? '▴' : '▾'}
+            </button>
+            <div className={`${open ? 'block' : 'hidden'} mt-1 space-y-0.5 text-slate-600 print:block`}>
+              {f.evidenceLevel ? <p>{t.findingEvidence(f.evidenceLevel, f.evidenceLabel)}</p> : null}
+              {f.sources.length > 0 ? (
+                <ul className="list-disc pl-4">
+                  {f.sources.map((s, k) => (
+                    <li key={k}>
+                      <SourceRefText source={s} />
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </div>
+          </div>
+        ) : null}
+      </td>
+      <td className="px-3 py-2"><SignalLabel signal={f.light} /></td>
+      <td className="px-3 py-2 text-slate-700">{orDash(f.law)}</td>
+      <td className="px-3 py-2 text-slate-700">{orDash(f.remedy)}</td>
+      <td className="px-3 py-2 whitespace-nowrap">{orDash(f.owner)}</td>
+    </tr>
   );
 }
 

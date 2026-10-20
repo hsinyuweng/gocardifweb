@@ -12,7 +12,7 @@
 - **新聞與法規監控**：全部動態最新 5 則，一行一則：灰藍標籤「新聞」「法規」（依 `kind`）＋標題（新分頁開原文，過長截斷）＋右側相對時間（N 分鐘前／N 小時前／今天／昨天／N 天前，>30 天顯示日期）；右下「看全部 →」到 `#/news`。
 - **市場脈動**：1–2 個指標（`featured` 的 `trend`；都沒有時取成長動能組前 2 個）：名稱、最新值大字、第二行「▲ 3.2% 較上月」、右邊小線圖；右下「看全部 →」到 `#/market`。
 - **追蹤清單**：依目前權重的綜合分數排序，最多 5 則。左邊商品名稱（連報告頁）＋第二行「日本 · 綜合分數」，右邊海軍藍大字分數；右下「看全部 →」到 `#/watchlist`。空清單：「還沒有追蹤的商品。在報告頁底部按「加入追蹤清單」。」
-- **競品研究**：未審閱報告（見 `spec-stages.md` 的未審閱定義），產出日期新到舊，最多 5 則。第一行商品名稱（連報告頁），第二行「韓國 · 完成於 2026-10-11」。超過 5 則左下「還有 N 份未審閱」；右下「看全部 →」到 `#/research?unread=1`。全部看過：「所有報告都已審閱。」＋「看全部報告 →」到 `#/research`。沒有任何報告：「目前沒有報告。新增方式請見 README。」
+- **競品研究**：未審閱報告（見 `spec-stages.md` 的未審閱定義），完成時間新到舊（有 `generated_at` 用它，沒有用產出日期當天 0 點），最多 5 則。第一行商品名稱（連報告頁），第二行「韓國 · 完成於 2026-10-11」（有時間時「完成於 2026-10-11 14:30」）。超過 5 則左下「還有 N 份未審閱」；右下「看全部 →」到 `#/research?unread=1`。全部看過：「所有報告都已審閱。」＋「看全部報告 →」到 `#/research`。沒有任何報告：「目前沒有報告。新增方式請見 README。」
 
 ## 新聞與法規監控頁 `#/news`
 
@@ -38,9 +38,10 @@
 
 ## 追蹤清單頁 `#/watchlist`
 
-- 標題「追蹤清單」＋「N 件候選商品 · 分數暫用燈號換算」。
-- 權重區「依你重視的面向調整權重」＋「恢復預設」：可行性（法規適用）、獲利性（發生率暨獲利）、市場飽和度（市場需求，分數越高＝缺口越大）、品牌／通路契合度（尚無資料）；0–5 整數，預設 3／3／3／0。品牌權重 >0：「品牌／通路契合度尚無資料，暫不計入。」全部為 0：「請至少調高一個權重。」分數顯示「—」。
-- 每列：名次、商品名稱（連報告頁）、發行公司 · 來源市場、「綜合分數」大字、「計算明細 ▾」、「移出」。明細表：維度、依據、燈號、分數（無資料「不計入」）、權重；下方實際算式（例「(67×3 + 0×3 + 100×3) ÷ 9 ＝ 56」）＋公式與換算說明。
+- 標題「追蹤清單」＋「N 件候選商品 · 分數暫用燈號換算」；部分候選用後端分數時「N 件候選商品 · 部分分數暫用燈號換算」；全部用後端分數時「N 件候選商品」。
+- 分數來源（S10）：報告清單有 `dimension_scores` 的維度用後端分數（0–100，null＝不計入），沒有的維度照燈號換算。
+- 權重區「依你重視的面向調整權重」＋「恢復預設」：可行性（法規適用）、獲利性（發生率暨獲利）、市場飽和度（市場需求，分數越高＝缺口越大）、品牌／通路契合度（尚無資料）；0–5 整數，預設 3／3／3／0。品牌權重 >0 且沒有任何候選有品牌分數：「品牌／通路契合度尚無資料，暫不計入。」；有時依據改為「後端評分」。全部為 0：「請至少調高一個權重。」分數顯示「—」。
+- 每列：名次、商品名稱（連報告頁）、發行公司 · 來源市場、「綜合分數」大字、「計算明細 ▾」、「移出」。明細表：維度、依據、燈號、分數（無資料「不計入」；燈號換算的旁邊灰字「燈號換算」）、權重、說明（後端 rationale＋「（可信度 B）」，沒有「—」）；下方實際算式（例「(67×3 + 0×3 + 100×3) ÷ 9 ＝ 56」）＋公式與換算說明。
 - 排序：分數高到低，同分依商品名稱，無法計算的排最後。
 - 移出不確認，上方「已移出「商品名」。復原」（復原插回原位置），下一個動作後消失。報告清單沒有的：「找不到此報告（id）」，只能移出。
 - 空清單：「還沒有追蹤的商品。到「競品研究」打開報告，在頁面底部加入。」＋「前往競品研究 →」。
@@ -49,7 +50,7 @@
 
 ## 實作規則
 
-- 追蹤清單：`lib/watchlist.ts`（localStorage `gocardifweb.candidates`，report_id 陣列；舊 `gocardifweb.watchlist` 載入時刪除）、`lib/score.ts`（換算與排序）、`lib/weights.ts`（`gocardifweb.weights`）、`pages/WatchlistPage.tsx`、`components/watchlist/`、`components/report/WatchlistButton.tsx`。分數只用報告清單的 `module_summary` 燈號，不需讀全部報告。
+- 追蹤清單：`lib/watchlist.ts`（localStorage `gocardifweb.candidates`，report_id 陣列；舊 `gocardifweb.watchlist` 載入時刪除）、`lib/score.ts`（換算與排序）、`lib/weights.ts`（`gocardifweb.weights`）、`pages/WatchlistPage.tsx`、`components/watchlist/`、`components/report/WatchlistButton.tsx`。分數只用報告清單（`module_summary` 燈號、`dimension_scores`），不需讀全部報告。
 - 新聞：`pages/NewsPage.tsx`、`components/news/`；`kind`、`domain` 在 `normalizeMarket.ts` 決定（舊 `category` 相容）。
 - 資料：`getFeed()`、`getMarketPulse()`（static `data/feed.json`、`data/market-pulse.json`；api `/api/v1/feed`、`/api/v1/market-pulse`），需要時才讀（`pages/useOnDemand.ts`）。原始欄位只出現在 `types/feed.ts`、`types/marketPulse.ts`、`data/validate.ts`、`data/normalizeMarket.ts`。
 - 本機 vite 對不存在的檔案回 200＋HTML，`fetchJson` 把 `text/html` 當 404。

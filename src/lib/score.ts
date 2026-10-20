@@ -1,9 +1,10 @@
-import type { OverviewRow, SignalColor, SignalText } from '../types/viewModel';
+import type { DimensionKey, OverviewRow, SignalColor, SignalText } from '../types/viewModel';
 
-// 追蹤清單綜合分數（2026-10-20 經確認）：後端尚未提供數值分數，暫用三面向燈號換算。
-// 綜合分數 ＝ Σ(分數 × 權重) ÷ Σ 權重；無資料（灰燈、缺漏）或權重為 0 的維度不計入。
+// 追蹤清單綜合分數（2026-10-20 經確認）：報告有後端數值分數（dimension_scores，後端需求 S10）的維度用它，
+// 沒有的維度暫用三面向燈號換算。
+// 綜合分數 ＝ Σ(分數 × 權重) ÷ Σ 權重；無資料（灰燈、缺漏、後端標 null）或權重為 0 的維度不計入。
 
-export type DimensionKey = 'feasibility' | 'profitability' | 'saturation' | 'brandFit';
+export type { DimensionKey };
 
 /** 顯示與滑桿順序 */
 export const DIMENSIONS: readonly DimensionKey[] = ['feasibility', 'profitability', 'saturation', 'brandFit'];
@@ -25,10 +26,15 @@ function basisSignal(row: OverviewRow, key: DimensionKey): SignalText | null {
 
 export interface DimensionScore {
   key: DimensionKey;
-  /** 依據的燈號；null 表示此維度尚無資料 */
+  /** 依據的燈號；null 表示此維度沒有燈號 */
   signal: SignalText | null;
   /** null 表示無資料，不計入 */
   score: number | null;
+  /** backend：後端數值分數；signal：燈號換算；null：無資料 */
+  scoreSource: 'backend' | 'signal' | null;
+  /** 後端的一句說明與可信度 */
+  rationale: string | null;
+  confidence: string | null;
   weight: number;
 }
 
@@ -36,17 +42,38 @@ export interface CandidateScore {
   dims: DimensionScore[];
   /** 可計算的權重全為 0 或全無資料時為 null */
   total: number | null;
+  /** 有任何計入的維度是燈號換算 */
+  usesSignal: boolean;
 }
 
 export function scoreRow(row: OverviewRow, weights: Weights): CandidateScore {
-  const dims = DIMENSIONS.map((key) => {
+  const dims = DIMENSIONS.map((key): DimensionScore => {
     const signal = basisSignal(row, key);
-    return { key, signal, score: signal ? (SIGNAL_SCORE[signal.color] ?? null) : null, weight: weights[key] };
+    const backend = row.dimensionScores?.[key];
+    const weight = weights[key];
+    if (backend) {
+      return {
+        key,
+        signal,
+        score: backend.score,
+        scoreSource: backend.score === null ? null : 'backend',
+        rationale: backend.rationale,
+        confidence: backend.confidence,
+        weight,
+      };
+    }
+    const score = signal ? (SIGNAL_SCORE[signal.color] ?? null) : null;
+    return { key, signal, score, scoreSource: score === null ? null : 'signal', rationale: null, confidence: null, weight };
   });
   const counted = dims.filter((d) => d.score !== null && d.weight > 0);
   const sumW = counted.reduce((s, d) => s + d.weight, 0);
   const total = sumW > 0 ? Math.round(counted.reduce((s, d) => s + d.score! * d.weight, 0) / sumW) : null;
-  return { dims, total };
+  return { dims, total, usesSignal: counted.some((d) => d.scoreSource === 'signal') };
+}
+
+/** 是否有任何候選商品有品牌／通路契合度的後端分數 */
+export function anyBrandFitScore(rows: OverviewRow[]): boolean {
+  return rows.some((r) => typeof r.dimensionScores?.brandFit?.score === 'number');
 }
 
 /** 計算過程文字，例如「(67×3 + 0×3 + 100×3) ÷ 9 ＝ 56」；無法計算時為 null */

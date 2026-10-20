@@ -79,6 +79,8 @@
 
 - 回應 summarizer 輸出的報告 JSON 原文，不包裝、不修改（格式見 `docs/examples/summarizer-example-report.json`）。
 - 找不到時回 404，`code` 為 `REPORT_NOT_FOUND`。
+- 前端已支援的選用欄位（2026-10-20，schema 1.1 草案；格式細節見後端需求文件「AI 詳細版」與各組員分頁）：`report_meta.generated_at`（S11）、`report_meta.source_files.<模組>.skip_reason`（R1-B）、`dimension_scores`（S10）、`headline.brand_note`／`brand_note_source`（S12）、`sections.*.key_points[].source_url`／`as_of`（A2）、`sections.regulatory.findings[].evidence_scheme`／`evidence_level`／`sources`（R4）、`legend.evidence_<scheme>.<等級>.label`。沒有這些欄位時畫面與原本相同。
+- `npm run sync` 產生報告清單時，把 `generated_at` 與 `dimension_scores` 原樣複製到清單每筆。
 
 ---
 

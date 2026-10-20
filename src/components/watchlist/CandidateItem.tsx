@@ -55,24 +55,32 @@ export function CandidateItem({ rank, candidate, expanded, onToggle, onRemove, l
       {expanded ? (
         <div className="mt-3 ml-10 min-w-0">
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[480px] border-collapse text-left text-sm">
+            <table className="w-full min-w-[640px] border-collapse text-left text-sm">
               <thead className="border-b border-slate-200 text-slate-600">
                 <tr className="h-8">
                   <th scope="col" className="pr-3 font-medium">{c.dimension}</th>
                   <th scope="col" className="pr-3 font-medium">{c.basis}</th>
                   <th scope="col" className="pr-3 font-medium">{c.signal}</th>
                   <th scope="col" className="pr-3 font-medium">{c.score}</th>
-                  <th scope="col" className="font-medium">{c.weight}</th>
+                  <th scope="col" className="pr-3 font-medium">{c.weight}</th>
+                  <th scope="col" className="font-medium">{c.rationale}</th>
                 </tr>
               </thead>
               <tbody>
                 {score.dims.map((d) => (
                   <tr key={d.key} className="h-8 border-b border-slate-100 last:border-b-0">
                     <td className="pr-3 text-slate-900">{t.dimensions[d.key]}</td>
-                    <td className="pr-3">{t.basis[d.key]}</td>
+                    <td className="pr-3">{d.key === 'brandFit' && d.scoreSource === 'backend' ? t.basisBrandFitBackend : t.basis[d.key]}</td>
                     <td className="pr-3">{d.signal ? <SignalLabel signal={d.signal} /> : zhTW.common.dash}</td>
-                    <td className="pr-3 tabular-nums">{d.score === null ? t.notCounted : d.score}</td>
-                    <td className="tabular-nums">{d.weight}</td>
+                    <td className="pr-3 whitespace-nowrap tabular-nums">
+                      {d.score === null ? t.notCounted : d.score}
+                      {d.scoreSource === 'signal' ? <span className="ml-1.5 text-xs text-slate-500">{t.signalConverted}</span> : null}
+                    </td>
+                    <td className="pr-3 tabular-nums">{d.weight}</td>
+                    <td className="py-1 text-slate-600">
+                      {d.rationale ?? zhTW.common.dash}
+                      {d.confidence ? t.confidence(d.confidence) : null}
+                    </td>
                   </tr>
                 ))}
               </tbody>

@@ -15,11 +15,18 @@ import { readWatchlist, subscribeWatchlist } from '../lib/watchlist';
 import { readWeights, subscribeWeights } from '../lib/weights';
 import { errorText, useBreadcrumb, useFeed, useIndexState, useMarketPulse } from './pageChrome';
 import type { LoadState } from './useOnDemand';
+import type { OverviewRow } from '../types/viewModel';
 
 const t = zhTW.home;
 
 // 新聞與法規監控：先顯示全部動態（2026-10-20 新規劃階段 1；6 領域頁籤待新格式）
 const NEWS_LIMIT = 5;
+
+function completedTime(r: OverviewRow): number {
+  if (r.generatedTime !== null) return r.generatedTime;
+  const t = r.generatedDate ? Date.parse(`${r.generatedDate}T00:00:00+08:00`) : NaN;
+  return Number.isNaN(t) ? -Infinity : t;
+}
 
 /** 卡片內容依讀取狀態切換：載入中／資料準備中（檔案不存在）／錯誤（只影響這張卡片）／內容 */
 function cardBody<T>(state: LoadState<T>, render: (data: T) => ReactNode): ReactNode {
@@ -57,12 +64,12 @@ export function MarketHomePage() {
     () => (indexState.status === 'ok' ? normalizeReportIndex(indexState.index) : null),
     [indexState],
   );
-  // 未審閱報告：產出日期新到舊（缺日期排最後）
+  // 未審閱報告：完成時間新到舊；沒有時間的用日期當天 0 點（台北），都缺的排最後
   const unreviewedRows = useMemo(
     () =>
       (vm?.rows ?? [])
         .filter((r) => isUnreviewed(r, reviewed))
-        .sort((a, b) => (b.generatedDate ?? '').localeCompare(a.generatedDate ?? '')),
+        .sort((a, b) => completedTime(b) - completedTime(a)),
     [vm, reviewed],
   );
   const candidates = useMemo(() => buildCandidates(watchlist, vm?.rows ?? [], weights), [watchlist, vm, weights]);

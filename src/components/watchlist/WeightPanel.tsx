@@ -5,12 +5,14 @@ const t = zhTW.watchlist;
 
 interface WeightPanelProps {
   weights: Weights;
+  /** 有任何候選商品有品牌／通路契合度的後端分數 */
+  hasBrandFit: boolean;
   onChange: (key: DimensionKey, value: number) => void;
   onReset: () => void;
 }
 
 /** 權重滑桿：每個維度 0–5 整數，拖動即時重算排序 */
-export function WeightPanel({ weights, onChange, onReset }: WeightPanelProps) {
+export function WeightPanel({ weights, hasBrandFit, onChange, onReset }: WeightPanelProps) {
   const allZero = DIMENSIONS.every((k) => weights[k] === 0);
   return (
     <section className="rounded border border-slate-200 bg-white">
@@ -28,7 +30,9 @@ export function WeightPanel({ weights, onChange, onReset }: WeightPanelProps) {
               <div className="flex items-baseline justify-between gap-2">
                 <label htmlFor={id} className="text-slate-800">
                   {t.dimensions[key]}
-                  <span className="ml-2 text-xs text-slate-500">{t.basis[key]}</span>
+                  <span className="ml-2 text-xs text-slate-500">
+                    {key === 'brandFit' && hasBrandFit ? t.basisBrandFitBackend : t.basis[key]}
+                  </span>
                 </label>
                 <span className="tabular-nums font-semibold text-navy-800">{weights[key]}</span>
               </div>
@@ -42,7 +46,7 @@ export function WeightPanel({ weights, onChange, onReset }: WeightPanelProps) {
                 onChange={(e) => onChange(key, Number(e.target.value))}
                 className="mt-1 w-full accent-navy-700"
               />
-              {key === 'brandFit' && weights.brandFit > 0 ? (
+              {key === 'brandFit' && weights.brandFit > 0 && !hasBrandFit ? (
                 <p className="text-xs text-slate-500">{t.brandNoData}</p>
               ) : null}
             </div>

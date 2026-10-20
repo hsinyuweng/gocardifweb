@@ -1,6 +1,7 @@
 import type { KeyPointViewModel } from '../../types/viewModel';
 import { zhTW } from '../../i18n/zh-TW';
 import { orDash } from '../../lib/format';
+import { SourceRefText } from './SourceRefText';
 
 const t = zhTW.report.details;
 
@@ -21,7 +22,11 @@ export function KeyPointList({ points }: { points: KeyPointViewModel[] }) {
           </div>
           <p className="mt-0.5 text-xs text-slate-500">
             {t.source}
-            {orDash(p.source)}
+            {p.source || p.sourceUrl ? (
+              <SourceRefText source={{ name: p.source, url: p.sourceUrl, asOf: p.asOf }} />
+            ) : (
+              orDash(p.source)
+            )}
           </p>
         </li>
       ))}

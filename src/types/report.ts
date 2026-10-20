@@ -11,11 +11,39 @@ export interface RawSourceFile {
   status?: Nullable<string>;
   file?: Nullable<string>;
   review_date?: Nullable<string>;
+  /** 刻意不跑模組時的原因（後端需求 R1-B） */
+  skip_reason?: Nullable<string>;
+}
+
+/** 來源（後端需求 R4、S12） */
+export interface RawSourceRef {
+  name?: Nullable<string>;
+  url?: Nullable<string>;
+  as_of?: Nullable<string>;
+}
+
+/** 單一維度的數值分數（後端需求 S10） */
+export interface RawDimensionScore {
+  /** 0–100 整數；null 表示無資料 */
+  score?: Nullable<number>;
+  basis?: Nullable<string>;
+  rationale?: Nullable<string>;
+  confidence?: Nullable<string>;
+}
+
+export interface RawDimensionScores {
+  method_version?: Nullable<string>;
+  feasibility?: Nullable<RawDimensionScore>;
+  profitability?: Nullable<RawDimensionScore>;
+  saturation?: Nullable<RawDimensionScore>;
+  brand_fit?: Nullable<RawDimensionScore>;
 }
 
 export interface RawReportMeta {
   schema_version?: Nullable<string>;
   generated_date?: Nullable<string>;
+  /** 完成時間（ISO 8601 含時區，後端需求 S11） */
+  generated_at?: Nullable<string>;
   report_id: string;
   source_files?: Nullable<Partial<Record<ModuleKey, Nullable<RawSourceFile>>>>;
 }
@@ -37,6 +65,9 @@ export interface RawHeadline {
   matched_rule?: Nullable<number>;
   one_line_summary?: Nullable<string>;
   reasons?: Nullable<string[]>;
+  /** 品牌定位／異業合作一句話（後端需求 S12） */
+  brand_note?: Nullable<string>;
+  brand_note_source?: Nullable<RawSourceRef>;
 }
 
 export interface RawRegulatoryCounts {
@@ -76,6 +107,9 @@ export interface RawKeyPoint {
   evidence_scheme?: Nullable<string>;
   evidence_level?: Nullable<string>;
   source?: Nullable<string>;
+  /** 後端需求 A2 */
+  source_url?: Nullable<string>;
+  as_of?: Nullable<string>;
   source_ref?: Nullable<string>;
 }
 
@@ -104,6 +138,10 @@ export interface RawFinding {
   remedy?: Nullable<string>;
   owner?: Nullable<string>;
   source_ref?: Nullable<string>;
+  /** 後端需求 R4 */
+  evidence_scheme?: Nullable<string>;
+  evidence_level?: Nullable<string>;
+  sources?: Nullable<RawSourceRef[]>;
 }
 
 export interface RawSections {
@@ -172,4 +210,6 @@ export interface Report {
   data_quality?: Nullable<RawDataQuality>;
   legend?: Nullable<RawLegend>;
   disclaimer?: Nullable<string>;
+  /** 追蹤清單四個維度的數值分數（後端需求 S10） */
+  dimension_scores?: Nullable<RawDimensionScores>;
 }

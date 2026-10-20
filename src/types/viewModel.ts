@@ -32,6 +32,32 @@ export interface OverviewRow {
   blockerCounts: BlockerCounts;
   /** YYYY-MM-DD 原文，用於顯示與排序 */
   generatedDate: string | null;
+  /** 完成時間「YYYY-MM-DD HH:mm」（台北）；後端未提供時為 null */
+  generatedAt: string | null;
+  /** 完成時間毫秒，用於排序；無法解析時為 null */
+  generatedTime: number | null;
+  /** 後端數值分數（S10）；報告沒有 dimension_scores 時為 null */
+  dimensionScores: BackendDimensionScores | null;
+}
+
+/** 追蹤清單維度（顯示與滑桿順序見 lib/score.ts） */
+export type DimensionKey = 'feasibility' | 'profitability' | 'saturation' | 'brandFit';
+
+export interface BackendDimensionScore {
+  /** 0–100；null 表示後端標示無資料 */
+  score: number | null;
+  rationale: string | null;
+  confidence: string | null;
+}
+
+/** 缺少的維度（鍵不存在）改用燈號換算 */
+export type BackendDimensionScores = Partial<Record<DimensionKey, BackendDimensionScore>>;
+
+/** 來源（名稱、連結、資料日期） */
+export interface SourceRefViewModel {
+  name: string | null;
+  url: string | null;
+  asOf: string | null;
 }
 
 export interface RecommendationGroup {
@@ -78,6 +104,8 @@ export interface DecisionSummaryViewModel {
   recommendation: SignalText;
   oneLineSummary: string | null;
   reasons: string[];
+  /** 品牌定位一句話（S12）；沒有時為 null */
+  brandNote: { text: string; source: SourceRefViewModel | null } | null;
   generatedDate: string | null;
   reviewDates: ReviewDate[];
 }
@@ -96,6 +124,8 @@ interface ScorecardBase {
   provided: boolean;
   /** status 原值（不為 provided 時顯示） */
   rawStatus: string | null;
+  /** 刻意不跑模組的原因（R1-B） */
+  skipReason: string | null;
   /** 燈號＋主要判定文字 */
   signal: SignalText;
   summary: string | null;
@@ -148,6 +178,8 @@ export interface KeyPointViewModel {
   id: string | null;
   text: string | null;
   source: string | null;
+  sourceUrl: string | null;
+  asOf: string | null;
   /** null 時不顯示證據等級標籤（第 9.4 節） */
   evidenceLevel: string | null;
 }
@@ -185,6 +217,11 @@ export interface FindingViewModel {
   law: string | null;
   remedy: string | null;
   owner: string | null;
+  /** R4：來源；沒有時為空陣列 */
+  sources: SourceRefViewModel[];
+  evidenceLevel: string | null;
+  /** 證據等級說明，取自 legend.evidence_<scheme> */
+  evidenceLabel: string | null;
 }
 
 export interface LightFilterOption {

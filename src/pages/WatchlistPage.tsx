@@ -7,7 +7,7 @@ import { WeightPanel } from '../components/watchlist/WeightPanel';
 import { normalizeReportIndex } from '../data';
 import { zhTW } from '../i18n/zh-TW';
 import { readFromPath, readFromState } from '../lib/ownerParam';
-import { buildCandidates } from '../lib/score';
+import { anyBrandFitScore, buildCandidates } from '../lib/score';
 import { addToWatchlist, readWatchlist, removeFromWatchlist, subscribeWatchlist } from '../lib/watchlist';
 import { readWeights, resetWeights, setWeight, subscribeWeights } from '../lib/weights';
 import { errorText, useBreadcrumb, useIndexState } from './pageChrome';
@@ -43,6 +43,15 @@ export function WatchlistPage() {
     [indexState],
   );
   const { ranked, missing } = useMemo(() => buildCandidates(ids, rows, weights), [ids, rows, weights]);
+  const hasBrandFit = anyBrandFitScore(ranked.map((c) => c.row));
+  // 標題旁說明：全部用後端分數／部分燈號換算／全部燈號換算
+  const signalCount = ranked.filter((c) => c.score.usesSignal).length;
+  const metaText =
+    ranked.length > 0 && signalCount === 0
+      ? t.metaBackend(ids.length)
+      : signalCount > 0 && signalCount < ranked.length
+        ? t.metaPartial(ids.length)
+        : t.meta(ids.length);
 
   const remove = (id: string, name: string) => {
     setRemoved({ id, index: ids.indexOf(id), name });
@@ -106,10 +115,11 @@ export function WatchlistPage() {
     <div className="space-y-4">
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
         <h1 className="text-xl font-semibold text-slate-900">{t.title}</h1>
-        {indexState.status === 'ok' ? <span className="text-xs text-slate-500">{t.meta(ids.length)}</span> : null}
+        {indexState.status === 'ok' ? <span className="text-xs text-slate-500">{metaText}</span> : null}
       </div>
       <WeightPanel
         weights={weights}
+        hasBrandFit={hasBrandFit}
         onChange={(key, value) => {
           setRemoved(null);
           setWeight(key, value);
