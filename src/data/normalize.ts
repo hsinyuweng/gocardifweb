@@ -36,7 +36,7 @@ import type {
   SourceRefViewModel,
 } from '../types/viewModel';
 import { countryLabel } from '../lib/country';
-import { formatDateTimeTaipei, formatMarketEstimate, formatPopulation } from '../lib/format';
+import { formatDateTimeTaipei, formatMarketEstimate, formatPopulation, formatScoreValue } from '../lib/format';
 import { legendColor, legendLabel } from '../lib/legend';
 import { collectOwnerOptions, splitOwners } from '../lib/owner';
 import { researchStatusLabel } from '../lib/researchStatus';
@@ -120,8 +120,8 @@ function timeOf(iso: string | null): number | null {
 
 const DIMENSION_RAW_KEYS: ReadonlyArray<[DimensionKey, keyof RawDimensionScores]> = [
   ['feasibility', 'feasibility'],
-  ['profitability', 'profitability'],
-  ['saturation', 'saturation'],
+  ['marketSize', 'market_size'],
+  ['marketGrowth', 'market_growth'],
   ['brandFit', 'brand_fit'],
 ];
 
@@ -133,10 +133,15 @@ function normalizeDimensionScores(raw: RawDimensionScores | null | undefined): B
     const d = raw[rawKey];
     if (typeof d !== 'object' || d === null) continue;
     const s = num(d.score);
+    const level = num(d.level);
     out[key] = {
       score: s !== null && s >= 0 && s <= 100 ? Math.round(s) : null,
+      level: level !== null && Number.isInteger(level) && level >= 1 && level <= 5 ? level : null,
+      basis: str(d.basis),
       rationale: str(d.rationale),
       confidence: str(d.confidence),
+      valueText: formatScoreValue(num(d.value), str(d.unit)),
+      source: sourceRef({ name: d.source, url: d.source_url, as_of: d.as_of }),
     };
   }
   return Object.keys(out).length > 0 ? out : null;

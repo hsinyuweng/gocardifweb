@@ -26,17 +26,29 @@ export interface RawSourceRef {
 export interface RawDimensionScore {
   /** 0–100 整數；null 表示無資料 */
   score?: Nullable<number>;
+  /** 1–5 級；score ＝（級數 − 1）× 25 */
+  level?: Nullable<number>;
+  /** regulatory／market_demand／market_pulse（市場成長的備援數字） */
   basis?: Nullable<string>;
   rationale?: Nullable<string>;
   confidence?: Nullable<string>;
+  /** 計分用的原始數值與單位（「新台幣元」或「%」） */
+  value?: Nullable<number>;
+  unit?: Nullable<string>;
+  source?: Nullable<string>;
+  source_url?: Nullable<string>;
+  as_of?: Nullable<string>;
 }
 
 export interface RawDimensionScores {
   method_version?: Nullable<string>;
   feasibility?: Nullable<RawDimensionScore>;
+  market_size?: Nullable<RawDimensionScore>;
+  market_growth?: Nullable<RawDimensionScore>;
+  brand_fit?: Nullable<RawDimensionScore>;
+  /** 本版評分方法固定為 null，網站不讀 */
   profitability?: Nullable<RawDimensionScore>;
   saturation?: Nullable<RawDimensionScore>;
-  brand_fit?: Nullable<RawDimensionScore>;
 }
 
 export interface RawReportMeta {

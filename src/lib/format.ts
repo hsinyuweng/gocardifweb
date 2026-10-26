@@ -32,6 +32,12 @@ export function formatMarketEstimate(value: number | null, unit: string | null):
   return unit ? `${formatRaw(value)} ${unit}` : formatRaw(value);
 }
 
+/** 追蹤清單計分數值（S10）：「%」直接接在數字後；其他同 formatMarketEstimate */
+export function formatScoreValue(value: number | null, unit: string | null): string | null {
+  if (value !== null && unit === '%') return `${formatRaw(value)}%`;
+  return formatMarketEstimate(value, unit);
+}
+
 const TAIPEI_PARTS = new Intl.DateTimeFormat('en-CA', {
   timeZone: 'Asia/Taipei',
   year: 'numeric',

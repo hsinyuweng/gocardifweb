@@ -41,13 +41,20 @@ export interface OverviewRow {
 }
 
 /** 追蹤清單維度（顯示與滑桿順序見 lib/score.ts） */
-export type DimensionKey = 'feasibility' | 'profitability' | 'saturation' | 'brandFit';
+export type DimensionKey = 'feasibility' | 'marketSize' | 'marketGrowth' | 'brandFit';
 
 export interface BackendDimensionScore {
   /** 0–100；null 表示後端標示無資料 */
   score: number | null;
+  /** 1–5 級 */
+  level: number | null;
+  /** 後端的依據；市場成長用備援數字時為 market_pulse */
+  basis: string | null;
   rationale: string | null;
   confidence: string | null;
+  /** 原始數值（已加單位，例如「960 億元」「113.5%」） */
+  valueText: string | null;
+  source: SourceRefViewModel | null;
 }
 
 /** 缺少的維度（鍵不存在）改用燈號換算 */

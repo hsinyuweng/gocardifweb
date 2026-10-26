@@ -1,6 +1,6 @@
 {
   "report_meta": {
-    "schema_version": "1.0",
+    "schema_version": "1.1",
     "language": "zh-Hant",
     "generated_date": "2026-10-11",
     "report_id": "fwd-jpy-single-premium-va",
@@ -41,6 +41,65 @@
       "regulatory：7 項阻斷性待補（G-AGE-01、G-AGE-02、G-RATE-01、INV-01、INV-02、LIFE-01、LIFE-03）",
       "regulatory：無紅燈、4 項黃燈"
     ]
+  },
+  "dimension_scores": {
+    "method_version": "1.0",
+    "scale": "0-100",
+    "dimensions": [
+      "market_size",
+      "market_growth",
+      "feasibility"
+    ],
+    "market_size": {
+      "label": "市場規模",
+      "score": 100,
+      "level": 5,
+      "basis": "market_demand",
+      "rationale": "潛在保費市場 670～1,250 億元，中間情境 960 億元（潛在市場規模法（TAM））",
+      "confidence": "B",
+      "value": 96000000000,
+      "unit": "新台幣元"
+    },
+    "market_growth": {
+      "label": "市場成長",
+      "score": 100,
+      "level": 5,
+      "basis": "market_demand",
+      "rationale": "個人投資型保險新契約件數，2026年前7月 vs 去年同期年增 113.5%",
+      "confidence": "A",
+      "value": 113.5,
+      "unit": "%",
+      "source": "TII_個人投資型保險商品新契約_2024-26.xlsx"
+    },
+    "feasibility": {
+      "label": "法規可行性",
+      "score": 50,
+      "level": 3,
+      "basis": "regulatory",
+      "rationale": "0 紅（含疑似 0）、4 黃；7 項阻斷性待補，分數暫定",
+      "confidence": "C"
+    },
+    "profitability": {
+      "score": null,
+      "level": null,
+      "basis": null,
+      "rationale": "本版評分方法不評估此維度",
+      "confidence": null
+    },
+    "saturation": {
+      "score": null,
+      "level": null,
+      "basis": null,
+      "rationale": "本版評分方法不評估此維度",
+      "confidence": null
+    },
+    "brand_fit": {
+      "score": null,
+      "level": null,
+      "basis": null,
+      "rationale": "本版評分方法不評估此維度",
+      "confidence": null
+    }
   },
   "scorecard": {
     "market_demand": {

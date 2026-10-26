@@ -1,27 +1,25 @@
-import type { DimensionKey, OverviewRow, SignalColor, SignalText } from '../types/viewModel';
+import type { BackendDimensionScore, DimensionKey, OverviewRow, SignalColor, SignalText } from '../types/viewModel';
 
-// 追蹤清單綜合分數（2026-10-20 經確認）：報告有後端數值分數（dimension_scores，後端需求 S10）的維度用它，
-// 沒有的維度暫用三面向燈號換算。
+// 追蹤清單綜合分數（2026-10-20 經確認；2026-10-26 改為法規可行性、市場規模、市場成長）：
+// 報告有後端數值分數（dimension_scores，後端需求 S10）的維度用它；沒有時只有法規可行性用法規燈號換算，
+// 市場規模、市場成長沒有對應燈號，視為無資料。
 // 綜合分數 ＝ Σ(分數 × 權重) ÷ Σ 權重；無資料（灰燈、缺漏、後端標 null）或權重為 0 的維度不計入。
 
 export type { DimensionKey };
 
 /** 顯示與滑桿順序 */
-export const DIMENSIONS: readonly DimensionKey[] = ['feasibility', 'profitability', 'saturation', 'brandFit'];
+export const DIMENSIONS: readonly DimensionKey[] = ['feasibility', 'marketSize', 'marketGrowth', 'brandFit'];
 
 export type Weights = Readonly<Record<DimensionKey, number>>;
 
-export const DEFAULT_WEIGHTS: Weights = { feasibility: 3, profitability: 3, saturation: 3, brandFit: 0 };
+export const DEFAULT_WEIGHTS: Weights = { feasibility: 3, marketSize: 3, marketGrowth: 3, brandFit: 0 };
 export const MAX_WEIGHT = 5;
 
 const SIGNAL_SCORE: Partial<Record<SignalColor, number>> = { green: 100, yellow: 67, orange: 33, red: 0 };
 
-/** 各維度依據的燈號：可行性＝法規、獲利性＝發生率暨獲利、市場飽和度＝市場需求；品牌／通路契合度尚無資料 */
+/** 只有法規可行性有對應燈號（法規） */
 function basisSignal(row: OverviewRow, key: DimensionKey): SignalText | null {
-  if (key === 'feasibility') return row.regulatory;
-  if (key === 'profitability') return row.actuarial;
-  if (key === 'saturation') return row.marketDemand;
-  return null;
+  return key === 'feasibility' ? row.regulatory : null;
 }
 
 export interface DimensionScore {
@@ -32,9 +30,8 @@ export interface DimensionScore {
   score: number | null;
   /** backend：後端數值分數；signal：燈號換算；null：無資料 */
   scoreSource: 'backend' | 'signal' | null;
-  /** 後端的一句說明與可信度 */
-  rationale: string | null;
-  confidence: string | null;
+  /** 後端分數的級數、說明、可信度、原始數值與來源；燈號換算或無資料時為 null */
+  backend: BackendDimensionScore | null;
   weight: number;
 }
 
@@ -44,6 +41,8 @@ export interface CandidateScore {
   total: number | null;
   /** 有任何計入的維度是燈號換算 */
   usesSignal: boolean;
+  /** 權重大於 0 但無資料、未計入的維度 */
+  missing: DimensionKey[];
 }
 
 export function scoreRow(row: OverviewRow, weights: Weights): CandidateScore {
@@ -57,18 +56,22 @@ export function scoreRow(row: OverviewRow, weights: Weights): CandidateScore {
         signal,
         score: backend.score,
         scoreSource: backend.score === null ? null : 'backend',
-        rationale: backend.rationale,
-        confidence: backend.confidence,
+        backend,
         weight,
       };
     }
     const score = signal ? (SIGNAL_SCORE[signal.color] ?? null) : null;
-    return { key, signal, score, scoreSource: score === null ? null : 'signal', rationale: null, confidence: null, weight };
+    return { key, signal, score, scoreSource: score === null ? null : 'signal', backend: null, weight };
   });
   const counted = dims.filter((d) => d.score !== null && d.weight > 0);
   const sumW = counted.reduce((s, d) => s + d.weight, 0);
   const total = sumW > 0 ? Math.round(counted.reduce((s, d) => s + d.score! * d.weight, 0) / sumW) : null;
-  return { dims, total, usesSignal: counted.some((d) => d.scoreSource === 'signal') };
+  return {
+    dims,
+    total,
+    usesSignal: counted.some((d) => d.scoreSource === 'signal'),
+    missing: dims.filter((d) => d.score === null && d.weight > 0).map((d) => d.key),
+  };
 }
 
 /** 是否有任何候選商品有品牌／通路契合度的後端分數 */
