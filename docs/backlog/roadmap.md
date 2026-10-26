@@ -37,7 +37,7 @@
 
 - 報告：各維度數值分數與說明（S10 已定：法規可行性、市場規模、市場成長，由組員 report-enricher 的 `enrich_reports.py` 計算；品牌／通路契合度未定）、每筆 finding 的來源與可信度、品牌定位／異業合作一句、完成時間。
 - feed：`domain`（5 領域）、`kind`（新聞／法規）、法規影響的 `related_report_ids`（已補進後端需求文件 S7）。
-- market-pulse：依 schema 2.0（`api-contract.md` 第 2A 節）提供五組指標與本月焦點；由獨立排程每日更新（已寫進後端需求文件 M5）。
+- market-pulse：依 schema 2.0（`api-contract.md` 第 2A 節）提供五組指標與本月焦點；以月更新為主（2026-10-26 分工文件；後端需求文件 M5）。分工文件多出 5 個候選指標，等塗確認，網站目前不用改。
 - 後端需求文件（Claude Doc，使用者擁有）：https://claude.ai/code/artifact/91c6050f-8416-40cc-b0f1-76e3f79b7c62（分頁：「組員版」＝標題與原因；「AI 詳細版」＝驗收、替代方案與 `format_variant` 通知協定；「各組員交付格式」＝每位組員的完整欄位表與 JSON，兩者不一致時以它為準）
 
 ## 5. 更遠的想法（未排程）
