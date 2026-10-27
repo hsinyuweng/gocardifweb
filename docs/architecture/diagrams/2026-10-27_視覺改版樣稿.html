@@ -75,7 +75,10 @@ body { background: var(--bg); color: var(--ink); font-family: var(--font); font-
 .pagehead h1 { margin: 0; font-size: 24px; font-weight: 600; line-height: 1.2; }
 .pagehead .desc { margin: 2px 0 0; font-size: 13px; color: var(--ink2); }
 .pagehead .updated { margin-left: auto; font-size: 12px; color: var(--muted); white-space: nowrap; align-self: flex-end; }
-.ptabs { display: flex; gap: 6px; padding: 14px 48px 0; }
+/* 分頁頁籤：往下捲時固定在頂部（網站用 position: sticky） */
+.ptabs { display: flex; align-items: center; gap: 6px; padding: 14px 48px 0; position: sticky; top: 0; z-index: 2; background: var(--p-faint); }
+/* 樣稿專用標註（網站不做） */
+.mock-tag { font-size: 11.5px; color: var(--coral); background: #fff; border: 1px dashed var(--coral); border-radius: 4px; padding: 0 7px; line-height: 18px; white-space: nowrap; }
 .ptabs span { padding: 5px 15px; font-size: 13.5px; color: var(--ink2); border-radius: 999px; background: var(--card); border: 1px solid var(--line); }
 .ptabs span.on { background: var(--p); border-color: var(--p); color: #fff; font-weight: 500; }
 .ptabs span.off { color: var(--muted); border-style: dashed; }
@@ -111,7 +114,9 @@ body { background: var(--bg); color: var(--ink); font-family: var(--font); font-
 
 /* 首頁四框：極簡，框頂色條＋大標題 */
 .home-grid { display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 1fr; gap: 20px 24px; }
-.box { background: var(--card); border: 1px solid var(--line); border-radius: 14px; display: grid; grid-template-rows: auto auto 1fr auto; gap: 12px; min-height: 0; overflow: hidden; }
+.box { background: var(--card); border: 1px solid var(--line); border-radius: 14px; display: grid; grid-template-rows: auto auto 1fr auto; gap: 12px; min-height: 0; overflow: hidden; cursor: pointer; transition: border-color .15s; }
+/* 整框可點：滑過時框線變代表色（.hover 只用在樣稿示範） */
+.box:hover, .box.hover, .grp:hover, .grp.hover { border-color: var(--p); }
 .box > *:not(.box-head) { padding: 0 22px; }
 .box > *:last-child { padding-bottom: 14px; }
 .box-head { display: flex; align-items: center; gap: 10px; padding: 11px 22px; background: var(--p-faint); border-bottom: 1px solid var(--p-pale); }
@@ -131,7 +136,7 @@ body { background: var(--bg); color: var(--ink); font-family: var(--font); font-
 
 /* 總覽分頁：四組，無框，細線分隔 */
 .groups { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.grp { display: grid; gap: 8px; align-content: start; padding: 14px 20px 12px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
+.grp { display: grid; gap: 6px; align-content: start; padding: 12px 20px 10px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; cursor: pointer; transition: border-color .15s; }
 .grp .g { display: flex; justify-content: space-between; align-items: baseline; font-size: 12.5px; color: var(--muted); }
 .grp .g span { display: inline-flex; align-items: center; gap: 7px; color: var(--ink2); }
 .grp .g span::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--p); }
@@ -174,8 +179,8 @@ svg text { font-family: var(--font); }
 
 <div class="wrap">
   <header class="intro">
-    <h1>市場趨勢網頁：視覺樣稿 第 6 版（電腦版）</h1>
-    <p>配色回到第 4 版（首頁框的代表色色帶、膠囊頁籤），點進各頁時整頁底色就是該頁代表色（市場脈動淡藍、新聞淡綠），白卡放在上面，排版保留第 5 版的留白與閱讀路徑。每一頁都照同一條閱讀路徑排列，空心圓圈數字標出順序（只在樣稿顯示，網站上不會有）：</p>
+    <h1>市場趨勢網頁：視覺樣稿 第 7 版（電腦版）</h1>
+    <p>第 7 版加入 2026-10-27 選定的改進：數字格式統一、首頁四框和總覽卡片整張可點（滑過時框線變代表色）、總覽加「下一步」條、健康度沒有資料時不顯示頁籤、分頁頁籤往下捲時固定在頂部。配色與版面同第 6 版。每一頁都照同一條閱讀路徑排列，空心圓圈數字標出順序；空心圓圈和珊瑚色虛線小標只在樣稿顯示，網站上不會有：</p>
     <div class="path">
       <span><i class="rp">1</i>我在哪裡：頁首色帶與頁名</span>
       <span><i class="rp">2</i>一句結論：本頁最大的字</span>
@@ -195,8 +200,8 @@ svg text { font-family: var(--font); }
       <div class="content" style="gap:24px;padding-top:24px;flex:1;min-height:0;grid-template-rows:auto 1fr">
         <div class="lead"><p class="thesis"><i class="rp inline">2</i>8 月新契約保費年增 <b>68.5%</b>，年金險占比回落到 33.6%</p></div>
         <div class="home-grid">
-          <section class="box p-market">
-            <div class="box-head"><i class="rp">3</i><span class="badge"><svg><use href="#i-market"/></svg></span><h3>市場脈動</h3><a>看全部 →</a></div>
+          <section class="box p-market hover">
+            <div class="box-head"><i class="rp">3</i><span class="badge"><svg><use href="#i-market"/></svg></span><h3>市場脈動</h3><span class="mock-tag">滑過時：整框可點，框線變代表色</span><a style="margin-left:12px">看全部 →</a></div>
             <div class="key"><span class="num coral">68.5%</span><span class="lab">新契約保費年增率，較 7 月 ▼ 41.2 個百分點</span></div>
             <div id="h-pulse"></div>
             <div class="mini-list"><div class="r"><span class="t">10 年期公債殖利率 2.00% · 年金險占比 33.6% · 法巴市占率 3.56%（第 10 名）</span></div></div>
@@ -231,22 +236,23 @@ svg text { font-family: var(--font); }
   </div></div>
 
   <!-- 市場脈動 · 總覽 -->
-  <div class="mock-label"><b>模擬頁 2</b><span>市場脈動 · 「總覽」分頁</span><small>一個畫面看完四組重點；每組右上角「看分頁 →」是下一步</small></div>
+  <div class="mock-label"><b>模擬頁 2</b><span>市場脈動 · 「總覽」分頁</span><small>一個畫面看完四組重點；四張卡片整張可點，底部「下一步」條連到各分頁</small></div>
   <div class="scroller"><div class="frame screen p-market">
     <nav class="side" data-on="market"></nav>
     <div class="main">
       <div class="crumbbar">市場總覽 / <b>市場脈動</b> / 總覽</div>
       <div class="pagehead"><i class="rp">1</i><span class="badge"><svg><use href="#i-market"/></svg></span><div><h1>市場脈動</h1><p class="desc">台灣壽險市場的成長、利率、通路與同業競爭</p></div><span class="updated">2026 年 8 月 · 資料更新於 2026-10-26 21:58</span></div>
-      <div class="ptabs"><span class="on">總覽</span><span>成長動能</span><span>定價環境</span><span>通路結構</span><span>品牌與競爭</span><span class="off">健康度（尚無資料）</span></div>
-      <div class="content" style="gap:16px;padding-top:16px;padding-bottom:16px">
+      <div class="ptabs"><span class="on">總覽</span><span>成長動能</span><span>定價環境</span><span>通路結構</span><span>品牌與競爭</span></div>
+      <div class="content" style="gap:14px;padding-top:14px;padding-bottom:14px">
         <div class="lead"><p class="thesis"><i class="rp inline">2</i>新契約保費連續 8 個月正成長，<b>年金險增速最快</b></p></div>
         <div class="nums" id="o-nums"></div>
         <div class="groups">
-          <div class="grp"><div class="g"><span><i class="rp" style="width:18px;height:18px;font-size:10.5px">4</i>成長動能</span><a>看分頁 →</a></div><p>年金險年增 135.8% 最快，健康險、傷害險小幅衰退</p><div id="o-growth"></div></div>
+          <div class="grp hover"><div class="g"><span><i class="rp" style="width:18px;height:18px;font-size:10.5px">4</i>成長動能</span><span class="mock-tag" style="margin-left:auto;margin-right:10px">滑過時：整張可點</span><a>看分頁 →</a></div><p>年金險年增 135.8% 最快，健康險、傷害險小幅衰退</p><div id="o-growth"></div></div>
           <div class="grp"><div class="g"><span>定價環境</span><a>看分頁 →</a></div><p>10 年期公債殖利率 2.00%，8 週來上升 0.12 個百分點</p><div id="o-yield"></div></div>
           <div class="grp"><div class="g"><span>通路結構</span><a>看分頁 →</a></div><p>業務員通路占 46.4%，銀行通路 37.0%</p><div id="o-channel"></div></div>
-          <div class="grp"><div class="g"><span>品牌與競爭</span><a><i class="rp" style="width:18px;height:18px;font-size:10.5px;margin-right:6px">5</i>看分頁 →</a></div><p>法巴市占率 3.56%，同業排第 10 名</p><div id="o-rank"></div></div>
+          <div class="grp"><div class="g"><span>品牌與競爭</span><a>看分頁 →</a></div><p>法巴市占率 3.56%，同業排第 10 名</p><div id="o-rank"></div></div>
         </div>
+        <div class="next" style="padding:10px 18px"><i class="rp">5</i><b>下一步</b><a>成長動能 →</a><a>定價環境 →</a><a>通路結構 →</a><a>品牌與競爭 →</a><span style="margin-left:auto;font-size:12.5px;color:var(--muted)">健康度（全行業解約率與繼續率）尚無資料，有資料後會多一個分頁</span></div>
       </div>
     </div>
   </div></div>
@@ -259,7 +265,7 @@ svg text { font-family: var(--font); }
     <div class="main">
       <div class="crumbbar">市場總覽 / 市場脈動 / <b>成長動能</b></div>
       <div class="pagehead"><i class="rp">1</i><span class="badge"><svg><use href="#i-market"/></svg></span><div><h1>市場脈動 · 成長動能</h1><p class="desc">新契約保費的成長速度與各險別變化</p></div><span class="updated">2026 年 8 月 · 資料更新於 2026-10-26 21:58</span></div>
-      <div class="ptabs"><span>總覽</span><span class="on">成長動能</span><span>定價環境</span><span>通路結構</span><span>品牌與競爭</span><span class="off">健康度（尚無資料）</span></div>
+      <div class="ptabs"><span>總覽</span><span class="on">成長動能</span><span>定價環境</span><span>通路結構</span><span>品牌與競爭</span><span class="mock-tag" style="margin-left:auto">往下捲時這列固定在頂部</span></div>
       <div class="content" style="padding-top:20px;gap:24px">
         <div class="lead"><p class="thesis"><i class="rp inline">2</i>8 月新契約保費年增 <b>68.5%</b>，連續 8 個月正成長</p></div>
         <div class="nums" id="g-nums"></div>
@@ -303,7 +309,7 @@ svg text { font-family: var(--font); }
     <div class="main">
       <div class="crumbbar">市場總覽 / 市場脈動 / <b>品牌與競爭</b></div>
       <div class="pagehead"><i class="rp">1</i><span class="badge"><svg><use href="#i-market"/></svg></span><div><h1>市場脈動 · 品牌與競爭</h1><p class="desc">法巴在同業中的位置</p></div><span class="updated">2026 年 1–8 月 · 資料更新於 2026-10-26 21:58</span></div>
-      <div class="ptabs"><span>總覽</span><span>成長動能</span><span>定價環境</span><span>通路結構</span><span class="on">品牌與競爭</span><span class="off">健康度（尚無資料）</span></div>
+      <div class="ptabs"><span>總覽</span><span>成長動能</span><span>定價環境</span><span>通路結構</span><span class="on">品牌與競爭</span></div>
       <div class="content" style="padding-top:16px;gap:20px">
         <div class="lead"><p class="thesis"><i class="rp inline">2</i>法巴市占率 <b>3.56%</b>，同業排第 10 名</p><p class="why">與第 9 名三商美邦只差 8.3 億元，第 11 名安達差 9.9 億元</p></div>
         <div class="nums" id="r-nums"></div>
@@ -366,7 +372,7 @@ svg text { font-family: var(--font); }
     <div class="flow"><h3>B. 頁面之間怎麼走</h3><pre>
 首頁「市場總覽」：① 頁名 ▶ ② 結論 ▶ 四框依 Z 字順序（市場脈動 ▶ 新聞 ▶ 追蹤清單 ▶ 競品研究）
  ├─ 天空藍 市場脈動 ──▶ 總覽分頁 ──「看分頁 →」──▶ 成長動能｜定價環境｜通路結構｜品牌與競爭
- │                                                 └ 每個分頁底部「下一步」互相連結
+ │                     （四張卡片整張可點）        └ 每個分頁底部「下一步」互相連結；健康度有資料才出現
  ├─ 薄荷綠 新聞與法規監控 ──▶ 結論＋圖 ──↓──▶ 清單 ──點標題──▶ 原文（新分頁）
  ├─ 薰衣草 追蹤清單 ──▶ 點商品 ──▶ 報告頁
  └─ 奶油黃 競品研究 ──▶ 報告頁
@@ -497,8 +503,8 @@ function ranking({ rows, pal, w = 1000, rowH = 26, nameW = 130, label }) {
     if (on) s += `<rect x="0" y="${y + 1}" width="${w}" height="${rowH - 2}" rx="5" fill="${C.coralPale}"/>`;
     s += txt(6, y + rowH / 2, `${r.rank ?? i + 1}`, { base: 'middle', size: 12, fill: C.muted });
     s += txt(30, y + rowH / 2, r.name, { base: 'middle', size: 12.5, fill: on ? C.ink : C.ink2, weight: on ? 500 : 400 });
-    s += `<path d="${barPath(nameW, y + 7, len, rowH - 14, 1)}" fill="${on ? C.coral : pal.mid}"><title>${esc(r.name)}：${fmt(r.v)} 億元</title></path>`;
-    s += txt(nameW + len + 8, y + rowH / 2, fmt(r.v) + (on ? ' 億元' : ''), { base: 'middle', size: 12, fill: on ? C.ink : C.muted, weight: on ? 500 : 400 });
+    s += `<path d="${barPath(nameW, y + 7, len, rowH - 14, 1)}" fill="${on ? C.coral : pal.mid}"><title>${esc(r.name)}：${fmt(r.v, 1)} 億元</title></path>`;
+    s += txt(nameW + len + 8, y + rowH / 2, fmt(r.v, 1) + (on ? ' 億元' : ''), { base: 'middle', size: 12, fill: on ? C.ink : C.muted, weight: on ? 500 : 400 });
   });
   return svg(w, h, s, label);
 }
@@ -553,23 +559,23 @@ put('h-research', bigShare({ w: 560, h: 30, nameOnly: true, label: '報告建議
 
 // 總覽
 put('o-nums', nums([
-  { lab: '新契約保費年增率', num: '68.47%', chg: '▼ 41.2 個百分點，較 7 月', s: yoy, coral: true },
+  { lab: '新契約保費年增率', num: '68.5%', chg: '▼ 41.2 個百分點，較 7 月', s: yoy, coral: true },
   { lab: '10 年期公債殖利率', num: '2.00%', chg: '▼ 0.02 個百分點，較上週', s: yieldW },
   { lab: '年金保險占比', num: '33.6%', chg: '▼ 10.3 個百分點，較 7 月', s: share.annuity },
   { lab: '法巴新契約保費市占率', num: '3.56%', chg: '第 10 名，2026 年 1–8 月' }]));
-put('o-growth', diverging({ rows: lineRows, w: 520, h: 108, label: '8 月各險別新契約保費年增率' }));
-put('o-yield', annotatedLine({ labels: ['8/31', '', '', '', '9/28', '', '', '10/19'], values: yieldW, pal: BLUE, w: 520, h: 108, min: 1.85, max: 2.05, ticks: [1.85, 1.95, 2.05],
+put('o-growth', diverging({ rows: lineRows, w: 520, h: 84, label: '8 月各險別新契約保費年增率' }));
+put('o-yield', annotatedLine({ labels: ['8/31', '', '', '', '9/28', '', '', '10/19'], values: yieldW, pal: BLUE, w: 520, h: 84, min: 1.85, max: 2.05, ticks: [1.85, 1.95, 2.05],
   notes: [{ i: 5, text: '2.02% 最高' }, { i: 7, text: '2.00%', strong: true, anchor: 'start', dx: 10, dy: -8 }], label: '10 年期公債殖利率每週走勢' }));
-put('o-channel', bigShare({ w: 520, h: 46, label: '新契約保費通路占比', parts: [
+put('o-channel', bigShare({ w: 520, h: 36, label: '新契約保費通路占比', parts: [
   { name: '本身行銷體系', v: 46.39, color: C.coral, ink: '#fff' }, { name: '銀行通路', v: 36.97, color: BLUE.mid }, { name: '經代', v: 16.64, color: BLUE.pale }] }));
-put('o-rank', ranking({ rows: ranking20.slice(8, 11), pal: BLUE, w: 520, rowH: 24, label: '法巴前後名次' }));
+put('o-rank', ranking({ rows: ranking20.slice(8, 11), pal: BLUE, w: 520, rowH: 19, label: '法巴前後名次' }));
 
 // 成長動能
 put('g-nums', nums([
-  { lab: '8 月年增率', num: '68.47%', chg: '今年第 8 個月正成長', coral: true },
+  { lab: '8 月年增率', num: '68.5%', chg: '今年第 8 個月正成長', coral: true },
   { lab: '較 7 月', num: '▼ 41.2', chg: '個百分點' },
   { lab: '今年最高', num: '109.6%', chg: '7 月' },
-  { lab: '8 月新契約保費', num: '1,246 億', chg: '需後端補資料' }]));
+  { lab: '8 月新契約保費', num: '1,245.9 億', chg: '需後端補資料' }]));
 put('g-yoy', columns({ labels: months, values: yoy, colors: yoyColors, h: 170, max: 120, ticks: [0, 40, 80, 120], labelAt: [6, 7], strongAt: [7], unit: '%', decimals: 1, label: '2026 年每月新契約保費年增率' }));
 put('g-amount', columns({ labels: amountLabels, values: amount, colors: amount.map((_, i) => (i === 11 ? BLUE.deep : BLUE.pale)), h: 170, max: 1800, ticks: [0, 600, 1200, 1800], labelAt: [4, 11], label: '近 12 個月新契約保費金額（億元）' }));
 put('g-div', diverging({ rows: lineRows, label: '8 月各險別新契約保費年增率' }));
@@ -584,7 +590,7 @@ put('g-lines', lineChart({ labels: months, min: -50, max: 350, ticks: [0, 100, 2
 put('r-nums', nums([
   { lab: '法巴市占率', num: '3.56%', chg: '2026 年 1–8 月累計', coral: true },
   { lab: '同業名次', num: '第 10 名', chg: '20 家壽險公司中' },
-  { lab: '今年累計初年度保費', num: '376 億', chg: '新台幣' },
+  { lab: '今年累計初年度保費', num: '375.7 億', chg: '新台幣' },
   { lab: '與第 9 名差距', num: '8.3 億', chg: '三商美邦人壽' }]));
 put('r-rank', ranking({ rows: [...ranking20.slice(0, 5), ...ranking20.slice(8, 11)], pal: BLUE, w: 1000, rowH: 21, label: '同業今年累計初年度保費排名' }));
 put('r-table', `<thead><tr><th>名次</th><th style="text-align:left">公司</th><th>今年累計初年度保費（億元）</th><th>市占率</th></tr></thead><tbody>${ranking20.map((r, i) =>
@@ -594,7 +600,7 @@ put('r-table', `<thead><tr><th>名次</th><th style="text-align:left">公司</th
 put('n-nums', nums([
   { lab: '近 30 天動態', num: '34 則', chg: '全部為業者新聞稿', pal: MINT },
   { lab: '法規', num: '0 則', chg: '來源抓取失敗', coral: true },
-  { lab: '品牌公關', num: '23 則', chg: '占 68%' },
+  { lab: '品牌公關', num: '23 則', chg: '占 67.6%' },
   { lab: '發稿最多', num: '凱基人壽', chg: '14 則' }]));
 put('n-domain', hbars({ label: '各領域則數', rows: [
   { name: '品牌公關', v: 23, color: MINT.deep }, { name: '商品通路', v: 9, color: MINT.mid }, { name: '理賠消保', v: 2, color: MINT.pale },
