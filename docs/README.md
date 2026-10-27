@@ -11,7 +11,9 @@
 
 ## 2. 下一步
 
-依使用者 2026-10-20 新規劃（`architecture/diagrams/2026-10-20_網頁規劃說明.md`）改版。剩餘階段在 `backlog/roadmap.md`。**下一步：階段 5B**（競品比較表——已請組員提供跑過 `enrich_reports.py` 的完整報告、每日快照自動抓取、下一步對應待解決事項），要等後端交付範例；交付時先看後端需求文件的「交付紀錄」與 `format_variant`（連結在 `backlog/roadmap.md` 第 4 節）。
+**進行中：視覺改版**（2026-10-27 起，網站程式還沒改）。先讀 `architecture/diagrams/2026-10-27_視覺改版規劃.md`，並用瀏覽器打開同資料夾的樣稿 HTML。目前等使用者從規劃檔第 6 節選改進建議；樣稿確認後寫實作計畫，等使用者回「確認」才開工。
+
+等後端的項目（剩餘階段在 `backlog/roadmap.md`）：**階段 5B**（競品比較表——已請組員提供跑過 `enrich_reports.py` 的完整報告、每日快照自動抓取、下一步對應待解決事項），要等後端交付範例；交付時先看後端需求文件的「交付紀錄」與 `format_variant`（連結在 `backlog/roadmap.md` 第 4 節）。
 
 ## 3. 改動前：依範圍讀
 
@@ -20,6 +22,7 @@
 | 任何介面文字、新畫面 | `guides/collaboration.md`、對應的 `decisions/*.md` |
 | 頁面、路由、導覽、頁面間連結 | `architecture/overview.md`、`spec/web-spec.md` 第 10–11 節 |
 | 首頁四區塊、新聞、市場脈動、追蹤清單 | `decisions/market-dashboard.md`、`spec/api-contract.md` 第 2A 節、`backlog/roadmap.md` |
+| 配色、版面、視覺改版 | `architecture/diagrams/2026-10-27_視覺改版規劃.md`（＋同名樣稿 HTML） |
 | 競品研究頁、報告頁 | `spec/web-spec.md` 第 9、11 節、`decisions/spec-stages.md`、`decisions/deviations.md` |
 | 我的待辦、負責單位、麵包屑 | `decisions/tasks-owner-backnav.md` |
 | 資料層、JSON、後端串接 | `spec/web-spec.md` 第 6–8 節、`spec/api-contract.md`、`progress/data-status.md` |
@@ -40,7 +43,7 @@
 
 ```
 spec/            正式規格（修改要使用者同意）：web-spec.md、api-contract.md
-architecture/    overview.md（現在的頁面、路由、資料流、程式目錄）；diagrams/（使用者的規劃圖，PDF＋.md 文字版）
+architecture/    overview.md（現在的頁面、路由、資料流、程式目錄）；diagrams/（使用者的規劃圖，PDF＋.md 文字版；視覺改版規劃與樣稿 HTML）
 decisions/       已確認的介面文字與實作規則：market-dashboard、tasks-owner-backnav、spec-stages、deviations
 progress/        data-status.md（現有報告與資料問題）
 backlog/         roadmap.md（未來架構與分階段計畫）、open-questions.md

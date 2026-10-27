@@ -1,0 +1,612 @@
+<title>市場趨勢網頁樣稿</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600&display=swap">
+<style>
+/* 版面概念：極簡。內容區白底、少框線，用留白分層；每頁固定閱讀路徑：①在哪裡 ②一句結論 ③關鍵數字 ④圖表證據 ⑤下一步。
+   每頁代表色（棉花糖淡色系）＋ 60-30-10：白底、代表色深淺、珊瑚只給最重要的一點。 */
+:root {
+  --bg: #eef0f5;
+  --base: #fafbfd;
+  --card: #ffffff;
+  --ink: #2a3142;
+  --ink2: #5a6275;
+  --muted: #8a92a3;
+  --line: #e8eaf1;
+  --blue: #5b8def;  --blue-mid: #a9c5f7;  --blue-pale: #dbe7fd;  --blue-faint: #f0f5ff;
+  --mint: #2fa58a;  --mint-mid: #96d8c4;  --mint-pale: #d5f1e8;  --mint-faint: #eefaf5;
+  --lilac: #9a7ee6; --lilac-mid: #cbb9f4; --lilac-pale: #ebe3fd; --lilac-faint: #f7f3ff;
+  --gold: #d9962a;  --gold-mid: #f1cf8a;  --gold-pale: #fbecc8;  --gold-faint: #fff8e8;
+  --coral: #ec6a60; --coral-pale: #fde3e0;
+  --indigo: #3b4a7a;
+  --note: #8a5a00; --note-bg: #fbf1dc;
+  --font: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  /* 字級 */
+  --t-page: 24px;   /* ① 頁名 */
+  --t-thesis: 28px; /* ② 結論句（本頁最大的字） */
+  --t-num: 30px;    /* ③ 關鍵數字 */
+  --t-sec: 18px;    /* ④ 圖表段落標題 */
+  --t-body: 14px;
+  --t-cap: 12.5px;
+  color-scheme: light;
+}
+.p-market { --p: var(--blue); --p-mid: var(--blue-mid); --p-pale: var(--blue-pale); --p-faint: var(--blue-faint); }
+.p-news   { --p: var(--mint); --p-mid: var(--mint-mid); --p-pale: var(--mint-pale); --p-faint: var(--mint-faint); }
+.p-watch  { --p: var(--lilac); --p-mid: var(--lilac-mid); --p-pale: var(--lilac-pale); --p-faint: var(--lilac-faint); }
+.p-res    { --p: var(--gold); --p-mid: var(--gold-mid); --p-pale: var(--gold-pale); --p-faint: var(--gold-faint); }
+.p-home   { --p: var(--indigo); --p-mid: #b9c1dd; --p-pale: #e3e7f3; --p-faint: #f3f5fb; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font); font-size: var(--t-body); line-height: 1.65; }
+.wrap { max-width: 1340px; margin: 0 auto; padding-block: 36px 72px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.intro { max-width: 840px; display: grid; gap: 10px; }
+.intro h1 { font-size: 22px; font-weight: 600; margin: 0; }
+.intro p { margin: 0; color: var(--ink2); }
+.path { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--ink); margin-top: 4px; }
+.path span { display: inline-flex; align-items: center; gap: 6px; }
+
+/* 閱讀路徑標記：只在樣稿顯示 */
+.rp { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: #fff; border: 1.5px solid var(--indigo); color: var(--indigo); font-size: 11px; font-weight: 600; font-style: normal; line-height: 1; flex: none; vertical-align: middle; }
+.rp.inline { margin-right: 10px; position: relative; top: -2px; }
+
+.mock-label { display: flex; align-items: baseline; gap: 12px; margin: 48px 0 12px; flex-wrap: wrap; }
+.mock-label b { font-size: 12px; font-weight: 500; letter-spacing: .08em; color: var(--muted); }
+.mock-label span { font-size: 16px; font-weight: 600; }
+.mock-label small { color: var(--muted); font-size: 13px; }
+.scroller { overflow-x: auto; border-radius: 14px; box-shadow: 0 1px 2px rgba(38,45,61,.05), 0 10px 30px rgba(38,45,61,.07); }
+.frame { position: relative; min-width: 1240px; display: grid; grid-template-columns: 208px 1fr; background: var(--base); }
+.frame.screen { height: 780px; overflow: hidden; }
+.fold { position: absolute; left: 0; right: 0; top: 780px; border-top: 2px dashed var(--coral); z-index: 3; pointer-events: none; }
+.fold span { position: absolute; right: 16px; top: -24px; font-size: 12px; color: var(--coral); background: var(--card); padding: 0 8px; border-radius: 4px; }
+
+.side { background: var(--card); border-right: 1px solid var(--line); padding: 22px 14px; display: grid; align-content: start; gap: 4px; font-size: 14px; }
+.side .brand { color: var(--indigo); font-weight: 600; padding: 0 10px 18px; margin-bottom: 6px; border-bottom: 1px solid var(--line); }
+.side .nav { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; color: var(--ink2); }
+.side .nav i { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.side .nav.on { background: var(--p-pale); color: var(--ink); font-weight: 500; }
+.main { min-width: 0; display: flex; flex-direction: column; background: var(--p-faint); }  /* 整頁底色＝該頁代表色極淡色 */
+
+/* ① 在哪裡：頁首色帶（麵包屑＋頁名） */
+.crumbbar { padding: 10px 48px; font-size: 12.5px; color: var(--muted); background: var(--card); border-bottom: 1px solid var(--line); }
+.crumbbar b { color: var(--ink); font-weight: 500; }
+.pagehead { background: transparent; padding: 16px 48px 14px; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid var(--p-pale); }
+.badge { width: 40px; height: 40px; border-radius: 12px; background: var(--p); display: grid; place-items: center; flex: none; }
+.badge svg { width: 22px; height: 22px; stroke: #fff; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.pagehead h1 { margin: 0; font-size: 24px; font-weight: 600; line-height: 1.2; }
+.pagehead .desc { margin: 2px 0 0; font-size: 13px; color: var(--ink2); }
+.pagehead .updated { margin-left: auto; font-size: 12px; color: var(--muted); white-space: nowrap; align-self: flex-end; }
+.ptabs { display: flex; gap: 6px; padding: 14px 48px 0; }
+.ptabs span { padding: 5px 15px; font-size: 13.5px; color: var(--ink2); border-radius: 999px; background: var(--card); border: 1px solid var(--line); }
+.ptabs span.on { background: var(--p); border-color: var(--p); color: #fff; font-weight: 500; }
+.ptabs span.off { color: var(--muted); border-style: dashed; }
+
+.content { padding: 32px 48px 40px; display: grid; gap: 40px; align-content: start; }
+/* ② 結論 */
+.lead { display: grid; gap: 6px; max-width: 900px; }
+.thesis { font-size: var(--t-thesis); font-weight: 500; line-height: 1.4; margin: 0; text-wrap: balance; letter-spacing: -.005em; }
+.thesis b { font-weight: 500; color: var(--coral); }
+.lead .why { margin: 0; color: var(--ink2); font-size: 14.5px; }
+/* ③ 關鍵數字：不加框，用留白與細分隔線 */
+.nums { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 14px; }
+.nums > div { padding: 14px 18px 12px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; display: grid; gap: 2px; align-content: start; }
+.nums .lab { font-size: var(--t-cap); color: var(--muted); }
+.nums .num { font-size: var(--t-num); font-weight: 500; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.nums .chg { font-size: var(--t-cap); color: var(--ink2); }
+/* ④ 圖表段落 */
+.sec { display: grid; gap: 18px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 22px 28px 20px; }
+.sec h2 { font-size: var(--t-sec); font-weight: 500; margin: 0; line-height: 1.5; display: flex; align-items: center; }
+.charts { display: grid; gap: 48px; }
+.charts.two { grid-template-columns: 1fr 1fr; }
+.chart-title { font-size: 13px; color: var(--ink2); margin-bottom: 10px; }
+.chart-title small { color: var(--muted); margin-left: 6px; font-size: 12px; }
+.source { font-size: 12px; color: var(--muted); }
+.need { display: inline-block; font-size: 11.5px; color: var(--note); background: var(--note-bg); border-radius: 4px; padding: 0 7px; margin-left: 6px; vertical-align: 1px; }
+/* ⑤ 下一步 */
+.next { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding: 14px 18px; border-radius: 12px; background: var(--card); border: 1px solid var(--p-pale); font-size: 13.5px; color: var(--ink2); }
+.next b { font-weight: 500; color: var(--ink); margin-right: 4px; }
+.next a { color: var(--ink); padding: 3px 12px; border-radius: 999px; background: var(--p-faint); border: 1px solid var(--p-pale); }
+.next a.down { border-style: dashed; }
+.detail-head { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 12px; }
+.detail-head::after { content: ""; flex: 1; border-top: 1px solid var(--line); }
+
+/* 首頁四框：極簡，框頂色條＋大標題 */
+.home-grid { display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 1fr; gap: 20px 24px; }
+.box { background: var(--card); border: 1px solid var(--line); border-radius: 14px; display: grid; grid-template-rows: auto auto 1fr auto; gap: 12px; min-height: 0; overflow: hidden; }
+.box > *:not(.box-head) { padding: 0 22px; }
+.box > *:last-child { padding-bottom: 14px; }
+.box-head { display: flex; align-items: center; gap: 10px; padding: 11px 22px; background: var(--p-faint); border-bottom: 1px solid var(--p-pale); }
+.box-head .badge { width: 30px; height: 30px; border-radius: 9px; }
+.box-head .badge svg { width: 16px; height: 16px; }
+.box-head h3 { font-size: 18px; font-weight: 600; margin: 0; }
+.box-head a { margin-left: auto; font-size: 13px; color: var(--ink2); }
+.key { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.key .num { font-size: 28px; font-weight: 500; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.key .lab { color: var(--ink2); }
+.mini-list { display: grid; gap: 4px; font-size: 13px; color: var(--ink2); }
+.mini-list .r { display: flex; gap: 8px; min-width: 0; }
+.mini-list .t { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mini-list .d { color: var(--muted); flex: none; }
+.illus { font-size: 12px; color: var(--muted); }
+.coral { color: var(--coral); }
+
+/* 總覽分頁：四組，無框，細線分隔 */
+.groups { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.grp { display: grid; gap: 8px; align-content: start; padding: 14px 20px 12px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
+.grp .g { display: flex; justify-content: space-between; align-items: baseline; font-size: 12.5px; color: var(--muted); }
+.grp .g span { display: inline-flex; align-items: center; gap: 7px; color: var(--ink2); }
+.grp .g span::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--p); }
+.grp .g a { color: var(--ink2); }
+.grp p { margin: 0; font-size: 15.5px; line-height: 1.5; }
+
+table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+.tbl th { text-align: right; font-weight: 400; color: var(--muted); padding: 8px 10px; border-bottom: 1px solid var(--line); }
+.tbl th:first-child, .tbl td:first-child { text-align: left; }
+.tbl td { text-align: right; padding: 8px 10px; border-bottom: 1px solid var(--line); color: var(--ink2); }
+.tbl tr.hl td { color: var(--ink); background: var(--coral-pale); }
+.empty-line { font-size: 13px; color: var(--muted); }
+svg text { font-family: var(--font); }
+
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.tabs span { font-size: 13px; padding: 4px 13px; border-radius: 999px; color: var(--ink2); background: var(--card); border: 1px solid var(--line); }
+.tabs span.on { background: var(--p-pale); border-color: var(--p-mid); color: var(--ink); }
+.tabs span b { font-weight: 400; color: var(--muted); margin-left: 4px; }
+.newslist { background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
+.newslist .item { display: flex; gap: 12px; padding: 11px 20px; border-top: 1px solid var(--line); }
+.newslist .item:first-child { border-top: 0; }
+.newslist .meta { font-size: 12px; color: var(--muted); }
+.tag { flex: none; font-size: 11.5px; color: var(--ink2); background: var(--p-faint); border: 1px solid var(--p-pale); border-radius: 4px; padding: 0 6px; height: 20px; line-height: 18px; }
+.self { font-size: 11px; color: var(--muted); background: #f1f2f6; border-radius: 3px; padding: 0 5px; margin-left: 6px; }
+.status { display: inline-block; font-size: 12.5px; color: var(--note); background: var(--note-bg); border-radius: 6px; padding: 2px 10px; }
+
+.flows { display: grid; gap: 16px; }
+.flow { background: var(--card); border-radius: 14px; padding: 18px 22px; }
+.flow h3 { margin: 0 0 8px; font-size: 15px; font-weight: 600; }
+.flow pre { margin: 0; overflow-x: auto; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 13px; line-height: 1.7; color: var(--ink2); }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v8a1 1 0 0 1-1 1h-4v-6h-6v6H5a1 1 0 0 1-1-1z"/></symbol>
+  <symbol id="i-news" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 12.5h8M8 16h5"/></symbol>
+  <symbol id="i-market" viewBox="0 0 24 24"><path d="M4 18l5-6 4 3 7-9M4 21h16"/></symbol>
+  <symbol id="i-watch" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></symbol>
+  <symbol id="i-res" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/></symbol>
+</svg>
+
+<div class="wrap">
+  <header class="intro">
+    <h1>市場趨勢網頁：視覺樣稿 第 6 版（電腦版）</h1>
+    <p>配色回到第 4 版（首頁框的代表色色帶、膠囊頁籤），點進各頁時整頁底色就是該頁代表色（市場脈動淡藍、新聞淡綠），白卡放在上面，排版保留第 5 版的留白與閱讀路徑。每一頁都照同一條閱讀路徑排列，空心圓圈數字標出順序（只在樣稿顯示，網站上不會有）：</p>
+    <div class="path">
+      <span><i class="rp">1</i>我在哪裡：頁首色帶與頁名</span>
+      <span><i class="rp">2</i>一句結論：本頁最大的字</span>
+      <span><i class="rp">3</i>關鍵數字：支持結論的 3–4 個數字</span>
+      <span><i class="rp">4</i>圖表證據：每段一句標題＋圖</span>
+      <span><i class="rp">5</i>下一步：往下看細節、或去其他分頁</span>
+    </div>
+  </header>
+
+  <!-- 首頁 -->
+  <div class="mock-label"><b>模擬頁 1</b><span>首頁「市場總覽」</span><small>框線內＝1440×900 筆電一個畫面</small></div>
+  <div class="scroller"><div class="frame screen p-home">
+    <nav class="side" data-on="home"></nav>
+    <div class="main">
+      <div class="crumbbar"><b>市場總覽</b></div>
+      <div class="pagehead"><i class="rp">1</i><span class="badge"><svg><use href="#i-home"/></svg></span><div><h1>市場總覽</h1><p class="desc">新聞、市場脈動、追蹤清單、競品研究的重點一次看</p></div><span class="updated">資料更新於 2026-10-26 21:58</span></div>
+      <div class="content" style="gap:24px;padding-top:24px;flex:1;min-height:0;grid-template-rows:auto 1fr">
+        <div class="lead"><p class="thesis"><i class="rp inline">2</i>8 月新契約保費年增 <b>68.5%</b>，年金險占比回落到 33.6%</p></div>
+        <div class="home-grid">
+          <section class="box p-market">
+            <div class="box-head"><i class="rp">3</i><span class="badge"><svg><use href="#i-market"/></svg></span><h3>市場脈動</h3><a>看全部 →</a></div>
+            <div class="key"><span class="num coral">68.5%</span><span class="lab">新契約保費年增率，較 7 月 ▼ 41.2 個百分點</span></div>
+            <div id="h-pulse"></div>
+            <div class="mini-list"><div class="r"><span class="t">10 年期公債殖利率 2.00% · 年金險占比 33.6% · 法巴市占率 3.56%（第 10 名）</span></div></div>
+          </section>
+          <section class="box p-news">
+            <div class="box-head"><i class="rp">4</i><span class="badge"><svg><use href="#i-news"/></svg></span><h3>新聞與法規監控</h3><a>看全部 →</a></div>
+            <div class="key"><span class="num">34</span><span class="lab">則動態，近 30 天 · 法規 <span class="coral">0</span> 則</span></div>
+            <div id="h-news"></div>
+            <div class="mini-list">
+              <div class="r"><span class="tag">新聞</span><span class="t">從數位創新到客戶信任 凱基人壽獲財訊金融獎3殊榮</span><span class="d">5 天前</span></div>
+              <div class="r"><span class="tag">新聞</span><span class="t">因應薔琵颱風來襲 宏泰人壽啟動保戶關懷機制</span><span class="d">5 天前</span></div>
+            </div>
+          </section>
+          <section class="box p-watch">
+            <div class="box-head"><i class="rp">5</i><span class="badge"><svg><use href="#i-watch"/></svg></span><h3>追蹤清單</h3><a>看全部 →</a></div>
+            <div class="key"><span class="num">4</span><span class="lab">件候選商品，最高分 Kyobo 終身壽險 83 <span class="illus">（示意）</span></span></div>
+            <div id="h-watch"></div>
+            <div></div>
+          </section>
+          <section class="box p-res">
+            <div class="box-head"><i class="rp">6</i><span class="badge"><svg><use href="#i-res"/></svg></span><h3>競品研究</h3><a>看全部 →</a></div>
+            <div class="key"><span class="num">5</span><span class="lab">份報告尚未審閱，共 9 份 <span class="illus">（建議分布為示意）</span></span></div>
+            <div id="h-research"></div>
+            <div class="mini-list">
+              <div class="r"><span class="t">FWD 円建一時払変額年金</span><span class="d">日本 · 完成於 2026-10-11</span></div>
+              <div class="r"><span class="t">Kyobo Modu Jikim Whole Life Insurance</span><span class="d">韓國 · 完成於 2026-10-11</span></div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div></div>
+
+  <!-- 市場脈動 · 總覽 -->
+  <div class="mock-label"><b>模擬頁 2</b><span>市場脈動 · 「總覽」分頁</span><small>一個畫面看完四組重點；每組右上角「看分頁 →」是下一步</small></div>
+  <div class="scroller"><div class="frame screen p-market">
+    <nav class="side" data-on="market"></nav>
+    <div class="main">
+      <div class="crumbbar">市場總覽 / <b>市場脈動</b> / 總覽</div>
+      <div class="pagehead"><i class="rp">1</i><span class="badge"><svg><use href="#i-market"/></svg></span><div><h1>市場脈動</h1><p class="desc">台灣壽險市場的成長、利率、通路與同業競爭</p></div><span class="updated">2026 年 8 月 · 資料更新於 2026-10-26 21:58</span></div>
+      <div class="ptabs"><span class="on">總覽</span><span>成長動能</span><span>定價環境</span><span>通路結構</span><span>品牌與競爭</span><span class="off">健康度（尚無資料）</span></div>
+      <div class="content" style="gap:16px;padding-top:16px;padding-bottom:16px">
+        <div class="lead"><p class="thesis"><i class="rp inline">2</i>新契約保費連續 8 個月正成長，<b>年金險增速最快</b></p></div>
+        <div class="nums" id="o-nums"></div>
+        <div class="groups">
+          <div class="grp"><div class="g"><span><i class="rp" style="width:18px;height:18px;font-size:10.5px">4</i>成長動能</span><a>看分頁 →</a></div><p>年金險年增 135.8% 最快，健康險、傷害險小幅衰退</p><div id="o-growth"></div></div>
+          <div class="grp"><div class="g"><span>定價環境</span><a>看分頁 →</a></div><p>10 年期公債殖利率 2.00%，8 週來上升 0.12 個百分點</p><div id="o-yield"></div></div>
+          <div class="grp"><div class="g"><span>通路結構</span><a>看分頁 →</a></div><p>業務員通路占 46.4%，銀行通路 37.0%</p><div id="o-channel"></div></div>
+          <div class="grp"><div class="g"><span>品牌與競爭</span><a><i class="rp" style="width:18px;height:18px;font-size:10.5px;margin-right:6px">5</i>看分頁 →</a></div><p>法巴市占率 3.56%，同業排第 10 名</p><div id="o-rank"></div></div>
+        </div>
+      </div>
+    </div>
+  </div></div>
+
+  <!-- 市場脈動 · 成長動能 -->
+  <div class="mock-label"><b>模擬頁 3</b><span>市場脈動 · 「成長動能」分頁</span><small>虛線以上＝點進分頁的第一個畫面；底部「下一步」告訴你細節在哪</small></div>
+  <div class="scroller"><div class="frame p-market">
+    <div class="fold"><span>筆電一個畫面到此 ↓ 以下為細節</span></div>
+    <nav class="side" data-on="market"></nav>
+    <div class="main">
+      <div class="crumbbar">市場總覽 / 市場脈動 / <b>成長動能</b></div>
+      <div class="pagehead"><i class="rp">1</i><span class="badge"><svg><use href="#i-market"/></svg></span><div><h1>市場脈動 · 成長動能</h1><p class="desc">新契約保費的成長速度與各險別變化</p></div><span class="updated">2026 年 8 月 · 資料更新於 2026-10-26 21:58</span></div>
+      <div class="ptabs"><span>總覽</span><span class="on">成長動能</span><span>定價環境</span><span>通路結構</span><span>品牌與競爭</span><span class="off">健康度（尚無資料）</span></div>
+      <div class="content" style="padding-top:20px;gap:24px">
+        <div class="lead"><p class="thesis"><i class="rp inline">2</i>8 月新契約保費年增 <b>68.5%</b>，連續 8 個月正成長</p></div>
+        <div class="nums" id="g-nums"></div>
+        <div class="sec">
+          <h2><i class="rp inline">4</i>今年每個月都比去年同期高，7 月衝到 109.6% 後回落</h2>
+          <div class="charts two">
+            <div><div class="chart-title">每月新契約保費年增率<small>%，2026 年</small></div><div id="g-yoy"></div></div>
+            <div><div class="chart-title">每月新契約保費金額<small>億元，近 12 個月</small><span class="need">需後端補資料</span></div><div id="g-amount"></div></div>
+          </div>
+        </div>
+        <div class="next"><i class="rp">5</i><b>下一步</b><a class="down">往下看：各險別占比與年增率 ↓</a><a>定價環境 →</a><a>品牌與競爭 →</a></div>
+        <div class="detail-head">細節</div>
+        <div class="sec">
+          <h2>年金險年增 135.8% 最快，占比卻比 7 月少 10.3 個百分點</h2>
+          <div class="charts two">
+            <div><div class="chart-title">各險別新契約保費年增率<small>8 月</small></div><div id="g-div"></div></div>
+            <div><div class="chart-title">各險別占比<small>每月</small></div><div id="g-share"></div></div>
+          </div>
+        </div>
+        <div class="sec">
+          <h2>各險別明細</h2>
+          <table class="tbl"><thead><tr><th>險別（2026 年 8 月）</th><th>新契約保費（億元）</th><th>占比</th><th>占比較 7 月</th><th>年增率</th></tr></thead>
+            <tbody>
+              <tr><td>人壽保險</td><td>779.0</td><td>62.5%</td><td>▲ 9.6 個百分點</td><td>▲ 51.9%</td></tr>
+              <tr class="hl"><td>年金保險</td><td>418.5</td><td>33.6%</td><td>▼ 10.3 個百分點</td><td>▲ 135.8%</td></tr>
+              <tr><td>健康保險</td><td>36.4</td><td>2.9%</td><td>▲ 0.6 個百分點</td><td>▼ 1.8%</td></tr>
+              <tr><td>傷害保險</td><td>12.0</td><td>1.0%</td><td>▲ 0.2 個百分點</td><td>▼ 2.6%</td></tr>
+            </tbody></table>
+          <div><div class="chart-title">各險別年增率走勢<small>%，2026 年 1–8 月</small></div><div id="g-lines"></div></div>
+          <div class="source">來源：保險事業發展中心 · 資料日期 2026-08-31 · 金額欄需後端補資料</div>
+        </div>
+      </div>
+    </div>
+  </div></div>
+
+  <!-- 市場脈動 · 品牌與競爭 -->
+  <div class="mock-label"><b>模擬頁 4</b><span>市場脈動 · 「品牌與競爭」分頁</span><small>定價環境、通路結構分頁照同樣方式</small></div>
+  <div class="scroller"><div class="frame p-market">
+    <div class="fold"><span>筆電一個畫面到此 ↓ 以下為細節</span></div>
+    <nav class="side" data-on="market"></nav>
+    <div class="main">
+      <div class="crumbbar">市場總覽 / 市場脈動 / <b>品牌與競爭</b></div>
+      <div class="pagehead"><i class="rp">1</i><span class="badge"><svg><use href="#i-market"/></svg></span><div><h1>市場脈動 · 品牌與競爭</h1><p class="desc">法巴在同業中的位置</p></div><span class="updated">2026 年 1–8 月 · 資料更新於 2026-10-26 21:58</span></div>
+      <div class="ptabs"><span>總覽</span><span>成長動能</span><span>定價環境</span><span>通路結構</span><span class="on">品牌與競爭</span><span class="off">健康度（尚無資料）</span></div>
+      <div class="content" style="padding-top:16px;gap:20px">
+        <div class="lead"><p class="thesis"><i class="rp inline">2</i>法巴市占率 <b>3.56%</b>，同業排第 10 名</p><p class="why">與第 9 名三商美邦只差 8.3 億元，第 11 名安達差 9.9 億元</p></div>
+        <div class="nums" id="r-nums"></div>
+        <div class="sec">
+          <h2><i class="rp inline">4</i>前 5 名占全市場六成，法巴位在中段</h2>
+          <div><div class="chart-title">同業今年累計初年度保費<small>億元，前 5 名與法巴前後名次</small><span class="need">需後端補資料</span></div><div id="r-rank"></div></div>
+        </div>
+        <div class="next"><i class="rp">5</i><b>下一步</b><a class="down">往下看：全部 20 家明細 ↓</a><a>成長動能 →</a><a>通路結構 →</a></div>
+        <div class="detail-head">細節</div>
+        <div class="sec">
+          <h2>全部 20 家</h2>
+          <table class="tbl" id="r-table"></table>
+          <p class="empty-line">保險申訴率（法巴、業界整體、比較對象）尚無資料，後端交付後會出現在這裡。</p>
+        </div>
+      </div>
+    </div>
+  </div></div>
+
+  <!-- 新聞 -->
+  <div class="mock-label"><b>模擬頁 5</b><span>新聞與法規監控</span><small>第一個畫面：結論、數字、三張圖、下一步；往下捲是清單</small></div>
+  <div class="scroller"><div class="frame p-news">
+    <div class="fold"><span>筆電一個畫面到此 ↓ 以下為細節</span></div>
+    <nav class="side" data-on="news"></nav>
+    <div class="main">
+      <div class="crumbbar">市場總覽 / <b>新聞與法規監控</b></div>
+      <div class="pagehead"><i class="rp">1</i><span class="badge"><svg><use href="#i-news"/></svg></span><div><h1>新聞與法規監控</h1><p class="desc">同業新聞稿、主管機關法規與公告</p></div><span class="updated">9/29–10/22 · 資料更新於 2026-10-26 22:00</span></div>
+      <div class="content" style="gap:34px">
+        <div class="lead"><p class="thesis"><i class="rp inline">2</i>近 30 天 34 則動態都是業者新聞稿，<b>法規 0 則</b></p><p class="why"><span class="status">主管機關與公會來源這次沒有抓到，已請後端修正</span></p></div>
+        <div class="nums" id="n-nums"></div>
+        <div class="sec">
+          <h2><i class="rp inline">4</i>品牌公關稿占三分之二，凱基人壽發稿最多</h2>
+          <div class="charts" style="grid-template-columns: 1fr 1fr 1fr">
+            <div><div class="chart-title">各領域則數</div><div id="n-domain"></div></div>
+            <div><div class="chart-title">發稿最多的公司</div><div id="n-company"></div></div>
+            <div><div class="chart-title">每週則數<small>週一起算</small></div><div id="n-weekly"></div></div>
+          </div>
+        </div>
+        <div class="next"><i class="rp">5</i><b>下一步</b><a class="down">往下看：全部 34 則，可依分類篩選 ↓</a><a>追蹤清單 →</a></div>
+        <div class="detail-head">全部動態</div>
+        <div class="sec" style="gap:12px">
+          <div class="tabs"><span class="on">全部<b>34</b></span><span>商品與通路動態<b>9</b></span><span>市場與總經情勢<b>0</b></span><span>監理法規<b>0</b></span><span>理賠與消保<b>2</b></span><span>客群經營與品牌公關<b>23</b></span>
+            <span style="margin-left:auto;border:0">☐ 只看可能相關追蹤清單商品</span></div>
+          <div class="newslist" id="n-list"></div>
+        </div>
+      </div>
+    </div>
+  </div></div>
+
+  <!-- 流程圖 -->
+  <div class="mock-label"><b>流程圖</b><span>閱讀路徑與頁面流程</span></div>
+  <div class="flows">
+    <div class="flow"><h3>A. 每一頁的閱讀路徑（固定五步）</h3><pre>
+① 我在哪裡   頁首色帶：麵包屑＋頁名（左側導覽同色圓點與淡底再確認一次）
+② 一句結論   本頁最大的字，珊瑚色只標最重要的數字
+③ 關鍵數字   3–4 個數字並排，不加框，細線分隔
+④ 圖表證據   一句標題說出圖要證明什麼 ＋ 圖（重點珊瑚，其他用頁面代表色）
+⑤ 下一步     淡色條：「往下看：…↓」（同頁細節）＋相關分頁或頁面的連結
+──────────── 第一個畫面到此 ────────────
+   細節       明細表、更多圖、完整清單</pre></div>
+    <div class="flow"><h3>B. 頁面之間怎麼走</h3><pre>
+首頁「市場總覽」：① 頁名 ▶ ② 結論 ▶ 四框依 Z 字順序（市場脈動 ▶ 新聞 ▶ 追蹤清單 ▶ 競品研究）
+ ├─ 天空藍 市場脈動 ──▶ 總覽分頁 ──「看分頁 →」──▶ 成長動能｜定價環境｜通路結構｜品牌與競爭
+ │                                                 └ 每個分頁底部「下一步」互相連結
+ ├─ 薄荷綠 新聞與法規監控 ──▶ 結論＋圖 ──↓──▶ 清單 ──點標題──▶ 原文（新分頁）
+ ├─ 薰衣草 追蹤清單 ──▶ 點商品 ──▶ 報告頁
+ └─ 奶油黃 競品研究 ──▶ 報告頁
+任何頁面：麵包屑回上一層；分頁寫進網址（例 #/market/growth），重新整理或返回停在同一分頁。</pre></div>
+  </div>
+</div>
+
+<script>
+const css = getComputedStyle(document.documentElement);
+const v = (n) => css.getPropertyValue(n).trim();
+const P = (name) => ({ deep: v(`--${name}`), mid: v(`--${name}-mid`), pale: v(`--${name}-pale`), faint: v(`--${name}-faint`) });
+const BLUE = P('blue'), MINT = P('mint'), LILAC = P('lilac'), GOLD = P('gold');
+const C = { coral: v('--coral'), coralPale: v('--coral-pale'), ink: v('--ink'), ink2: v('--ink2'), muted: v('--muted'), line: v('--line'), axis: '#c3c8d4' };
+
+const NAV = [['home', '市場總覽', v('--indigo')], ['news', '新聞與法規監控', MINT.deep], ['market', '市場脈動', BLUE.deep], ['watch', '追蹤清單', LILAC.deep],
+  ['res', '競品研究', GOLD.deep], ['tasks', '我的待辦', '#c3c8d4'], ['guide', '使用說明', '#c3c8d4']];
+document.querySelectorAll('nav.side').forEach((el) => {
+  el.innerHTML = '<div class="brand">Cardif 商品引入評估</div>' + NAV.map(([k, n, c]) => `<div class="nav${el.dataset.on === k ? ' on' : ''}"><i style="background:${c}"></i>${n}</div>`).join('');
+});
+
+const fmt = (x, d = 0) => x.toLocaleString('zh-TW', { minimumFractionDigits: d, maximumFractionDigits: d });
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+const svg = (w, h, body, label) => `<svg viewBox="0 0 ${w} ${h}" width="100%" role="img" aria-label="${esc(label)}" style="display:block;overflow:visible">${body}</svg>`;
+const txt = (x, y, s, o = {}) => `<text x="${x}" y="${y}" font-size="${o.size || 12}" fill="${o.fill || C.muted}" text-anchor="${o.anchor || 'start'}" font-weight="${o.weight || 400}" dominant-baseline="${o.base || 'auto'}">${esc(s)}</text>`;
+function colPath(x, y, w, h, r = 4) {
+  if (h <= 0) return '';
+  r = Math.min(r, w / 2, h);
+  return `M${x},${y + h}V${y + r}Q${x},${y} ${x + r},${y}H${x + w - r}Q${x + w},${y} ${x + w},${y + r}V${y + h}Z`;
+}
+function barPath(x0, y, len, h, dir = 1, r = 4) {
+  if (len <= 0) return '';
+  r = Math.min(r, h / 2, len);
+  const e = x0 + dir * len, s = dir;
+  return `M${x0},${y}H${e - s * r}Q${e},${y} ${e},${y + r}V${y + h - r}Q${e},${y + h} ${e - s * r},${y + h}H${x0}Z`;
+}
+function columns({ labels, values, colors, w = 480, h = 210, max, ticks, labelAt = [], unit = '', decimals = 0, label, showTicks = true, strongAt = [] }) {
+  const L = showTicks ? 44 : 4, R = 6, T = 22, B = 24, pw = w - L - R, ph = h - T - B;
+  const y = (x) => T + ph - (x / max) * ph, step = pw / values.length, bw = Math.min(40, step * 0.55);
+  let s = '';
+  ticks.forEach((t) => { s += `<line x1="${L}" x2="${w - R}" y1="${y(t)}" y2="${y(t)}" stroke="${t === 0 ? C.axis : C.line}"/>` + (showTicks ? txt(L - 8, y(t), fmt(t) + unit, { anchor: 'end', base: 'middle', size: 11.5 }) : ''); });
+  values.forEach((val, i) => {
+    const cx = L + step * i + step / 2;
+    s += `<path d="${colPath(cx - bw / 2, y(val), bw, y(0) - y(val))}" fill="${colors[i]}"><title>${esc(labels[i])}：${fmt(val, decimals)}${unit}</title></path>`;
+    if (labelAt.includes(i)) s += txt(cx, y(val) - 7, fmt(val, decimals) + unit, { anchor: 'middle', size: 12, fill: strongAt.includes(i) ? C.ink : C.ink2, weight: strongAt.includes(i) ? 500 : 400 });
+    s += txt(cx, h - 6, labels[i], { anchor: 'middle', size: 11.5 });
+  });
+  return svg(w, h, s, label);
+}
+function diverging({ rows, w = 480, h = 170, label }) {
+  const nameW = 70, mid = nameW + 54, right = w - 72;
+  const maxPos = Math.max(...rows.map((r) => r.v)), pos = (right - mid) / maxPos, neg = (mid - nameW - 8) / 10;
+  const rowH = (h - 18) / rows.length, bh = Math.min(20, rowH * 0.5);
+  let s = `<line x1="${mid}" x2="${mid}" y1="2" y2="${h - 16}" stroke="${C.axis}"/>` + txt(mid, h - 2, '0', { anchor: 'middle', size: 11.5 });
+  rows.forEach((r, i) => {
+    const cy = 4 + rowH * i + rowH / 2, top = cy - bh / 2, len = Math.abs(r.v) * (r.v >= 0 ? pos : neg), dir = r.v >= 0 ? 1 : -1;
+    s += txt(0, cy, r.name, { base: 'middle', size: 12.5, fill: C.ink2 });
+    s += `<path d="${barPath(mid, top, len, bh, dir)}" fill="${r.color}"><title>${esc(r.name)}：${r.v > 0 ? '+' : ''}${fmt(r.v, 1)}%</title></path>`;
+    s += txt(r.v >= 0 ? mid + len + 7 : mid + 7, cy, `${r.v > 0 ? '+' : ''}${fmt(r.v, 1)}%`, { base: 'middle', size: 12.5, fill: r.strong ? C.ink : C.ink2, weight: r.strong ? 500 : 400 });
+  });
+  return svg(w, h, s, label);
+}
+function stackedShare({ labels, series, w = 420, h = 180, label }) {
+  const L = 36, R = 4, T = 6, B = 24, pw = w - L - R, ph = h - T - B, step = pw / labels.length, bw = Math.min(30, step * 0.55);
+  let s = '';
+  [0, 50, 100].forEach((t) => { s += txt(L - 8, T + ph - (t / 100) * ph, t + '%', { anchor: 'end', base: 'middle', size: 11.5 }); });
+  labels.forEach((lab, i) => {
+    let acc = 0;
+    const x = L + step * i + step / 2 - bw / 2;
+    series.forEach((se) => {
+      const val = se.values[i], hh = (val / 100) * ph, y0 = T + ph - acc - hh;
+      s += `<rect x="${x}" y="${y0}" width="${bw}" height="${Math.max(0, hh - 1.5)}" fill="${se.color}"><title>${esc(lab)} ${esc(se.name)} ${fmt(val, 1)}%</title></rect>`;
+      acc += hh;
+    });
+    s += txt(x + bw / 2, h - 6, lab, { anchor: 'middle', size: 11.5 });
+  });
+  const lx = L + step * (labels.length - 1) + step / 2 + bw / 2 + 6;
+  let accY = 0;
+  series.slice(0, 2).forEach((se) => { const val = se.values.at(-1), hh = (val / 100) * ph; s += txt(lx, T + ph - accY - hh / 2, `${se.name.slice(0, 2)} ${fmt(val, 1)}%`, { base: 'middle', size: 12, fill: se.strong ? C.ink : C.ink2, weight: se.strong ? 500 : 400 }); accY += hh; });
+  return svg(w + 76, h, s, label);
+}
+function lineChart({ labels, lines, w = 1000, h = 220, min, max, ticks, unit = '%', label }) {
+  const L = 48, R = 90, T = 14, B = 24, pw = w - L - R, ph = h - T - B;
+  const x = (i) => L + (pw * i) / (labels.length - 1), y = (val) => T + ph - ((val - min) / (max - min)) * ph;
+  let s = '';
+  ticks.forEach((t) => { s += `<line x1="${L}" x2="${w - R}" y1="${y(t)}" y2="${y(t)}" stroke="${t === 0 ? C.axis : C.line}"/>` + txt(L - 8, y(t), fmt(t) + unit, { anchor: 'end', base: 'middle', size: 11.5 }); });
+  labels.forEach((l, i) => { s += txt(x(i), h - 6, l, { anchor: 'middle', size: 11.5 }); });
+  lines.forEach((ln) => {
+    const pts = ln.values.map((val, i) => `${x(i)},${y(val)}`).join(' ');
+    s += `<polyline points="${pts}" fill="none" stroke="${ln.color}" stroke-width="${ln.strong ? 2.4 : 1.7}" stroke-linejoin="round"${ln.dash ? ` stroke-dasharray="${ln.dash}"` : ''}/>`;
+    const lv = ln.values.at(-1);
+    s += `<circle cx="${x(labels.length - 1)}" cy="${y(lv)}" r="${ln.strong ? 4 : 3}" fill="${ln.color}"/>`;
+    s += txt(x(labels.length - 1) + 8, y(lv) + (ln.dy || 0), `${ln.name} ${fmt(lv, 1)}%`, { base: 'middle', size: 12, fill: ln.strong ? C.ink : C.ink2, weight: ln.strong ? 500 : 400 });
+  });
+  return svg(w, h, s, label);
+}
+function annotatedLine({ labels, values, pal, w = 520, h = 140, min, max, ticks, notes, label }) {
+  const L = 46, R = 64, T = 18, B = 24, pw = w - L - R, ph = h - T - B;
+  const x = (i) => L + (pw * i) / (values.length - 1), y = (val) => T + ph - ((val - min) / (max - min)) * ph;
+  let s = '';
+  ticks.forEach((t) => { s += `<line x1="${L}" x2="${w - R}" y1="${y(t)}" y2="${y(t)}" stroke="${C.line}"/>` + txt(L - 8, y(t), fmt(t, 2) + '%', { anchor: 'end', base: 'middle', size: 11.5 }); });
+  const pts = values.map((val, i) => `${x(i)},${y(val)}`).join(' ');
+  s += `<polygon points="${L},${T + ph} ${pts} ${x(values.length - 1)},${T + ph}" fill="${pal.faint}"/>`;
+  s += `<polyline points="${pts}" fill="none" stroke="${pal.deep}" stroke-width="2" stroke-linejoin="round"/>`;
+  labels.forEach((l, i) => { if (l) s += txt(x(i), h - 6, l, { anchor: 'middle', size: 11.5 }); });
+  notes.forEach((n) => {
+    const cx = x(n.i), cy = y(values[n.i]), col = n.strong ? C.coral : pal.deep;
+    s += `<circle cx="${cx}" cy="${cy}" r="4.5" fill="${n.strong ? col : '#fff'}" stroke="${col}" stroke-width="2"/>`;
+    s += txt(cx + (n.dx || 0), cy + (n.dy || -11), n.text, { anchor: n.anchor || 'middle', size: 12, fill: n.strong ? C.ink : C.ink2, weight: n.strong ? 500 : 400 });
+  });
+  return svg(w, h, s, label);
+}
+function bigShare({ parts, w = 520, h = 48, label, nameOnly = false }) {
+  let x = 0, s = '';
+  parts.forEach((p, i) => {
+    const len = (p.v / 100) * w - (i < parts.length - 1 ? 3 : 0);
+    s += `<rect x="${x}" y="0" width="${len}" height="${h}" rx="7" fill="${p.color}"><title>${esc(p.name)} ${fmt(p.v, 1)}%</title></rect>`;
+    if (nameOnly) s += txt(x + 12, h / 2, p.name, { size: 12, fill: p.ink || C.ink, base: 'middle' });
+    else { s += txt(x + 12, h / 2 - 8, p.name, { size: 12, fill: p.ink || C.ink, base: 'middle' }); s += txt(x + 12, h / 2 + 10, fmt(p.v, 1) + '%', { size: 14, fill: p.ink || C.ink, weight: 500, base: 'middle' }); }
+    x += len + 3;
+  });
+  return svg(w, h, s, label);
+}
+function ranking({ rows, pal, w = 1000, rowH = 26, nameW = 130, label }) {
+  const h = rows.length * rowH, max = Math.max(...rows.map((r) => r.v)), bw = w - nameW - 80;
+  let s = '';
+  rows.forEach((r, i) => {
+    const y = i * rowH, len = (r.v / max) * bw, on = r.self;
+    if (on) s += `<rect x="0" y="${y + 1}" width="${w}" height="${rowH - 2}" rx="5" fill="${C.coralPale}"/>`;
+    s += txt(6, y + rowH / 2, `${r.rank ?? i + 1}`, { base: 'middle', size: 12, fill: C.muted });
+    s += txt(30, y + rowH / 2, r.name, { base: 'middle', size: 12.5, fill: on ? C.ink : C.ink2, weight: on ? 500 : 400 });
+    s += `<path d="${barPath(nameW, y + 7, len, rowH - 14, 1)}" fill="${on ? C.coral : pal.mid}"><title>${esc(r.name)}：${fmt(r.v)} 億元</title></path>`;
+    s += txt(nameW + len + 8, y + rowH / 2, fmt(r.v) + (on ? ' 億元' : ''), { base: 'middle', size: 12, fill: on ? C.ink : C.muted, weight: on ? 500 : 400 });
+  });
+  return svg(w, h, s, label);
+}
+function hbars({ rows, w = 320, rowH = 28, nameW = 76, label }) {
+  const max = Math.max(...rows.map((r) => r.v)), bw = w - nameW - 36, h = rows.length * rowH;
+  let s = '';
+  rows.forEach((r, i) => {
+    const y = i * rowH, len = r.v ? Math.max(4, (r.v / max) * bw) : 0;
+    s += txt(0, y + rowH / 2, r.name, { base: 'middle', size: 12.5, fill: C.ink2 });
+    if (len) s += `<path d="${barPath(nameW, y + 7, len, rowH - 14, 1)}" fill="${r.color}"><title>${esc(r.name)}：${r.v}</title></path>`;
+    s += txt(nameW + len + 7, y + rowH / 2, String(r.v), { base: 'middle', size: 12.5, fill: r.strong ? C.coral : C.ink2, weight: r.strong ? 500 : 400 });
+  });
+  return svg(w, h, s, label);
+}
+function spark(values, pal, w = 200, h = 26) {
+  const min = Math.min(...values), max = Math.max(...values), pad = 4;
+  const x = (i) => pad + ((w - pad * 2) * i) / (values.length - 1), y = (val) => pad + (h - pad * 2) * (1 - (val - min) / (max - min || 1));
+  const pts = values.map((val, i) => `${x(i)},${y(val)}`).join(' '), last = values.length - 1;
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%" height="${h}" aria-hidden="true" style="display:block;margin-top:6px;max-width:220px"><polyline points="${pts}" fill="none" stroke="${pal.mid}" stroke-width="2" stroke-linejoin="round"/><circle cx="${x(last)}" cy="${y(values[last])}" r="3" fill="${pal.deep}"/></svg>`;
+}
+const nums = (list, withMarker = true) => list.map((k, i) => `<div><div class="lab">${i === 0 && withMarker ? '<i class="rp" style="width:18px;height:18px;font-size:10.5px;margin-right:6px">3</i>' : ''}${esc(k.lab)}</div><div class="num${k.coral ? ' coral' : ''}">${esc(k.num)}</div><div class="chg">${esc(k.chg)}</div>${k.s ? spark(k.s, k.pal || BLUE) : ''}</div>`).join('');
+
+// ---- 真實資料（2026-10-26） ----
+const months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月'];
+const yoy = [74.07, 5.11, 27.53, 64.64, 79.93, 64.96, 109.62, 68.47];
+const amountLabels = ['25/9', '10', '11', '12', '26/1', '2', '3', '4', '5', '6', '7', '8'];
+const amount = [817.96, 818.03, 841.19, 1021.41, 1565.84, 872.27, 1244.94, 1222.43, 1278.27, 1489.99, 1622.67, 1245.86];
+const share = { life: [64.92, 65.52, 63.2, 56.78, 56.36, 59.44, 52.95, 62.52], annuity: [31.81, 30.16, 32.21, 38.57, 38.9, 36.74, 43.89, 33.59],
+  health: [2.41, 3.06, 3.4, 3.59, 3.51, 2.97, 2.35, 2.92], accident: [0.86, 1.26, 1.18, 1.07, 1.23, 0.86, 0.8, 0.96] };
+const lineYoy = { life: [68.6, 3.8, 26.31, 37.31, 40.36, 26.1, 56.99, 51.94], annuity: [94.29, 13.34, 35.31, 151.77, 242.37, 268.46, 303.63, 135.83],
+  health: [29.38, -20.75, 0.26, 23.05, 23.43, 15.37, 3.3, -1.78], accident: [21.38, -18.52, 0.27, -7.59, 1.03, -9.12, -2.25, -2.61] };
+const yieldW = [1.88, 1.92, 1.92, 1.92, 1.92, 2.02, 2.02, 2.0];
+const yoyColors = yoy.map((_, i) => (i === 7 ? C.coral : BLUE.mid));
+const lineRows = [{ name: '年金保險', v: 135.83, color: C.coral, strong: true }, { name: '人壽保險', v: 51.94, color: BLUE.deep },
+  { name: '傷害保險', v: -2.61, color: BLUE.mid }, { name: '健康保險', v: -1.78, color: BLUE.mid }];
+const ranking20 = [['國泰人壽', 2572.77], ['富邦人壽', 1123.63], ['新光人壽', 957.78], ['凱基人壽', 913.5], ['南山人壽', 897.41], ['台灣人壽', 826.04],
+  ['安聯人壽', 678.53], ['元大人壽', 477.21], ['三商美邦人壽', 383.96], ['法國巴黎人壽', 375.7, true], ['安達國際人壽', 365.81], ['保誠人壽', 331.62],
+  ['全球人壽', 197.28], ['遠雄人壽', 100.56], ['第一金人壽', 97.17], ['臺銀人壽', 82.2], ['合作金庫人壽', 79.25], ['中華郵政', 57.44], ['友邦人壽', 15.67], ['宏泰人壽', 8.76]]
+  .map(([name, val, self], i) => ({ name, v: val, self, rank: i + 1 }));
+const sharePct = [24.4, 10.66, 9.09, 8.67, 8.51, 7.84, 6.44, 4.53, 3.64, 3.56, 3.47, 3.15, 1.87, 0.95, 0.92, 0.78, 0.75, 0.54, 0.15, 0.08];
+const put = (id, html) => { document.getElementById(id).innerHTML = html; };
+
+// 首頁
+put('h-pulse', columns({ labels: months, values: yoy, colors: yoyColors, w: 560, h: 130, max: 120, ticks: [0], labelAt: [6, 7], strongAt: [7], unit: '%', decimals: 1, showTicks: false, label: '2026 年每月新契約保費年增率' }));
+put('h-news', bigShare({ w: 560, h: 30, nameOnly: true, label: '近 30 天各領域則數', parts: [
+  { name: '品牌公關 23', v: 23 / 34 * 100, color: MINT.mid }, { name: '商品通路 9', v: 9 / 34 * 100, color: MINT.pale }, { name: '', v: 2 / 34 * 100, color: MINT.faint }] }));
+put('h-watch', hbars({ w: 560, rowH: 26, nameW: 160, label: '追蹤清單綜合分數（示意）', rows: [
+  { name: 'Kyobo 終身壽險', v: 83, color: LILAC.deep }, { name: 'Singlife Heritage', v: 78, color: LILAC.mid },
+  { name: 'FWD 變額年金', v: 64, color: LILAC.pale }, { name: 'Secure Horizon IUL', v: 52, color: LILAC.pale }] }));
+put('h-research', bigShare({ w: 560, h: 30, nameOnly: true, label: '報告建議分布（示意）', parts: [
+  { name: '建議引入 3', v: 33.3, color: GOLD.mid }, { name: '觀察 4', v: 44.4, color: GOLD.pale }, { name: '不建議 2', v: 22.2, color: GOLD.faint }] }));
+
+// 總覽
+put('o-nums', nums([
+  { lab: '新契約保費年增率', num: '68.47%', chg: '▼ 41.2 個百分點，較 7 月', s: yoy, coral: true },
+  { lab: '10 年期公債殖利率', num: '2.00%', chg: '▼ 0.02 個百分點，較上週', s: yieldW },
+  { lab: '年金保險占比', num: '33.6%', chg: '▼ 10.3 個百分點，較 7 月', s: share.annuity },
+  { lab: '法巴新契約保費市占率', num: '3.56%', chg: '第 10 名，2026 年 1–8 月' }]));
+put('o-growth', diverging({ rows: lineRows, w: 520, h: 108, label: '8 月各險別新契約保費年增率' }));
+put('o-yield', annotatedLine({ labels: ['8/31', '', '', '', '9/28', '', '', '10/19'], values: yieldW, pal: BLUE, w: 520, h: 108, min: 1.85, max: 2.05, ticks: [1.85, 1.95, 2.05],
+  notes: [{ i: 5, text: '2.02% 最高' }, { i: 7, text: '2.00%', strong: true, anchor: 'start', dx: 10, dy: -8 }], label: '10 年期公債殖利率每週走勢' }));
+put('o-channel', bigShare({ w: 520, h: 46, label: '新契約保費通路占比', parts: [
+  { name: '本身行銷體系', v: 46.39, color: C.coral, ink: '#fff' }, { name: '銀行通路', v: 36.97, color: BLUE.mid }, { name: '經代', v: 16.64, color: BLUE.pale }] }));
+put('o-rank', ranking({ rows: ranking20.slice(8, 11), pal: BLUE, w: 520, rowH: 24, label: '法巴前後名次' }));
+
+// 成長動能
+put('g-nums', nums([
+  { lab: '8 月年增率', num: '68.47%', chg: '今年第 8 個月正成長', coral: true },
+  { lab: '較 7 月', num: '▼ 41.2', chg: '個百分點' },
+  { lab: '今年最高', num: '109.6%', chg: '7 月' },
+  { lab: '8 月新契約保費', num: '1,246 億', chg: '需後端補資料' }]));
+put('g-yoy', columns({ labels: months, values: yoy, colors: yoyColors, h: 170, max: 120, ticks: [0, 40, 80, 120], labelAt: [6, 7], strongAt: [7], unit: '%', decimals: 1, label: '2026 年每月新契約保費年增率' }));
+put('g-amount', columns({ labels: amountLabels, values: amount, colors: amount.map((_, i) => (i === 11 ? BLUE.deep : BLUE.pale)), h: 170, max: 1800, ticks: [0, 600, 1200, 1800], labelAt: [4, 11], label: '近 12 個月新契約保費金額（億元）' }));
+put('g-div', diverging({ rows: lineRows, label: '8 月各險別新契約保費年增率' }));
+put('g-share', stackedShare({ labels: months, label: '每月各險別占比', series: [
+  { name: '年金保險', values: share.annuity, color: C.coral, strong: true }, { name: '人壽保險', values: share.life, color: BLUE.pale },
+  { name: '健康保險', values: share.health, color: BLUE.mid }, { name: '傷害保險', values: share.accident, color: BLUE.deep }] }));
+put('g-lines', lineChart({ labels: months, min: -50, max: 350, ticks: [0, 100, 200, 300], label: '各險別年增率走勢', lines: [
+  { name: '年金', values: lineYoy.annuity, color: C.coral, strong: true }, { name: '人壽', values: lineYoy.life, color: BLUE.deep, dy: -6 },
+  { name: '健康', values: lineYoy.health, color: BLUE.mid, dash: '5 3', dy: 2 }, { name: '傷害', values: lineYoy.accident, color: BLUE.mid, dy: 12 }] }));
+
+// 品牌與競爭
+put('r-nums', nums([
+  { lab: '法巴市占率', num: '3.56%', chg: '2026 年 1–8 月累計', coral: true },
+  { lab: '同業名次', num: '第 10 名', chg: '20 家壽險公司中' },
+  { lab: '今年累計初年度保費', num: '376 億', chg: '新台幣' },
+  { lab: '與第 9 名差距', num: '8.3 億', chg: '三商美邦人壽' }]));
+put('r-rank', ranking({ rows: [...ranking20.slice(0, 5), ...ranking20.slice(8, 11)], pal: BLUE, w: 1000, rowH: 21, label: '同業今年累計初年度保費排名' }));
+put('r-table', `<thead><tr><th>名次</th><th style="text-align:left">公司</th><th>今年累計初年度保費（億元）</th><th>市占率</th></tr></thead><tbody>${ranking20.map((r, i) =>
+  `<tr${r.self ? ' class="hl"' : ''}><td>${r.rank}</td><td style="text-align:left">${esc(r.name)}</td><td>${fmt(r.v, 1)}</td><td>${fmt(sharePct[i], 2)}%</td></tr>`).join('')}</tbody>`);
+
+// 新聞
+put('n-nums', nums([
+  { lab: '近 30 天動態', num: '34 則', chg: '全部為業者新聞稿', pal: MINT },
+  { lab: '法規', num: '0 則', chg: '來源抓取失敗', coral: true },
+  { lab: '品牌公關', num: '23 則', chg: '占 68%' },
+  { lab: '發稿最多', num: '凱基人壽', chg: '14 則' }]));
+put('n-domain', hbars({ label: '各領域則數', rows: [
+  { name: '品牌公關', v: 23, color: MINT.deep }, { name: '商品通路', v: 9, color: MINT.mid }, { name: '理賠消保', v: 2, color: MINT.pale },
+  { name: '總經', v: 0 }, { name: '監理法規', v: 0, strong: true }] }));
+put('n-company', hbars({ label: '發稿最多的公司', rows: [
+  { name: '凱基人壽', v: 14, color: MINT.deep }, { name: '南山人壽', v: 5, color: MINT.mid }, { name: '宏泰人壽', v: 5, color: MINT.mid },
+  { name: '元大人壽', v: 3, color: MINT.pale }, { name: '新安東京', v: 3, color: MINT.pale }] }));
+put('n-weekly', columns({ labels: ['9/28', '10/5', '10/12', '10/19'], values: [13, 9, 6, 6], colors: [MINT.pale, MINT.pale, MINT.pale, MINT.mid], w: 320, h: 150, max: 15, ticks: [0], labelAt: [0, 1, 2, 3], showTicks: false, label: '每週則數' }));
+const news = [
+  ['從數位創新到客戶信任 凱基人壽獲財訊金融獎3殊榮', '凱基人壽', '5 天前'], ['新安東京海上產險獲「2026金融友善最佳服務企業」肯定', '新安東京海上產險', '5 天前'],
+  ['「為您所愛，保障常在」宏泰人壽從在地鄰里推動失智友善關懷', '宏泰人壽', '5 天前'], ['因應薔琵颱風來襲 宏泰人壽啟動保戶關懷機制', '宏泰人壽', '5 天前'],
+  ['薔琵颱風來襲 凱基人壽提供5大保戶關懷服務', '凱基人壽', '5 天前'], ['凱基人壽「樂活雙享」雙帳戶顧樂齡人生', '凱基人壽', '7 天前'],
+  ['攜手保戶共同面對高齡化社會挑戰 宏泰人壽再推美元利變型終身保險', '宏泰人壽', '12 天前'], ['凱基人壽防詐前進部落 同仁帶金融知識回鄉', '凱基人壽', '12 天前']];
+put('n-list', news.map(([t, s, d]) => `<div class="item"><span class="tag">新聞</span><div><div>${esc(t)}</div><div class="meta">中央社財經訊息平台－${esc(s)}<span class="self">業者自述</span> · ${d}</div></div></div>`).join(''));
+</script>
