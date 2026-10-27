@@ -1,45 +1,53 @@
-import { Link } from 'react-router';
-import type { PulseTrendViewModel } from '../../types/viewModel';
+import type { PulseMetricViewModel, PulseTrendViewModel } from '../../types/viewModel';
 import { zhTW } from '../../i18n/zh-TW';
-import { formatPulseValue, orDash, pulseChangeText } from '../../lib/format';
-import { Sparkline } from '../charts/Sparkline';
+import { formatPulseValue, orDash, pulseChangeText, shortPeriodLabels } from '../../lib/format';
+import { homeMetrics, pulseDigits } from '../../lib/pulse';
+import { ColumnChart } from '../charts/ColumnChart';
 import { StaleTag } from '../market/StaleTag';
+import { KeyLine } from './HomeCard';
 
-/** 市場脈動卡片內容：名稱、最新值大字、變化（▲▼，海軍藍，不用燈號色 D4）＋期間、趨勢小線圖；右下「看全部 →」 */
-export function PulseList({ metrics }: { metrics: PulseTrendViewModel[] }) {
+const COLUMN_LIMIT = 12;
+const OTHERS_LIMIT = 3;
+
+/**
+ * 市場脈動框（2026-10-27 視覺改版）：首頁指標的最新值（珊瑚色）＋變化、每期直條圖（最新一期珊瑚色）；
+ * 最下面一行列其他單線指標的最新值。
+ */
+export function PulseList({ metrics }: { metrics: PulseMetricViewModel[] }) {
+  const main = homeMetrics(metrics)[0];
+  if (!main) return <p className="text-slate-500">{zhTW.home.noMetrics}</p>;
+
+  const digits = pulseDigits(main.group);
+  const fmt = (v: number) => formatPulseValue(v, main.unit, digits);
+  const points = main.points.slice(-COLUMN_LIMIT);
+  const others = metrics
+    .filter((m): m is PulseTrendViewModel => m.type === 'trend' && m !== main && m.latestValue !== null)
+    .slice(0, OTHERS_LIMIT)
+    .map((m) => `${orDash(m.label)} ${formatPulseValue(m.latestValue, m.unit, pulseDigits(m.group))}`)
+    .join(zhTW.home.listSeparator);
+
   return (
-    <div className="space-y-3">
-      {metrics.length === 0 ? (
-        <p className="text-slate-500">{zhTW.home.noMetrics}</p>
-      ) : (
-        <ul className="space-y-4">
-          {metrics.map((m) => (
-            <li key={m.key} className="flex items-center justify-between gap-4">
-              <div className="min-w-0">
-                <p className="text-slate-600">
-                  {orDash(m.label)}
-                  {m.stale ? <StaleTag /> : null}
-                </p>
-                <p className="mt-0.5 text-2xl font-semibold text-navy-800 tabular-nums">{formatPulseValue(m.latestValue, m.unit)}</p>
-                {m.change !== null ? (
-                  <p className="mt-0.5 flex items-baseline gap-2 text-sm">
-                    <span className="text-navy-800 tabular-nums">{pulseChangeText(m.change, m.changeUnit)}</span>
-                    {m.changeLabel ? <span className="text-xs text-slate-500">{m.changeLabel}</span> : null}
-                  </p>
-                ) : null}
-              </div>
-              <span className="text-navy-600">
-                <Sparkline values={m.points.map((p) => p.value)} />
-              </span>
-            </li>
-          ))}
-        </ul>
-      )}
-      <div className="text-right">
-        <Link to="/market" state={{ from: '/' }} className="text-sm text-navy-700 hover:underline">
-          {zhTW.home.seeAll}
-        </Link>
-      </div>
-    </div>
+    <>
+      <KeyLine num={formatPulseValue(main.latestValue, main.unit, digits)} coral>
+        {orDash(main.label)}
+        {main.change !== null ? `，${main.changeLabel ?? ''} ${pulseChangeText(main.change, main.changeUnit, digits)}` : null}
+        {main.stale ? <StaleTag /> : null}
+      </KeyLine>
+      {points.length >= 2 ? (
+        <ColumnChart
+          values={points.map((p) => p.value)}
+          labels={shortPeriodLabels(points.map((p) => p.period))}
+          highlight={points.length - 1}
+          formatValue={fmt}
+          height={120}
+          ariaLabel={orDash(main.label)}
+        />
+      ) : null}
+      {others ? (
+        <p className="mt-auto truncate text-[13px] text-ink2" title={others}>
+          {others}
+        </p>
+      ) : null}
+    </>
   );
 }

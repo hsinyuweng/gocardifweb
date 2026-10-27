@@ -6,7 +6,7 @@
 
 | 路徑 | 頁面 | 檔案 |
 |---|---|---|
-| `#/` | 市場總覽：四區塊（新聞與法規監控、市場脈動、追蹤清單、競品研究） | `pages/MarketHomePage.tsx` |
+| `#/` | 市場總覽：一句結論＋四框（市場脈動、新聞與法規監控、追蹤清單、競品研究，整框可點） | `pages/MarketHomePage.tsx` |
 | `#/news` | 新聞與法規監控：頁籤、影響篩選寫進網址（`tab`、`affects`） | `pages/NewsPage.tsx` |
 | `#/market` | 市場脈動：本月焦點＋五組指標 | `pages/MarketPage.tsx` |
 | `#/watchlist` | 追蹤清單：權重滑桿、綜合分數排序 | `pages/WatchlistPage.tsx` |
@@ -21,6 +21,7 @@
 
 ## 2. 導覽列（Sidebar）
 
+- 白底；每項前面一個該頁代表色圓點，目前頁用代表色淡底（`components/layout/Sidebar.tsx`）。
 - 可點擊的項目依序為：市場總覽、新聞與法規監控、市場脈動、追蹤清單、競品研究、我的待辦、使用說明。
 - 規劃中（灰色、不可點）：跨部門審查。
 - 頂部列右側：狀態提示；報告頁的「加入追蹤清單」（頁面以 portal 放入動作區）。
@@ -83,12 +84,13 @@ src/
 ├── lib/                     格式、國家、篩選、負責單位、追蹤清單、待辦彙整等工具
 ├── i18n/zh-TW.ts            所有介面文字
 ├── components/
-│   ├── layout/              AppShell、Sidebar、TopBar
-│   ├── common/              SignalLabel、StatusMessage
-│   ├── charts/              MarketSizingBar、RegulatoryDistributionBar、Sparkline、LineChart、ShareBars、Timeline（純 CSS／SVG，不用套件）
+│   ├── layout/              AppShell（依網址設 data-theme，整頁底色）、Sidebar、TopBar、PageHeader（每頁頁首）
+│   ├── common/              SignalLabel、StatusMessage、PageIcon（頁面圖示）
+│   ├── charts/              MarketSizingBar、RegulatoryDistributionBar、Sparkline、LineChart、ShareBars、Timeline、ColumnChart、BigShareBar（純 CSS／SVG，不用套件）
+│   ├── story/               閱讀路徑元件：Lead（一句結論）
 │   ├── market/              市場脈動頁的指標卡片
 │   ├── news/                新聞與法規監控（標籤、每則）
-│   ├── home/                市場總覽卡片
+│   ├── home/                市場總覽四框（HomeCard 整框可點）
 │   ├── overview/            競品研究頁（原案件總覽）
 │   ├── report/              報告頁 A–F 區
 │   ├── tasks/               我的待辦
@@ -99,6 +101,8 @@ scripts/                     sync-reports.mjs（匯入報告、feed、market-pul
 
 ## 6. 視覺規則摘要
 
-- 綠、黃、橘、紅只用在燈號（D4）。市場脈動的漲跌用海軍藍加 ▲▼；多系列圖表用藍紫系 4 色（`lib/chartPalette.ts`）。
-- 寬度 ≥1024px（`lg`）才顯示側邊導覽。市場總覽寬螢幕 2×2，窄螢幕一欄（競品研究第一）。
+- 每頁代表色（`lib/pageTheme.ts` → `data-theme`，色碼在 `index.css`）：首頁靛藍、新聞薄荷綠、市場脈動天空藍、追蹤清單薰衣草、競品研究奶油黃、其他頁中性淡灰藍。整頁底色是代表色極淡色，白卡片；Tailwind 用 `bg-p`、`bg-p-mid`、`bg-p-pale`、`bg-p-faint`、`border-p`、`fill-p-mid`。
+- 珊瑚 `coral` 只標每個畫面最重要的一點；文字色 `ink`、`ink2`、`muted`，框線 `line`。字型 Noto Sans TC（Google Fonts，失敗時系統字）。
+- 燈號一律「色點＋文字」。漲跌用 ▲▼ 加文字。市場脈動頁的多系列圖表仍用藍紫系 4 色（`lib/chartPalette.ts`，V2 改版時換）。
+- 每頁頁首 `PageHeader`；首頁 1440×900 一個畫面看完。寬度 ≥1024px（`lg`）才顯示側邊導覽。
 - 每個頁面在 390px 寬時都不能整頁左右捲動。

@@ -20,6 +20,7 @@ import {
   type SortKey,
 } from '../lib/overviewFilter';
 import { errorText, useBreadcrumb, useIndexState } from './pageChrome';
+import { PageHeader } from '../components/layout/PageHeader';
 
 const t = zhTW.overview;
 
@@ -119,15 +120,13 @@ export function OverviewPage() {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <h1 className="text-xl font-semibold text-slate-900">{t.title}</h1>
-        {vm ? (
-          <span className="text-xs text-slate-500">
-            {t.total(vm.rows.length)} · {t.updatedAt(orDash(vm.generatedAt))}
-          </span>
-        ) : null}
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        icon="research"
+        title={t.title}
+        desc={zhTW.pageDesc.research}
+        aside={vm ? `${t.total(vm.rows.length)} · ${t.updatedAt(orDash(vm.generatedAt))}` : null}
+      />
       {body}
     </div>
   );

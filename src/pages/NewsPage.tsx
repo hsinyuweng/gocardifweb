@@ -10,6 +10,7 @@ import { orDash } from '../lib/format';
 import { readFromPath } from '../lib/ownerParam';
 import { readWatchlist, subscribeWatchlist } from '../lib/watchlist';
 import { errorText, useBreadcrumb, useFeed, useIndexState } from './pageChrome';
+import { PageHeader } from '../components/layout/PageHeader';
 
 const t = zhTW.news;
 const TABS: ReadonlyArray<FeedDomain | 'all'> = [
@@ -164,13 +165,13 @@ export function NewsPage() {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <h1 className="text-xl font-semibold text-slate-900">{t.title}</h1>
-        {feedState.status === 'ok' ? (
-          <span className="text-xs text-slate-500">{zhTW.home.updatedAt(orDash(feedState.data.generatedAt))}</span>
-        ) : null}
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        icon="news"
+        title={t.title}
+        desc={zhTW.pageDesc.news}
+        aside={feedState.status === 'ok' ? zhTW.home.updatedAt(orDash(feedState.data.generatedAt)) : null}
+      />
       {body}
     </div>
   );

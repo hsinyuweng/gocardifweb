@@ -68,7 +68,13 @@ export function normalizeFeed(feed: Feed): FeedViewModel {
       if (b.publishedTime === null) return -1;
       return b.publishedTime - a.publishedTime;
     });
-  return { generatedAt: formatDateTimeTaipei(str(feed.generated_at)), items };
+  const generatedRaw = str(feed.generated_at);
+  const generatedTime = generatedRaw === null ? NaN : Date.parse(generatedRaw);
+  return {
+    generatedAt: formatDateTimeTaipei(generatedRaw),
+    generatedTime: Number.isNaN(generatedTime) ? null : generatedTime,
+    items,
+  };
 }
 
 const PULSE_GROUPS: readonly PulseGroup[] = ['growth', 'pricing', 'channel', 'health', 'brand'];

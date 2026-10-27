@@ -11,6 +11,7 @@ import { anyBrandFitScore, buildCandidates } from '../lib/score';
 import { addToWatchlist, readWatchlist, removeFromWatchlist, subscribeWatchlist } from '../lib/watchlist';
 import { readWeights, resetWeights, setWeight, subscribeWeights } from '../lib/weights';
 import { errorText, useBreadcrumb, useIndexState } from './pageChrome';
+import { PageHeader } from '../components/layout/PageHeader';
 
 const t = zhTW.watchlist;
 
@@ -112,11 +113,13 @@ export function WatchlistPage() {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <h1 className="text-xl font-semibold text-slate-900">{t.title}</h1>
-        {indexState.status === 'ok' ? <span className="text-xs text-slate-500">{metaText}</span> : null}
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        icon="watchlist"
+        title={t.title}
+        desc={zhTW.pageDesc.watchlist}
+        aside={indexState.status === 'ok' ? metaText : null}
+      />
       <WeightPanel
         weights={weights}
         hasBrandFit={hasBrandFit}

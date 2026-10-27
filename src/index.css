@@ -1,20 +1,45 @@
 @import "tailwindcss";
 
-/* 主題（D4、D5、第 4 節字型） */
+/* 主題（D4、D5、第 4 節字型；2026-10-27 視覺改版） */
 @theme {
   --color-navy-900: #162c48;
   --color-navy-800: #1e3a5f;
   --color-navy-700: #2a4a73;
   --color-navy-600: #3a5c87;
-  --font-sans: "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+  /* 中性色 */
+  --color-ink: #2a3142;
+  --color-ink2: #5a6275;
+  --color-muted: #8a92a3;
+  --color-line: #e8eaf1;
+  --color-axis: #c3c8d4;
+  /* 強調：每個畫面只標最重要的一點 */
+  --color-coral: #ec6a60;
+  --color-coral-pale: #fde3e0;
+  --font-sans: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
 }
+
+/* 目前頁面代表色（深、中、淡、極淡），由外層 data-theme 決定；見 lib/pageTheme.ts */
+@theme inline {
+  --color-p: var(--p);
+  --color-p-mid: var(--p-mid);
+  --color-p-pale: var(--p-pale);
+  --color-p-faint: var(--p-faint);
+}
+
+[data-theme="home"] { --p: #3b4a7a; --p-mid: #b9c1dd; --p-pale: #e3e7f3; --p-faint: #f3f5fb; }
+[data-theme="pulse"] { --p: #5b8def; --p-mid: #a9c5f7; --p-pale: #dbe7fd; --p-faint: #f0f5ff; }
+[data-theme="news"] { --p: #2fa58a; --p-mid: #96d8c4; --p-pale: #d5f1e8; --p-faint: #eefaf5; }
+[data-theme="watch"] { --p: #9a7ee6; --p-mid: #cbb9f4; --p-pale: #ebe3fd; --p-faint: #f7f3ff; }
+[data-theme="research"] { --p: #d9962a; --p-mid: #f1cf8a; --p-pale: #fbecc8; --p-faint: #fff8e8; }
+/* 報告頁、我的待辦、使用說明：中性淡灰藍，不跟燈號混 */
+[data-theme="plain"] { --p: #6b7489; --p-mid: #c3c8d4; --p-pale: #e8eaf1; --p-faint: #f5f6f9; }
 
 html {
   font-size: 14px;
 }
 
 body {
-  @apply bg-slate-50 text-slate-800 antialiased;
+  @apply bg-[#f5f6f9] text-slate-800 antialiased;
 }
 
 /* 列印樣式（第 12 節）；隱藏導覽列、按鈕、篩選器等以 print:hidden 標在各元件上 */

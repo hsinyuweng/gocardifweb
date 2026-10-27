@@ -340,6 +340,8 @@ export interface FeedItemViewModel {
 
 export interface FeedViewModel {
   generatedAt: string | null;
+  /** 資料更新時間毫秒（「近 30 天」從這裡往前算）；無法解析時為 null */
+  generatedTime: number | null;
   /** 新到舊；無法解析時間的排最後 */
   items: FeedItemViewModel[];
 }

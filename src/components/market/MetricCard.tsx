@@ -1,6 +1,7 @@
 import type { PulseMetricViewModel } from '../../types/viewModel';
 import { zhTW } from '../../i18n/zh-TW';
 import { MAX_SERIES } from '../../lib/chartPalette';
+import { pulseDigits } from '../../lib/pulse';
 import { formatPulseTick, formatPulseValue, orDash, pulseChangeText } from '../../lib/format';
 import { LineChart, LineLegend } from '../charts/LineChart';
 import { ShareBars } from '../charts/ShareBars';
@@ -33,17 +34,18 @@ function SourceLine({ m }: { m: PulseMetricViewModel }) {
 }
 
 function Body({ m }: { m: PulseMetricViewModel }) {
-  const fmt = (v: number) => formatPulseValue(v, m.unit);
+  const digits = pulseDigits(m.group);
+  const fmt = (v: number) => formatPulseValue(v, m.unit, digits);
   const tick = (v: number) => formatPulseTick(v, m.unit);
   const label = orDash(m.label);
   if (m.type === 'trend') {
     return (
       <>
-        <p className="text-2xl font-semibold text-navy-800 tabular-nums">{formatPulseValue(m.latestValue, m.unit)}</p>
+        <p className="text-2xl font-semibold text-navy-800 tabular-nums">{formatPulseValue(m.latestValue, m.unit, digits)}</p>
         {/* change_pct 為 null（淨流入、名次、只有一期）時不顯示漲跌那一行 */}
         {m.change !== null ? (
           <p className="mt-0.5 flex items-baseline gap-2 text-sm">
-            <span className="text-navy-800 tabular-nums">{pulseChangeText(m.change, m.changeUnit)}</span>
+            <span className="text-navy-800 tabular-nums">{pulseChangeText(m.change, m.changeUnit, digits)}</span>
             {m.changeLabel ? <span className="text-xs text-slate-500">{m.changeLabel}</span> : null}
           </p>
         ) : null}

@@ -100,24 +100,28 @@ export function relativeTimeText(time: number | null, dateOnly: boolean, raw: st
   return t.daysAgo(n);
 }
 
+/** 固定小數位；先四捨五入（加極小值，避免 41.15 這類浮點數被捨成 41.1） */
 function fixed(value: number, digits: number): string {
-  return new Intl.NumberFormat('zh-TW', { maximumFractionDigits: digits, minimumFractionDigits: digits }).format(value);
+  const f = 10 ** digits;
+  const rounded = (Math.sign(value) * Math.round(Math.abs(value) * f + 1e-9)) / f;
+  return new Intl.NumberFormat('zh-TW', { maximumFractionDigits: digits, minimumFractionDigits: digits }).format(rounded);
 }
 
 /**
- * 市場脈動的變化：百分比「▲ 3.2%」（1 位小數）、百分點「▲ 0.05 個百分點」（2 位小數）；
+ * 市場脈動的變化：百分比「▲ 3.2%」（1 位小數）；
+ * 百分點跟著指標的小數位（digits，見 lib/pulse.ts 的 pulseDigits）：「▼ 41.2 個百分點」「▼ 0.02 個百分點」；
+ * 沒給 digits 時最多 2 位並去掉多餘的 0。
  * 四捨五入後為 0 顯示「— 0%」「— 0 個百分點」；null 顯示「—」
  */
-export function pulseChangeText(change: number | null, unit: 'pct' | 'pp' = 'pct'): string {
+export function pulseChangeText(change: number | null, unit: 'pct' | 'pp' = 'pct', digits?: number): string {
   const t = zhTW.market.change;
   if (change === null) return zhTW.common.dash;
-  const digits = unit === 'pp' ? 2 : 1;
-  if (Math.abs(change) < 0.5 * 10 ** -digits) return unit === 'pp' ? t.flatPp : t.flatPct;
-  // 百分點去掉多餘的 0（1.5、0.05）；百分比固定 1 位（3.2、8.0）
+  const d = unit === 'pp' ? (digits ?? 2) : 1;
+  if (Math.abs(change) + 1e-9 < 0.5 * 10 ** -d) return unit === 'pp' ? t.flatPp : t.flatPct;
   const abs =
-    unit === 'pp'
+    unit === 'pp' && digits === undefined
       ? new Intl.NumberFormat('zh-TW', { maximumFractionDigits: 2 }).format(Math.abs(change))
-      : fixed(Math.abs(change), digits);
+      : fixed(Math.abs(change), d);
   if (unit === 'pp') return change > 0 ? t.upPp(abs) : t.downPp(abs);
   return change > 0 ? t.upPct(abs) : t.downPct(abs);
 }
@@ -129,7 +133,6 @@ function compact(value: number): string {
   return new Intl.NumberFormat('zh-TW', { maximumFractionDigits: digits }).format(value);
 }
 
-/**
 /** 占比：固定 1 位小數「8.0%」 */
 export function formatSharePct(value: number): string {
   return `${fixed(value, 1)}%`;
@@ -149,10 +152,10 @@ export function formatPulseTick(value: number, unit: string | null): string {
 /**
  * 市場脈動的數值：
  * 新台幣元 → 1 億以上「418 億元」、1 萬以上「9,600 萬元」、其餘「500 元」（可為負數）；
- * % → 固定 2 位小數「2.00%」；萬分比 →「0.19（每萬件簽單）」；名 →「第 18 名」；
- * 其他單位 → 數字＋單位原文；沒有單位只顯示數字。
+ * % → 固定 digits 位小數（預設 2；依指標組別見 lib/pulse.ts 的 pulseDigits）「68.5%」「2.00%」；
+ * 萬分比 →「0.19（每萬件簽單）」；名 →「第 18 名」；其他單位 → 數字＋單位原文；沒有單位只顯示數字。
  */
-export function formatPulseValue(value: number | null, unit: string | null): string {
+export function formatPulseValue(value: number | null, unit: string | null, digits = 2): string {
   const u = zhTW.units;
   if (value === null) return zhTW.common.dash;
   if (unit === u.ntd) {
@@ -161,18 +164,42 @@ export function formatPulseValue(value: number | null, unit: string | null): str
     if (abs >= 10_000) return `${compact(value / 10_000)} ${u.tenThousandNtd}`;
     return `${compact(value)} ${u.ntdShort}`;
   }
-  if (unit === '%') return `${fixed(value, 2)}%`;
+  if (unit === '%') return `${fixed(value, digits)}%`;
   if (unit === u.perTenThousand) return zhTW.market.perTenThousand(compact(value));
   if (unit === u.rank) return zhTW.market.rank(formatInteger(value));
   return unit ? `${compact(value)} ${unit}` : compact(value);
 }
 
-/** 市場脈動的期間：週「2026-W43」→ 該週星期一「10/19 當週」；其他照原文 */
-export function formatPulsePeriod(period: string): string {
+/** ISO 週「2026-W43」→ 該週星期一「10/19」；不是週格式時為 null */
+function weekMonday(period: string): string | null {
   const m = /^(\d{4})-W(\d{2})$/.exec(period);
-  if (!m) return period;
+  if (!m) return null;
   // ISO 週：1 月 4 日所在的那週是第 1 週
   const jan4 = new Date(Date.UTC(+m[1]!, 0, 4));
   const monday = new Date(jan4.getTime() + ((+m[2]! - 1) * 7 - ((jan4.getUTCDay() + 6) % 7)) * 86_400_000);
-  return zhTW.market.weekOf(`${monday.getUTCMonth() + 1}/${monday.getUTCDate()}`);
+  return `${monday.getUTCMonth() + 1}/${monday.getUTCDate()}`;
+}
+
+/** 市場脈動的期間：週「2026-W43」→ 該週星期一「10/19 當週」；其他照原文 */
+export function formatPulsePeriod(period: string): string {
+  const md = weekMonday(period);
+  return md === null ? period : zhTW.market.weekOf(md);
+}
+
+/**
+ * 直條圖 x 軸的短期間：月「2026-08」→「8月」（跨年時每年第一個寫「26/1」）；週 →「10/19」；其他照原文。
+ */
+export function shortPeriodLabels(periods: (string | null)[]): string[] {
+  const years = new Set(periods.map((p) => /^(\d{4})-\d{2}$/.exec(p ?? '')?.[1]).filter(Boolean));
+  let lastYear: string | null = null;
+  return periods.map((p) => {
+    if (p === null) return '';
+    const m = /^(\d{4})-(\d{2})$/.exec(p);
+    if (m) {
+      const label = years.size > 1 && m[1] !== lastYear ? `${m[1]!.slice(2)}/${+m[2]!}` : zhTW.market.monthShort(+m[2]!);
+      lastYear = m[1]!;
+      return label;
+    }
+    return weekMonday(p) ?? p;
+  });
 }

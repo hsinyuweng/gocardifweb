@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { zhTW } from '../i18n/zh-TW';
 import type { ModuleKey } from '../types/viewModel';
 import { useBreadcrumb } from './pageChrome';
+import { PageHeader } from '../components/layout/PageHeader';
 
 const t = zhTW.guide;
 const c = zhTW.overview.columns;
@@ -31,7 +32,7 @@ export function GuidePage() {
 
   return (
     <div className="max-w-3xl space-y-4">
-      <h1 className="text-xl font-semibold text-slate-900">{t.title}</h1>
+      <PageHeader icon="guide" title={t.title} desc={zhTW.pageDesc.guide} />
 
       <Section n={1} title={t.whatTitle}>
         <p>{t.whatBody}</p>

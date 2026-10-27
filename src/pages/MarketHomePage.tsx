@@ -1,15 +1,18 @@
 import { useMemo, useSyncExternalStore, type ReactNode } from 'react';
-import { HomeCard, PendingContent, type HomeCardIcon } from '../components/home/HomeCard';
+import { HomeCard, PendingContent } from '../components/home/HomeCard';
 import { WatchlistCardContent } from '../components/home/WatchlistCard';
 import { NewsList } from '../components/home/NewsList';
 import { PulseList } from '../components/home/PulseList';
 import { ResearchList } from '../components/home/ResearchList';
 import { StatusMessage } from '../components/common/StatusMessage';
+import { PageHeader } from '../components/layout/PageHeader';
+import { Lead } from '../components/story/Lead';
 import { DataSourceError, normalizeReportIndex } from '../data';
 import { zhTW } from '../i18n/zh-TW';
 import { orDash } from '../lib/format';
 import { isUnreviewed, readReviewed, subscribeReviewed } from '../lib/reviewed';
-import { homeMetrics } from '../lib/pulse';
+import { recentFeed } from '../lib/feedSummary';
+import { homeHeadline } from '../lib/insights';
 import { buildCandidates } from '../lib/score';
 import { readWatchlist, subscribeWatchlist } from '../lib/watchlist';
 import { readWeights, subscribeWeights } from '../lib/weights';
@@ -18,9 +21,6 @@ import type { LoadState } from './useOnDemand';
 import type { OverviewRow } from '../types/viewModel';
 
 const t = zhTW.home;
-
-// 新聞與法規監控：先顯示全部動態（2026-10-20 新規劃階段 1；6 領域頁籤待新格式）
-const NEWS_LIMIT = 5;
 
 function completedTime(r: OverviewRow): number {
   if (r.generatedTime !== null) return r.generatedTime;
@@ -39,17 +39,10 @@ function cardBody<T>(state: LoadState<T>, render: (data: T) => ReactNode): React
   return <p className="text-slate-500">{zhTW.common.loading}</p>;
 }
 
-function Card({ icon, title, children }: { icon: HomeCardIcon; title: string; children: ReactNode }) {
-  return (
-    <HomeCard icon={icon} title={title}>
-      {children}
-    </HomeCard>
-  );
-}
-
 /**
- * 市場總覽（首頁，2026-10-20 新規劃，規格 D1）。
- * 新聞與法規監控讀動態清單；市場脈動讀市場指標；追蹤清單、競品研究用報告清單。
+ * 市場總覽（首頁，2026-10-20 新規劃，規格 D1；2026-10-27 視覺改版）。
+ * 1440×900 一個畫面看完：頁首、一句結論、四框依 Z 字順序（市場脈動、新聞與法規監控、追蹤清單、競品研究）。
+ * 市場脈動讀市場指標；新聞與法規監控讀動態清單；追蹤清單、競品研究用報告清單。
  */
 export function MarketHomePage() {
   useBreadcrumb([{ label: zhTW.nav.home }]);
@@ -87,39 +80,46 @@ export function MarketHomePage() {
     (vm && vm.rows.length === 0 ? (
       <p className="text-slate-500">{zhTW.overview.empty}</p>
     ) : (
-      <ResearchList rows={unreviewedRows} />
+      <ResearchList rows={unreviewedRows} total={vm?.rows.length ?? 0} groups={vm?.recommendationGroups ?? []} />
     ));
 
+  const headline = useMemo(
+    () =>
+      homeHeadline(
+        pulseState.status === 'ok' ? pulseState.data : null,
+        feedState.status === 'ok' ? recentFeed(feedState.data) : null,
+      ),
+    [pulseState, feedState],
+  );
+
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <h1 className="text-xl font-semibold text-slate-900">{t.title}</h1>
-        {vm ? <span className="text-xs text-slate-500">{t.updatedAt(orDash(vm.generatedAt))}</span> : null}
-      </div>
-      {/* 寬螢幕 2×2 照規劃圖排列；窄螢幕一欄：競品研究、追蹤清單、新聞、市場脈動 */}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <div className="order-3 min-w-0 lg:order-1">
-          <Card icon="news" title={t.cards.news}>
-            {cardBody(feedState, (feed) => <NewsList items={feed.items.slice(0, NEWS_LIMIT)} />)}
-          </Card>
-        </div>
-        <div className="order-4 min-w-0 lg:order-2">
-          <Card icon="pulse" title={t.cards.pulse}>
-            {cardBody(pulseState, (pulse) => (
-              <PulseList metrics={homeMetrics(pulse.metrics)} />
-            ))}
-          </Card>
-        </div>
-        <div className="order-2 min-w-0 lg:order-3">
-          <Card icon="watchlist" title={t.cards.watchlist}>
-            {watchBody}
-          </Card>
-        </div>
-        <div className="order-1 min-w-0 lg:order-4">
-          <Card icon="research" title={t.cards.research}>
-            {researchBody}
-          </Card>
-        </div>
+    <div className="space-y-6">
+      <PageHeader
+        icon="home"
+        title={t.title}
+        desc={zhTW.pageDesc.home}
+        aside={vm ? t.updatedAt(orDash(vm.generatedAt)) : null}
+      />
+      {headline ? <Lead parts={headline} /> : null}
+      {/* 2×2 依 Z 字順序（2026-10-27 使用者確認）；窄螢幕一欄同順序 */}
+      <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:auto-rows-fr lg:grid-cols-2">
+        <HomeCard theme="pulse" icon="pulse" title={t.cards.pulse} to="/market">
+          {cardBody(pulseState, (pulse) => <PulseList metrics={pulse.metrics} />)}
+        </HomeCard>
+        <HomeCard theme="news" icon="news" title={t.cards.news} to="/news">
+          {cardBody(feedState, (feed) => <NewsList feed={feed} />)}
+        </HomeCard>
+        <HomeCard theme="watch" icon="watchlist" title={t.cards.watchlist} to="/watchlist">
+          {watchBody}
+        </HomeCard>
+        <HomeCard
+          theme="research"
+          icon="research"
+          title={t.cards.research}
+          to={unreviewedRows.length > 0 ? '/research?unread=1' : '/research'}
+        >
+          {researchBody}
+        </HomeCard>
       </div>
     </div>
   );

@@ -136,6 +136,43 @@ export const zhTW = {
     allReviewed: '所有報告都已審閱。',
     seeAll: '看全部 →',
     seeAllReports: '看全部報告 →',
+    // 2026-10-27 視覺改版：四框的重點數字一句話
+    newsKey: '則動態，近 30 天 · 法規',
+    countUnit: '則',
+    watchKey: (name: string, score: string) => `件候選商品，最高分 ${name} ${score}`,
+    watchKeyNoScore: '件候選商品',
+    researchKey: (total: number) => `份報告尚未審閱，共 ${total} 份`,
+    researchAllReviewed: (total: number) => `所有報告都已審閱，共 ${total} 份`,
+    /** 首頁新聞框橫條用的短名稱 */
+    domainShort: {
+      product_channel: '商品通路',
+      market_macro: '總經',
+      regulation: '監理法規',
+      claims_consumer: '理賠消保',
+      customer_brand: '品牌公關',
+      none: '未分類',
+    },
+    listSeparator: ' · ',
+  },
+
+  // 每頁頁首的一行說明（2026-10-27 視覺改版）
+  pageDesc: {
+    home: '新聞、市場脈動、追蹤清單、競品研究的重點一次看',
+    news: '同業新聞稿、主管機關法規與公告',
+    market: '台灣壽險市場的成長、利率、通路與同業競爭',
+    watchlist: '候選商品依你重視的面向排序',
+    research: '已完成的國外商品分析報告',
+    tasks: '依負責單位查看各商品要處理的事項',
+    guide: '這個網站做什麼、怎麼看報告',
+  },
+
+  // 一句結論（lib/insights.ts，2026-10-27 視覺改版）
+  insights: {
+    month: (m: number) => `${m} 月`,
+    lead: (period: string | null, label: string) => (period ? `${period}${label} ` : `${label} `),
+    shareUp: (name: string, v: string) => `，${name}占比升到 ${v}`,
+    shareDown: (name: string, v: string) => `，${name}占比回落到 ${v}`,
+    news: (n: number, regulation: number) => `近 30 天 ${n} 則動態，法規 ${regulation} 則`,
   },
 
   // 市場脈動（2026-10-20 經確認）
@@ -157,6 +194,8 @@ export const zhTW = {
     accumulating: '資料累積中',
     /** 週期間（2026-W43）顯示為該週星期一 */
     weekOf: (md: string) => `${md} 當週`,
+    /** 直條圖 x 軸的月份 */
+    monthShort: (m: number) => `${m}月`,
     /** unit「萬分比」 */
     perTenThousand: (v: string) => `${v}（每萬件簽單）`,
     /** unit「名」 */

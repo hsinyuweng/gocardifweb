@@ -9,6 +9,7 @@ import { readFromPath } from '../lib/ownerParam';
 import { metricsByGroup, PULSE_GROUP_ORDER } from '../lib/pulse';
 import type { PulseGroup } from '../types/viewModel';
 import { errorText, useBreadcrumb, useMarketPulse } from './pageChrome';
+import { PageHeader } from '../components/layout/PageHeader';
 
 const t = zhTW.market;
 const sectionId = (g: PulseGroup) => `market-${g}`;
@@ -79,13 +80,13 @@ export function MarketPage() {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <h1 className="text-xl font-semibold text-slate-900">{t.title}</h1>
-        {pulseState.status === 'ok' ? (
-          <span className="text-xs text-slate-500">{zhTW.home.updatedAt(orDash(pulseState.data.generatedAt))}</span>
-        ) : null}
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        icon="pulse"
+        title={t.title}
+        desc={zhTW.pageDesc.market}
+        aside={pulseState.status === 'ok' ? zhTW.home.updatedAt(orDash(pulseState.data.generatedAt)) : null}
+      />
       {body}
     </div>
   );

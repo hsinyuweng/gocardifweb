@@ -1,57 +1,45 @@
-import type { ReactNode } from 'react';
+import type { MouseEvent, ReactNode } from 'react';
+import { Link, useNavigate } from 'react-router';
 import { zhTW } from '../../i18n/zh-TW';
-
-export type HomeCardIcon = 'news' | 'pulse' | 'research' | 'watchlist';
-
-// 簡單線條圖示（currentColor），對應示意圖
-const ICON_PATHS: Record<HomeCardIcon, ReactNode> = {
-  news: (
-    <>
-      <rect x="4" y="3.5" width="12" height="13" rx="1.5" />
-      <path d="M7 7h6M7 10h6M7 13h4" />
-    </>
-  ),
-  pulse: <path d="M3 15l4-5 3 3 4-6 3 3M3 17h14" />,
-  research: (
-    <>
-      <circle cx="8.5" cy="8.5" r="5" />
-      <path d="M12.2 12.2L17 17" />
-    </>
-  ),
-  watchlist: <path d="M10 3l2.1 4.4 4.9.7-3.5 3.4.8 4.8L10 14l-4.3 2.3.8-4.8L3 8.1l4.9-.7L10 3z" />,
-};
+import type { PageTheme } from '../../lib/pageTheme';
+import { PageBadge, type PageIconName } from '../common/PageIcon';
 
 interface HomeCardProps {
-  icon: HomeCardIcon;
+  theme: PageTheme;
+  icon: PageIconName;
   title: string;
-  /** 標題右側（例如「看全部 →」） */
-  action?: ReactNode;
+  /** 「看全部 →」與整框點擊的目的地 */
+  to: string;
   children: ReactNode;
 }
 
-/** 市場總覽的卡片外框 */
-export function HomeCard({ icon, title, action, children }: HomeCardProps) {
+/**
+ * 市場總覽的一框（2026-10-27 視覺改版）：框頂代表色極淡色帶＋圖示＋標題，右上「看全部 →」。
+ * 整框可點（滑過時框線變代表色）；框內的連結（新聞標題、報告名稱）仍各自連到自己的頁面。
+ * 鍵盤使用者用「看全部 →」連結。
+ */
+export function HomeCard({ theme, icon, title, to, children }: HomeCardProps) {
+  const navigate = useNavigate();
+  const onClick = (e: MouseEvent<HTMLElement>) => {
+    if ((e.target as HTMLElement).closest('a, button')) return;
+    // 正在選取文字時不跳頁
+    if (window.getSelection()?.toString()) return;
+    void navigate(to, { state: { from: '/' } });
+  };
   return (
-    <section className="flex min-w-0 flex-col rounded-lg border border-slate-200 bg-white">
-      <header className="flex min-h-12 items-center justify-between gap-3 px-5 pt-4">
-        <h2 className="flex items-center gap-2 text-lg font-semibold text-slate-900">
-          <svg
-            viewBox="0 0 20 20"
-            className="size-5 text-slate-500"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.6"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden
-          >
-            {ICON_PATHS[icon]}
-          </svg>
-          {title}
-        </h2>
-        {action}
+    <section
+      data-theme={theme}
+      onClick={onClick}
+      className="flex h-full min-w-0 cursor-pointer flex-col overflow-hidden rounded-[14px] border border-line bg-white transition-colors hover:border-p"
+    >
+      <header className="flex items-center gap-2.5 border-b border-p-pale bg-p-faint px-5 py-2.5">
+        <PageBadge icon={icon} size="sm" />
+        <h2 className="text-[18px] font-semibold text-ink">{title}</h2>
+        <Link to={to} state={{ from: '/' }} className="ml-auto text-[13px] text-ink2 hover:text-ink hover:underline">
+          {zhTW.home.seeAll}
+        </Link>
       </header>
-      <div className="flex-1 px-5 pt-3 pb-5">{children}</div>
+      <div className="flex flex-1 flex-col gap-3 px-5 pt-3.5 pb-4">{children}</div>
     </section>
   );
 }
@@ -59,4 +47,14 @@ export function HomeCard({ icon, title, action, children }: HomeCardProps) {
 /** 後端尚未提供資料時的卡片內容 */
 export function PendingContent() {
   return <p className="text-slate-500">{zhTW.home.pending}</p>;
+}
+
+/** 框內第一行：重點數字（大字）＋一句說明 */
+export function KeyLine({ num, coral, children }: { num: ReactNode; coral?: boolean; children: ReactNode }) {
+  return (
+    <p className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
+      <span className={`text-[28px] leading-tight font-medium tabular-nums ${coral ? 'text-coral' : 'text-ink'}`}>{num}</span>
+      <span className="text-ink2">{children}</span>
+    </p>
+  );
 }

@@ -3,6 +3,7 @@ import { NavLink } from 'react-router';
 import type { AppMetaViewModel } from '../../types/viewModel';
 import { zhTW } from '../../i18n/zh-TW';
 import { orDash } from '../../lib/format';
+import type { PageTheme } from '../../lib/pageTheme';
 
 const t = zhTW.nav;
 
@@ -25,12 +26,24 @@ interface SidebarProps {
 }
 
 function navClass({ isActive }: { isActive: boolean }) {
-  return `block rounded px-3 py-2 transition-colors ${
-    isActive ? 'bg-white/15 font-semibold text-white' : 'text-slate-200 hover:bg-white/10 hover:text-white'
+  return `flex items-center gap-2.5 rounded-lg px-3 py-2 transition-colors ${
+    isActive ? 'bg-p-pale font-medium text-ink' : 'text-ink2 hover:bg-p-faint hover:text-ink'
   }`;
 }
 
-const linkButton = 'ml-1 text-slate-100 underline underline-offset-2 hover:text-white';
+/** 導覽項目：前面一個代表色圓點；目前頁用代表色淡底（2026-10-27 視覺改版） */
+function NavItem({ to, theme, label, end }: { to: string; theme: PageTheme; label: string; end?: boolean }) {
+  return (
+    <li data-theme={theme}>
+      <NavLink to={to} end={end} className={navClass}>
+        <span aria-hidden className="size-2 shrink-0 rounded-full bg-p" />
+        {label}
+      </NavLink>
+    </li>
+  );
+}
+
+const linkButton = 'ml-1 text-ink2 underline underline-offset-2 hover:text-ink';
 
 /** 顯示「我的單位：○○ 更改」；按更改後改為下拉＋取消 */
 function MyUnitSetting({ value, options, onRequestOptions, onChange }: MyUnitControl) {
@@ -71,7 +84,7 @@ function MyUnitSetting({ value, options, onRequestOptions, onChange }: MyUnitCon
             onChange(e.target.value === '' ? null : e.target.value);
             setEditing(false);
           }}
-          className="h-7 max-w-[140px] rounded border border-white/20 bg-navy-900 px-1 text-slate-100"
+          className="h-7 max-w-[140px] rounded border border-line bg-white px-1 text-ink"
         >
           <option value="">{t.myUnitUnset}</option>
           {list.map((o) => (
@@ -92,17 +105,17 @@ function MyUnitSetting({ value, options, onRequestOptions, onChange }: MyUnitCon
 export function Sidebar({ meta, showRoadmapNav, myUnit, mobileOpen, onClose }: SidebarProps) {
   return (
     <aside
-      className={`fixed inset-y-0 left-0 z-40 flex w-[232px] flex-col bg-navy-800 text-slate-100 transition-transform lg:translate-x-0 print:hidden ${
+      className={`fixed inset-y-0 left-0 z-40 flex w-[232px] flex-col border-r border-line bg-white text-ink transition-transform lg:translate-x-0 print:hidden ${
         mobileOpen ? 'translate-x-0' : '-translate-x-full'
       }`}
     >
-      <div className="flex h-14 items-center justify-between border-b border-white/10 px-5 text-base font-semibold tracking-wide text-white">
+      <div className="flex h-14 items-center justify-between border-b border-line px-5 text-base font-semibold tracking-wide text-[#3b4a7a]">
         {zhTW.appName}
         <button
           type="button"
           onClick={onClose}
           aria-label={zhTW.layout.closeMenu}
-          className="-mr-2 rounded p-1 text-slate-300 hover:bg-white/10 hover:text-white lg:hidden"
+          className="-mr-2 rounded p-1 text-muted hover:bg-slate-100 hover:text-ink lg:hidden"
         >
           <svg viewBox="0 0 20 20" className="size-5" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
             <path d="M5 5l10 10M15 5L5 15" strokeLinecap="round" />
@@ -112,57 +125,29 @@ export function Sidebar({ meta, showRoadmapNav, myUnit, mobileOpen, onClose }: S
 
       <nav className="flex-1 overflow-y-auto px-3 py-4">
         <ul className="space-y-1">
-          <li>
-            <NavLink to="/" end className={navClass}>
-              {t.home}
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/news" className={navClass}>
-              {t.news}
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/market" className={navClass}>
-              {t.market}
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/watchlist" className={navClass}>
-              {t.watchlist}
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/research" className={navClass}>
-              {t.overview}
-            </NavLink>
-          </li>
+          <NavItem to="/" end theme="home" label={t.home} />
+          <NavItem to="/news" theme="news" label={t.news} />
+          <NavItem to="/market" theme="pulse" label={t.market} />
+          <NavItem to="/watchlist" theme="watch" label={t.watchlist} />
+          <NavItem to="/research" theme="research" label={t.overview} />
           {/* 規格外新增（2026-10-18 經確認，修改第 10.1 節） */}
-          <li>
-            <NavLink to="/tasks" className={navClass}>
-              {t.tasks}
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/guide" className={navClass}>
-              {t.guide}
-            </NavLink>
-          </li>
+          <NavItem to="/tasks" theme="plain" label={t.tasks} />
+          <NavItem to="/guide" theme="plain" label={t.guide} />
         </ul>
 
         {showRoadmapNav ? (
           <div className="mt-6">
-            <div className="px-3 pb-2 text-xs text-slate-400">{t.roadmapGroup}</div>
+            <div className="px-3 pb-2 text-xs text-muted">{t.roadmapGroup}</div>
             <ul className="space-y-1">
               {t.roadmapItems.map((item) => (
                 // 規劃中功能：灰色、不可點擊、游標不變（原則 6）
                 <li
                   key={item}
                   aria-disabled="true"
-                  className="flex cursor-default items-center justify-between rounded px-3 py-2 text-slate-400 select-none"
+                  className="flex cursor-default items-center justify-between rounded px-3 py-2 text-muted select-none"
                 >
                   <span>{item}</span>
-                  <span className="rounded bg-white/10 px-1.5 py-0.5 text-[11px] text-slate-300">
+                  <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[11px] text-muted">
                     {zhTW.common.roadmap}
                   </span>
                 </li>
@@ -172,7 +157,7 @@ export function Sidebar({ meta, showRoadmapNav, myUnit, mobileOpen, onClose }: S
         ) : null}
       </nav>
 
-      <div className="space-y-1 border-t border-white/10 px-5 py-3 text-xs text-slate-300">
+      <div className="space-y-1 border-t border-line px-5 py-3 text-xs text-muted">
         <MyUnitSetting {...myUnit} />
         <div>
           {t.dataUpdated}

@@ -1,49 +1,60 @@
 import { Link } from 'react-router';
-import type { OverviewRow } from '../../types/viewModel';
+import type { OverviewRow, RecommendationGroup } from '../../types/viewModel';
 import { zhTW } from '../../i18n/zh-TW';
 import { orDash } from '../../lib/format';
+import { BigShareBar } from '../charts/BigShareBar';
+import { KeyLine } from './HomeCard';
 
 const t = zhTW.home;
-const LIMIT = 5;
+const LIMIT = 2;
 
-const moreLink = 'text-sm text-navy-700 hover:underline';
+interface ResearchListProps {
+  /** 未審閱報告，新的在前 */
+  rows: OverviewRow[];
+  total: number;
+  groups: RecommendationGroup[];
+}
 
-/** 競品研究卡片內容：未審閱報告，新的在上面；點商品進報告頁 */
-export function ResearchList({ rows }: { rows: OverviewRow[] }) {
-  if (rows.length === 0) {
-    return (
-      <div className="space-y-2">
-        <p className="text-slate-500">{t.allReviewed}</p>
-        <Link to="/research" state={{ from: '/' }} className={moreLink}>
-          {t.seeAllReports}
-        </Link>
-      </div>
-    );
-  }
-
-  const more = rows.length - LIMIT;
+/**
+ * 競品研究框（2026-10-27 視覺改版）：未審閱份數、建議分布大橫條（代表色深淺，不用燈號色）、
+ * 最新 2 份未審閱報告（點商品進報告頁）。
+ */
+export function ResearchList({ rows, total, groups }: ResearchListProps) {
   return (
-    <div className="space-y-3">
-      <ul className="space-y-3">
-        {rows.slice(0, LIMIT).map((r) => (
-          <li key={r.reportId}>
-            <Link
-              to={`/report/${encodeURIComponent(r.reportId as string)}`}
-              state={{ from: '/' }}
-              className="font-medium text-slate-900 hover:text-navy-800 hover:underline"
-            >
-              {orDash(r.name)}
-            </Link>
-            <p className="mt-0.5 text-xs text-slate-500">{t.researchMeta(orDash(r.countryLabel), orDash(r.generatedAt ?? r.generatedDate))}</p>
-          </li>
-        ))}
-      </ul>
-      <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <span className="text-sm text-slate-500">{more > 0 ? t.moreUnread(more) : null}</span>
-        <Link to="/research?unread=1" state={{ from: '/' }} className={moreLink}>
-          {t.seeAll}
-        </Link>
-      </div>
-    </div>
+    <>
+      {rows.length > 0 ? (
+        <KeyLine num={rows.length}>{t.researchKey(total)}</KeyLine>
+      ) : (
+        <p className="text-ink2">{t.researchAllReviewed(total)}</p>
+      )}
+      <BigShareBar
+        ariaLabel={zhTW.overview.columns.recommendation}
+        segments={groups.map((g) => ({
+          key: g.key ?? '__null__',
+          label: `${orDash(g.label)} ${g.count}`,
+          value: g.count,
+          title: `${orDash(g.label)}：${g.count}`,
+        }))}
+      />
+      {rows.length > 0 ? (
+        <ul className="mt-auto space-y-1.5 text-[13px]">
+          {rows.slice(0, LIMIT).map((r) => (
+            <li key={r.reportId} className="flex items-baseline gap-3">
+              <Link
+                to={`/report/${encodeURIComponent(r.reportId as string)}`}
+                state={{ from: '/' }}
+                className="min-w-0 flex-1 truncate text-ink hover:underline"
+                title={r.name ?? undefined}
+              >
+                {orDash(r.name)}
+              </Link>
+              <span className="shrink-0 text-xs text-muted">
+                {t.researchMeta(orDash(r.countryLabel), orDash(r.generatedAt ?? r.generatedDate))}
+              </span>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </>
   );
 }

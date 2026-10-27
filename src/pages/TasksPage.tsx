@@ -9,6 +9,7 @@ import { OWNER_PARAM, ownerParamValue, requestedOwner as resolveOwner } from '..
 import { readOwnerPreference, subscribeOwnerPreference } from '../lib/ownerPreference';
 import { countOwners, groupTasks, summarizeTasks } from '../lib/tasks';
 import { errorText, useAllReports, useBreadcrumb, useIndexState } from './pageChrome';
+import { PageHeader } from '../components/layout/PageHeader';
 
 const t = zhTW.tasks;
 
@@ -94,31 +95,37 @@ export function TasksPage() {
   const failedNames = allState.status === 'ok' ? allState.result.failedNames : [];
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
-        <h1 className="text-xl font-semibold text-slate-900">
-          {t.title}
-          {owner !== null ? (
-            <span className="ml-3 hidden text-xs font-normal text-slate-600 print:inline">
-              {zhTW.report.printOwnerNote(owner)}
-            </span>
-          ) : null}
-        </h1>
-        {allState.status === 'ok' && ownerOptions.length > 0 ? (
-          <div className="flex flex-wrap items-center gap-3">
-            <OwnerFilter options={ownerOptions} selected={owner} onChange={(o) => setOwnerParam(o, true)} />
+    <div className="space-y-6">
+      <PageHeader
+        icon="tasks"
+        title={
+          <>
+            {t.title}
             {owner !== null ? (
-              <button
-                type="button"
-                onClick={() => window.print()}
-                className="h-8 rounded border border-slate-300 bg-white px-3 text-slate-700 hover:border-navy-600 hover:text-navy-800 print:hidden"
-              >
-                {zhTW.report.print}
-              </button>
+              <span className="ml-3 hidden text-xs font-normal text-slate-600 print:inline">
+                {zhTW.report.printOwnerNote(owner)}
+              </span>
             ) : null}
-          </div>
-        ) : null}
-      </div>
+          </>
+        }
+        desc={zhTW.pageDesc.tasks}
+        aside={
+          allState.status === 'ok' && ownerOptions.length > 0 ? (
+            <div className="flex flex-wrap items-center gap-3 text-sm text-ink">
+              <OwnerFilter options={ownerOptions} selected={owner} onChange={(o) => setOwnerParam(o, true)} />
+              {owner !== null ? (
+                <button
+                  type="button"
+                  onClick={() => window.print()}
+                  className="h-8 rounded border border-slate-300 bg-white px-3 text-slate-700 hover:border-navy-600 hover:text-navy-800 print:hidden"
+                >
+                  {zhTW.report.print}
+                </button>
+              ) : null}
+            </div>
+          ) : null
+        }
+      />
       {failedNames.length > 0 ? (
         <StatusMessage tone="error" message={t.partialFailure(failedNames.length, failedNames.join('、'))} />
       ) : null}
