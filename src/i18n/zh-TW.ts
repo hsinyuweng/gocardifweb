@@ -56,8 +56,8 @@ export const zhTW = {
     whatBody: '彙整國外保險商品在台灣的市場需求、發生率暨獲利、法規適用三面向分析結果，並提供統整建議。',
     homeTitle: '首頁四區塊',
     homeBlocks: [
-      { name: '新聞與法規監控', body: '最新的新聞與法規，依六個分類瀏覽；可只看影響追蹤清單商品的項目。' },
-      { name: '市場脈動', body: '保險市場的關鍵指標與趨勢：本月焦點，以及成長動能、定價環境、通路結構、健康度、品牌聲量五組指標。' },
+      { name: '新聞與法規監控', body: '最新的新聞與法規，依六個分類瀏覽；可只看與追蹤清單商品可能相關的項目。' },
+      { name: '市場脈動', body: '保險市場的關鍵指標與趨勢：本月焦點，以及成長動能、定價環境、通路結構、健康度、品牌與競爭五組指標。' },
       { name: '追蹤清單', body: '你加入的候選商品，可拖動權重滑桿，依你重視的面向排序。' },
       { name: '競品研究', body: '已完成、你還沒打開過的商品報告；點進去看完整報告，覺得值得參考就在頁面底部加入追蹤清單。' },
     ],
@@ -149,14 +149,22 @@ export const zhTW = {
       pricing: { title: '定價環境', desc: '利率走勢與會計／資本制度時程' },
       channel: { title: '通路結構', desc: '業務員、銀行保險、數位通路占比' },
       health: { title: '健康度', desc: '全行業解約率與繼續率' },
-      brand: { title: '品牌聲量', desc: '同業品牌與商品關鍵字搜尋熱度' },
+      brand: { title: '品牌與競爭', desc: '法巴市占率與同業申訴率' },
     },
     emptyGroup: '這組指標尚無資料。',
     noChartData: '資料不足，無法畫圖。',
+    stale: '資料較舊',
+    accumulating: '資料累積中',
+    /** 週期間（2026-W43）顯示為該週星期一 */
+    weekOf: (md: string) => `${md} 當週`,
+    /** unit「萬分比」 */
+    perTenThousand: (v: string) => `${v}（每萬件簽單）`,
+    /** unit「名」 */
+    rank: (v: string) => `第 ${v} 名`,
     source: '來源：',
     asOf: (d: string) => `資料日期 ${d}`,
     other: '其他',
-    shareTable: { name: '項目', share: '占比', growth: '成長率' },
+    shareTable: { name: '項目', share: '占比', growth: '年增率' },
     shareLatest: (period: string) => `${period} 占比`,
     upcoming: '預計',
     moreLines: (n: number) => `另有 ${n} 條未顯示`,
@@ -181,11 +189,14 @@ export const zhTW = {
       claims_consumer: '理賠與消保',
       customer_brand: '客群經營與品牌公關',
     },
-    affectsToggle: '只看影響追蹤清單商品',
-    affects: (n: number) => `影響追蹤清單 ${n} 項商品`,
+    affectsToggle: '只看可能相關追蹤清單商品',
+    // 關鍵字比對，不是影響判斷：一律寫「可能相關」，不寫「影響」
+    affects: (n: number) => `可能相關追蹤清單 ${n} 項商品`,
+    sameCategory: (n: number) => `同險種 ${n} 項`,
+    selfReported: '業者自述',
     showMore: '顯示更多',
     emptyTab: '這個分類目前沒有項目。',
-    emptyAffects: '目前沒有影響追蹤清單商品的項目。',
+    emptyAffects: '目前沒有與追蹤清單商品可能相關的項目。',
   },
 
   // 相對時間（市場總覽動態）
@@ -340,6 +351,9 @@ export const zhTW = {
     ntd: '新台幣元',
     tenThousandNtd: '萬元',
     ntdShort: '元',
+    /** 市場脈動 unit（M5） */
+    perTenThousand: '萬分比',
+    rank: '名',
   },
 
   charts: {

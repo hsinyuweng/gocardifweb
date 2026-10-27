@@ -31,7 +31,12 @@ const chipBase = 'inline-flex h-8 shrink-0 items-center gap-1.5 whitespace-nowra
 const chipOn = 'bg-navy-800 text-white ring-navy-800';
 const chipOff = 'bg-white text-slate-700 ring-slate-300 hover:ring-slate-400';
 
-/** 新聞與法規監控（2026-10-20 新規劃）：6 個頁籤、只看影響追蹤清單商品、法規展開受影響商品 */
+/** 報告險種是否屬於法規的相關險種：完全相同，或是「投資型壽險（IUL，指數連結型）」這類帶括號細分的子類 */
+function inCategory(reportCategory: string, categories: string[]): boolean {
+  return categories.some((c) => reportCategory === c || reportCategory.startsWith(`${c}（`));
+}
+
+/** 新聞與法規監控（2026-10-20 新規劃）：6 個頁籤、只看可能相關追蹤清單商品、法規展開可能相關與同險種的追蹤商品 */
 export function NewsPage() {
   const location = useLocation();
   const fromHome = readFromPath(location.state) === '/';
@@ -55,26 +60,40 @@ export function NewsPage() {
   const filterKey = `${tab}|${affectsOnly}`;
   const shown = limit.key === filterKey ? limit.n : PAGE_SIZE;
 
-  const names = useMemo(
+  const reports = useMemo(
     () =>
       new Map(
         (indexState.status === 'ok' ? normalizeReportIndex(indexState.index).rows : []).flatMap((r) =>
-          r.reportId ? [[r.reportId, r.name ?? r.reportId] as const] : [],
+          r.reportId ? [[r.reportId, { name: r.name ?? r.reportId, category: r.category }] as const] : [],
         ),
       ),
     [indexState],
   );
-  /** 法規影響的追蹤清單商品 */
-  const affectedOf = useMemo(() => {
-    const watched = new Set(watchlist);
-    return (item: FeedItemViewModel) =>
-      item.kind === 'regulation'
-        ? item.relatedReportIds.filter((id) => watched.has(id)).map((id) => ({ id, name: names.get(id) ?? id }))
-        : [];
-  }, [watchlist, names]);
+  /** 法規的追蹤清單商品：可能相關（related_report_ids）與同險種（affected_categories，排除已列為可能相關的） */
+  const productsOf = useMemo(() => {
+    return (item: FeedItemViewModel) => {
+      if (item.kind !== 'regulation') return { affected: [], sameCategory: [] };
+      const related = new Set(item.relatedReportIds);
+      const link = (id: string) => ({ id, name: reports.get(id)?.name ?? id });
+      return {
+        affected: watchlist.filter((id) => related.has(id)).map(link),
+        sameCategory: watchlist
+          .filter((id) => {
+            const category = reports.get(id)?.category;
+            return !related.has(id) && category != null && inCategory(category, item.affectedCategories);
+          })
+          .map(link),
+      };
+    };
+  }, [watchlist, reports]);
 
   const items = feedState.status === 'ok' ? feedState.data.items : [];
-  const pool = affectsOnly ? items.filter((i) => affectedOf(i).length > 0) : items;
+  const pool = affectsOnly
+    ? items.filter((i) => {
+        const p = productsOf(i);
+        return p.affected.length > 0 || p.sameCategory.length > 0;
+      })
+    : items;
   const counts = new Map<FeedDomain | 'all', number>([['all', pool.length]]);
   for (const i of pool) if (i.domain) counts.set(i.domain, (counts.get(i.domain) ?? 0) + 1);
   const visible = tab === 'all' ? pool : pool.filter((i) => i.domain === tab);
@@ -124,7 +143,7 @@ export function NewsPage() {
           <>
             <ul className="divide-y divide-slate-100 rounded border border-slate-200 bg-white">
               {visible.slice(0, shown).map((item) => (
-                <NewsItem key={item.id} item={item} affected={affectedOf(item)} linkState={linkState} />
+                <NewsItem key={item.id} item={item} {...productsOf(item)} linkState={linkState} />
               ))}
             </ul>
             {visible.length > shown ? (

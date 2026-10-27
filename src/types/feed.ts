@@ -15,11 +15,15 @@ export interface RawFeedItem {
   /** YYYY-MM-DD 或 ISO 8601 時間 */
   published_at?: Nullable<string>;
   source?: Nullable<string>;
+  /** true＝業者自行發布的新聞稿（schema 1.2）；缺漏視為 false */
+  self_reported?: Nullable<boolean>;
   url?: Nullable<string>;
   region?: Nullable<string>;
   importance?: Nullable<string>;
   tags?: Nullable<string[]>;
   related_report_ids?: Nullable<string[]>;
+  /** 法規相關險種，與報告 product_snapshot.category 同一組名稱（schema 1.2）；新聞省略 */
+  affected_categories?: Nullable<string[]>;
   related_modules?: Nullable<string[]>;
   owner_hint?: Nullable<string>;
   /** 國家代碼，與報告 country 同一組值 */

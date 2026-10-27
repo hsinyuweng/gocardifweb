@@ -5,6 +5,7 @@ import { formatPulseTick, formatPulseValue, orDash, pulseChangeText } from '../.
 import { LineChart, LineLegend } from '../charts/LineChart';
 import { ShareBars } from '../charts/ShareBars';
 import { Timeline } from '../charts/Timeline';
+import { StaleTag } from './StaleTag';
 
 const t = zhTW.market;
 
@@ -39,15 +40,26 @@ function Body({ m }: { m: PulseMetricViewModel }) {
     return (
       <>
         <p className="text-2xl font-semibold text-navy-800 tabular-nums">{formatPulseValue(m.latestValue, m.unit)}</p>
-        <p className="mt-0.5 mb-3 flex items-baseline gap-2 text-sm">
-          <span className="text-navy-800 tabular-nums">{pulseChangeText(m.change, m.changeUnit)}</span>
-          {m.changeLabel ? <span className="text-xs text-slate-500">{m.changeLabel}</span> : null}
-        </p>
-        {m.points.length >= 2 ? (
-          <LineChart lines={[{ name: label, points: m.points }]} formatValue={fmt} formatTick={tick} ariaLabel={label} />
-        ) : (
-          <p className="text-slate-500">{t.noChartData}</p>
-        )}
+        {/* change_pct 為 null（淨流入、名次、只有一期）時不顯示漲跌那一行 */}
+        {m.change !== null ? (
+          <p className="mt-0.5 flex items-baseline gap-2 text-sm">
+            <span className="text-navy-800 tabular-nums">{pulseChangeText(m.change, m.changeUnit)}</span>
+            {m.changeLabel ? <span className="text-xs text-slate-500">{m.changeLabel}</span> : null}
+          </p>
+        ) : null}
+        <div className="mt-3">
+          {m.points.length >= 2 ? (
+            <LineChart
+              lines={[{ name: label, points: m.points }]}
+              formatValue={fmt}
+              formatTick={tick}
+              invert={m.unit === zhTW.units.rank}
+              ariaLabel={label}
+            />
+          ) : (
+            <p className="text-slate-500">{t.noChartData}</p>
+          )}
+        </div>
       </>
     );
   }
@@ -61,7 +73,7 @@ function Body({ m }: { m: PulseMetricViewModel }) {
     return (
       <div className="space-y-3">
         <LineLegend lines={lines} formatValue={fmt} />
-        <LineChart lines={lines} formatValue={fmt} formatTick={tick} ariaLabel={label} />
+        <LineChart lines={lines} formatValue={fmt} formatTick={tick} invert={m.unit === zhTW.units.rank} ariaLabel={label} />
         {hidden > 0 ? <p className="text-xs text-slate-500">{t.moreLines(hidden)}</p> : null}
       </div>
     );
@@ -74,7 +86,10 @@ function Body({ m }: { m: PulseMetricViewModel }) {
 export function MetricCard({ metric }: { metric: PulseMetricViewModel }) {
   return (
     <article className={`min-w-0 rounded-lg border border-slate-200 bg-white p-4 ${metric.type === 'timeline' ? 'sm:col-span-2' : ''}`}>
-      <h3 className="mb-2 text-slate-600">{orDash(metric.label)}</h3>
+      <h3 className="mb-2 text-slate-600">
+        {orDash(metric.label)}
+        {metric.stale ? <StaleTag /> : null}
+      </h3>
       <Body m={metric} />
       <SourceLine m={metric} />
     </article>

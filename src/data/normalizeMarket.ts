@@ -47,11 +47,13 @@ function normalizeFeedItem(item: RawFeedItem, i: number): FeedItemViewModel {
     title: str(item.title),
     summary: str(item.summary),
     source: str(item.source),
+    selfReported: item.self_reported === true,
     url: safeUrl(item.url),
     publishedAt,
     publishedTime: time,
     dateOnly,
     relatedReportIds: strList(item.related_report_ids),
+    affectedCategories: strList(item.affected_categories),
     country: str(item.country),
     productCategory: str(item.product_category),
   };
@@ -91,6 +93,7 @@ function normalizeMetric(m: RawPulseMetric, i: number): PulseMetricViewModel {
     source: str(m.source),
     sourceUrl: safeUrl(m.source_url),
     asOf: str(m.as_of),
+    stale: m.stale === true,
   };
   const type = str(m.type);
   if (type === 'multi_line') {

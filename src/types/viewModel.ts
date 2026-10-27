@@ -321,6 +321,8 @@ export interface FeedItemViewModel {
   title: string | null;
   summary: string | null;
   source: string | null;
+  /** 業者自行發布的新聞稿 */
+  selfReported: boolean;
   /** 只接受 http(s) 網址，其餘為 null */
   url: string | null;
   /** published_at 原文 */
@@ -330,6 +332,8 @@ export interface FeedItemViewModel {
   /** published_at 只有日期、沒有時間 */
   dateOnly: boolean;
   relatedReportIds: string[];
+  /** 法規相關險種（與報告 category 比對「同險種」） */
+  affectedCategories: string[];
   country: string | null;
   productCategory: string | null;
 }
@@ -382,6 +386,8 @@ interface PulseMetricBase {
   source: string | null;
   sourceUrl: string | null;
   asOf: string | null;
+  /** 資料較舊（後端判斷） */
+  stale: boolean;
 }
 
 export interface PulseTrendViewModel extends PulseMetricBase {

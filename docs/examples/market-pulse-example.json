@@ -1,6 +1,6 @@
 {
   "_comment": "示意資料：數字與事件為捏造，只用於本機 mock-api 檢查畫面，不是實際統計。格式見 docs/spec/api-contract.md 第 2A 節（schema 2.0 草案）。",
-  "schema_version": "2.0",
+  "schema_version": "2.1",
   "generated_at": "2026-10-20T07:00:00+08:00",
   "focus_summary": {
     "text": "外幣保單新契約保費連續 3 個月成長，年增率升至 8.3%；10 年期公債殖利率回落到 1.62%，數位通路占比首度超過 6%。",
@@ -70,7 +70,8 @@
       ],
       "source": "示意資料（壽險公會）",
       "source_url": "https://example.com/pulse-yoy",
-      "as_of": "2026-09-30"
+      "as_of": "2026-09-30",
+      "stale": false
     },
     {
       "key": "fx_policy_new_premium",
@@ -135,7 +136,8 @@
       ],
       "source": "示意資料（壽險公會）",
       "source_url": "https://example.com/pulse-fx",
-      "as_of": "2026-09-30"
+      "as_of": "2026-09-30",
+      "stale": false
     },
     {
       "key": "product_mix",
@@ -235,7 +237,8 @@
       ],
       "source": "示意資料（壽險公會）",
       "source_url": "https://example.com/pulse-mix",
-      "as_of": "2026-09-30"
+      "as_of": "2026-09-30",
+      "stale": false
     },
     {
       "key": "tw_10y_yield",
@@ -299,7 +302,8 @@
       ],
       "source": "示意資料（中央銀行）",
       "source_url": "https://example.com/pulse-yield",
-      "as_of": "2026-09-30"
+      "as_of": "2026-09-30",
+      "stale": false
     },
     {
       "key": "ifrs17_tw_ics",
@@ -337,7 +341,8 @@
       ],
       "source": "示意資料（金管會）",
       "source_url": "https://example.com/pulse-ifrs17",
-      "as_of": "2026-10-15"
+      "as_of": "2026-10-15",
+      "stale": false
     },
     {
       "key": "channel_mix",
@@ -433,7 +438,8 @@
       ],
       "source": "示意資料（保發中心）",
       "source_url": "https://example.com/pulse-channel",
-      "as_of": "2026-09-30"
+      "as_of": "2026-09-30",
+      "stale": false
     },
     {
       "key": "digital_penetration",
@@ -497,71 +503,73 @@
       ],
       "source": "示意資料（保發中心）",
       "source_url": "https://example.com/pulse-digital",
-      "as_of": "2026-09-30"
+      "as_of": "2026-09-30",
+      "stale": false
     },
     {
-      "key": "industry_lapse_rate",
+      "key": "net_inflow",
       "group": "health",
       "type": "trend",
-      "label": "全行業解約率",
-      "unit": "%",
-      "latest_value": 1.71,
-      "change_pct": -0.03,
-      "change_unit": "pp",
+      "label": "保費收入減保險給付（淨流入）",
+      "unit": "新台幣元",
+      "latest_value": -6800000000.0,
+      "change_pct": null,
+      "change_unit": "pct",
       "change_label": "較上月",
       "series": [
         {
           "period": "2025-10",
-          "value": 1.92
+          "value": 18200000000.0
         },
         {
           "period": "2025-11",
-          "value": 1.88
+          "value": 9500000000.0
         },
         {
           "period": "2025-12",
-          "value": 1.95
+          "value": -4099999999.9999995
         },
         {
           "period": "2026-01",
-          "value": 1.9
+          "value": 12000000000.0
         },
         {
           "period": "2026-02",
-          "value": 1.86
+          "value": 6300000000.0
         },
         {
           "period": "2026-03",
-          "value": 1.84
+          "value": -8700000000.0
         },
         {
           "period": "2026-04",
-          "value": 1.81
+          "value": -12400000000.0
         },
         {
           "period": "2026-05",
-          "value": 1.83
+          "value": 3200000000.0
         },
         {
           "period": "2026-06",
-          "value": 1.79
+          "value": 7900000000.0
         },
         {
           "period": "2026-07",
-          "value": 1.76
+          "value": -2500000000.0
         },
         {
           "period": "2026-08",
-          "value": 1.74
+          "value": 5100000000.0
         },
         {
           "period": "2026-09",
-          "value": 1.71
+          "value": -6800000000.0
         }
       ],
-      "source": "示意資料（保發中心）",
-      "source_url": "https://example.com/pulse-lapse",
-      "as_of": "2026-09-30"
+      "source": "示意資料（保險局保險市場重要指標）",
+      "source_url": "https://example.com/net-inflow",
+      "as_of": "2026-09-30",
+      "stale": false
     },
     {
       "key": "industry_persistency",
@@ -679,402 +687,145 @@
       ],
       "source": "示意資料（保發中心）",
       "source_url": "https://example.com/pulse-persistency",
-      "as_of": "2026-09-30"
+      "as_of": "2026-09-30",
+      "stale": true
     },
     {
-      "key": "brand_search",
+      "key": "complaint_rate",
       "group": "brand",
       "type": "multi_line",
-      "label": "同業品牌搜尋熱度",
-      "unit": "指數",
+      "label": "保險申訴率",
+      "unit": "萬分比",
       "lines": [
         {
-          "name": "本公司",
+          "name": "法國巴黎人壽",
           "series": [
             {
-              "period": "2026-W31",
-              "value": 42
+              "period": "2025-Q2",
+              "value": 0.21
             },
             {
-              "period": "2026-W32",
-              "value": 44
+              "period": "2025-Q3",
+              "value": 0.19
             },
             {
-              "period": "2026-W33",
-              "value": 41
+              "period": "2025-Q4",
+              "value": 0.22
             },
             {
-              "period": "2026-W34",
-              "value": 45
+              "period": "2026-Q1",
+              "value": 0.18
             },
             {
-              "period": "2026-W35",
-              "value": 47
-            },
-            {
-              "period": "2026-W36",
-              "value": 46
-            },
-            {
-              "period": "2026-W37",
-              "value": 49
-            },
-            {
-              "period": "2026-W38",
-              "value": 51
-            },
-            {
-              "period": "2026-W39",
-              "value": 50
-            },
-            {
-              "period": "2026-W40",
-              "value": 53
-            },
-            {
-              "period": "2026-W41",
-              "value": 55
-            },
-            {
-              "period": "2026-W42",
-              "value": 54
+              "period": "2026-Q2",
+              "value": 0.19
             }
           ]
         },
         {
-          "name": "同業 A",
+          "name": "業界整體",
           "series": [
             {
-              "period": "2026-W31",
-              "value": 78
+              "period": "2025-Q2",
+              "value": 0.25
             },
             {
-              "period": "2026-W32",
-              "value": 80
+              "period": "2025-Q3",
+              "value": 0.24
             },
             {
-              "period": "2026-W33",
-              "value": 76
+              "period": "2025-Q4",
+              "value": 0.26
             },
             {
-              "period": "2026-W34",
-              "value": 82
+              "period": "2026-Q1",
+              "value": 0.23
             },
             {
-              "period": "2026-W35",
-              "value": 79
-            },
-            {
-              "period": "2026-W36",
-              "value": 77
-            },
-            {
-              "period": "2026-W37",
-              "value": 81
-            },
-            {
-              "period": "2026-W38",
-              "value": 83
-            },
-            {
-              "period": "2026-W39",
-              "value": 80
-            },
-            {
-              "period": "2026-W40",
-              "value": 79
-            },
-            {
-              "period": "2026-W41",
-              "value": 82
-            },
-            {
-              "period": "2026-W42",
-              "value": 84
+              "period": "2026-Q2",
+              "value": 0.24
             }
           ]
         },
         {
-          "name": "同業 B",
+          "name": "安聯人壽",
           "series": [
             {
-              "period": "2026-W31",
-              "value": 65
+              "period": "2025-Q2",
+              "value": 0.15
             },
             {
-              "period": "2026-W32",
-              "value": 63
+              "period": "2025-Q3",
+              "value": 0.17
             },
             {
-              "period": "2026-W33",
-              "value": 66
+              "period": "2025-Q4",
+              "value": 0.16
             },
             {
-              "period": "2026-W34",
-              "value": 64
+              "period": "2026-Q1",
+              "value": 0.14
             },
             {
-              "period": "2026-W35",
-              "value": 62
-            },
-            {
-              "period": "2026-W36",
-              "value": 61
-            },
-            {
-              "period": "2026-W37",
-              "value": 63
-            },
-            {
-              "period": "2026-W38",
-              "value": 60
-            },
-            {
-              "period": "2026-W39",
-              "value": 62
-            },
-            {
-              "period": "2026-W40",
-              "value": 61
-            },
-            {
-              "period": "2026-W41",
-              "value": 59
-            },
-            {
-              "period": "2026-W42",
-              "value": 60
-            }
-          ]
-        },
-        {
-          "name": "同業 C",
-          "series": [
-            {
-              "period": "2026-W31",
-              "value": 30
-            },
-            {
-              "period": "2026-W32",
-              "value": 31
-            },
-            {
-              "period": "2026-W33",
-              "value": 33
-            },
-            {
-              "period": "2026-W34",
-              "value": 32
-            },
-            {
-              "period": "2026-W35",
-              "value": 35
-            },
-            {
-              "period": "2026-W36",
-              "value": 36
-            },
-            {
-              "period": "2026-W37",
-              "value": 34
-            },
-            {
-              "period": "2026-W38",
-              "value": 37
-            },
-            {
-              "period": "2026-W39",
-              "value": 39
-            },
-            {
-              "period": "2026-W40",
-              "value": 38
-            },
-            {
-              "period": "2026-W41",
-              "value": 40
-            },
-            {
-              "period": "2026-W42",
-              "value": 41
+              "period": "2026-Q2",
+              "value": 0.15
             }
           ]
         }
       ],
-      "source": "示意資料（搜尋趨勢）",
-      "source_url": "https://example.com/pulse-brand",
-      "as_of": "2026-10-18"
+      "source": "示意資料（金管會保險申訴統計）",
+      "source_url": "https://example.com/complaint",
+      "as_of": "2026-06-30",
+      "stale": false
     },
     {
-      "key": "product_keyword_search",
+      "key": "self_rank",
       "group": "brand",
-      "type": "multi_line",
-      "label": "商品關鍵字搜尋熱度",
-      "unit": "指數",
-      "lines": [
+      "type": "trend",
+      "label": "法巴新契約保費名次",
+      "unit": "名",
+      "latest_value": 10,
+      "change_pct": null,
+      "change_unit": "pct",
+      "change_label": "較上月",
+      "series": [
         {
-          "name": "外幣保單",
-          "series": [
-            {
-              "period": "2026-W31",
-              "value": 55
-            },
-            {
-              "period": "2026-W32",
-              "value": 58
-            },
-            {
-              "period": "2026-W33",
-              "value": 60
-            },
-            {
-              "period": "2026-W34",
-              "value": 57
-            },
-            {
-              "period": "2026-W35",
-              "value": 62
-            },
-            {
-              "period": "2026-W36",
-              "value": 65
-            },
-            {
-              "period": "2026-W37",
-              "value": 63
-            },
-            {
-              "period": "2026-W38",
-              "value": 66
-            },
-            {
-              "period": "2026-W39",
-              "value": 68
-            },
-            {
-              "period": "2026-W40",
-              "value": 70
-            },
-            {
-              "period": "2026-W41",
-              "value": 69
-            },
-            {
-              "period": "2026-W42",
-              "value": 72
-            }
-          ]
+          "period": "2026-02",
+          "value": 12
         },
         {
-          "name": "投資型保單",
-          "series": [
-            {
-              "period": "2026-W31",
-              "value": 48
-            },
-            {
-              "period": "2026-W32",
-              "value": 47
-            },
-            {
-              "period": "2026-W33",
-              "value": 50
-            },
-            {
-              "period": "2026-W34",
-              "value": 49
-            },
-            {
-              "period": "2026-W35",
-              "value": 46
-            },
-            {
-              "period": "2026-W36",
-              "value": 45
-            },
-            {
-              "period": "2026-W37",
-              "value": 47
-            },
-            {
-              "period": "2026-W38",
-              "value": 44
-            },
-            {
-              "period": "2026-W39",
-              "value": 46
-            },
-            {
-              "period": "2026-W40",
-              "value": 45
-            },
-            {
-              "period": "2026-W41",
-              "value": 43
-            },
-            {
-              "period": "2026-W42",
-              "value": 44
-            }
-          ]
+          "period": "2026-03",
+          "value": 11
         },
         {
-          "name": "長照險",
-          "series": [
-            {
-              "period": "2026-W31",
-              "value": 22
-            },
-            {
-              "period": "2026-W32",
-              "value": 24
-            },
-            {
-              "period": "2026-W33",
-              "value": 23
-            },
-            {
-              "period": "2026-W34",
-              "value": 26
-            },
-            {
-              "period": "2026-W35",
-              "value": 28
-            },
-            {
-              "period": "2026-W36",
-              "value": 27
-            },
-            {
-              "period": "2026-W37",
-              "value": 30
-            },
-            {
-              "period": "2026-W38",
-              "value": 29
-            },
-            {
-              "period": "2026-W39",
-              "value": 31
-            },
-            {
-              "period": "2026-W40",
-              "value": 33
-            },
-            {
-              "period": "2026-W41",
-              "value": 32
-            },
-            {
-              "period": "2026-W42",
-              "value": 35
-            }
-          ]
+          "period": "2026-04",
+          "value": 11
+        },
+        {
+          "period": "2026-05",
+          "value": 10
+        },
+        {
+          "period": "2026-06",
+          "value": 12
+        },
+        {
+          "period": "2026-07",
+          "value": 11
+        },
+        {
+          "period": "2026-08",
+          "value": 10
+        },
+        {
+          "period": "2026-09",
+          "value": 10
         }
       ],
-      "source": "示意資料（搜尋趨勢）",
-      "source_url": "https://example.com/pulse-keyword",
-      "as_of": "2026-10-18"
+      "source": "示意資料（保發中心）",
+      "source_url": "https://example.com/rank",
+      "as_of": "2026-09-30",
+      "stale": false
     }
   ]
 }

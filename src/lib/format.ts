@@ -136,17 +136,21 @@ export function formatSharePct(value: number): string {
 }
 
 /**
- * 圖表 y 軸刻度：% 與新台幣元同 formatPulseValue，其他單位只顯示數字（單位已在圖例或數值上）
+ * 圖表 y 軸刻度：新台幣元同 formatPulseValue；%「50%」（不補小數）；名次只標整數；其他單位只顯示數字
  */
 export function formatPulseTick(value: number, unit: string | null): string {
-  if (unit === '%' || unit === zhTW.units.ntd) return formatPulseValue(value, unit);
+  const u = zhTW.units;
+  if (unit === u.ntd) return formatPulseValue(value, unit);
+  if (unit === '%') return `${compact(value)}%`;
+  if (unit === u.rank) return Number.isInteger(value) ? formatInteger(value) : '';
   return compact(value);
 }
 
 /**
  * 市場脈動的數值：
- * 新台幣元 → 1 億以上「418 億元」、1 萬以上「9,600 萬元」、其餘「500 元」；
- * % → 「1.72%」；其他單位 → 數字＋單位原文；沒有單位只顯示數字。
+ * 新台幣元 → 1 億以上「418 億元」、1 萬以上「9,600 萬元」、其餘「500 元」（可為負數）；
+ * % → 固定 2 位小數「2.00%」；萬分比 →「0.19（每萬件簽單）」；名 →「第 18 名」；
+ * 其他單位 → 數字＋單位原文；沒有單位只顯示數字。
  */
 export function formatPulseValue(value: number | null, unit: string | null): string {
   const u = zhTW.units;
@@ -157,6 +161,18 @@ export function formatPulseValue(value: number | null, unit: string | null): str
     if (abs >= 10_000) return `${compact(value / 10_000)} ${u.tenThousandNtd}`;
     return `${compact(value)} ${u.ntdShort}`;
   }
-  if (unit === '%') return `${compact(value)}%`;
+  if (unit === '%') return `${fixed(value, 2)}%`;
+  if (unit === u.perTenThousand) return zhTW.market.perTenThousand(compact(value));
+  if (unit === u.rank) return zhTW.market.rank(formatInteger(value));
   return unit ? `${compact(value)} ${unit}` : compact(value);
+}
+
+/** 市場脈動的期間：週「2026-W43」→ 該週星期一「10/19 當週」；其他照原文 */
+export function formatPulsePeriod(period: string): string {
+  const m = /^(\d{4})-W(\d{2})$/.exec(period);
+  if (!m) return period;
+  // ISO 週：1 月 4 日所在的那週是第 1 週
+  const jan4 = new Date(Date.UTC(+m[1]!, 0, 4));
+  const monday = new Date(jan4.getTime() + ((+m[2]! - 1) * 7 - ((jan4.getUTCDay() + 6) % 7)) * 86_400_000);
+  return zhTW.market.weekOf(`${monday.getUTCMonth() + 1}/${monday.getUTCDate()}`);
 }

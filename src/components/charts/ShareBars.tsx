@@ -1,12 +1,14 @@
 import type { PulseSharePeriodViewModel } from '../../types/viewModel';
 import { zhTW } from '../../i18n/zh-TW';
 import { MAX_SERIES, OTHER_COLOR, SERIES_COLORS } from '../../lib/chartPalette';
-import { formatSharePct, orDash, pulseChangeText } from '../../lib/format';
+import { formatPulsePeriod, formatSharePct, orDash, pulseChangeText } from '../../lib/format';
 
 // 占比圖（純 CSS）：每一期一條 100% 橫條，下方表格列出最新一期的占比與成長率。
 // 項目依最新一期的順序上色，超過 4 項時其餘合併為「其他」（顏色跟著項目，不跟著名次）。
 
 const t = zhTW.market;
+/** 期數少於此數時圖下註「資料累積中」 */
+const FULL_PERIODS = 6;
 
 interface Slot {
   name: string;
@@ -59,7 +61,7 @@ export function ShareBars({ periods }: { periods: PulseSharePeriodViewModel[] })
           const sum = rows.reduce((s, r) => s + r.sharePct, 0) || 1;
           return (
             <div key={i} className="flex items-center gap-2">
-              <span className="w-16 shrink-0 text-xs text-slate-500 tabular-nums">{orDash(period)}</span>
+              <span className="w-16 shrink-0 text-xs text-slate-500 tabular-nums">{period ? formatPulsePeriod(period) : orDash(period)}</span>
               {/* 段與段之間留 2px 白色間隔 */}
               <div className="flex h-3.5 min-w-0 flex-1 gap-0.5">
                 {rows.map((r) => (
@@ -79,7 +81,9 @@ export function ShareBars({ periods }: { periods: PulseSharePeriodViewModel[] })
         <thead>
           <tr className="border-b border-slate-200 text-left text-xs text-slate-500">
             <th className="py-1 font-normal">{t.shareTable.name}</th>
-            <th className="py-1 text-right font-normal">{latest.period ? t.shareLatest(latest.period) : t.shareTable.share}</th>
+            <th className="py-1 text-right font-normal">
+              {latest.period ? t.shareLatest(formatPulsePeriod(latest.period)) : t.shareTable.share}
+            </th>
             {hasGrowth ? <th className="py-1 text-right font-normal">{t.shareTable.growth}</th> : null}
           </tr>
         </thead>
@@ -100,6 +104,7 @@ export function ShareBars({ periods }: { periods: PulseSharePeriodViewModel[] })
           ))}
         </tbody>
       </table>
+      {periods.length < FULL_PERIODS ? <p className="text-xs text-slate-500">{t.accumulating}</p> : null}
     </div>
   );
 }

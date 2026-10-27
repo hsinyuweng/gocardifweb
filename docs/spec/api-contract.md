@@ -84,7 +84,7 @@
 
 ---
 
-## 2A. 市場總覽資料（2026-10-18 新增，格式草案，待後端定版）
+## 2A. 市場總覽資料（2026-10-18 新增；2026-10-26 後端交付 feed 1.2、market-pulse 2.1）
 
 首頁「市場總覽」使用。回應內容與靜態檔相同，原樣回傳；格式細節見後端需求文件 S7、M5，示意檔在 `docs/examples/feed-example.json`、`docs/examples/market-pulse-example.json`。
 
@@ -93,17 +93,20 @@
 | `GET /api/v1/feed` | `public/data/feed.json` | `items` 陣列 | 首頁新聞區塊、新聞與法規監控頁 |
 | `GET /api/v1/market-pulse` | `public/data/market-pulse.json` | `metrics` 陣列 | 首頁市場脈動區塊、市場脈動頁 |
 
-- `feed.json` 每則（2026-10-20 新格式草案）：
+- `feed.json` 每則（schema 1.2）：
   - `kind`：`news`（新聞）或 `regulation`（法規）。缺漏時前端用舊欄位 `category` 推得（`regulation` 為法規，其餘為新聞）。
   - `domain`：`product_channel` 商品與通路動態、`market_macro` 市場與總經情勢、`regulation` 監理法規、`claims_consumer` 理賠與消保、`customer_brand` 客群經營與品牌公關。缺漏或其他值只出現在「全部」。
-  - `related_report_ids`：法規影響的商品 report_id（用於「只看影響追蹤清單商品」）。
+  - `related_report_ids`：法規標題或摘要提到的商品 report_id（「可能相關」，關鍵字比對，不是影響判斷）。
+  - `affected_categories`：法規相關險種，與報告 `product_snapshot.category` 同一組名稱；新聞省略。前端比對追蹤商品時，報告險種相同或是「險種（…）」細分都算「同險種」。
+  - `self_reported`：`true`＝業者自行發布的新聞稿，來源後顯示「業者自述」；缺漏視為 `false`。
+  - `sources`（目前一律 `[]`）前端不讀。
   - 其他欄位不變：`id`、`title`、`summary`、`source`、`url`、`published_at`、`country`、`product_category`。
-- `market-pulse.json`（2026-10-20 schema 2.0 草案）：
-  - 檔案：`schema_version`（`"2.0"`）、`generated_at`、`focus_summary`（`{ "text", "as_of" }`，也接受純字串；缺漏時不顯示本月焦點）、`metrics`。
-  - 每個指標共同欄位：`key`、`group`（`growth` 成長動能、`pricing` 定價環境、`channel` 通路結構、`health` 健康度、`brand` 品牌聲量；缺漏或其他值當作 `growth`）、`type`（`trend`、`multi_line`、`share`、`timeline`；缺漏或其他值當作 `trend`）、`featured`（`true` 顯示在首頁，只限 `trend`，最多 2 個）、`label`、`unit`、`source`、`source_url`、`as_of`。
-  - `trend`：`latest_value`、`change_pct`、`change_unit`（`pct` 百分比，預設；`pp` 百分點）、`change_label`、`series`（`[{ period, value }]`，由舊到新）。
+- `market-pulse.json`（schema 2.1＝2.0＋每個指標的 `stale`）：
+  - 檔案：`schema_version`（`"2.1"`）、`generated_at`、`focus_summary`（`{ "text", "as_of" }`，也接受純字串；缺漏時不顯示本月焦點）、`metrics`。
+  - 每個指標共同欄位：`key`、`group`（`growth` 成長動能、`pricing` 定價環境、`channel` 通路結構、`health` 健康度、`brand` 品牌與競爭；缺漏或其他值當作 `growth`）、`type`（`trend`、`multi_line`、`share`、`timeline`；缺漏或其他值當作 `trend`）、`featured`（`true` 顯示在首頁，只限 `trend`，最多 2 個）、`label`、`unit`（`%`、`新台幣元`、`萬分比`、`名`，其他照原文）、`source`、`source_url`、`as_of`、`stale`（`true` 顯示「資料較舊」，後端判斷；`_status` 前端不讀）。
+  - `trend`：`latest_value`、`change_pct`（`null` 時不顯示變化）、`change_unit`（`pct` 百分比，預設；`pp` 百分點）、`change_label`、`series`（`[{ period, value }]`，由舊到新；`period` 可為 `2026-08`、`2026-Q3`、`2026-W43`）。
   - `multi_line`：`lines`（`[{ name, series }]`，最多 4 條，共用同一個 `unit`）。
-  - `share`：`periods`（`[{ period, parts: [{ name, share_pct, growth_pct? }] }]`，由舊到新；最多 4 項，超過的前端合併為「其他」）。
+  - `share`：`periods`（`[{ period, parts: [{ name, share_pct, growth_pct? }] }]`，由舊到新；`growth_pct` 是年增率，沒有去年同期時 `null`；最多 4 項，超過的前端合併為「其他」；不滿 6 期前端註「資料累積中」）。
   - `timeline`：`events`（`[{ date, title, status: done|upcoming, note? }]`）。
   - 沒有任何 `featured` 時，首頁顯示成長動能組的前 2 個 `trend`。schema 1.0（沒有 `group`、`type`）仍可顯示。
 - 尚未提供時回 404（`NOT_FOUND`）：前端該卡片顯示「資料準備中」，不視為錯誤。

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { PulsePointViewModel } from '../../types/viewModel';
 import { SERIES_COLORS, SERIES_DASH } from '../../lib/chartPalette';
+import { formatPulsePeriod } from '../../lib/format';
 import { useElementWidth } from './useElementWidth';
 
 // 市場脈動的折線圖（純 SVG，不用圖表套件）：單線或最多 4 條線，同一個 y 軸。
@@ -17,6 +18,8 @@ interface LineChartProps {
   /** y 軸刻度文字；預設同 formatValue */
   formatTick?: (v: number) => string;
   height?: number;
+  /** y 軸反向（名次：第 1 名在上） */
+  invert?: boolean;
   /** 給螢幕閱讀器的說明 */
   ariaLabel: string;
 }
@@ -54,7 +57,7 @@ function spreadLabels(ys: number[], top: number, bottom: number): number[] {
   return out;
 }
 
-export function LineChart({ lines, formatValue, formatTick = formatValue, height = 168, ariaLabel }: LineChartProps) {
+export function LineChart({ lines, formatValue, formatTick = formatValue, height = 168, invert = false, ariaLabel }: LineChartProps) {
   const [ref, width] = useElementWidth<HTMLDivElement>();
   const [hover, setHover] = useState<number | null>(null);
 
@@ -72,6 +75,8 @@ export function LineChart({ lines, formatValue, formatTick = formatValue, height
       lo -= Math.abs(lo) * 0.1 || 1;
       hi += Math.abs(hi) * 0.1 || 1;
     }
+    // 有負數時 y 軸一定包含 0（例如淨流入），並加深 0 的格線
+    if (lo < 0) hi = Math.max(hi, 0);
     const ticks = niceTicks(lo, hi);
     const yMin = ticks[0]!;
     const yMax = ticks[ticks.length - 1]!;
@@ -84,7 +89,7 @@ export function LineChart({ lines, formatValue, formatTick = formatValue, height
     const plotW = Math.max(40, width - left - right);
     const plotH = height - top - bottom;
     const x = (i: number) => left + (periods.length === 1 ? plotW / 2 : (i * plotW) / (periods.length - 1));
-    const y = (v: number) => top + ((yMax - v) * plotH) / (yMax - yMin);
+    const y = (v: number) => top + ((invert ? v - yMin : yMax - v) * plotH) / (yMax - yMin);
     const indexOf = new Map(periods.map((p, i) => [p, i]));
 
     const drawn = lines.map((l) => l.points.map((p, i) => ({ i: indexOf.get(keyOf(p, i))!, v: p.value })));
@@ -94,7 +99,7 @@ export function LineChart({ lines, formatValue, formatTick = formatValue, height
     // x 軸標籤：頭尾，寬度夠時加中間
     const xLabels = [0, periods.length - 1];
     if (plotW > 320 && periods.length > 4) xLabels.splice(1, 0, Math.round((periods.length - 1) / 2));
-    const periodText = (k: string) => (k.startsWith('#') ? '' : k);
+    const periodText = (k: string) => (k.startsWith('#') ? '' : formatPulsePeriod(k));
 
     const onMove = (e: React.PointerEvent<SVGRectElement>) => {
       const rect = e.currentTarget.getBoundingClientRect();
@@ -115,7 +120,7 @@ export function LineChart({ lines, formatValue, formatTick = formatValue, height
         <svg width={width} height={height} className="block overflow-visible" role="img" aria-label={ariaLabel}>
           {ticks.map((t) => (
             <g key={t}>
-              <line x1={left} x2={left + plotW} y1={y(t)} y2={y(t)} stroke="#e2e8f0" strokeWidth="1" />
+              <line x1={left} x2={left + plotW} y1={y(t)} y2={y(t)} stroke={t === 0 && yMin < 0 ? '#94a3b8' : '#e2e8f0'} strokeWidth="1" />
               <text x={left - 6} y={y(t)} dy="0.32em" textAnchor="end" fontSize={FONT} fill="#64748b">
                 {formatTick(t)}
               </text>

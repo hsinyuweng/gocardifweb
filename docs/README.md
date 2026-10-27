@@ -7,7 +7,7 @@
 - 網站：https://hsinyuweng.github.io/gocardifweb/（repo `hsinyuweng/gocardifweb`，`main` push 後自動部署）
 - 頁面：首頁「市場總覽」四區塊、新聞與法規監控 `#/news`、市場脈動 `#/market`、追蹤清單 `#/watchlist`、競品研究 `#/research`、報告頁、我的待辦、使用說明（見 `architecture/overview.md`）
 - 2026-10-20 新規劃：階段 1（導覽與競品研究）、2（追蹤清單）、3（新聞與法規監控；加入追蹤按鈕移到固定頂部列）、4（市場脈動：schema 2.0 草案、首頁 1–2 指標、`#/market` 五組）、5A（先讀後端新欄位：數值分數、完成時間、來源與可信度、品牌定位、未跑原因）已完成；2026-10-26 追蹤清單改為法規可行性、市場規模、市場成長三維度（S10 評分方法 1.0）
-- 市場資料（`feed.json`、`market-pulse.json`）後端尚未提供：線上顯示「資料準備中」，本機 mock-api 用 `examples/` 示意資料
+- 市場資料：`public/data/feed.json`（schema 1.2）、`public/data/market-pulse.json`（schema 2.1）是塗 2026-10-26 交付的第一份真實資料，後端更新時直接換檔；已知資料問題見 `progress/data-status.md`。示意資料仍在 `examples/`
 
 ## 2. 下一步
 

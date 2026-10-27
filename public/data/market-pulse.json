@@ -1,0 +1,164 @@
+{
+  "schema_version": "2.1",
+  "generated_at": "2026-10-26T21:58:48+08:00",
+  "focus_summary": {
+    "text": "新契約保費年增率68.47%（較上月下降41.15個百分點）；10年期公債殖利率2%（較上週下降0.02個百分點）。",
+    "as_of": "2026-08"
+  },
+  "metrics": [
+    {
+      "key": "new_premium_yoy",
+      "group": "growth",
+      "type": "trend",
+      "label": "新契約保費年增率",
+      "source": "保險事業發展中心",
+      "source_url": "https://www.tii.org.tw/report_test/4001/XLS4001Report_202608.xls",
+      "as_of": "2026-08-31",
+      "featured": true,
+      "unit": "%",
+      "latest_value": 68.47,
+      "change_pct": -41.15,
+      "change_unit": "pp",
+      "change_label": "較上月",
+      "series": [
+        { "period": "2026-01", "value": 74.07 },
+        { "period": "2026-02", "value": 5.11 },
+        { "period": "2026-03", "value": 27.53 },
+        { "period": "2026-04", "value": 64.64 },
+        { "period": "2026-05", "value": 79.93 },
+        { "period": "2026-06", "value": 64.96 },
+        { "period": "2026-07", "value": 109.62 },
+        { "period": "2026-08", "value": 68.47 }
+      ],
+      "stale": false,
+      "_status": "ok"
+    },
+    {
+      "key": "product_mix",
+      "group": "growth",
+      "type": "share",
+      "label": "新契約保費：各險別占比與成長率",
+      "source": "保險事業發展中心",
+      "source_url": "https://www.tii.org.tw/report_test/4001/XLS4001Report_202608.xls",
+      "as_of": "2026-08-31",
+      "unit": "%",
+      "periods": [
+        { "period": "2026-01", "parts": [
+          { "name": "人壽保險", "share_pct": 64.92, "growth_pct": 68.6 },
+          { "name": "傷害保險", "share_pct": 0.86, "growth_pct": 21.38 },
+          { "name": "健康保險", "share_pct": 2.41, "growth_pct": 29.38 },
+          { "name": "年金保險", "share_pct": 31.81, "growth_pct": 94.29 }
+        ] },
+        { "period": "2026-02", "parts": [
+          { "name": "人壽保險", "share_pct": 65.52, "growth_pct": 3.8 },
+          { "name": "傷害保險", "share_pct": 1.26, "growth_pct": -18.52 },
+          { "name": "健康保險", "share_pct": 3.06, "growth_pct": -20.75 },
+          { "name": "年金保險", "share_pct": 30.16, "growth_pct": 13.34 }
+        ] },
+        { "period": "2026-03", "parts": [
+          { "name": "人壽保險", "share_pct": 63.2, "growth_pct": 26.31 },
+          { "name": "傷害保險", "share_pct": 1.18, "growth_pct": 0.27 },
+          { "name": "健康保險", "share_pct": 3.4, "growth_pct": 0.26 },
+          { "name": "年金保險", "share_pct": 32.21, "growth_pct": 35.31 }
+        ] },
+        { "period": "2026-04", "parts": [
+          { "name": "人壽保險", "share_pct": 56.78, "growth_pct": 37.31 },
+          { "name": "傷害保險", "share_pct": 1.07, "growth_pct": -7.59 },
+          { "name": "健康保險", "share_pct": 3.59, "growth_pct": 23.05 },
+          { "name": "年金保險", "share_pct": 38.57, "growth_pct": 151.77 }
+        ] },
+        { "period": "2026-05", "parts": [
+          { "name": "人壽保險", "share_pct": 56.36, "growth_pct": 40.36 },
+          { "name": "傷害保險", "share_pct": 1.23, "growth_pct": 1.03 },
+          { "name": "健康保險", "share_pct": 3.51, "growth_pct": 23.43 },
+          { "name": "年金保險", "share_pct": 38.9, "growth_pct": 242.37 }
+        ] },
+        { "period": "2026-06", "parts": [
+          { "name": "人壽保險", "share_pct": 59.44, "growth_pct": 26.1 },
+          { "name": "傷害保險", "share_pct": 0.86, "growth_pct": -9.12 },
+          { "name": "健康保險", "share_pct": 2.97, "growth_pct": 15.37 },
+          { "name": "年金保險", "share_pct": 36.74, "growth_pct": 268.46 }
+        ] },
+        { "period": "2026-07", "parts": [
+          { "name": "人壽保險", "share_pct": 52.95, "growth_pct": 56.99 },
+          { "name": "傷害保險", "share_pct": 0.8, "growth_pct": -2.25 },
+          { "name": "健康保險", "share_pct": 2.35, "growth_pct": 3.3 },
+          { "name": "年金保險", "share_pct": 43.89, "growth_pct": 303.63 }
+        ] },
+        { "period": "2026-08", "parts": [
+          { "name": "人壽保險", "share_pct": 62.52, "growth_pct": 51.94 },
+          { "name": "傷害保險", "share_pct": 0.96, "growth_pct": -2.61 },
+          { "name": "健康保險", "share_pct": 2.92, "growth_pct": -1.78 },
+          { "name": "年金保險", "share_pct": 33.59, "growth_pct": 135.83 }
+        ] }
+      ],
+      "stale": false,
+      "_status": "ok"
+    },
+    {
+      "key": "tw_10y_yield",
+      "group": "pricing",
+      "type": "trend",
+      "label": "10年期公債殖利率",
+      "source": "櫃買中心",
+      "source_url": "https://www.tpex.org.tw/storage/bond_zone/tradeinfo/govbond/2026/202610/Curve.20261022-C.xls",
+      "as_of": "2026-10-23",
+      "featured": true,
+      "unit": "%",
+      "latest_value": 2.0,
+      "change_pct": -0.02,
+      "change_unit": "pp",
+      "change_label": "較上週",
+      "series": [
+        { "period": "2026-W36", "value": 1.88 },
+        { "period": "2026-W37", "value": 1.92 },
+        { "period": "2026-W38", "value": 1.92 },
+        { "period": "2026-W39", "value": 1.92 },
+        { "period": "2026-W40", "value": 1.92 },
+        { "period": "2026-W41", "value": 2.02 },
+        { "period": "2026-W42", "value": 2.02 },
+        { "period": "2026-W43", "value": 2.0 }
+      ],
+      "stale": false,
+      "_status": "ok"
+    },
+    {
+      "key": "channel_mix",
+      "group": "channel",
+      "type": "share",
+      "label": "新契約保費通路占比（全業界，當年1月起累計）",
+      "source": "壽險公會",
+      "source_url": "https://www.lia-roc.org.tw/storage/uploads/6ad1e35bc4e8a.pdf",
+      "as_of": "2026-09-30",
+      "unit": "%",
+      "periods": [
+        { "period": "2026-09", "parts": [
+          { "name": "壽險公司本身行銷體系", "share_pct": 46.39, "growth_pct": null },
+          { "name": "銀行經代保代通路", "share_pct": 36.97, "growth_pct": null },
+          { "name": "傳統保險經紀人、代理人", "share_pct": 16.64, "growth_pct": null }
+        ] }
+      ],
+      "stale": false,
+      "_status": "ok"
+    },
+    {
+      "key": "self_market_share",
+      "group": "brand",
+      "type": "trend",
+      "label": "法巴新契約保費市占率",
+      "source": "保險事業發展中心",
+      "source_url": "https://www.tii.org.tw/report_test/4001/XLS4001Report_202608.xls",
+      "as_of": "2026-08-31",
+      "unit": "%",
+      "latest_value": 3.56,
+      "change_pct": null,
+      "change_unit": "pp",
+      "change_label": "較上月",
+      "series": [
+        { "period": "2026-08", "value": 3.56 }
+      ],
+      "stale": false,
+      "_status": "ok"
+    }
+  ]
+}

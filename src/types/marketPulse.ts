@@ -1,4 +1,4 @@
-// 市場脈動 market-pulse.json 原始型別（schema 2.0 草案，2026-10-20 經確認；後端需求文件 M5）
+// 市場脈動 market-pulse.json 原始型別（schema 2.1：2.0 加 stale；後端需求文件 M5）
 // 改格式時只改這裡、validate.ts、normalizeMarket.ts
 
 type Nullable<T> = T | null | undefined;
@@ -64,6 +64,8 @@ export interface RawPulseMetric {
   source?: Nullable<string>;
   source_url?: Nullable<string>;
   as_of?: Nullable<string>;
+  /** true＝資料較舊（schema 2.1，後端依 as_of 與頻率判斷，前端不自己算） */
+  stale?: Nullable<boolean>;
 }
 
 export interface RawFocusSummary {
