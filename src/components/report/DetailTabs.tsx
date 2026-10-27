@@ -22,7 +22,7 @@ interface DetailTabsProps {
  */
 export function DetailTabs({ details, active, onChange, onBackToCards, ref }: DetailTabsProps) {
   return (
-    <section ref={ref} className="scroll-mt-20 rounded border border-slate-200 bg-white">
+    <section ref={ref} className="scroll-mt-20 rounded-xl border border-line bg-white">
       <div className="flex items-center justify-between gap-2 border-b border-slate-200 px-2 print:hidden">
       <div role="tablist" className="flex min-w-0 overflow-x-auto">
         {ORDER.map((key) => {

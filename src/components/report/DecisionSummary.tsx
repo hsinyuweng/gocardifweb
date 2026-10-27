@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { DecisionSummaryViewModel } from '../../types/viewModel';
 import { zhTW } from '../../i18n/zh-TW';
 import { orDash } from '../../lib/format';
@@ -5,54 +6,77 @@ import { DOT_CLASS, SOFT_BADGE_CLASS } from '../../lib/signalColor';
 
 const t = zhTW.report;
 
-/** B 區決策摘要（第 11.3 節 B） */
-export function DecisionSummary({ summary: s }: { summary: DecisionSummaryViewModel }) {
-  const meta = [s.issuer, s.countryLabel, s.category, s.currency, s.premiumMode].map(orDash).join(' · ');
+// 報告頁 B 區（第 11.3 節 B；2026-10-27 V4 照閱讀路徑拆成三段）：
+// ① 頁首（商品名、基本資料、流程一行字、列印、日期）② 一句結論（整體建議＋摘要）④ 判斷理由（理由、品牌定位、商品機制）
 
+/** ① 頁首：商品名、發行公司 · 國家 · 險種 · 幣別 · 繳費；流程一行字；右側列印與產出、審閱日期 */
+export function ReportHeader({ summary: s, flow }: { summary: DecisionSummaryViewModel; flow: ReactNode }) {
+  const meta = [s.issuer, s.countryLabel, s.category, s.currency, s.premiumMode].map(orDash).join(' · ');
   return (
-    <section className="break-inside-avoid rounded border border-slate-200 bg-white px-5 py-4">
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between lg:gap-6">
-        <div className="min-w-0">
-          <h1 className="text-2xl font-semibold text-slate-900">{orDash(s.name)}</h1>
-          <p className="mt-1 text-xs text-slate-500">{meta}</p>
-        </div>
-        <div className="flex shrink-0 flex-col items-start gap-2 lg:items-end">
-          <button
-            type="button"
-            onClick={() => window.print()}
-            className="h-8 rounded border border-slate-300 bg-white px-3 text-slate-700 hover:border-navy-600 hover:text-navy-800 print:hidden"
-          >
-            {t.print}
-          </button>
-          <div className="text-xs text-slate-500 lg:text-right">
-            <div>{t.generatedDate(orDash(s.generatedDate))}</div>
-            <div>
-              {t.reviewDates}
-              {s.reviewDates.map((d) => `${d.moduleLabel} ${orDash(d.date)}`).join(' · ')}
-            </div>
+    <header className="flex flex-col gap-3 border-b border-p-pale pb-3.5 lg:flex-row lg:items-end lg:justify-between lg:gap-6">
+      <div className="min-w-0">
+        <h1 className="text-[24px] leading-tight font-semibold text-ink">{orDash(s.name)}</h1>
+        <p className="mt-1 text-[13px] text-ink2">{meta}</p>
+        <div className="mt-1">{flow}</div>
+      </div>
+      <div className="flex shrink-0 flex-col items-start gap-1.5 lg:items-end">
+        <button
+          type="button"
+          onClick={() => window.print()}
+          className="h-8 rounded-full border border-line bg-white px-3.5 text-[13px] text-ink hover:border-p print:hidden"
+        >
+          {t.print}
+        </button>
+        <div className="text-xs text-muted lg:text-right">
+          <div>{t.generatedDate(orDash(s.generatedDate))}</div>
+          <div>
+            {t.reviewDates}
+            {s.reviewDates.map((d) => `${d.moduleLabel} ${orDash(d.date)}`).join(' · ')}
           </div>
         </div>
       </div>
+    </header>
+  );
+}
 
-      <div className="mt-3 flex flex-wrap items-center gap-3">
-        <span
-          className={`inline-flex items-center gap-2 rounded px-3 py-1 text-base font-semibold ring-1 ${
-            SOFT_BADGE_CLASS[s.recommendation.color]
-          }`}
-        >
-          <span aria-hidden className={`inline-block size-2.5 rounded-full ${DOT_CLASS[s.recommendation.color]}`} />
-          {orDash(s.recommendation.text)}
-        </span>
-        <p className="text-base text-slate-800">{orDash(s.oneLineSummary)}</p>
-      </div>
+/** ② 一句結論：整體建議標籤（色點＋文字）＋一句摘要（本頁最大的字） */
+export function ReportLead({ summary: s }: { summary: DecisionSummaryViewModel }) {
+  return (
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+      <span
+        className={`inline-flex shrink-0 items-center gap-2 rounded-lg px-3 py-1 text-[15px] font-medium ring-1 ${
+          SOFT_BADGE_CLASS[s.recommendation.color]
+        }`}
+      >
+        <span aria-hidden className={`inline-block size-2.5 rounded-full ${DOT_CLASS[s.recommendation.color]}`} />
+        {orDash(s.recommendation.text)}
+      </span>
+      <p className="min-w-0 flex-1 text-[24px] leading-snug font-medium text-balance text-ink">{orDash(s.oneLineSummary)}</p>
+    </div>
+  );
+}
+
+/** ④ 判斷理由：理由清單、品牌定位、商品機制 */
+export function ReportReasons({ summary: s }: { summary: DecisionSummaryViewModel }) {
+  return (
+    <div className="space-y-3">
+      {s.reasons.length > 0 ? (
+        <ul className="list-disc space-y-1 pl-5 text-ink">
+          {s.reasons.map((r, i) => (
+            <li key={i}>{r}</li>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-ink2">{zhTW.common.none}</p>
+      )}
       {s.brandNote ? (
-        <p className="mt-2 text-sm text-slate-600">
+        <p className="text-sm text-ink2">
           {t.brandNote}
           {s.brandNote.text}
           {s.brandNote.source?.url ? (
             <>
               {'（'}
-              <a href={s.brandNote.source.url} target="_blank" rel="noopener noreferrer" className="text-navy-700 hover:underline">
+              <a href={s.brandNote.source.url} target="_blank" rel="noopener noreferrer" className="text-ink underline-offset-2 hover:underline">
                 {t.brandNoteSource}
               </a>
               {'）'}
@@ -60,24 +84,10 @@ export function DecisionSummary({ summary: s }: { summary: DecisionSummaryViewMo
           ) : null}
         </p>
       ) : null}
-
-      <div className="mt-3">
-        <h2 className="text-xs font-medium text-slate-500">{t.reasons}</h2>
-        {s.reasons.length > 0 ? (
-          <ul className="mt-1 list-disc space-y-0.5 pl-5 text-slate-700">
-            {s.reasons.map((r, i) => (
-              <li key={i}>{r}</li>
-            ))}
-          </ul>
-        ) : (
-          <p className="mt-1 text-slate-700">{zhTW.common.none}</p>
-        )}
-      </div>
-
-      <p className="mt-3 border-t border-slate-100 pt-2 text-xs text-slate-500">
-        <span className="font-medium">{t.mechanism}：</span>
+      <p className="border-t border-line pt-2.5 text-[13px] text-ink2">
+        <span className="font-medium text-ink">{t.mechanism}：</span>
         {orDash(s.mechanismSummary)}
       </p>
-    </section>
+    </div>
   );
 }

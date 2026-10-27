@@ -1,59 +1,45 @@
-import { DEFAULT_WEIGHTS, DIMENSIONS, MAX_WEIGHT, type DimensionKey, type Weights } from './score';
+import type { Weights } from './score';
 
-// 追蹤清單權重（2026-10-20 經確認）：存在瀏覽器，進報告頁再回來時不變。
-// localStorage 可能被停用，讀寫皆以 try/catch 包住；讀不到時用預設值。
+// 追蹤清單「看重」預設（2026-10-27 V4，取代原本的權重拉桿）：存在瀏覽器，進報告頁再回來時不變。
+// localStorage 可能被停用，讀寫皆以 try/catch 包住；讀不到時用「平均」。
 
-const KEY = 'gocardifweb.weights';
+export type WeightPreset = 'balanced' | 'regulatory' | 'market';
+
+export const PRESETS: readonly WeightPreset[] = ['balanced', 'regulatory', 'market'];
+
+/** 各預設的權重；品牌／通路契合度有資料時才會計入 */
+export const PRESET_WEIGHTS: Record<WeightPreset, Weights> = {
+  balanced: { feasibility: 1, marketSize: 1, marketGrowth: 1, brandFit: 1 },
+  regulatory: { feasibility: 3, marketSize: 1, marketGrowth: 1, brandFit: 1 },
+  market: { feasibility: 1, marketSize: 2, marketGrowth: 2, brandFit: 1 },
+};
+
+const KEY = 'gocardifweb.weightPreset';
+/** 拉桿時代的權重，載入時刪除 */
+const OLD_KEY = 'gocardifweb.weights';
 const listeners = new Set<() => void>();
 
-let cachedRaw: string | null = null;
-let cachedWeights: Weights = DEFAULT_WEIGHTS;
-
-function clampWeight(v: unknown, fallback: number): number {
-  return typeof v === 'number' && Number.isInteger(v) && v >= 0 && v <= MAX_WEIGHT ? v : fallback;
+export function readPreset(): WeightPreset {
+  try {
+    window.localStorage.removeItem(OLD_KEY);
+    const raw = window.localStorage.getItem(KEY);
+    return PRESETS.includes(raw as WeightPreset) ? (raw as WeightPreset) : 'balanced';
+  } catch {
+    return 'balanced';
+  }
 }
 
-export function readWeights(): Weights {
-  let raw: string | null = null;
+export function setPreset(preset: WeightPreset): void {
   try {
-    raw = window.localStorage.getItem(KEY);
-  } catch {
-    return DEFAULT_WEIGHTS;
-  }
-  if (raw === cachedRaw) return cachedWeights;
-  cachedRaw = raw;
-  try {
-    const parsed = (raw === null ? {} : JSON.parse(raw)) as Partial<Record<DimensionKey, unknown>> | null;
-    cachedWeights =
-      raw === null || typeof parsed !== 'object' || parsed === null
-        ? DEFAULT_WEIGHTS
-        : (Object.fromEntries(DIMENSIONS.map((k) => [k, clampWeight(parsed[k], DEFAULT_WEIGHTS[k])])) as Weights);
-  } catch {
-    cachedWeights = DEFAULT_WEIGHTS;
-  }
-  return cachedWeights;
-}
-
-function writeWeights(weights: Weights | null): void {
-  try {
-    if (weights === null) window.localStorage.removeItem(KEY);
-    else window.localStorage.setItem(KEY, JSON.stringify(weights));
+    window.localStorage.setItem(KEY, preset);
   } catch {
     // 無法寫入時忽略
   }
   listeners.forEach((l) => l());
 }
 
-export function setWeight(key: DimensionKey, value: number): void {
-  writeWeights({ ...readWeights(), [key]: clampWeight(value, DEFAULT_WEIGHTS[key]) });
-}
-
-export function resetWeights(): void {
-  writeWeights(null);
-}
-
 /** 給 useSyncExternalStore 使用；其他分頁修改時也會通知 */
-export function subscribeWeights(listener: () => void): () => void {
+export function subscribePreset(listener: () => void): () => void {
   listeners.add(listener);
   const onStorage = (e: StorageEvent) => {
     if (e.key === KEY || e.key === null) listener();

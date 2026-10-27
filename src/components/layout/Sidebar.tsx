@@ -126,8 +126,9 @@ export function Sidebar({ meta, showRoadmapNav, myUnit, mobileOpen, onClose }: S
       <nav className="flex-1 overflow-y-auto px-3 py-4">
         <ul className="space-y-1">
           <NavItem to="/" end theme="home" label={t.home} />
-          <NavItem to="/news" theme="news" label={t.news} />
+          {/* 市場脈動在新聞上面（2026-10-27 使用者指定，與首頁四框順序一致） */}
           <NavItem to="/market" theme="pulse" label={t.market} />
+          <NavItem to="/news" theme="news" label={t.news} />
           <NavItem to="/watchlist" theme="watch" label={t.watchlist} />
           <NavItem to="/research" theme="research" label={t.overview} />
           {/* 規格外新增（2026-10-18 經確認，修改第 10.1 節） */}

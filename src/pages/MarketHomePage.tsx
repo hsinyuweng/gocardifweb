@@ -15,7 +15,7 @@ import { recentFeed } from '../lib/feedSummary';
 import { homeHeadline } from '../lib/insights';
 import { buildCandidates } from '../lib/score';
 import { readWatchlist, subscribeWatchlist } from '../lib/watchlist';
-import { readWeights, subscribeWeights } from '../lib/weights';
+import { PRESET_WEIGHTS, readPreset, subscribePreset } from '../lib/weights';
 import { errorText, useBreadcrumb, useFeed, useIndexState, useMarketPulse } from './pageChrome';
 import type { LoadState } from './useOnDemand';
 import type { OverviewRow } from '../types/viewModel';
@@ -50,7 +50,7 @@ export function MarketHomePage() {
   const feedState = useFeed();
   const pulseState = useMarketPulse();
   const watchlist = useSyncExternalStore(subscribeWatchlist, readWatchlist);
-  const weights = useSyncExternalStore(subscribeWeights, readWeights);
+  const weights = PRESET_WEIGHTS[useSyncExternalStore(subscribePreset, readPreset)];
   const reviewed = useSyncExternalStore(subscribeReviewed, readReviewed);
 
   const vm = useMemo(

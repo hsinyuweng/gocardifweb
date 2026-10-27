@@ -12,9 +12,6 @@ export const DIMENSIONS: readonly DimensionKey[] = ['feasibility', 'marketSize',
 
 export type Weights = Readonly<Record<DimensionKey, number>>;
 
-export const DEFAULT_WEIGHTS: Weights = { feasibility: 3, marketSize: 3, marketGrowth: 3, brandFit: 0 };
-export const MAX_WEIGHT = 5;
-
 const SIGNAL_SCORE: Partial<Record<SignalColor, number>> = { green: 100, yellow: 67, orange: 33, red: 0 };
 
 /** 只有法規可行性有對應燈號（法規） */
@@ -77,6 +74,36 @@ export function scoreRow(row: OverviewRow, weights: Weights): CandidateScore {
 /** 是否有任何候選商品有品牌／通路契合度的後端分數 */
 export function anyBrandFitScore(rows: OverviewRow[]): boolean {
   return rows.some((r) => typeof r.dimensionScores?.brandFit?.score === 'number');
+}
+
+/** 比較表的排序欄位：綜合或某一面向 */
+export type CompareSortKey = 'total' | DimensionKey;
+
+/** 依某一欄排序（2026-10-27 V4）：無資料一律排最後；同分依商品名稱 */
+export function sortCandidates(list: Candidate[], key: CompareSortKey, dir: 'asc' | 'desc'): Candidate[] {
+  const value = (c: Candidate) => (key === 'total' ? c.score.total : (c.score.dims.find((d) => d.key === key)?.score ?? null));
+  const sign = dir === 'asc' ? 1 : -1;
+  return [...list].sort((a, b) => {
+    const va = value(a);
+    const vb = value(b);
+    if (va !== vb) {
+      if (va === null) return 1;
+      if (vb === null) return -1;
+      return sign * (va - vb);
+    }
+    return (a.row.name ?? '').localeCompare(b.row.name ?? '', 'zh-Hant-TW');
+  });
+}
+
+/**
+ * 各面向在候選商品中有沒有資料：missing＝所有候選都沒有分數的面向；
+ * withData＝至少一件有分數的面向；signalOnly＝有資料的面向全都是燈號換算。
+ */
+export function dataCoverage(list: Candidate[], dims: readonly DimensionKey[]) {
+  const has = (k: DimensionKey) => list.some((c) => c.score.dims.find((d) => d.key === k)?.score != null);
+  const withData = dims.filter(has);
+  const signalOnly = list.every((c) => c.score.dims.every((d) => d.score === null || d.scoreSource === 'signal'));
+  return { missing: dims.filter((k) => !has(k)), withData, signalOnly };
 }
 
 /** 計算過程文字，例如「(67×3 + 0×3 + 100×3) ÷ 9 ＝ 56」；無法計算時為 null */

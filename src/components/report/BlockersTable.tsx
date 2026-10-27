@@ -5,12 +5,15 @@ import { SignalLabel } from '../common/SignalLabel';
 
 const c = zhTW.report.blockerColumns;
 
-/** 待解決事項表格（第 11.3 節 D）；傳入前已排序與篩選 */
-export function BlockersTable({ blockers }: { blockers: BlockerViewModel[] }) {
+/**
+ * 待解決事項表格（第 11.3 節 D）；傳入前已排序與篩選。
+ * collapsed 的列畫面上不顯示、列印時顯示（2026-10-27 V4：預設只列重大與阻斷）。
+ */
+export function BlockersTable({ blockers, collapsed }: { blockers: BlockerViewModel[]; collapsed?: (b: BlockerViewModel) => boolean }) {
   return (
     <div className="overflow-x-auto">
       <table className="w-full min-w-[720px] border-collapse text-left">
-        <thead className="border-b border-slate-200 text-slate-600">
+        <thead className="border-b border-line text-ink2">
           <tr className="h-10">
             <th scope="col" className="w-24 px-3 font-medium">{c.severity}</th>
             <th scope="col" className="w-32 px-3 font-medium">{c.module}</th>
@@ -21,7 +24,10 @@ export function BlockersTable({ blockers }: { blockers: BlockerViewModel[] }) {
         </thead>
         <tbody>
           {blockers.map((b, i) => (
-            <tr key={b.id ?? `bl-${i}`} className="border-b border-slate-100 align-top last:border-b-0">
+            <tr
+              key={b.id ?? `bl-${i}`}
+              className={`border-b border-line align-top last:border-b-0 ${collapsed?.(b) ? 'hidden print:table-row' : ''}`}
+            >
               <td className="px-3 py-2"><SignalLabel signal={b.severity} /></td>
               <td className="px-3 py-2 text-slate-600">{orDash(b.moduleLabel)}</td>
               <td className="px-3 py-2 text-slate-900">{orDash(b.title)}</td>

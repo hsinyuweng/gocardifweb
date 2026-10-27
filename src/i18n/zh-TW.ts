@@ -311,13 +311,21 @@ export const zhTW = {
   // 追蹤清單（2026-10-20 經確認）
   watchlist: {
     title: '追蹤清單',
-    meta: (n: number) => `${n} 件候選商品 · 法規可行性暫用燈號換算`,
-    metaPartial: (n: number) => `${n} 件候選商品 · 部分商品的法規可行性暫用燈號換算`,
     metaBackend: (n: number) => `${n} 件候選商品`,
-    weightsTitle: '依你重視的面向調整權重',
-    reset: '恢復預設',
-    brandNoData: '品牌／通路契合度尚無資料，暫不計入。',
-    allZero: '請至少調高一個權重。',
+    // 比較表與「看重」預設（2026-10-27 V4，取代權重拉桿）
+    presetLabel: '看重',
+    presets: { balanced: '平均', regulatory: '法規優先', market: '市場優先' },
+    presetHint: {
+      balanced: '每個面向一樣重要',
+      regulatory: '法規可行性的權重是其他面向的 3 倍',
+      market: '市場規模、市場成長的權重是法規可行性的 2 倍',
+    },
+    coverageOnly: (missing: string, only: string, signal: boolean) =>
+      `目前候選商品都還沒有${missing}的分數，綜合分數暫時等於${only}${signal ? '（用燈號換算）' : ''}。`,
+    coveragePartial: (missing: string) => `目前候選商品都還沒有${missing}的分數，綜合分數只用其他面向計算。`,
+    compare: { rank: '名次', product: '商品', total: '綜合', actions: '操作', sortBy: (col: string) => `依${col}排序` },
+    noData: '無資料',
+    signalTag: '燈號',
     dimensions: { feasibility: '法規可行性', marketSize: '市場規模', marketGrowth: '市場成長', brandFit: '品牌／通路契合度' },
     basis: {
       feasibility: '法規適用',
@@ -391,6 +399,16 @@ export const zhTW = {
       pricingFlagCount: '定價提示數',
     },
     blockersTitle: '待解決事項',
+    // 閱讀路徑重排（2026-10-27 V4）
+    blockerTotal: (n: number) => `${n} 項`,
+    blockerBreakdown: (c: number, b: number, w: number) => `重大 ${c} · 阻斷 ${b} · 注意 ${w}`,
+    showBlockers: '看待解決事項',
+    showAllBlockers: (n: number, w: number) => `看全部 ${n} 項（另有注意 ${w} 項）▾`,
+    showAllSteps: (n: number) => `看全部 ${n} 項 ▾`,
+    collapse: '收合 ▴',
+    reasonsTitle: '判斷理由',
+    downDetails: '往下看：三面向細節、資料品質與缺口 ↓',
+    detailsDivider: '細節',
     nextStepsTitle: '建議下一步',
     ownerFilter: '負責單位',
     ownerAll: '全部',

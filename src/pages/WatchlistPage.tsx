@@ -1,15 +1,15 @@
 import { useMemo, useState, useSyncExternalStore } from 'react';
-import { Link, useLocation } from 'react-router';
+import { Link, useLocation, useSearchParams } from 'react-router';
 import type { BreadcrumbItem } from '../components/layout/TopBar';
 import { StatusMessage } from '../components/common/StatusMessage';
-import { CandidateItem } from '../components/watchlist/CandidateItem';
-import { WeightPanel } from '../components/watchlist/WeightPanel';
+import { CompareTable } from '../components/watchlist/CompareTable';
+import { PresetPicker } from '../components/watchlist/PresetPicker';
 import { normalizeReportIndex } from '../data';
 import { zhTW } from '../i18n/zh-TW';
 import { readFromPath, readFromState } from '../lib/ownerParam';
-import { anyBrandFitScore, buildCandidates } from '../lib/score';
+import { anyBrandFitScore, buildCandidates, dataCoverage, DIMENSIONS, sortCandidates, type CompareSortKey } from '../lib/score';
 import { addToWatchlist, readWatchlist, removeFromWatchlist, subscribeWatchlist } from '../lib/watchlist';
-import { readWeights, resetWeights, setWeight, subscribeWeights } from '../lib/weights';
+import { PRESET_WEIGHTS, readPreset, setPreset, subscribePreset } from '../lib/weights';
 import { errorText, useBreadcrumb, useIndexState } from './pageChrome';
 import { PageHeader } from '../components/layout/PageHeader';
 
@@ -21,7 +21,9 @@ function readFromLabel(state: unknown): string | null {
   return typeof label === 'string' ? label : null;
 }
 
-/** 追蹤清單（2026-10-20 新規劃）：候選商品依綜合分數排序，權重滑桿即時重算 */
+const SORT_KEYS: readonly CompareSortKey[] = ['total', ...DIMENSIONS];
+
+/** 追蹤清單（2026-10-20 新規劃；2026-10-27 V4 改為比較表）：候選商品各面向分數並排，點欄位排序，「看重」預設決定綜合分數 */
 export function WatchlistPage() {
   const location = useLocation();
   const from = readFromPath(location.state);
@@ -34,7 +36,20 @@ export function WatchlistPage() {
 
   const indexState = useIndexState();
   const ids = useSyncExternalStore(subscribeWatchlist, readWatchlist);
-  const weights = useSyncExternalStore(subscribeWeights, readWeights);
+  const preset = useSyncExternalStore(subscribePreset, readPreset);
+  const weights = PRESET_WEIGHTS[preset];
+  // 排序寫進網址（replace），預設依綜合由高到低
+  const [searchParams, setSearchParams] = useSearchParams();
+  const sortParam = searchParams.get('sort');
+  const sortKey: CompareSortKey = SORT_KEYS.includes(sortParam as CompareSortKey) ? (sortParam as CompareSortKey) : 'total';
+  const sortDir = searchParams.get('dir') === 'asc' ? 'asc' : 'desc';
+  const onSort = (key: CompareSortKey) => {
+    const dir = key === sortKey ? (sortDir === 'desc' ? 'asc' : 'desc') : 'desc';
+    const p = new URLSearchParams();
+    if (key !== 'total') p.set('sort', key);
+    if (dir !== 'desc') p.set('dir', dir);
+    setSearchParams(p, { replace: true, state: location.state });
+  };
   const [expanded, setExpanded] = useState<ReadonlySet<string>>(new Set());
   // 剛移出的商品：可復原，下一個動作後消失
   const [removed, setRemoved] = useState<{ id: string; index: number; name: string } | null>(null);
@@ -45,14 +60,19 @@ export function WatchlistPage() {
   );
   const { ranked, missing } = useMemo(() => buildCandidates(ids, rows, weights), [ids, rows, weights]);
   const hasBrandFit = anyBrandFitScore(ranked.map((c) => c.row));
-  // 標題旁說明：全部用後端分數／部分燈號換算／全部燈號換算
-  const signalCount = ranked.filter((c) => c.score.usesSignal).length;
-  const metaText =
-    ranked.length > 0 && signalCount === 0
-      ? t.metaBackend(ids.length)
-      : signalCount > 0 && signalCount < ranked.length
-        ? t.metaPartial(ids.length)
-        : t.meta(ids.length);
+  // 所有候選都沒有品牌分數時不顯示品牌欄
+  const dims = hasBrandFit ? DIMENSIONS : DIMENSIONS.filter((k) => k !== 'brandFit');
+  const sorted = useMemo(() => sortCandidates(ranked, sortKey, sortDir), [ranked, sortKey, sortDir]);
+  const rankOf = (id: string) => ranked.findIndex((c) => c.row.reportId === id) + 1;
+  // 一行說明：哪些面向還沒有資料
+  const coverage = dataCoverage(ranked, dims);
+  const dimNames = (keys: readonly typeof DIMENSIONS[number][]) => keys.map((k) => t.dimensions[k]).join('、');
+  const coverageText =
+    ranked.length === 0 || coverage.missing.length === 0
+      ? null
+      : coverage.withData.length === 1
+        ? t.coverageOnly(dimNames(coverage.missing), dimNames(coverage.withData), coverage.signalOnly)
+        : t.coveragePartial(dimNames(coverage.missing));
 
   const remove = (id: string, name: string) => {
     setRemoved({ id, index: ids.indexOf(id), name });
@@ -66,7 +86,12 @@ export function WatchlistPage() {
       return next;
     });
   };
-  const linkState = { from: location.pathname + location.search, fromState: location.state };
+  // order：報告頁「上一份／下一份」照比較表目前的順序
+  const linkState = {
+    from: location.pathname + location.search,
+    fromState: location.state,
+    order: sorted.map((c) => c.row.reportId as string),
+  };
 
   let body;
   if (indexState.status === 'loading') {
@@ -85,30 +110,28 @@ export function WatchlistPage() {
     );
   } else {
     body = (
-      <ol className="divide-y divide-slate-100 rounded border border-slate-200 bg-white">
-        {ranked.map((c, i) => {
-          const id = c.row.reportId as string;
-          return (
-            <CandidateItem
-              key={id}
-              rank={i + 1}
-              candidate={c}
-              expanded={expanded.has(id)}
-              onToggle={() => toggle(id)}
-              onRemove={() => remove(id, c.row.name ?? id)}
-              linkState={linkState}
-            />
-          );
-        })}
+      <div className="space-y-3">
+        <CompareTable
+          rows={sorted}
+          rankOf={rankOf}
+          dims={dims}
+          sortKey={sortKey}
+          sortDir={sortDir}
+          onSort={onSort}
+          expanded={expanded}
+          onToggle={toggle}
+          onRemove={remove}
+          linkState={linkState}
+        />
         {missing.map((id) => (
-          <li key={id} className="flex items-center justify-between gap-4 px-4 py-3 text-slate-500">
+          <p key={id} className="flex items-center justify-between gap-4 rounded-xl border border-line bg-white px-4 py-3 text-muted">
             <span className="min-w-0 break-all">{t.missing(id)}</span>
-            <button type="button" onClick={() => remove(id, id)} className="shrink-0 text-sm text-navy-700 hover:underline">
+            <button type="button" onClick={() => remove(id, id)} className="shrink-0 text-sm text-ink2 hover:underline">
               {t.remove}
             </button>
-          </li>
+          </p>
         ))}
-      </ol>
+      </div>
     );
   }
 
@@ -118,20 +141,20 @@ export function WatchlistPage() {
         icon="watchlist"
         title={t.title}
         desc={zhTW.pageDesc.watchlist}
-        aside={indexState.status === 'ok' ? metaText : null}
+        aside={indexState.status === 'ok' ? t.metaBackend(ids.length) : null}
       />
-      <WeightPanel
-        weights={weights}
-        hasBrandFit={hasBrandFit}
-        onChange={(key, value) => {
-          setRemoved(null);
-          setWeight(key, value);
-        }}
-        onReset={() => {
-          setRemoved(null);
-          resetWeights();
-        }}
-      />
+      {ids.length > 0 ? (
+        <div className="space-y-1.5">
+          <PresetPicker
+            value={preset}
+            onChange={(p) => {
+              setRemoved(null);
+              setPreset(p);
+            }}
+          />
+          {coverageText ? <p className="text-[13px] text-ink2">{coverageText}</p> : null}
+        </div>
+      ) : null}
       {removed ? (
         <p className="rounded bg-slate-100 px-4 py-2 text-sm text-slate-700" role="status">
           {t.removed(removed.name)}

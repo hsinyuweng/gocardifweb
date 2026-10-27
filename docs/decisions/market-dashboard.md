@@ -60,20 +60,22 @@
 
 ## 追蹤清單頁 `#/watchlist`
 
-- 頁首：追蹤清單圖示＋「追蹤清單」＋「候選商品依你重視的面向排序」，右側「N 件候選商品 · 法規可行性暫用燈號換算」；部分候選用後端分數時「N 件候選商品 · 部分商品的法規可行性暫用燈號換算」；全部用後端分數時「N 件候選商品」。
-- 分數來源（S10，2026-10-26 改為評分方法 1.0）：讀 `dimension_scores` 的 `feasibility`、`market_size`、`market_growth`、`brand_fit`（0–100，null＝不計入；`profitability`、`saturation` 不讀）。報告沒有某維度時，只有法規可行性用法規燈號換算，其他視為無資料。顯示順序與中文名稱由網站固定，不讀後端 `dimensions`、`label`。
-- 權重區「依你重視的面向調整權重」＋「恢復預設」：法規可行性（法規適用）、市場規模（市場需求（潛在保費））、市場成長（市場需求（同險別新契約））、品牌／通路契合度（尚無資料）；0–5 整數，預設 3／3／3／0。品牌權重 >0 且沒有任何候選有品牌分數：「品牌／通路契合度尚無資料，暫不計入。」；有時依據改為「後端評分」。全部為 0：「請至少調高一個權重。」分數顯示「—」。
-- 每列：名次、商品名稱（連報告頁）、發行公司 · 來源市場、「綜合分數」大字（有權重 >0 卻無資料的維度時，下方小字「未計入：市場規模、市場成長（無資料）」）、「計算明細 ▾」、「移出」。明細表：維度、依據（市場成長 `basis` 為 `market_pulse` 時「市場脈動（備援）」）、燈號、分數（後端有 `level` 時「100（5 級）」；無資料「不計入」；燈號換算的旁邊灰字「燈號換算」）、權重、說明（後端 rationale＋「（可信度 B）」，沒有「—」；下一行灰字「數值 960 億元 · 資料日期 … · 來源 …」，有 `source_url` 時來源可點）；下方實際算式（例「(50×3 + 100×3 + 100×3) ÷ 9 ＝ 83」）＋公式與換算說明。
+- 頁首：追蹤清單圖示＋「追蹤清單」＋「候選商品依你重視的面向排序」，右側「N 件候選商品」。
+- 分數來源（S10，2026-10-26 改為評分方法 1.0）：讀 `dimension_scores` 的 `feasibility`、`market_size`、`market_growth`、`brand_fit`（0–100，null＝不計入；`profitability`、`saturation` 不讀）。報告沒有某維度時，只有法規可行性用法規燈號換算（綠 100、黃 67、橘 33、紅 0），其他視為無資料。顯示順序與中文名稱由網站固定，不讀後端 `dimensions`、`label`。
+- **看重**（2026-10-27 V4，取代 0–5 權重拉桿）：「看重　平均｜法規優先｜市場優先」，右側灰字說明（「每個面向一樣重要」「法規可行性的權重是其他面向的 3 倍」「市場規模、市場成長的權重是法規可行性的 2 倍」）。權重：平均＝法規 1、規模 1、成長 1、品牌 1；法規優先＝3／1／1／1；市場優先＝1／2／2／1（品牌沒有資料時不計入）。存在 localStorage `gocardifweb.weightPreset`（預設平均；舊的 `gocardifweb.weights` 載入時刪除）。首頁追蹤清單框用同一個預設。
+- 下方一行說明（有面向全部沒有資料時才出現）：「目前候選商品都還沒有市場規模、市場成長的分數，綜合分數暫時等於法規可行性（用燈號換算）。」；有兩個以上面向有資料時「目前候選商品都還沒有○○的分數，綜合分數只用其他面向計算。」
+- **比較表**（`components/watchlist/CompareTable.tsx`）：欄＝名次（依綜合分數，不隨排序改變）、商品（名稱連報告頁＋「發行公司 · 國家」）、法規可行性、市場規模、市場成長、（有任一候選有品牌分數時才有）品牌／通路契合度、綜合、「計算明細 ▾」「移出」。每格分數＋小橫條（代表色中），燈號換算的旁邊灰字「燈號」，沒有資料灰字「無資料」。點欄位標題排序（▼▲），同一欄再點反向；預設依綜合由高到低；無資料排最後，同分依商品名稱。排序寫進網址 `sort`、`dir`（replace，預設不寫）。窄螢幕在框內左右捲動。
+- 計算明細（展開成表格下一列）：維度、依據（市場成長 `basis` 為 `market_pulse` 時「市場脈動（備援）」）、燈號、分數（後端有 `level` 時「100（5 級）」；無資料「不計入」；燈號換算旁灰字「燈號換算」）、權重、說明（後端 rationale＋「（可信度 B）」，沒有「—」；下一行灰字「數值 960 億元 · 資料日期 … · 來源 …」，有 `source_url` 時來源可點）；下方實際算式（例「(67×1) ÷ 1 ＝ 67」）＋公式與換算說明。
+- 從比較表進報告頁時，報告頁「上一份／下一份」照比較表目前的順序。
 - 數值格式：`unit` 為「新台幣元」→ 億元（整數、千分位）；「%」→「113.5%」；其他單位接在數字後。
-- 排序：分數高到低，同分依商品名稱，無法計算的排最後。
 - 移出不確認，上方「已移出「商品名」。復原」（復原插回原位置），下一個動作後消失。報告清單沒有的：「找不到此報告（id）」，只能移出。
 - 空清單：「還沒有追蹤的商品。到「競品研究」打開報告，在頁面底部加入。」＋「前往競品研究 →」。
 - 報告頁**頂部列右側**（固定，捲到哪裡都看得到；列印不顯示）：「＋ 加入追蹤清單」；已加入：「✓ 已在追蹤清單」＋「移出」＋「看追蹤清單 →」；640px 以下已加入只顯示「✓ 已追蹤」＋「移出」。實作：`TopBar` 的動作區，頁面用 `usePageActionSlot()`＋`createPortal` 放入。
-- 麵包屑：首頁進來「市場總覽 / 追蹤清單」；報告頁進來「商品 / 追蹤清單」（`state.fromLabel`）；從追蹤清單進報告「追蹤清單 / 商品」，返回時權重不變。
+- 麵包屑：首頁進來「市場總覽 / 追蹤清單」；報告頁進來「商品 / 追蹤清單」（`state.fromLabel`）；從追蹤清單進報告「追蹤清單 / 商品」，返回時看重與排序不變。
 
 ## 實作規則
 
-- 追蹤清單：`lib/watchlist.ts`（localStorage `gocardifweb.candidates`，report_id 陣列；舊 `gocardifweb.watchlist` 載入時刪除）、`lib/score.ts`（換算與排序）、`lib/weights.ts`（`gocardifweb.weights`）、`pages/WatchlistPage.tsx`、`components/watchlist/`、`components/report/WatchlistButton.tsx`。分數只用報告清單（`module_summary` 燈號、`dimension_scores`），不需讀全部報告。
+- 追蹤清單：`lib/watchlist.ts`（localStorage `gocardifweb.candidates`，report_id 陣列；舊 `gocardifweb.watchlist` 載入時刪除）、`lib/score.ts`（換算、排序 `sortCandidates`、資料涵蓋 `dataCoverage`）、`lib/weights.ts`（看重預設 `gocardifweb.weightPreset`）、`pages/WatchlistPage.tsx`、`components/watchlist/`（`CompareTable`、`CandidateBreakdown`、`PresetPicker`）、`components/report/WatchlistButton.tsx`。分數只用報告清單（`module_summary` 燈號、`dimension_scores`），不需讀全部報告。
 - 新聞：`pages/NewsPage.tsx`、`components/news/`；`kind`、`domain` 在 `normalizeMarket.ts` 決定（舊 `category` 相容）。
 - 資料：`getFeed()`、`getMarketPulse()`（static `data/feed.json`、`data/market-pulse.json`；api `/api/v1/feed`、`/api/v1/market-pulse`），需要時才讀（`pages/useOnDemand.ts`）。原始欄位只出現在 `types/feed.ts`、`types/marketPulse.ts`、`data/validate.ts`、`data/normalizeMarket.ts`。
 - 本機 vite 對不存在的檔案回 200＋HTML，`fetchJson` 把 `text/html` 當 404。
