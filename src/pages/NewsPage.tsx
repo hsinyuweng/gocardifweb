@@ -1,4 +1,4 @@
-import { useMemo, useState, useSyncExternalStore } from 'react';
+import { useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { useLocation, useSearchParams } from 'react-router';
 import { PendingContent } from '../components/home/HomeCard';
 import { StatusMessage } from '../components/common/StatusMessage';
@@ -17,60 +17,105 @@ import { KeyNumbers } from '../components/story/KeyNumbers';
 import { Lead } from '../components/story/Lead';
 import { NextStep } from '../components/story/NextStep';
 import { ChartTitle, DetailDivider, StorySection } from '../components/story/StorySection';
-import { recentFeed } from '../lib/feedSummary';
+import { feedDay, recentDays, recentFeed } from '../lib/feedSummary';
 import { newsHeading, newsHeadline, newsNumbers } from '../lib/newsStory';
 
 const t = zhTW.news;
-const TABS: ReadonlyArray<FeedDomain | 'all'> = [
-  'all',
-  'product_channel',
-  'market_macro',
-  'regulation',
-  'claims_consumer',
-  'customer_brand',
-];
-const PAGE_SIZE = 30;
+const PAGE_SIZE = 10;
 const LIST_ID = 'news-all';
 const DOMAINS: readonly FeedDomain[] = ['product_channel', 'market_macro', 'regulation', 'claims_consumer', 'customer_brand'];
+type GroupKey = FeedDomain | 'none';
+const GROUP_KEYS: readonly GroupKey[] = [...DOMAINS, 'none'];
 
-// 頁籤與開關寫進網址（tab、affects=1），切換用 replace，不新增瀏覽紀錄
-function readTab(v: string | null): FeedDomain | 'all' {
-  return TABS.includes(v as FeedDomain) ? (v as FeedDomain) : 'all';
-}
-
-// 頁籤：白底細框膠囊，目前頁籤填代表色（2026-10-27 V3，與市場脈動頁籤一致）
+// 日期膠囊：白底細框，目前的填代表色（與市場脈動頁籤一致）
 const chipBase = 'inline-flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3 ring-1 transition-colors';
 const chipOn = 'bg-p text-white ring-p';
 const chipOff = 'bg-white text-ink2 ring-line hover:ring-p-mid';
+
+/** 一個領域：代表色深色標題列（名稱＋則數，可收合）＋一行一則；先列 10 則＋「顯示更多」 */
+function DomainGroup({
+  name,
+  items,
+  closed,
+  onToggle,
+  render,
+}: {
+  name: string;
+  items: FeedItemViewModel[];
+  closed: boolean;
+  onToggle: () => void;
+  render: (item: FeedItemViewModel) => ReactNode;
+}) {
+  const [shown, setShown] = useState(PAGE_SIZE);
+  return (
+    <section className="overflow-hidden rounded-xl border border-line bg-white">
+      <button
+        type="button"
+        aria-expanded={!closed}
+        onClick={onToggle}
+        className="flex w-full items-center gap-3 bg-p px-5 py-2 text-left text-white hover:brightness-95"
+      >
+        <span className="font-medium">{name}</span>
+        <span className="text-[13px] text-white/85">{t.count(items.length)}</span>
+        <span aria-hidden className="ml-auto text-[16px] leading-none">
+          {closed ? '▸' : '▾'}
+        </span>
+        <span className="sr-only">{closed ? t.expand : t.collapse}</span>
+      </button>
+      {closed ? null : items.length === 0 ? (
+        <p className="px-5 py-2.5 text-[13px] text-muted">{t.groupEmpty}</p>
+      ) : (
+        <>
+          <ul className="divide-y divide-slate-100">{items.slice(0, shown).map(render)}</ul>
+          {items.length > shown ? (
+            <div className="border-t border-slate-100 px-5 py-2">
+              <button type="button" onClick={() => setShown(shown + PAGE_SIZE)} className="text-[13px] text-p hover:underline">
+                {t.showMore}
+              </button>
+            </div>
+          ) : null}
+        </>
+      )}
+    </section>
+  );
+}
 
 /** 報告險種是否屬於法規的相關險種：完全相同，或是「投資型壽險（IUL，指數連結型）」這類帶括號細分的子類 */
 function inCategory(reportCategory: string, categories: string[]): boolean {
   return categories.some((c) => reportCategory === c || reportCategory.startsWith(`${c}（`));
 }
 
-/** 新聞與法規監控（2026-10-20 新規劃）：6 個頁籤、只看可能相關追蹤清單商品、法規展開可能相關與同險種的追蹤商品 */
+/** 新聞與法規監控（2026-10-20 新規劃；2026-10-27 V5 清單改日期膠囊＋依領域分組）：只看可能相關追蹤清單商品、法規展開可能相關與同險種的追蹤商品 */
 export function NewsPage() {
   const location = useLocation();
   const fromHome = readFromPath(location.state) === '/';
   useBreadcrumb(fromHome ? [{ label: zhTW.nav.home, to: '/' }, { label: zhTW.nav.news }] : [{ label: zhTW.nav.news }]);
 
+  // 日期、勾選、收合寫進網址（date、affects=1、closed），切換用 replace，不新增瀏覽紀錄
   const [searchParams, setSearchParams] = useSearchParams();
-  const tab = readTab(searchParams.get('tab'));
+  const date = searchParams.get('date');
   const affectsOnly = searchParams.get('affects') === '1';
-  const update = (nextTab: FeedDomain | 'all', nextAffects: boolean) => {
+  const closed = new Set((searchParams.get('closed') ?? '').split(',').filter((x): x is GroupKey => (GROUP_KEYS as readonly string[]).includes(x)));
+  const update = (next: { date?: string | null; affects?: boolean; closed?: Set<GroupKey> }) => {
+    const d = next.date !== undefined ? next.date : date;
+    const a = next.affects ?? affectsOnly;
+    const c = next.closed ?? closed;
     const p = new URLSearchParams();
-    if (nextTab !== 'all') p.set('tab', nextTab);
-    if (nextAffects) p.set('affects', '1');
+    if (d) p.set('date', d);
+    if (a) p.set('affects', '1');
+    if (c.size > 0) p.set('closed', GROUP_KEYS.filter((k) => c.has(k)).join(','));
     setSearchParams(p, { replace: true, state: location.state });
+  };
+  const toggleGroup = (k: GroupKey) => {
+    const c = new Set(closed);
+    if (c.has(k)) c.delete(k);
+    else c.add(k);
+    update({ closed: c });
   };
 
   const feedState = useFeed();
   const indexState = useIndexState();
   const watchlist = useSyncExternalStore(subscribeWatchlist, readWatchlist);
-  // 換頁籤或開關時回到前 30 則
-  const [limit, setLimit] = useState({ key: '', n: PAGE_SIZE });
-  const filterKey = `${tab}|${affectsOnly}`;
-  const shown = limit.key === filterKey ? limit.n : PAGE_SIZE;
 
   const reports = useMemo(
     () =>
@@ -100,17 +145,23 @@ export function NewsPage() {
   }, [watchlist, reports]);
 
   const items = feedState.status === 'ok' ? feedState.data.items : [];
-  const pool = affectsOnly
-    ? items.filter((i) => {
+  const recent = useMemo(() => (feedState.status === 'ok' ? recentFeed(feedState.data) : null), [feedState]);
+  const days = useMemo(() => recentDays(items), [items]);
+  // 網址的日期不在最近 5 天內時回到近 30 天
+  const day = days.find((x) => x.date === date)?.date ?? null;
+  const dated = day ? items.filter((i) => feedDay(i) === day) : (recent?.items ?? []);
+  const visible = affectsOnly
+    ? dated.filter((i) => {
         const p = productsOf(i);
         return p.affected.length > 0 || p.sameCategory.length > 0;
       })
-    : items;
-  const counts = new Map<FeedDomain | 'all', number>([['all', pool.length]]);
-  for (const i of pool) if (i.domain) counts.set(i.domain, (counts.get(i.domain) ?? 0) + 1);
-  const visible = tab === 'all' ? pool : pool.filter((i) => i.domain === tab);
+    : dated;
+  const groups = GROUP_KEYS.map((k) => ({ key: k, items: visible.filter((i) => (i.domain ?? 'none') === k) })).filter(
+    (g) => g.key !== 'none' || g.items.length > 0,
+  );
   const linkState = { from: location.pathname + location.search, fromState: location.state };
-  const recent = useMemo(() => (feedState.status === 'ok' ? recentFeed(feedState.data) : null), [feedState]);
+  // 換日期或勾選時每組回到前 10 則
+  const filterKey = `${day ?? ''}|${affectsOnly}`;
 
   let body;
   if (feedState.status === 'error') {
@@ -167,7 +218,7 @@ export function NewsPage() {
             </StorySection>
           ) : null}
           <NextStep
-            down={{ label: t.down(items.length), targetId: LIST_ID }}
+            down={{ label: t.down(recent.items.length), targetId: LIST_ID }}
             links={[{ to: '/watchlist', label: t.toWatchlist }]}
           />
           <DetailDivider id={LIST_ID} label={t.allItems} />
@@ -178,18 +229,18 @@ export function NewsPage() {
         {story}
         <div className="space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
-            <div role="tablist" className="flex min-w-0 items-center gap-2 overflow-x-auto px-px py-1">
-              {TABS.map((key) => (
+            <div role="group" aria-label={t.datesLabel} className="flex min-w-0 items-center gap-2 overflow-x-auto px-px py-1">
+              <span className="shrink-0 text-[13px] text-ink2">{t.datesLabel}</span>
+              {[{ date: null, label: t.last30, count: recent?.items.length ?? 0 }, ...days].map((x) => (
                 <button
-                  key={key}
+                  key={x.date ?? 'recent'}
                   type="button"
-                  role="tab"
-                  aria-selected={tab === key}
-                  onClick={() => update(key, affectsOnly)}
-                  className={`${chipBase} ${tab === key ? chipOn : chipOff}`}
+                  aria-pressed={day === x.date}
+                  onClick={() => update({ date: x.date })}
+                  className={`${chipBase} ${day === x.date ? chipOn : chipOff}`}
                 >
-                  <span>{t.tabs[key]}</span>
-                  <span className={tab === key ? 'text-white/80' : 'text-slate-500'}>{counts.get(key) ?? 0}</span>
+                  <span>{x.label}</span>
+                  <span className={day === x.date ? 'text-white/80' : 'text-slate-500'}>{x.count}</span>
                 </button>
               ))}
             </div>
@@ -197,34 +248,23 @@ export function NewsPage() {
               <input
                 type="checkbox"
                 checked={affectsOnly}
-                onChange={(e) => update(tab, e.target.checked)}
+                onChange={(e) => update({ affects: e.target.checked })}
                 className="size-4 accent-[#2fa58a]"
               />
               {t.affectsToggle}
             </label>
           </div>
-          {visible.length === 0 ? (
-            <StatusMessage tone="info" message={affectsOnly ? t.emptyAffects : t.emptyTab} />
-          ) : (
-            <>
-              <ul className="divide-y divide-slate-100 rounded border border-slate-200 bg-white">
-                {visible.slice(0, shown).map((item) => (
-                  <NewsItem key={item.id} item={item} {...productsOf(item)} linkState={linkState} />
-                ))}
-              </ul>
-              {visible.length > shown ? (
-                <div className="text-center">
-                  <button
-                    type="button"
-                    onClick={() => setLimit({ key: filterKey, n: shown + PAGE_SIZE })}
-                    className="h-9 rounded border border-slate-300 bg-white px-4 text-slate-700 hover:border-navy-600 hover:text-navy-800"
-                  >
-                    {t.showMore}
-                  </button>
-                </div>
-              ) : null}
-            </>
-          )}
+          {affectsOnly && visible.length === 0 ? <StatusMessage tone="info" message={t.emptyAffects} /> : null}
+          {groups.map((g) => (
+            <DomainGroup
+              key={`${g.key}|${filterKey}`}
+              name={t.domains[g.key]}
+              items={g.items}
+              closed={closed.has(g.key)}
+              onToggle={() => toggleGroup(g.key)}
+              render={(item) => <NewsItem key={item.id} item={item} {...productsOf(item)} linkState={linkState} />}
+            />
+          ))}
         </div>
       </div>
     );

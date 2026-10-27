@@ -1,9 +1,10 @@
-import type { MouseEvent, ReactNode } from 'react';
-import { Link, Navigate, useLocation, useNavigate, useParams } from 'react-router';
+import type { ReactNode } from 'react';
+import { Navigate, useLocation, useParams, useSearchParams } from 'react-router';
 import { PendingContent } from '../components/home/HomeCard';
 import { StatusMessage } from '../components/common/StatusMessage';
 import { PageHeader } from '../components/layout/PageHeader';
-import { MetricCard } from '../components/market/MetricCard';
+import { KeyMetricCard } from '../components/market/KeyMetricCard';
+import { MetricTable } from '../components/market/MetricTable';
 import { MarketTabs, tabLabel, tabPath } from '../components/market/MarketTabs';
 import { BigShareBar } from '../components/charts/BigShareBar';
 import { ColumnChart } from '../components/charts/ColumnChart';
@@ -20,11 +21,10 @@ import { formatPulseTick, formatSharePct, orDash, shortPeriodLabels } from '../l
 import { overviewHeadline, tabHeadline } from '../lib/insights';
 import {
   availableGroups,
-  groupSentence,
   growthLeaders,
   isRank,
+  isTrend,
   mainTrend,
-  overviewNumbers,
   periodLong,
   periodText,
   shareDetailHeading,
@@ -58,14 +58,14 @@ function dataPeriod(list: PulseMetricViewModel[]): string | null {
 }
 
 /** 年增率正負橫條：最快的項目珊瑚色 */
-function GrowthBars({ share, compact = false }: { share: PulseShareViewModel; compact?: boolean }) {
+function GrowthBars({ share }: { share: PulseShareViewModel }) {
   const lead = growthLeaders(share);
   if (!lead) return null;
   const rows = (share.periods.at(-1)?.parts ?? [])
     .filter((p) => p.growthPct !== null)
     .sort((a, b) => b.growthPct! - a.growthPct!)
     .map((p) => ({ name: orDash(p.name), value: p.growthPct!, strong: p.name === lead.fastest.name }));
-  return <DivergingBars rows={rows} formatValue={(v) => `${v > 0 ? '+' : ''}${formatSharePct(v)}`} ariaLabel={orDash(share.label)} compact={compact} />;
+  return <DivergingBars rows={rows} formatValue={(v) => `${v > 0 ? '+' : ''}${formatSharePct(v)}`} ariaLabel={orDash(share.label)} />;
 }
 
 /** 占比最新一期的大橫條（段內寫名稱與占比） */
@@ -84,79 +84,61 @@ function LatestShareBar({ share }: { share: PulseShareViewModel }) {
   );
 }
 
-/** 總覽卡片的小圖：有年增率的占比 → 正負橫條；單線 → 註記折線；只有占比 → 大橫條 */
-function MiniChart({ list }: { list: PulseMetricViewModel[] }) {
-  const shares = shareMetrics(list);
-  const withGrowth = shares.find((s) => growthLeaders(s) !== null);
-  if (withGrowth) return <GrowthBars share={withGrowth} compact />;
-  const m = mainTrend(list);
-  if (m && m.points.length >= 2) {
-    return (
-      <LineChart
-        lines={[{ name: orDash(m.label), points: m.points }]}
-        formatValue={(v) => trendValue(m, v)}
-        formatTick={(v) => axisTick(m, v)}
-        height={96}
-        invert={isRank(m)}
-        annotate
-        ariaLabel={orDash(m.label)}
-      />
-    );
-  }
-  if (shares[0]) return <LatestShareBar share={shares[0]} />;
-  return null;
-}
-
-/** 總覽的一組：一句話＋小圖，整張可點（滑過時框線變代表色），右上「看分頁 →」 */
-function GroupCard({ group, sentence, children, state }: { group: PulseGroup; sentence: string | null; children: ReactNode; state: unknown }) {
-  const navigate = useNavigate();
-  const onClick = (e: MouseEvent<HTMLElement>) => {
-    if ((e.target as HTMLElement).closest('a, button')) return;
-    if (window.getSelection()?.toString()) return;
-    void navigate(tabPath(group), { state });
+/** 總覽的指標表：膠囊篩組別（網址 `?group=`，replace） */
+function TableSection({ metrics, groups }: { metrics: PulseMetricViewModel[]; groups: PulseGroup[] }) {
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const param = searchParams.get('group');
+  const current = param !== null && isGroup(param) && groups.includes(param) ? param : null;
+  const select = (g: PulseGroup | null) => {
+    const p = new URLSearchParams(searchParams);
+    if (g === null) p.delete('group');
+    else p.set('group', g);
+    setSearchParams(p, { replace: true, state: location.state });
   };
+  const chip = (on: boolean) =>
+    `shrink-0 rounded-full border px-3 py-0.5 text-[13px] whitespace-nowrap transition-colors ${
+      on ? 'border-p bg-p text-white' : 'border-line bg-white text-ink2 hover:border-p-mid hover:text-ink'
+    }`;
   return (
-    <section
-      onClick={onClick}
-      className="flex min-w-0 cursor-pointer flex-col gap-2 rounded-xl border border-line bg-white px-5 pt-3 pb-3 transition-colors hover:border-p"
-    >
-      <div className="flex items-baseline justify-between text-[12.5px]">
-        <h2 className="inline-flex items-center gap-[7px] text-ink2">
-          <span aria-hidden className="size-[7px] rounded-full bg-p" />
-          {t.groups[group].title}
-        </h2>
-        <Link to={tabPath(group)} state={state} className="text-ink2 hover:text-ink hover:underline">
-          {t.seeTab}
-        </Link>
+    <section id={DETAILS_ID} className="scroll-mt-28 space-y-3">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <h2 className="text-[18px] font-medium text-ink">{t.table.title(metrics.length)}</h2>
+        <div role="group" aria-label={t.table.filter} className="flex gap-1.5 overflow-x-auto px-px py-1">
+          {([null, ...groups] as const).map((g) => (
+            <button key={g ?? 'all'} type="button" aria-pressed={current === g} onClick={() => select(g)} className={chip(current === g)}>
+              {g === null ? t.table.all : t.groups[g].title}
+            </button>
+          ))}
+        </div>
       </div>
-      {sentence ? <p className="text-[15.5px] leading-normal text-ink">{sentence}</p> : null}
-      {children}
+      <MetricTable metrics={current === null ? metrics : metrics.filter((m) => m.group === current)} />
     </section>
   );
 }
 
 function Overview({ metrics, groups, state }: { metrics: PulseMetricViewModel[]; groups: PulseGroup[]; state: unknown }) {
-  const byGroup = metricsByGroup(metrics);
   const headline = overviewHeadline(metrics);
   const missing = PULSE_GROUP_ORDER.filter((g) => !groups.includes(g));
+  // 重點指標卡：每個有最新值的單線指標，依組別順序
+  const byGroup = metricsByGroup(metrics);
+  const cards = groups.flatMap((g) => byGroup.get(g)!.filter(isTrend).filter((m) => m.latestValue !== null));
   return (
     <>
       {headline ? <Lead parts={headline.parts} /> : null}
-      <KeyNumbers items={overviewNumbers(metrics, headline?.metricKey ?? null)} />
-      <div className="grid grid-cols-1 gap-3.5 lg:grid-cols-2">
-        {groups.map((g) => {
-          const list = byGroup.get(g)!;
-          return (
-            <GroupCard key={g} group={g} sentence={groupSentence(list)} state={state}>
-              <MiniChart list={list} />
-            </GroupCard>
-          );
-        })}
-      </div>
+      {cards.length > 0 ? (
+        <div className="grid grid-cols-1 gap-3.5 lg:grid-cols-3">
+          {cards.map((m) => (
+            <KeyMetricCard key={m.key} metric={m} coral={m.key === headline?.metricKey} state={state} />
+          ))}
+        </div>
+      ) : null}
       <NextStep
+        down={{ label: t.table.down(metrics.length), targetId: DETAILS_ID }}
         links={groups.map((g) => ({ to: tabPath(g), label: `${tabLabel(g)} →`, state }))}
         note={missing.length > 0 ? missing.map((g) => t.missingGroup(t.groups[g].title, t.groups[g].desc)).join('；') : null}
       />
+      <TableSection metrics={metrics} groups={groups} />
     </>
   );
 }
@@ -242,19 +224,15 @@ function GroupTab({ group, list, groups, state }: { group: PulseGroup; list: Pul
           </StorySection>
         );
       })}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {list.map((metric) => (
-          <MetricCard key={metric.key} metric={metric} />
-        ))}
-      </div>
+      <MetricTable metrics={list} />
     </>
   );
 }
 
 /**
- * 市場脈動（2026-10-27 視覺改版 V2）：總覽 `#/market` ＋各組分頁 `#/market/:tab`。
+ * 市場脈動（2026-10-27 視覺改版 V2、V5）：總覽 `#/market` ＋各組分頁 `#/market/:tab`。
  * 分頁只顯示有指標的組；網址的分頁不存在或沒有資料時 replace 回總覽。
- * 每頁照閱讀路徑：頁首 → 頁籤 → 一句結論 → 關鍵數字 → 圖表 → 下一步 →（分頁）細節。
+ * 每頁照閱讀路徑：頁首 → 頁籤 → 一句結論 → 重點指標卡（總覽）或關鍵數字與主圖（分頁）→ 下一步 → 指標表。
  */
 export function MarketPage() {
   const { tab: tabParam } = useParams();
@@ -306,7 +284,7 @@ export function MarketPage() {
   }
 
   return (
-    <div className={tab === 'overview' ? 'space-y-4' : 'space-y-6'}>
+    <div className={tab === 'overview' ? 'space-y-5' : 'space-y-6'}>
       <PageHeader icon="pulse" title={title} desc={desc} aside={aside} />
       {body}
     </div>

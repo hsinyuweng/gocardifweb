@@ -79,3 +79,24 @@ export function recentFeed(feed: FeedViewModel, now: number = Date.now()): Recen
     range: days.length > 0 ? { from: md(Math.min(...days)), to: md(Math.max(...days)) } : null,
   };
 }
+
+/** 一則動態的台北日期「2026-10-22」；沒有發布時間時為 null */
+export function feedDay(item: FeedItemViewModel): string | null {
+  return item.publishedTime === null ? null : todayTaipei(new Date(item.publishedTime));
+}
+
+/** 最近 n 個有動態的日子（新到舊）：date「2026-10-22」、label「10/22」、則數 */
+export function recentDays(items: FeedItemViewModel[], n = 5): { date: string; label: string; count: number }[] {
+  const counts = new Map<string, number>();
+  for (const i of items) {
+    const d = feedDay(i);
+    if (d) counts.set(d, (counts.get(d) ?? 0) + 1);
+  }
+  return [...counts]
+    .sort((a, b) => (a[0] < b[0] ? 1 : -1))
+    .slice(0, n)
+    .map(([date, count]) => {
+      const [, m, d] = date.split('-');
+      return { date, label: `${+m!}/${+d!}`, count };
+    });
+}

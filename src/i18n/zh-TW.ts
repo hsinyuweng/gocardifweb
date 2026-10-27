@@ -216,8 +216,19 @@ export const zhTW = {
     overviewTab: '總覽',
     highest: '最高',
     tabsLabel: '市場脈動分頁',
-    seeTab: '看分頁 →',
     nextStep: '下一步',
+    // 重點指標卡與指標表（2026-10-27 視覺改版 V5）
+    onePeriod: '只有 1 期資料，累積中',
+    table: {
+      title: (n: number) => `全部 ${n} 項指標`,
+      down: (n: number) => `往下看：全部 ${n} 項指標 ↓`,
+      filter: '依組別篩選',
+      all: '全部',
+      cols: { label: '指標', latest: '最新', prev: '上期', change: '變化', period: '資料期間', frequency: '頻率', source: '來源' },
+      freq: { month: '月', week: '週', day: '日', quarter: '季', year: '年' },
+      showChart: '看圖 ▾',
+      hideChart: '收起 ▴',
+    },
     downShare: '往下看：各項目占比與年增率、資料來源 ↓',
     downPlain: '往下看：完整圖表與資料來源 ↓',
     details: '細節',
@@ -258,21 +269,27 @@ export const zhTW = {
   // 新聞與法規監控（2026-10-20 經確認）
   news: {
     title: '新聞與法規監控',
-    tabs: {
-      all: '全部',
+    domains: {
       product_channel: '商品與通路動態',
       market_macro: '市場與總經情勢',
       regulation: '監理法規',
       claims_consumer: '理賠與消保',
       customer_brand: '客群經營與品牌公關',
+      none: '未分類',
     },
     affectsToggle: '只看可能相關追蹤清單商品',
     // 關鍵字比對，不是影響判斷：一律寫「可能相關」，不寫「影響」
     affects: (n: number) => `可能相關追蹤清單 ${n} 項商品`,
     sameCategory: (n: number) => `同險種 ${n} 項`,
     selfReported: '業者自述',
+    company: (name: string) => `（${name}）`,
     showMore: '顯示更多',
-    emptyTab: '這個分類目前沒有項目。',
+    // 清單（2026-10-27 視覺改版 V5，參考 ITIS 每日新聞）：日期膠囊＋依領域分組
+    datesLabel: '出版日期',
+    last30: '近 30 天',
+    groupEmpty: '這段期間沒有項目',
+    collapse: '收合',
+    expand: '展開',
     emptyAffects: '目前沒有與追蹤清單商品可能相關的項目。',
     // 第一個畫面（2026-10-27 V3）
     lead: (n: number) => `近 30 天 ${n} 則動態`,
@@ -294,7 +311,7 @@ export const zhTW = {
       `${domain}占 ${pct}${company ? `，${company}發稿最多` : ''}`,
     charts: { domains: '各領域則數', companies: '發稿最多的公司', weekly: '每週則數', weeklyNote: '週一起算' },
     range: (from: string, to: string) => `${from}–${to}`,
-    down: (n: number) => `往下看：全部 ${n} 則，可依分類篩選 ↓`,
+    down: (n: number) => `往下看：全部 ${n} 則，依領域分組 ↓`,
     toWatchlist: '追蹤清單 →',
     allItems: '全部動態',
   },

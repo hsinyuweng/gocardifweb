@@ -6,10 +6,10 @@ import type {
   PulseTrendViewModel,
 } from '../types/viewModel';
 import { zhTW } from '../i18n/zh-TW';
-import { formatPulsePeriod, formatPulseValue, formatSharePct, orDash, pulseChangeParts, pulseChangeText } from './format';
+import { formatPulsePeriod, formatPulseValue, formatSharePct, orDash, pulseChangeParts } from './format';
 import { metricsByGroup, PULSE_GROUP_ORDER, pulseDigits } from './pulse';
 
-// 市場脈動分頁的閱讀路徑內容（2026-10-27 視覺改版 V2）：數字磚、各組一句話、圖表標題。
+// 市場脈動分頁的閱讀路徑內容（2026-10-27 視覺改版 V2）：數字磚、圖表標題。
 // 只用資料裡的數字；哪個指標放哪裡由 type 與 group 決定，不寫死指標代號。
 
 const t = zhTW.market;
@@ -164,21 +164,6 @@ function shiftTile(share: PulseShareViewModel): KeyNumber | null {
   };
 }
 
-/** 總覽：依組別順序，每組的單線指標最新值、占比變化最大的項目；最多 4 個。coralKey 是結論句用到的指標 */
-export function overviewNumbers(metrics: PulseMetricViewModel[], coralKey: string | null): KeyNumber[] {
-  const groups = metricsByGroup(metrics);
-  const out: KeyNumber[] = [];
-  for (const g of PULSE_GROUP_ORDER) {
-    const list = groups.get(g)!;
-    for (const m of list.filter(isTrend).filter((x) => x.latestValue !== null)) out.push(trendTile(m, m.key === coralKey));
-    for (const s of shareMetrics(list)) {
-      const tile = shiftTile(s);
-      if (tile) out.push(tile);
-    }
-  }
-  return out.slice(0, MAX_NUMBERS);
-}
-
 /** 分頁：主要指標的最新值、變化、期間最高；再補同組其他指標與占比變化，最後是期間最低。只有占比時列最新一期前幾名 */
 export function tabNumbers(list: PulseMetricViewModel[]): KeyNumber[] {
   const m = mainTrend(list);
@@ -226,31 +211,6 @@ export function tabNumbers(list: PulseMetricViewModel[]): KeyNumber[] {
 }
 
 // ───────── 一句話 ─────────
-
-/** 總覽每組卡片的一句話：有年增率的占比寫最快與衰退的項目；否則寫主要指標最新值與變化；只有占比時寫前兩名 */
-export function groupSentence(list: PulseMetricViewModel[]): string | null {
-  const ins = zhTW.insights;
-  for (const s of shareMetrics(list)) {
-    const lead = growthLeaders(s);
-    if (lead) {
-      const declined = lead.declined.filter((n) => n !== lead.fastest.name);
-      return ins.fastest(lead.fastest.name!, growthText(lead.fastest.growthPct!)) + (declined.length ? ins.declined(declined.join('、')) : '');
-    }
-  }
-  const m = mainTrend(list);
-  if (m) {
-    const tail = m.change !== null ? ins.changeTail(m.changeLabel, pulseChangeText(m.change, m.changeUnit, trendDigits(m))) : '';
-    return `${orDash(m.label)} ${trendValue(m, m.latestValue)}${tail}`;
-  }
-  const share = shareMetrics(list)[0];
-  const parts = [...(share?.periods.at(-1)?.parts ?? [])].sort((a, b) => b.sharePct - a.sharePct);
-  if (parts.length === 0) return null;
-  return (
-    ins.shareTop(orDash(parts[0]!.name)) +
-    formatSharePct(parts[0]!.sharePct) +
-    (parts[1] ? ins.shareSecond(orDash(parts[1].name), formatSharePct(parts[1].sharePct)) : '')
-  );
-}
 
 /** 主要指標圖的標題：成長動能都為正（負）時寫期數與最高（最低）；否則寫最高與最低（名次：最好與最差） */
 export function trendHeading(m: PulseTrendViewModel): string | null {

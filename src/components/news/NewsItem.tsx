@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Link } from 'react-router';
 import type { FeedItemViewModel } from '../../types/viewModel';
 import { zhTW } from '../../i18n/zh-TW';
-import { orDash, relativeTimeText } from '../../lib/format';
+import { companyOf } from '../../lib/feedSummary';
+import { relativeTimeText } from '../../lib/format';
 import { FeedTitle } from '../home/FeedItemLine';
 import { FeedKindTag } from './FeedKindTag';
 
@@ -32,44 +33,49 @@ function ToggleButton({ label, open, onClick }: { label: string; open: boolean; 
   );
 }
 
-/** 新聞與法規監控的一則：標籤＋標題、來源（業者自述）· 時間；法規可展開可能相關與同險種的追蹤商品 */
+/**
+ * 新聞與法規監控的一則（2026-10-27 V5，參考 ITIS）：一行「〔新聞〕標題（公司）業者自述 · 5 天前」；
+ * 法規可展開可能相關與同險種的追蹤商品
+ */
 export function NewsItem({ item, affected, sameCategory, linkState }: NewsItemProps) {
   const [open, setOpen] = useState<'affected' | 'same' | null>(null);
   const toggle = (k: 'affected' | 'same') => setOpen(open === k ? null : k);
   const products = open === 'affected' ? affected : open === 'same' ? sameCategory : [];
+  const company = companyOf(item.source);
   return (
-    <li className="flex gap-2 px-4 py-3">
-      <span className="mt-0.5 shrink-0">
+    <li className="px-5 py-2.5">
+      <p className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
         <FeedKindTag kind={item.kind} />
-      </span>
-      <div className="min-w-0">
-        <FeedTitle item={item} />
-        <p className="mt-0.5 text-xs text-slate-500">
-          {orDash(item.source)}
-          {item.selfReported ? (
-            <span className="ml-1.5 inline-block rounded bg-slate-100 px-1 text-[11px] text-slate-500">{t.selfReported}</span>
-          ) : null}
-          {' · '}
+        <span className="min-w-0">
+          <FeedTitle item={item} />
+          {company ? <span className="text-ink2">{t.company(company)}</span> : null}
+        </span>
+        <span className="text-xs whitespace-nowrap text-muted">
+          {item.selfReported ? <span className="mr-1.5 inline-block rounded bg-slate-100 px-1 text-[11px]">{t.selfReported}</span> : null}
           {relativeTimeText(item.publishedTime, item.dateOnly, item.publishedAt)}
-          {affected.length > 0 ? (
-            <ToggleButton label={t.affects(affected.length)} open={open === 'affected'} onClick={() => toggle('affected')} />
-          ) : null}
-          {sameCategory.length > 0 ? (
-            <ToggleButton label={t.sameCategory(sameCategory.length)} open={open === 'same'} onClick={() => toggle('same')} />
-          ) : null}
-        </p>
-        {products.length > 0 ? (
-          <ul className="mt-1 space-y-0.5 border-l-2 border-slate-200 pl-3 text-sm">
-            {products.map((p) => (
-              <li key={p.id}>
-                <Link to={`/report/${encodeURIComponent(p.id)}`} state={linkState} className="text-navy-700 hover:underline">
-                  {p.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
+        </span>
+        {affected.length > 0 || sameCategory.length > 0 ? (
+          <span className="text-xs">
+            {affected.length > 0 ? (
+              <ToggleButton label={t.affects(affected.length)} open={open === 'affected'} onClick={() => toggle('affected')} />
+            ) : null}
+            {sameCategory.length > 0 ? (
+              <ToggleButton label={t.sameCategory(sameCategory.length)} open={open === 'same'} onClick={() => toggle('same')} />
+            ) : null}
+          </span>
         ) : null}
-      </div>
+      </p>
+      {products.length > 0 ? (
+        <ul className="mt-1 ml-12 space-y-0.5 border-l-2 border-slate-200 pl-3 text-sm">
+          {products.map((p) => (
+            <li key={p.id}>
+              <Link to={`/report/${encodeURIComponent(p.id)}`} state={linkState} className="text-navy-700 hover:underline">
+                {p.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      ) : null}
     </li>
   );
 }

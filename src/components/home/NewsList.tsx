@@ -28,7 +28,7 @@ export function NewsList({ feed }: { feed: FeedViewModel }) {
           key: domain ?? 'none',
           label: `${t.domainShort[domain ?? 'none']} ${count}`,
           value: count,
-          title: `${domain ? zhTW.news.tabs[domain] : t.domainShort.none}：${count} ${t.countUnit}`,
+          title: `${domain ? zhTW.news.domains[domain] : t.domainShort.none}：${count} ${t.countUnit}`,
         }))}
       />
       <ul className="mt-auto space-y-1.5 text-[13px]">
