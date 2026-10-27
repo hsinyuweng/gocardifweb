@@ -5,7 +5,7 @@ import { StatusMessage } from '../components/common/StatusMessage';
 import { PageHeader } from '../components/layout/PageHeader';
 import { KeyMetricCard } from '../components/market/KeyMetricCard';
 import { MetricTable } from '../components/market/MetricTable';
-import { MarketTabs, tabLabel, tabPath } from '../components/market/MarketTabs';
+import { MarketTabs, tabLabel } from '../components/market/MarketTabs';
 import { BigShareBar } from '../components/charts/BigShareBar';
 import { ColumnChart } from '../components/charts/ColumnChart';
 import { DivergingBars } from '../components/charts/DivergingBars';
@@ -117,7 +117,7 @@ function TableSection({ metrics, groups }: { metrics: PulseMetricViewModel[]; gr
   );
 }
 
-function Overview({ metrics, groups, state }: { metrics: PulseMetricViewModel[]; groups: PulseGroup[]; state: unknown }) {
+function Overview({ metrics, groups }: { metrics: PulseMetricViewModel[]; groups: PulseGroup[] }) {
   const headline = overviewHeadline(metrics);
   const missing = PULSE_GROUP_ORDER.filter((g) => !groups.includes(g));
   // 重點指標卡：每個有最新值的單線指標，依組別順序
@@ -129,13 +129,12 @@ function Overview({ metrics, groups, state }: { metrics: PulseMetricViewModel[];
       {cards.length > 0 ? (
         <div className="grid grid-cols-1 gap-3.5 lg:grid-cols-3">
           {cards.map((m) => (
-            <KeyMetricCard key={m.key} metric={m} coral={m.key === headline?.metricKey} state={state} />
+            <KeyMetricCard key={m.key} metric={m} coral={m.key === headline?.metricKey} />
           ))}
         </div>
       ) : null}
       <NextStep
         down={{ label: t.table.down(metrics.length), targetId: DETAILS_ID }}
-        links={groups.map((g) => ({ to: tabPath(g), label: `${tabLabel(g)} →`, state }))}
         note={missing.length > 0 ? missing.map((g) => t.missingGroup(t.groups[g].title, t.groups[g].desc)).join('；') : null}
       />
       <TableSection metrics={metrics} groups={groups} />
@@ -143,7 +142,7 @@ function Overview({ metrics, groups, state }: { metrics: PulseMetricViewModel[];
   );
 }
 
-function GroupTab({ group, list, groups, state }: { group: PulseGroup; list: PulseMetricViewModel[]; groups: PulseGroup[]; state: unknown }) {
+function GroupTab({ list }: { list: PulseMetricViewModel[] }) {
   const headline = tabHeadline(list);
   const m = mainTrend(list);
   const shares = shareMetrics(list);
@@ -190,11 +189,6 @@ function GroupTab({ group, list, groups, state }: { group: PulseGroup; list: Pul
     );
   }
 
-  // 下一步：前後分頁
-  const tabs: MarketTab[] = ['overview', ...groups];
-  const i = tabs.indexOf(group);
-  const neighbors = [tabs[i - 1], tabs[i + 1]].filter((x): x is MarketTab => x !== undefined);
-
   return (
     <>
       {headline ? <Lead parts={headline.parts} /> : null}
@@ -202,7 +196,6 @@ function GroupTab({ group, list, groups, state }: { group: PulseGroup; list: Pul
       {main}
       <NextStep
         down={{ label: multiShares.length > 0 ? t.downShare : t.downPlain, targetId: DETAILS_ID }}
-        links={neighbors.map((x) => ({ to: tabPath(x), label: `${tabLabel(x)} →`, state }))}
       />
       <DetailDivider id={DETAILS_ID} label={t.details} />
       {multiShares.map((s) => {
@@ -275,9 +268,9 @@ export function MarketPage() {
         <>
           <MarketTabs groups={groups} current={tab} state={location.state} />
           {tab === 'overview' ? (
-            <Overview metrics={metrics} groups={groups} state={location.state} />
+            <Overview metrics={metrics} groups={groups} />
           ) : (
-            <GroupTab group={tab} list={list} groups={groups} state={location.state} />
+            <GroupTab list={list} />
           )}
         </>
       );

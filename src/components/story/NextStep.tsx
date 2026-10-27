@@ -10,7 +10,7 @@ export interface NextStepLink {
 interface NextStepProps {
   /** 同頁細節：「往下看：… ↓」，只捲動、不改網址 */
   down?: { label: string; targetId: string };
-  links: NextStepLink[];
+  links?: NextStepLink[];
   /** 右側一行說明（例如缺什麼資料） */
   note?: string | null;
 }
@@ -18,7 +18,7 @@ interface NextStepProps {
 const pill = 'rounded-full border border-p-pale bg-p-faint px-3 py-0.5 text-ink hover:border-p';
 
 /** 閱讀路徑 ⑤「下一步」：白底細框條，同頁細節＋相關分頁的連結 */
-export function NextStep({ down, links, note }: NextStepProps) {
+export function NextStep({ down, links = [], note }: NextStepProps) {
   return (
     <nav
       aria-label={zhTW.market.nextStep}
