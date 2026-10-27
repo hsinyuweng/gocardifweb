@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
-import { useLocation, useParams, useSearchParams } from 'react-router';
+import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router';
 import { StatusMessage } from '../components/common/StatusMessage';
+import { ReportNav } from '../components/report/ReportNav';
 import { ReportView } from '../components/report/ReportView';
 import { WatchlistButton } from '../components/report/WatchlistButton';
 import { useConfig } from '../config/ConfigContext';
@@ -11,6 +12,8 @@ import { zhTW } from '../i18n/zh-TW';
 import { orDash } from '../lib/format';
 import { readOwnerPreference, subscribeOwnerPreference } from '../lib/ownerPreference';
 import { markReviewed } from '../lib/reviewed';
+import { readOrder, setLastReport } from '../lib/listReturn';
+import { sortRows } from '../lib/overviewFilter';
 import { addToWatchlist, readWatchlist, removeFromWatchlist, subscribeWatchlist } from '../lib/watchlist';
 import {
   OWNER_PARAM,
@@ -36,6 +39,7 @@ export function ReportPage() {
   const myUnit = useSyncExternalStore(subscribeOwnerPreference, readOwnerPreference);
   const watchlist = useSyncExternalStore(subscribeWatchlist, readWatchlist);
   const actionSlot = usePageActionSlot();
+  const navigate = useNavigate();
 
   useEffect(() => {
     let alive = true;
@@ -60,7 +64,20 @@ export function ReportPage() {
         ? normalizeReportIndex(indexState.index).rows.find((r) => r.reportId === reportId)
         : undefined;
     markReviewed(reportId, row ? row.generatedDate : vm.summary.generatedDate);
+    setLastReport(reportId);
   }, [vm, indexState, reportId]);
+
+  // 上一份／下一份（2026-10-27 V3）：照清單帶來的順序；沒有時用競品研究預設排序（產出日期新到舊）
+  const order = useMemo(() => {
+    const fromList = readOrder(location.state);
+    if (fromList) return fromList;
+    if (indexState.status !== 'ok') return [];
+    return sortRows(normalizeReportIndex(indexState.index).rows, 'generatedDate', 'desc').flatMap((r) => (r.reportId ? [r.reportId] : []));
+  }, [location.state, indexState]);
+  const at = order.indexOf(reportId);
+  // 切換報告用 replace：瀏覽器上一頁與「← 回…」都直接回清單
+  const goTo = (id: string) =>
+    navigate(`/report/${encodeURIComponent(id)}${location.search}`, { replace: true, state: location.state });
 
   // 從我的待辦、市場總覽進來時麵包屑回到該頁；從追蹤清單、競品研究進來時連來源頁的狀態一起帶回
   const from = readFromPath(location.state);
@@ -74,6 +91,22 @@ export function ReportPage() {
           ? { label: zhTW.nav.news, to: from, state: readFromState(location.state) }
           : { label: zhTW.nav.overview, to: from ?? '/research', state: readFromState(location.state) };
   useBreadcrumb([parent, { label: vm ? orDash(vm.summary.name) : reportId }]);
+
+  // 「← 回…」：站內點進來的用瀏覽器上一頁（回到清單原本的篩選與捲動位置）；直接打開網址的連到來源頁
+  const historyIdx = (window.history.state as { idx?: number } | null)?.idx ?? 0;
+  const goBack = () => {
+    if (from !== null && historyIdx > 0) void navigate(-1);
+    else void navigate(parent.to, { state: 'state' in parent ? parent.state : undefined });
+  };
+  const nav = (
+    <ReportNav
+      backLabel={parent.label}
+      onBack={goBack}
+      position={at >= 0 ? { index: at + 1, total: order.length } : null}
+      onPrev={at > 0 ? () => goTo(order[at - 1]!) : null}
+      onNext={at >= 0 && at < order.length - 1 ? () => goTo(order[at + 1]!) : null}
+    />
+  );
   usePageNotices(vm?.schemaVersionMismatch ? [{ tone: 'warning', text: zhTW.schemaMismatch }] : []);
 
   // 負責單位（D7）：網址優先 → 我的單位 → 全部；不在本報告選項內時視為「全部」
@@ -104,13 +137,25 @@ export function ReportPage() {
     if (urlOwner === null && owner !== null) setOwnerParam(owner);
   }, [urlOwner, owner, setOwnerParam]);
 
-  if (state.status === 'loading') return <StatusMessage tone="info" message={zhTW.common.loading} />;
+  if (state.status === 'loading')
+    return (
+      <div className="space-y-4">
+        {nav}
+        <StatusMessage tone="info" message={zhTW.common.loading} />
+      </div>
+    );
   if (state.status === 'error') {
     const { message, detail } = errorText(state.error, zhTW.errors.notFoundReport);
-    return <StatusMessage tone="error" message={message} detail={detail} />;
+    return (
+      <div className="space-y-4">
+        {nav}
+        <StatusMessage tone="error" message={message} detail={detail} />
+      </div>
+    );
   }
   return (
-    <>
+    <div className="space-y-4">
+      {nav}
       {actionSlot
         ? createPortal(
             <WatchlistButton
@@ -127,6 +172,6 @@ export function ReportPage() {
           )
         : null}
       <ReportView vm={state.vm} owner={owner} onOwnerChange={setOwnerParam} />
-    </>
+    </div>
   );
 }

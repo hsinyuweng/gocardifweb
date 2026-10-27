@@ -274,6 +274,29 @@ export const zhTW = {
     showMore: '顯示更多',
     emptyTab: '這個分類目前沒有項目。',
     emptyAffects: '目前沒有與追蹤清單商品可能相關的項目。',
+    // 第一個畫面（2026-10-27 V3）
+    lead: (n: number) => `近 30 天 ${n} 則動態`,
+    allSelfReported: '都是業者新聞稿',
+    regulationCount: (n: number) => `法規 ${n} 則`,
+    topDomainTail: (domain: string) => `，${domain}最多`,
+    count: (n: number) => `${n} 則`,
+    tile: {
+      recent: '近 30 天動態',
+      allSelf: '全部為業者新聞稿',
+      someSelf: (n: number) => `其中業者新聞稿 ${n} 則`,
+      regulation: '法規',
+      noRegulation: '近 30 天沒有新的法規',
+      topDomain: '最多的領域',
+      domainShare: (n: number, pct: string) => `${n} 則，占 ${pct}`,
+      topCompany: '發稿最多',
+    },
+    heading: (domain: string, pct: string, company: string | null) =>
+      `${domain}占 ${pct}${company ? `，${company}發稿最多` : ''}`,
+    charts: { domains: '各領域則數', companies: '發稿最多的公司', weekly: '每週則數', weeklyNote: '週一起算' },
+    range: (from: string, to: string) => `${from}–${to}`,
+    down: (n: number) => `往下看：全部 ${n} 則，可依分類篩選 ↓`,
+    toWatchlist: '追蹤清單 →',
+    allItems: '全部動態',
   },
 
   // 相對時間（市場總覽動態）
@@ -334,6 +357,14 @@ export const zhTW = {
   schemaMismatch: '報告格式版本不符，部分內容可能無法正確顯示',
 
   report: {
+    // 報告頁最上方（2026-10-27 V3）
+    nav: {
+      label: '報告切換',
+      back: (label: string) => `← 回${label}`,
+      prev: '‹ 上一份',
+      next: '下一份 ›',
+      position: (i: number, n: number) => `${i} / ${n}`,
+    },
     flow: {
       collect: '資料蒐集',
       analysis: '三面向分析',

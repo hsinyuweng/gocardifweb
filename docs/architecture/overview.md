@@ -41,6 +41,7 @@
 市場脈動總覽 ─ 頁籤／卡片／下一步 ▶ 分頁（push）              麵包屑「市場總覽 / 市場脈動 / 分頁」，「市場脈動」回總覽
 新聞頁 ─ 受影響商品 ─────────▶ 報告頁                          麵包屑「新聞與法規監控 / 商品」，回到原頁籤
 追蹤清單 ─ 商品名稱 ─────────▶ 報告頁                          麵包屑「追蹤清單 / 商品」，權重不變
+報告頁 ─ ← 回…（上一頁）／上一份・下一份（replace，順序由清單帶入）
 報告頁 ─ 看追蹤清單 → ───────▶ 追蹤清單                        麵包屑「商品 / 追蹤清單」
 我的待辦 ─ 看報告 → ─────────▶ 報告頁（帶 ?owner=）             麵包屑「我的待辦 / 商品」
 報告頁 E 區 ─ ↑ 回到三面向 ──▶ 同頁 C 區
@@ -87,7 +88,7 @@ src/
 ├── components/
 │   ├── layout/              AppShell（依網址設 data-theme，整頁底色）、Sidebar、TopBar、PageHeader（每頁頁首）
 │   ├── common/              SignalLabel、StatusMessage、PageIcon（頁面圖示）
-│   ├── charts/              MarketSizingBar、RegulatoryDistributionBar、Sparkline、LineChart、ShareBars、Timeline、ColumnChart、BigShareBar、DivergingBars、StackedColumns（純 CSS／SVG，不用套件）
+│   ├── charts/              HBarList、MarketSizingBar、RegulatoryDistributionBar、Sparkline、LineChart、ShareBars、Timeline、ColumnChart、BigShareBar、DivergingBars、StackedColumns（純 CSS／SVG，不用套件）
 │   ├── story/               閱讀路徑元件：Lead（一句結論）、KeyNumbers、StorySection、NextStep
 │   ├── market/              市場脈動分頁頁籤（MarketTabs）、指標卡片
 │   ├── news/                新聞與法規監控（標籤、每則）

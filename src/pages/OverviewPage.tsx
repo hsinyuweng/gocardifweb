@@ -1,4 +1,4 @@
-import { useMemo, useSyncExternalStore } from 'react';
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router';
 import { RecommendationBar } from '../components/overview/RecommendationBar';
 import { OverviewToolbar } from '../components/overview/OverviewToolbar';
@@ -8,6 +8,7 @@ import { normalizeReportIndex } from '../data';
 import { zhTW } from '../i18n/zh-TW';
 import { orDash } from '../lib/format';
 import { readFromPath } from '../lib/ownerParam';
+import { readLastReport, saveListScroll, takeListScroll } from '../lib/listReturn';
 import { isUnreviewed, readReviewed, subscribeReviewed } from '../lib/reviewed';
 import {
   DEFAULT_SORT_DIR,
@@ -64,6 +65,21 @@ export function OverviewPage() {
     [vm, filters, sortKey, sortDir, unreadIds],
   );
 
+  // 從報告頁回來時（2026-10-27 V3）：回到離開時的捲動位置，最後看的報告那一列標亮 2 秒
+  const listPath = location.pathname + location.search;
+  const [highlight, setHighlight] = useState<string | null>(null);
+  const restored = useRef(false);
+  useEffect(() => {
+    if (restored.current || !vm) return;
+    restored.current = true;
+    const y = takeListScroll(listPath);
+    if (y === null) return;
+    requestAnimationFrame(() => window.scrollTo(0, y));
+    setHighlight(readLastReport());
+    const timer = window.setTimeout(() => setHighlight(null), 2000);
+    return () => window.clearTimeout(timer);
+  }, [vm, listPath]);
+
   const handleSort = (key: SortKey) => {
     if (key === sortKey) update({ ...urlState, sortDir: sortDir === 'asc' ? 'desc' : 'asc' });
     else update({ ...urlState, sortKey: key, sortDir: DEFAULT_SORT_DIR[key] });
@@ -108,11 +124,18 @@ export function OverviewPage() {
             sortDir={sortDir}
             onSort={handleSort}
             unreadIds={unreadIds}
-            onOpen={(id) =>
-              navigate(`/report/${encodeURIComponent(id)}`, {
-                state: { from: location.pathname + location.search, fromState: location.state },
-              })
-            }
+            highlightId={highlight}
+            onOpen={(id) => {
+              saveListScroll(listPath, window.scrollY);
+              // order：報告頁「上一份／下一份」照目前的篩選與排序
+              void navigate(`/report/${encodeURIComponent(id)}`, {
+                state: {
+                  from: listPath,
+                  fromState: location.state,
+                  order: visibleRows.flatMap((r) => (r.reportId ? [r.reportId] : [])),
+                },
+              });
+            }}
           />
         )}
       </div>

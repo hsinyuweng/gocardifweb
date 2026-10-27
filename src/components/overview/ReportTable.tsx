@@ -15,6 +15,8 @@ interface ReportTableProps {
   sortDir: SortDir;
   onSort: (key: SortKey) => void;
   onOpen: (reportId: string) => void;
+  /** 從報告頁回來時標亮的那一列 */
+  highlightId?: string | null;
   /** 未審閱的 report_id */
   unreadIds: ReadonlySet<string>;
 }
@@ -65,7 +67,7 @@ function BlockerCell({ counts }: { counts: BlockerCounts }) {
 }
 
 /** 案件表格（第 11.2 節第 4 點） */
-export function ReportTable({ rows, sortKey, sortDir, onSort, onOpen, unreadIds }: ReportTableProps) {
+export function ReportTable({ rows, sortKey, sortDir, onSort, onOpen, unreadIds, highlightId = null }: ReportTableProps) {
   const handleKey = (e: KeyboardEvent, id: string | null) => {
     if (id && (e.key === 'Enter' || e.key === ' ')) {
       e.preventDefault();
@@ -99,9 +101,9 @@ export function ReportTable({ rows, sortKey, sortDir, onSort, onOpen, unreadIds 
                 tabIndex={clickable ? 0 : undefined}
                 onClick={clickable ? () => onOpen(r.reportId as string) : undefined}
                 onKeyDown={(e) => handleKey(e, r.reportId)}
-                className={`border-b border-slate-100 last:border-b-0 ${
+                className={`border-b border-slate-100 transition-colors duration-700 last:border-b-0 ${
                   clickable ? 'cursor-pointer hover:bg-slate-50 focus:bg-slate-50 focus:outline-none' : ''
-                }`}
+                } ${r.reportId !== null && r.reportId === highlightId ? 'bg-p-pale' : ''}`}
               >
                 <td className="px-3 py-2">
                   <div className="font-semibold text-slate-900">

@@ -20,4 +20,6 @@
 - 進下一頁時用 `location.state.from` 帶來源網址，麵包屑據此決定上一層（`lib/ownerParam.ts` 的 `readFromPath`、`readFromState`）。
 - 我的待辦：點單位按鈕 push（上一頁回選單位畫面）；下拉切換 replace。
 - 報告頁 E 區分頁列右側「↑ 回到三面向」捲回 C 區。
+- **報告頁最上方**（2026-10-27 V3，`components/report/ReportNav.tsx`）：左「← 回競品研究」，依來源改字（回追蹤清單／回新聞與法規監控／回我的待辦／回市場總覽）。站內點進來的用瀏覽器上一頁返回；直接打開網址的連到來源頁（沒有來源時 `#/research`）。右「‹ 上一份 3 / 9 下一份 ›」：順序由競品研究清單帶入 `location.state.order`（目前篩選與排序的快照，看過的報告不會從順序中消失）；從其他頁進來時用競品研究預設排序（產出日期新到舊）。切換報告用 replace，所以上一頁與「← 回…」都直接回清單；網址的 `?owner=` 保留。列印不顯示。
+- **回到競品研究清單**：離開前把捲動位置存進 sessionStorage（`gocardifweb.listScroll`，只對同一個篩選網址有效，用過即清），最後看的報告（`gocardifweb.lastReport`）那一列淡黃底標亮 2 秒（`lib/listReturn.ts`）。
 - 全部報告由 `RootLayout` 需要時讀一次（`data/allReports.ts`，`useAllReports()`）。

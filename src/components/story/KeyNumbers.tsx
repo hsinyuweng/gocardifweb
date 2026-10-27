@@ -11,7 +11,9 @@ export function KeyNumbers({ items }: { items: KeyNumber[] }) {
           <p className="truncate text-[12.5px] text-muted" title={k.label}>
             {k.label}
           </p>
-          <p className={`text-[30px] leading-tight font-medium tabular-nums ${k.coral ? 'text-coral' : 'text-ink'}`}>{k.value}</p>
+          <p className={`truncate text-[30px] leading-tight font-medium tabular-nums ${k.coral ? 'text-coral' : 'text-ink'}`} title={k.value}>
+            {k.value}
+          </p>
           {k.note ? <p className="text-[12.5px] text-ink2">{k.note}</p> : null}
           {k.spark ? (
             <span className="mt-1.5 block text-p-mid">
