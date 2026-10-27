@@ -1,4 +1,6 @@
 import { useRef, useState } from 'react';
+import { Link } from 'react-router';
+import { OWNER_PARAM } from '../../lib/ownerParam';
 import type { ModuleKey, ReportViewModel } from '../../types/viewModel';
 import { zhTW } from '../../i18n/zh-TW';
 import { matchesOwner } from '../../lib/owner';
@@ -28,6 +30,8 @@ interface ReportViewProps {
   /** 負責單位篩選；null 表示「全部」 */
   owner: string | null;
   onOwnerChange: (owner: string | null) => void;
+  /** 進我的待辦時帶的 location.state（麵包屑回到這份報告） */
+  tasksLinkState: unknown;
 }
 
 /** 篩選後沒有項目時：原本就沒有 →「無」；被篩掉 → 提示 */
@@ -42,7 +46,7 @@ const toggleClass = 'text-[13px] text-ink2 hover:text-ink hover:underline print:
  * ① 頁首 ② 整體建議＋一句摘要 ③ 三面向＋待解決件數 ④ 判斷理由、待解決事項（先列重大與阻斷）
  * ⑤ 建議下一步（先列 5 項）＋往下看 → 細節：三面向分頁、資料品質、資料缺口。列印時全部展開。
  */
-export function ReportView({ vm, owner, onOwnerChange }: ReportViewProps) {
+export function ReportView({ vm, owner, onOwnerChange, tasksLinkState }: ReportViewProps) {
   const [activeTab, setActiveTab] = useState<ModuleKey>('market_demand');
   const [allBlockers, setAllBlockers] = useState(false);
   const [allSteps, setAllSteps] = useState(false);
@@ -96,8 +100,18 @@ export function ReportView({ vm, owner, onOwnerChange }: ReportViewProps) {
               {t.blockersTitle}
               {ownerNote ? <span className="ml-3 hidden text-xs font-normal text-ink2 print:inline">{ownerNote}</span> : null}
             </span>
-            <span className="text-sm font-normal">
+            <span className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm font-normal">
               <OwnerFilter options={vm.ownerOptions} selected={owner} onChange={onOwnerChange} />
+              {/* 我的待辦已從導覽收起（2026-10-27 V6），只從這裡進入 */}
+              {owner !== null ? (
+                <Link
+                  to={`/tasks?${OWNER_PARAM}=${encodeURIComponent(owner)}`}
+                  state={tasksLinkState}
+                  className="text-[13px] text-ink2 hover:text-ink hover:underline print:hidden"
+                >
+                  {t.ownerAllProducts(owner)}
+                </Link>
+              ) : null}
             </span>
           </span>
         }

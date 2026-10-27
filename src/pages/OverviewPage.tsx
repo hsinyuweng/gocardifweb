@@ -22,10 +22,19 @@ import {
 } from '../lib/overviewFilter';
 import { errorText, useBreadcrumb, useIndexState } from './pageChrome';
 import { PageHeader } from '../components/layout/PageHeader';
+import { HBarList } from '../components/charts/HBarList';
+import { ModuleSignalTable } from '../components/overview/ModuleSignalTable';
+import { KeyNumbers } from '../components/story/KeyNumbers';
+import { Lead } from '../components/story/Lead';
+import { NextStep } from '../components/story/NextStep';
+import { ChartTitle, DetailDivider, StorySection } from '../components/story/StorySection';
+import { researchHeading, researchHeadline, researchNumbers } from '../lib/researchStory';
 
 const t = zhTW.overview;
+const s = t.story;
+const LIST_ID = 'research-all';
 
-/** 競品研究：全部報告表格（第 11.2 節，原案件總覽） */
+/** 競品研究：第一個畫面照閱讀路徑（2026-10-27 V6：結論、數字、建議分布與三面向燈號、下一步），下方是全部報告表格（第 11.2 節） */
 export function OverviewPage() {
   const navigate = useNavigate();
   const indexState = useIndexState();
@@ -95,8 +104,35 @@ export function OverviewPage() {
   } else if (vm && vm.rows.length === 0) {
     body = <StatusMessage tone="info" message={t.empty} />;
   } else if (vm) {
+    const story = vm.rows.length > 0 ? (
+      <>
+        <Lead parts={researchHeadline(vm.rows, unreadIds.size)} />
+        <KeyNumbers items={researchNumbers(vm.rows, vm.recommendationGroups, unreadIds.size)} />
+        <StorySection heading={researchHeading(vm.rows, vm.recommendationGroups)}>
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
+            <div>
+              <ChartTitle>{s.charts.recommendation}</ChartTitle>
+              <HBarList
+                ariaLabel={s.charts.recommendation}
+                unit={s.unit}
+                rows={[...vm.recommendationGroups]
+                  .sort((x, y) => y.count - x.count)
+                  .map((g) => ({ key: g.key ?? 'none', name: g.label ?? s.missing, value: g.count }))}
+              />
+            </div>
+            <div>
+              <ChartTitle>{s.charts.modules}</ChartTitle>
+              <ModuleSignalTable rows={vm.rows} />
+            </div>
+          </div>
+        </StorySection>
+        <NextStep down={{ label: s.down(vm.rows.length), targetId: LIST_ID }} />
+        <DetailDivider id={LIST_ID} label={s.allReports} />
+      </>
+    ) : null;
     body = (
       <div className="space-y-4">
+        {story}
         <RecommendationBar
           groups={vm.recommendationGroups}
           selected={filters.recommendation}

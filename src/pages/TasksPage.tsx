@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useSyncExternalStore } from 'react';
-import { Link, useSearchParams } from 'react-router';
+import { Link, useLocation, useSearchParams } from 'react-router';
 import { StatusMessage } from '../components/common/StatusMessage';
 import { OwnerFilter } from '../components/report/OwnerFilter';
 import { OwnerPicker } from '../components/tasks/OwnerPicker';
 import { TaskGroupCard } from '../components/tasks/TaskGroupCard';
 import { zhTW } from '../i18n/zh-TW';
-import { OWNER_PARAM, ownerParamValue, requestedOwner as resolveOwner } from '../lib/ownerParam';
+import { OWNER_PARAM, ownerParamValue, readFromPath, readFromState, requestedOwner as resolveOwner } from '../lib/ownerParam';
 import { readOwnerPreference, subscribeOwnerPreference } from '../lib/ownerPreference';
 import { countOwners, groupTasks, summarizeTasks } from '../lib/tasks';
 import { errorText, useAllReports, useBreadcrumb, useIndexState } from './pageChrome';
@@ -13,9 +13,18 @@ import { PageHeader } from '../components/layout/PageHeader';
 
 const t = zhTW.tasks;
 
-/** 我的待辦（規格外功能，2026-10-18 經確認）：跨報告依負責單位彙整 */
+/** 我的待辦（規格外功能，2026-10-18 經確認；2026-10-27 V6 從導覽收起，只從報告頁進入）：跨報告依負責單位彙整 */
 export function TasksPage() {
-  useBreadcrumb([{ label: zhTW.nav.tasks }]);
+  // 從報告頁「看○○在所有商品的事項 →」進來（2026-10-27 V6 收起導覽後唯一入口）：麵包屑「商品 / 我的待辦」
+  const location = useLocation();
+  const from = readFromPath(location.state);
+  const label = (location.state as { fromLabel?: unknown } | null)?.fromLabel;
+  const self = { label: zhTW.nav.tasks };
+  useBreadcrumb(
+    from?.startsWith('/report/')
+      ? [{ label: typeof label === 'string' ? label : from, to: from, state: readFromState(location.state) }, self]
+      : [self],
+  );
   const indexState = useIndexState();
   const allState = useAllReports();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -35,9 +44,9 @@ export function TasksPage() {
   /** replace：下拉切換不新增瀏覽紀錄；選單位按鈕則新增，按上一頁可回到選單位畫面 */
   const setOwnerParam = useCallback(
     (next: string | null, replace: boolean) => {
-      setSearchParams({ [OWNER_PARAM]: ownerParamValue(next) }, { replace });
+      setSearchParams({ [OWNER_PARAM]: ownerParamValue(next) }, { replace, state: location.state });
     },
-    [setSearchParams],
+    [setSearchParams, location.state],
   );
 
   // 由我的單位取得的值同步寫入網址，方便分享
@@ -64,7 +73,7 @@ export function TasksPage() {
     );
   } else {
     const allUnitsLink = (
-      <Link to={`/tasks?${OWNER_PARAM}=`} className="text-navy-700 hover:underline print:hidden">
+      <Link to={`/tasks?${OWNER_PARAM}=`} state={location.state} className="text-navy-700 hover:underline print:hidden">
         {t.allUnits}
       </Link>
     );

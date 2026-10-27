@@ -103,7 +103,7 @@
   - 其他欄位不變：`id`、`title`、`summary`、`source`、`url`、`published_at`、`country`、`product_category`。
 - `market-pulse.json`（schema 2.1＝2.0＋每個指標的 `stale`）：
   - 檔案：`schema_version`（`"2.1"`）、`generated_at`、`focus_summary`（`{ "text", "as_of" }`，也接受純字串；缺漏時不顯示本月焦點）、`metrics`。
-  - 每個指標共同欄位：`key`、`group`（`growth` 成長動能、`pricing` 定價環境、`channel` 通路結構、`health` 健康度、`brand` 品牌與競爭；缺漏或其他值當作 `growth`）、`type`（`trend`、`multi_line`、`share`、`timeline`；缺漏或其他值當作 `trend`）、`featured`（`true` 顯示在首頁，只限 `trend`，最多 2 個）、`label`、`unit`（`%`、`新台幣元`、`萬分比`、`名`，其他照原文）、`source`、`source_url`、`as_of`、`stale`（`true` 顯示「資料較舊」，後端判斷；`_status` 前端不讀）。
+  - 每個指標共同欄位：`key`、`group`（`growth` 成長動能、`pricing` 定價環境、`channel` 通路結構、`health` 健康度、`brand` 品牌與競爭；缺漏或其他值當作 `growth`）、`type`（`trend`、`multi_line`、`share`、`timeline`；缺漏當作 `trend`；其他值略過，2026-10-27 起，讓後端可先交 2.2 的 `ranking`）、`featured`（`true` 顯示在首頁，只限 `trend`，最多 2 個）、`label`、`unit`（`%`、`新台幣元`、`萬分比`、`名`，其他照原文）、`source`、`source_url`、`as_of`、`stale`（`true` 顯示「資料較舊」，後端判斷；`_status` 前端不讀）。
   - `trend`：`latest_value`、`change_pct`（`null` 時不顯示變化）、`change_unit`（`pct` 百分比，預設；`pp` 百分點）、`change_label`、`series`（`[{ period, value }]`，由舊到新；`period` 可為 `2026-08`、`2026-Q3`、`2026-W43`）。
   - `multi_line`：`lines`（`[{ name, series }]`，最多 4 條，共用同一個 `unit`）。
   - `share`：`periods`（`[{ period, parts: [{ name, share_pct, growth_pct? }] }]`，由舊到新；`growth_pct` 是年增率，沒有去年同期時 `null`；最多 4 項，超過的前端合併為「其他」；不滿 6 期前端註「資料累積中」）。

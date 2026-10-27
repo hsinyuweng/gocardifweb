@@ -39,7 +39,7 @@ export interface RawPulseMetric {
   key?: Nullable<string>;
   /** growth、pricing、channel、health、brand；缺漏或其他值當作 growth */
   group?: Nullable<string>;
-  /** trend、multi_line、share、timeline；缺漏或其他值當作 trend */
+  /** trend、multi_line、share、timeline；缺漏當作 trend，其他值（例如 2.2 的 ranking）略過 */
   type?: Nullable<string>;
   /** true 時顯示在首頁（最多 2 個） */
   featured?: Nullable<boolean>;

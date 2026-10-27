@@ -131,8 +131,7 @@ export function Sidebar({ meta, showRoadmapNav, myUnit, mobileOpen, onClose }: S
           <NavItem to="/news" theme="news" label={t.news} />
           <NavItem to="/watchlist" theme="watch" label={t.watchlist} />
           <NavItem to="/research" theme="research" label={t.overview} />
-          {/* 規格外新增（2026-10-18 經確認，修改第 10.1 節） */}
-          <NavItem to="/tasks" theme="plain" label={t.tasks} />
+          {/* 我的待辦 2026-10-27 V6 從導覽收起（只從報告頁負責單位篩選旁進入，網址照舊） */}
           <NavItem to="/guide" theme="plain" label={t.guide} />
         </ul>
 

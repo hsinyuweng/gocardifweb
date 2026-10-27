@@ -87,7 +87,7 @@ function points(series: RawPulsePoint[] | null | undefined): PulsePointViewModel
   });
 }
 
-function normalizeMetric(m: RawPulseMetric, i: number): PulseMetricViewModel {
+function normalizeMetric(m: RawPulseMetric, i: number): PulseMetricViewModel | null {
   const g = str(m.group);
   const base = {
     key: str(m.key) ?? `metric-${i}`,
@@ -132,6 +132,8 @@ function normalizeMetric(m: RawPulseMetric, i: number): PulseMetricViewModel {
         .sort((a, b) => (a.date ?? '￿').localeCompare(b.date ?? '￿')),
     };
   }
+  // 不認得的 type（例如 schema 2.2 的 ranking，網站尚未支援）略過，不當成單線趨勢
+  if (type !== null && type !== 'trend') return null;
   // 舊格式沒有 type：當作單線趨勢
   return {
     ...base,
@@ -155,6 +157,6 @@ export function normalizeMarketPulse(pulse: MarketPulse): MarketPulseViewModel {
   return {
     generatedAt: formatDateTimeTaipei(str(pulse.generated_at)),
     focus: focusSummary(pulse.focus_summary),
-    metrics: objList(pulse.metrics).map(normalizeMetric),
+    metrics: objList(pulse.metrics).flatMap((m, i) => normalizeMetric(m, i) ?? []),
   };
 }

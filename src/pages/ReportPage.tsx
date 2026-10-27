@@ -171,7 +171,12 @@ export function ReportPage() {
             actionSlot,
           )
         : null}
-      <ReportView vm={state.vm} owner={owner} onOwnerChange={setOwnerParam} />
+      <ReportView
+        vm={state.vm}
+        owner={owner}
+        onOwnerChange={setOwnerParam}
+        tasksLinkState={{ from: location.pathname + location.search, fromState: location.state, fromLabel: orDash(state.vm.summary.name) }}
+      />
     </div>
   );
 }
