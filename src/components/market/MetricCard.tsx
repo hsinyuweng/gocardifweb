@@ -36,7 +36,8 @@ function SourceLine({ m }: { m: PulseMetricViewModel }) {
 function Body({ m }: { m: PulseMetricViewModel }) {
   const digits = pulseDigits(m.group);
   const fmt = (v: number) => formatPulseValue(v, m.unit, digits);
-  const tick = (v: number) => formatPulseTick(v, m.unit);
+  // 2 位小數的指標（利率等）刻度也用 2 位，避免「2%」「2.05%」混用
+  const tick = (v: number) => (m.unit === '%' && digits === 2 ? fmt(v) : formatPulseTick(v, m.unit));
   const label = orDash(m.label);
   if (m.type === 'trend') {
     return (

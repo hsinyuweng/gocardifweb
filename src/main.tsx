@@ -31,6 +31,7 @@ createRoot(document.getElementById('root')!).render(
             <Route index element={<MarketHomePage />} />
             <Route path="news" element={<NewsPage />} />
             <Route path="market" element={<MarketPage />} />
+            <Route path="market/:tab" element={<MarketPage />} />
             <Route path="watchlist" element={<WatchlistPage />} />
             <Route path="research" element={<OverviewPage />} />
             <Route path="cases" element={<CasesRedirect />} />

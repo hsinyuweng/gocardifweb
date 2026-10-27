@@ -5,13 +5,13 @@
 ## 1. 現況
 
 - 網站：https://hsinyuweng.github.io/gocardifweb/（repo `hsinyuweng/gocardifweb`，`main` push 後自動部署）
-- 頁面：首頁「市場總覽」四區塊、新聞與法規監控 `#/news`、市場脈動 `#/market`、追蹤清單 `#/watchlist`、競品研究 `#/research`、報告頁、我的待辦、使用說明（見 `architecture/overview.md`）
+- 頁面：首頁「市場總覽」四框、新聞與法規監控 `#/news`、市場脈動 `#/market`（＋分頁 `#/market/:tab`）、追蹤清單 `#/watchlist`、競品研究 `#/research`、報告頁、我的待辦、使用說明（見 `architecture/overview.md`）
 - 2026-10-20 新規劃：階段 1（導覽與競品研究）、2（追蹤清單）、3（新聞與法規監控；加入追蹤按鈕移到固定頂部列）、4（市場脈動：schema 2.0 草案、首頁 1–2 指標、`#/market` 五組）、5A（先讀後端新欄位：數值分數、完成時間、來源與可信度、品牌定位、未跑原因）已完成；2026-10-26 追蹤清單改為法規可行性、市場規模、市場成長三維度（S10 評分方法 1.0）
 - 市場資料：`public/data/feed.json`（schema 1.2）、`public/data/market-pulse.json`（schema 2.1）是塗 2026-10-26 交付的第一份真實資料，後端更新時直接換檔；已知資料問題見 `progress/data-status.md`。示意資料仍在 `examples/`
 
 ## 2. 下一步
 
-**進行中：視覺改版**（2026-10-27 起）。先讀 `architecture/diagrams/2026-10-27_視覺改版規劃.md`（第 11 節是實作決定），並用瀏覽器打開同資料夾的第 7 版樣稿 HTML。**V1 已完成**（全站配色、白底導覽、每頁頁首與底色、首頁一句結論＋四框）。下一步 **V2**：市場脈動分頁，開工前先出計畫等使用者「確認」。
+**進行中：視覺改版**（2026-10-27 起）。先讀 `architecture/diagrams/2026-10-27_視覺改版規劃.md`（第 11 節是實作決定），並用瀏覽器打開同資料夾的第 7 版樣稿 HTML。**V1、V2 已完成**（全站配色、白底導覽、每頁頁首與底色、首頁一句結論＋四框；市場脈動總覽＋分頁 `#/market/:tab`）。剩下：新聞頁第一個畫面加圖（規劃檔第 10 節第 7 步），以及等塗補 schema 2.2（金額、同業排名）後加圖。
 
 等後端的項目（剩餘階段在 `backlog/roadmap.md`）：**階段 5B**（競品比較表——已請組員提供跑過 `enrich_reports.py` 的完整報告、每日快照自動抓取、下一步對應待解決事項），要等後端交付範例；交付時先看後端需求文件的「交付紀錄」與 `format_variant`（連結在 `backlog/roadmap.md` 第 4 節）。
 

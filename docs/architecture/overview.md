@@ -8,7 +8,7 @@
 |---|---|---|
 | `#/` | 市場總覽：一句結論＋四框（市場脈動、新聞與法規監控、追蹤清單、競品研究，整框可點） | `pages/MarketHomePage.tsx` |
 | `#/news` | 新聞與法規監控：頁籤、影響篩選寫進網址（`tab`、`affects`） | `pages/NewsPage.tsx` |
-| `#/market` | 市場脈動：本月焦點＋五組指標 | `pages/MarketPage.tsx` |
+| `#/market`、`#/market/:tab` | 市場脈動：總覽＋各組分頁（growth、pricing、channel、health、brand；只顯示有指標的組，其他 replace 回總覽） | `pages/MarketPage.tsx` |
 | `#/watchlist` | 追蹤清單：權重滑桿、綜合分數排序 | `pages/WatchlistPage.tsx` |
 | `#/research` | 競品研究：全部報告，篩選與排序寫進網址（`q`、`country`、`category`、`rec`、`unread`、`sort`、`dir`） | `pages/OverviewPage.tsx` |
 | `#/cases` | 舊網址，replace 轉到 `#/research`（保留查詢字串） | `main.tsx` |
@@ -38,6 +38,7 @@
         ─ 市場脈動「看全部 →」▶ 市場脈動                        麵包屑「市場總覽 / 市場脈動」
         ─ 新聞標題 ───────────▶ 外部原文（新分頁）
 競品研究 ─ 點一列 ───────────▶ 報告頁                          麵包屑「競品研究 / 商品」，回到原篩選
+市場脈動總覽 ─ 頁籤／卡片／下一步 ▶ 分頁（push）              麵包屑「市場總覽 / 市場脈動 / 分頁」，「市場脈動」回總覽
 新聞頁 ─ 受影響商品 ─────────▶ 報告頁                          麵包屑「新聞與法規監控 / 商品」，回到原頁籤
 追蹤清單 ─ 商品名稱 ─────────▶ 報告頁                          麵包屑「追蹤清單 / 商品」，權重不變
 報告頁 ─ 看追蹤清單 → ───────▶ 追蹤清單                        麵包屑「商品 / 追蹤清單」
@@ -86,9 +87,9 @@ src/
 ├── components/
 │   ├── layout/              AppShell（依網址設 data-theme，整頁底色）、Sidebar、TopBar、PageHeader（每頁頁首）
 │   ├── common/              SignalLabel、StatusMessage、PageIcon（頁面圖示）
-│   ├── charts/              MarketSizingBar、RegulatoryDistributionBar、Sparkline、LineChart、ShareBars、Timeline、ColumnChart、BigShareBar（純 CSS／SVG，不用套件）
-│   ├── story/               閱讀路徑元件：Lead（一句結論）
-│   ├── market/              市場脈動頁的指標卡片
+│   ├── charts/              MarketSizingBar、RegulatoryDistributionBar、Sparkline、LineChart、ShareBars、Timeline、ColumnChart、BigShareBar、DivergingBars、StackedColumns（純 CSS／SVG，不用套件）
+│   ├── story/               閱讀路徑元件：Lead（一句結論）、KeyNumbers、StorySection、NextStep
+│   ├── market/              市場脈動分頁頁籤（MarketTabs）、指標卡片
 │   ├── news/                新聞與法規監控（標籤、每則）
 │   ├── home/                市場總覽四框（HomeCard 整框可點）
 │   ├── overview/            競品研究頁（原案件總覽）
@@ -103,6 +104,6 @@ scripts/                     sync-reports.mjs（匯入報告、feed、market-pul
 
 - 每頁代表色（`lib/pageTheme.ts` → `data-theme`，色碼在 `index.css`）：首頁靛藍、新聞薄荷綠、市場脈動天空藍、追蹤清單薰衣草、競品研究奶油黃、其他頁中性淡灰藍。整頁底色是代表色極淡色，白卡片；Tailwind 用 `bg-p`、`bg-p-mid`、`bg-p-pale`、`bg-p-faint`、`border-p`、`fill-p-mid`。
 - 珊瑚 `coral` 只標每個畫面最重要的一點；文字色 `ink`、`ink2`、`muted`，框線 `line`。字型 Noto Sans TC（Google Fonts，失敗時系統字）。
-- 燈號一律「色點＋文字」。漲跌用 ▲▼ 加文字。市場脈動頁的多系列圖表仍用藍紫系 4 色（`lib/chartPalette.ts`，V2 改版時換）。
-- 每頁頁首 `PageHeader`；首頁 1440×900 一個畫面看完。寬度 ≥1024px（`lg`）才顯示側邊導覽。
+- 燈號一律「色點＋文字」。漲跌用 ▲▼ 加文字。新圖表用代表色深淺＋珊瑚；細節區的指標卡片（多線、占比）仍用藍紫系 4 色（`lib/chartPalette.ts`）。
+- 每頁頁首 `PageHeader`；首頁與市場脈動總覽 1440×900 一個畫面看完。寬度 ≥1024px（`lg`）才顯示側邊導覽。
 - 每個頁面在 390px 寬時都不能整頁左右捲動。

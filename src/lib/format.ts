@@ -108,22 +108,28 @@ function fixed(value: number, digits: number): string {
 }
 
 /**
- * 市場脈動的變化：百分比「▲ 3.2%」（1 位小數）；
- * 百分點跟著指標的小數位（digits，見 lib/pulse.ts 的 pulseDigits）：「▼ 41.2 個百分點」「▼ 0.02 個百分點」；
- * 沒給 digits 時最多 2 位並去掉多餘的 0。
- * 四捨五入後為 0 顯示「— 0%」「— 0 個百分點」；null 顯示「—」
+ * 市場脈動的變化，拆成數字與單位（數字磚用）：{ value: '▼ 41.2', unit: '個百分點' }、{ value: '▲ 3.2%', unit: '' }。
+ * 百分比 1 位小數；百分點跟著指標的小數位（digits，見 lib/pulse.ts 的 pulseDigits），沒給時最多 2 位並去掉多餘的 0。
+ * 四捨五入後為 0 時 value 為「— 0」；null 時為「—」。
  */
-export function pulseChangeText(change: number | null, unit: 'pct' | 'pp' = 'pct', digits?: number): string {
+export function pulseChangeParts(change: number | null, unit: 'pct' | 'pp' = 'pct', digits?: number): { value: string; unit: string } {
   const t = zhTW.market.change;
-  if (change === null) return zhTW.common.dash;
+  const unitText = unit === 'pp' ? t.ppUnit : '';
+  if (change === null) return { value: zhTW.common.dash, unit: '' };
   const d = unit === 'pp' ? (digits ?? 2) : 1;
-  if (Math.abs(change) + 1e-9 < 0.5 * 10 ** -d) return unit === 'pp' ? t.flatPp : t.flatPct;
+  const pctSuffix = unit === 'pct' ? '%' : '';
+  if (Math.abs(change) + 1e-9 < 0.5 * 10 ** -d) return { value: `${t.flat}${pctSuffix}`, unit: unitText };
   const abs =
     unit === 'pp' && digits === undefined
       ? new Intl.NumberFormat('zh-TW', { maximumFractionDigits: 2 }).format(Math.abs(change))
       : fixed(Math.abs(change), d);
-  if (unit === 'pp') return change > 0 ? t.upPp(abs) : t.downPp(abs);
-  return change > 0 ? t.upPct(abs) : t.downPct(abs);
+  return { value: `${change > 0 ? t.up : t.down} ${abs}${pctSuffix}`, unit: unitText };
+}
+
+/** 市場脈動的變化一整句：「▲ 3.2%」「▼ 41.2 個百分點」「— 0 個百分點」；null 顯示「—」 */
+export function pulseChangeText(change: number | null, unit: 'pct' | 'pp' = 'pct', digits?: number): string {
+  const p = pulseChangeParts(change, unit, digits);
+  return p.unit ? `${p.value} ${p.unit}` : p.value;
 }
 
 /** 有效位數：整數部分 ≥ 100 不留小數，≥ 10 留 1 位，其餘留 2 位（去掉多餘的 0） */

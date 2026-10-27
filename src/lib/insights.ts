@@ -1,11 +1,23 @@
-import type { MarketPulseViewModel, PulseGroup, PulseMetricViewModel, PulseShareViewModel } from '../types/viewModel';
+import type { MarketPulseViewModel, PulseMetricViewModel } from '../types/viewModel';
 import { zhTW } from '../i18n/zh-TW';
-import { formatPulsePeriod, formatPulseValue, formatSharePct } from './format';
-import { homeMetrics, pulseDigits } from './pulse';
+import { formatSharePct, orDash, pulseChangeText } from './format';
+import { homeMetrics, metricsByGroup, PULSE_GROUP_ORDER } from './pulse';
+import {
+  biggestShareShift,
+  growthLeaders,
+  mainTrend,
+  periodText,
+  periodUnit,
+  shareMetrics,
+  signMatters,
+  streak,
+  trendDigits,
+  trendValue,
+} from './marketStory';
 import type { RecentFeed } from './feedSummary';
 
 // 一句結論（閱讀路徑 ②，2026-10-27 視覺改版）：只用資料裡的數字，單位與小數位照 lib/format.ts。
-// 之後後端若給 headline，優先用後端的句子。
+// 挑選順序：連續期數（連續 N 個月為正）優先，再來是一般變化（較上期 ▲▼）。之後後端若給 headline，優先用後端的句子。
 
 /** 一句結論的片段；strong 的片段用珊瑚色（本頁最重要的一點） */
 export interface HeadlinePart {
@@ -13,31 +25,14 @@ export interface HeadlinePart {
   strong?: boolean;
 }
 
+/** 一句結論與它用到的指標（數字磚上同一個指標也用珊瑚色） */
+export interface Headline {
+  parts: HeadlinePart[];
+  metricKey: string | null;
+}
+
 const t = zhTW.insights;
-
-/** 期間的口語寫法：「2026-08」→「8 月」；週「2026-W43」→「10/19 當週」；其他照原文 */
-export function periodText(period: string | null): string | null {
-  if (period === null) return null;
-  const m = /^\d{4}-(\d{2})$/.exec(period);
-  if (m) return t.month(+m[1]!);
-  return formatPulsePeriod(period);
-}
-
-/** 占比變化最大的項目（最近兩期，依名稱比對）；變化不到 0.05 個百分點時為 null */
-function biggestShareShift(metrics: PulseMetricViewModel[], group: PulseGroup) {
-  const shares = metrics.filter((m): m is PulseShareViewModel => m.type === 'share' && m.periods.length >= 2);
-  const share = shares.find((m) => m.group === group) ?? shares[0];
-  if (!share) return null;
-  const [prev, last] = share.periods.slice(-2) as [PulseShareViewModel['periods'][number], PulseShareViewModel['periods'][number]];
-  let best: { name: string; sharePct: number; diff: number } | null = null;
-  for (const part of last.parts) {
-    const before = prev.parts.find((p) => p.name === part.name);
-    if (!part.name || !before) continue;
-    const diff = part.sharePct - before.sharePct;
-    if (best === null || Math.abs(diff) > Math.abs(best.diff)) best = { name: part.name, sharePct: part.sharePct, diff };
-  }
-  return best !== null && Math.abs(best.diff) >= 0.05 ? best : null;
-}
+const STREAK_MIN = 3;
 
 /**
  * 首頁結論：首頁指標「8 月新契約保費年增率 68.5%」＋占比變化最大的項目「，年金保險占比回落到 33.6%」；
@@ -47,11 +42,10 @@ export function homeHeadline(pulse: MarketPulseViewModel | null, news: RecentFee
   const m = pulse ? homeMetrics(pulse.metrics)[0] : undefined;
   if (pulse && m && m.label && m.latestValue !== null) {
     const period = periodText(m.points.at(-1)?.period ?? null);
-    const parts: HeadlinePart[] = [
-      { text: t.lead(period, m.label) },
-      { text: formatPulseValue(m.latestValue, m.unit, pulseDigits(m.group)), strong: true },
-    ];
-    const shift = biggestShareShift(pulse.metrics, m.group);
+    const parts: HeadlinePart[] = [{ text: t.lead(period, m.label) }, { text: trendValue(m, m.latestValue), strong: true }];
+    const groupShares = shareMetrics(metricsByGroup(pulse.metrics).get(m.group)!);
+    const share = groupShares[0] ?? shareMetrics(pulse.metrics)[0];
+    const shift = share ? biggestShareShift(share) : null;
     if (shift) {
       const v = formatSharePct(shift.sharePct);
       parts.push({ text: shift.diff > 0 ? t.shareUp(shift.name, v) : t.shareDown(shift.name, v) });
@@ -60,4 +54,52 @@ export function homeHeadline(pulse: MarketPulseViewModel | null, news: RecentFee
   }
   if (news && news.items.length > 0) return [{ text: t.news(news.items.length, news.regulation) }];
   return null;
+}
+
+/**
+ * 市場脈動總覽：成長動能（沒有時用第一個有單線指標的組）的主要指標
+ * 「新契約保費年增率連續 8 個月為正」（不到 3 期時「8 月新契約保費年增率 68.5%」），
+ * ＋同組占比年增最快的項目「，年金保險年增 135.8% 最快」。
+ */
+export function overviewHeadline(metrics: PulseMetricViewModel[]): Headline | null {
+  const groups = metricsByGroup(metrics);
+  const g = PULSE_GROUP_ORDER.find((x) => mainTrend(groups.get(x)!)) ?? null;
+  if (g === null) return null;
+  const list = groups.get(g)!;
+  const m = mainTrend(list)!;
+  if (!m.label) return null;
+  const s = streak(m.points);
+  const parts: HeadlinePart[] =
+    signMatters(m) && s.n >= STREAK_MIN
+      ? [{ text: t.streak(m.label, s.n, periodUnit(m.points.at(-1)?.period ?? null), s.positive) }]
+      : [{ text: t.lead(periodText(m.points.at(-1)?.period ?? null), m.label) }, { text: trendValue(m, m.latestValue), strong: true }];
+  const lead = shareMetrics(list).map(growthLeaders).find((x) => x !== null);
+  if (lead) {
+    const hasStrong = parts.some((p) => p.strong);
+    parts.push({ text: t.comma });
+    parts.push({ text: t.fastest(lead.fastest.name!, formatSharePct(lead.fastest.growthPct!)), strong: !hasStrong });
+  }
+  return { parts, metricKey: m.key };
+}
+
+/**
+ * 分頁：主要指標「8 月新契約保費年增率 68.5%」＋「，連續 8 個月為正」（3 期以上）或「，較上週 ▼ 0.02 個百分點」；
+ * 只有占比時「壽險公司本身行銷體系占 46.4%，銀行經代保代通路 37.0%」。
+ */
+export function tabHeadline(list: PulseMetricViewModel[]): Headline | null {
+  const m = mainTrend(list);
+  if (m && m.label) {
+    const period = m.points.at(-1)?.period ?? null;
+    const parts: HeadlinePart[] = [{ text: t.lead(periodText(period), m.label) }, { text: trendValue(m, m.latestValue), strong: true }];
+    const s = streak(m.points);
+    if (signMatters(m) && s.n >= STREAK_MIN) parts.push({ text: t.streakTail(s.n, periodUnit(period), s.positive) });
+    else if (m.change !== null) parts.push({ text: t.changeTail(m.changeLabel, pulseChangeText(m.change, m.changeUnit, trendDigits(m))) });
+    return { parts, metricKey: m.key };
+  }
+  const share = shareMetrics(list)[0];
+  const top = [...(share?.periods.at(-1)?.parts ?? [])].sort((a, b) => b.sharePct - a.sharePct);
+  if (!share || top.length === 0) return null;
+  const parts: HeadlinePart[] = [{ text: t.shareTop(orDash(top[0]!.name)) }, { text: formatSharePct(top[0]!.sharePct), strong: true }];
+  if (top[1]) parts.push({ text: t.shareSecond(orDash(top[1].name), formatSharePct(top[1].sharePct)) });
+  return { parts, metricKey: share.key };
 }

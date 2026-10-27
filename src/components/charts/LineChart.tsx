@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { PulsePointViewModel } from '../../types/viewModel';
 import { SERIES_COLORS, SERIES_DASH } from '../../lib/chartPalette';
 import { formatPulsePeriod } from '../../lib/format';
+import { zhTW } from '../../i18n/zh-TW';
 import { useElementWidth } from './useElementWidth';
 
 // 市場脈動的折線圖（純 SVG，不用圖表套件）：單線或最多 4 條線，同一個 y 軸。
@@ -22,6 +23,11 @@ interface LineChartProps {
   invert?: boolean;
   /** 給螢幕閱讀器的說明 */
   ariaLabel: string;
+  /**
+   * 註記點（單線，2026-10-27 視覺改版 V2）：線用目前頁面代表色，標出最高點「2.02% 最高」，
+   * 最新一點珊瑚色並標數值。
+   */
+  annotate?: boolean;
 }
 
 const FONT = 11;
@@ -57,7 +63,7 @@ function spreadLabels(ys: number[], top: number, bottom: number): number[] {
   return out;
 }
 
-export function LineChart({ lines, formatValue, formatTick = formatValue, height = 168, invert = false, ariaLabel }: LineChartProps) {
+export function LineChart({ lines, formatValue, formatTick = formatValue, height = 168, invert = false, ariaLabel, annotate = false }: LineChartProps) {
   const [ref, width] = useElementWidth<HTMLDivElement>();
   const [hover, setHover] = useState<number | null>(null);
 
@@ -82,9 +88,10 @@ export function LineChart({ lines, formatValue, formatTick = formatValue, height
     const yMax = ticks[ticks.length - 1]!;
 
     const multi = lines.length > 1;
+    const notes = annotate && !multi;
     const left = Math.ceil(Math.max(...ticks.map((t) => textWidth(formatTick(t))))) + 8;
-    const right = multi ? Math.ceil(Math.max(...lines.map((l) => textWidth(l.name)))) + 12 : 10;
-    const top = 8;
+    const right = multi ? Math.ceil(Math.max(...lines.map((l) => textWidth(l.name)))) + 12 : notes ? 52 : 10;
+    const top = notes ? 18 : 8;
     const bottom = 22;
     const plotW = Math.max(40, width - left - right);
     const plotH = height - top - bottom;
@@ -146,14 +153,37 @@ export function LineChart({ lines, formatValue, formatTick = formatValue, height
               <polyline
                 points={pts.map((p) => `${x(p.i).toFixed(1)},${y(p.v).toFixed(1)}`).join(' ')}
                 fill="none"
-                stroke={SERIES_COLORS[li]}
+                stroke={notes ? undefined : SERIES_COLORS[li]}
+                className={notes ? 'stroke-p' : undefined}
                 strokeWidth="2"
                 strokeDasharray={SERIES_DASH[li]}
                 strokeLinejoin="round"
                 strokeLinecap="round"
               />
+              {notes && pts.length > 1
+                ? (() => {
+                    const peak = pts.reduce((a, b) => ((invert ? b.v < a.v : b.v > a.v) ? b : a));
+                    return peak !== lastPts[li] ? (
+                      <g>
+                        <circle cx={x(peak.i)} cy={y(peak.v)} r="4" fill="#fff" className="stroke-p" strokeWidth="2" />
+                        <text x={x(peak.i)} y={y(peak.v) - 9} textAnchor="middle" fontSize={12} className="fill-ink2">
+                          {`${formatValue(peak.v)} ${zhTW.market.highest}`}
+                        </text>
+                      </g>
+                    ) : null;
+                  })()
+                : null}
               {lastPts[li] ? (
-                <circle cx={x(lastPts[li].i)} cy={y(lastPts[li].v)} r="4" fill={SERIES_COLORS[li]} stroke="#fff" strokeWidth="2" />
+                notes ? (
+                  <g>
+                    <circle cx={x(lastPts[li].i)} cy={y(lastPts[li].v)} r="4.5" className="fill-coral" stroke="#fff" strokeWidth="1.5" />
+                    <text x={x(lastPts[li].i) + 9} y={y(lastPts[li].v)} dy="0.32em" fontSize={12} className="fill-ink font-medium">
+                      {formatValue(lastPts[li].v)}
+                    </text>
+                  </g>
+                ) : (
+                  <circle cx={x(lastPts[li].i)} cy={y(lastPts[li].v)} r="4" fill={SERIES_COLORS[li]} stroke="#fff" strokeWidth="2" />
+                )
               ) : null}
               {multi && lastPts[li] ? (
                 <text x={left + plotW + 8} y={labelYs[li]} dy="0.32em" fontSize={FONT} fill="#334155">
