@@ -11,6 +11,8 @@
 
 ## 2. 下一步
 
+**2026-10-28 待確認：只用現有資料改版**。規劃在 Claude Doc https://claude.ai/artifact/RmncqwTL79AdViGEmSGNAP（會刪掉什麼、網頁怎麼改、組員還要補什麼）；後端需求文件已同步（組員版總覽只剩 9 項、新增「暫停」段）。已決定：追蹤清單只比燈號、不算綜合分數；新聞頁改名「業界新聞」；沒資料的功能**畫面隱藏、程式保留**，設計全記在 `backlog/future-features.md`。使用者說「開始改」後才動程式；改完要同步更新本檔、`backlog/roadmap.md`、`decisions/market-dashboard.md`、`progress/data-status.md`。
+
 **視覺改版已完成**（2026-10-27，V1–V5）。先讀 `architecture/diagrams/2026-10-27_視覺改版規劃.md`（第 11 節是實作決定），並用瀏覽器打開同資料夾的第 7 版樣稿 HTML。**V1、V2 已完成**（全站配色、白底導覽、每頁頁首與底色、首頁一句結論＋四框；市場脈動總覽＋分頁 `#/market/:tab`）。**V3 已完成**（報告頁「← 回…」與上一份／下一份、回清單保留捲動位置並標亮、新聞頁第一個畫面）。**V4 已完成**（追蹤清單比較表＋看重預設、報告頁照閱讀路徑重排）。**V5 已完成**（市場脈動總覽改重點指標卡＋指標表、分頁細節改指標表；新聞清單改日期膠囊＋依領域分組；規劃檔第 13 節）。**V6 已完成**（競品研究第一個畫面照閱讀路徑、使用說明更新、我的待辦從導覽收起、schema 2.2 寫進後端需求文件 M7；規劃檔第 14 節）。下一批待使用者決定。等塗交 schema 2.2（金額、同業排名、10 年債日資料）後加圖。
 
 等後端的項目（剩餘階段在 `backlog/roadmap.md`）：**階段 5B**（競品比較表——已請組員提供跑過 `enrich_reports.py` 的完整報告、每日快照自動抓取、下一步對應待解決事項），要等後端交付範例；交付時先看後端需求文件的「交付紀錄」與 `format_variant`（連結在 `backlog/roadmap.md` 第 4 節）。
@@ -27,7 +29,7 @@
 | 我的待辦、負責單位、麵包屑 | `decisions/tasks-owner-backnav.md` |
 | 資料層、JSON、後端串接 | `spec/web-spec.md` 第 6–8 節、`spec/api-contract.md`、`progress/data-status.md` |
 | 部署、套件、測試 | `guides/environment.md` |
-| 規劃新方向、後端需求 | `backlog/roadmap.md`、`backlog/open-questions.md` |
+| 規劃新方向、後端需求、恢復隱藏功能 | `backlog/roadmap.md`、`backlog/future-features.md`、`backlog/open-questions.md` |
 
 ## 4. 改動後：要更新的檔
 
@@ -46,7 +48,7 @@ spec/            正式規格（修改要使用者同意）：web-spec.md、api-
 architecture/    overview.md（現在的頁面、路由、資料流、程式目錄）；diagrams/（使用者的規劃圖，PDF＋.md 文字版；視覺改版規劃與樣稿 HTML）
 decisions/       已確認的介面文字與實作規則：market-dashboard、tasks-owner-backnav、spec-stages、deviations
 progress/        data-status.md（現有報告與資料問題）
-backlog/         roadmap.md（未來架構與分階段計畫）、open-questions.md
+backlog/         roadmap.md（未來架構與分階段計畫）、future-features.md（等資料才做、先隱藏的功能）、open-questions.md
 guides/          collaboration.md（合作方式、導覽原則）、environment.md（環境、驗證方法）
 examples/        JSON 範例；references/ 舊原型截圖，不必讀
 ```
