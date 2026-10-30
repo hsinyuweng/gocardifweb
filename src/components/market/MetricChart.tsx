@@ -4,6 +4,7 @@ import { MAX_SERIES } from '../../lib/chartPalette';
 import { pulseDigits } from '../../lib/pulse';
 import { formatPulseTick, formatPulseValue, orDash } from '../../lib/format';
 import { LineChart, LineLegend } from '../charts/LineChart';
+import { RankingBars } from '../charts/RankingBars';
 import { ShareBars } from '../charts/ShareBars';
 import { Timeline } from '../charts/Timeline';
 
@@ -45,5 +46,9 @@ export function MetricChart({ metric: m }: { metric: PulseMetricViewModel }) {
     );
   }
   if (m.type === 'share') return <ShareBars periods={m.periods} />;
+  if (m.type === 'ranking') {
+    if (m.rows.length === 0) return <p className="text-muted">{t.noChartData}</p>;
+    return <RankingBars rows={m.rows} formatValue={fmt} ariaLabel={label} />;
+  }
   return <Timeline events={m.events} />;
 }

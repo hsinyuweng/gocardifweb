@@ -2,9 +2,10 @@
 // 市場總覽資料：來源資料夾若有 feed.json、market-pulse.json，檢查基本結構後複製到 public/data/
 // 用法：npm run sync            （讀 incoming/）
 //       npm run sync -- --from <路徑>
+//       加 --replace：刪掉這批沒有的舊報告（整批換新，npm run import 使用）
 // 只使用 Node.js 內建模組。
 
-import { copyFile, mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -104,7 +105,7 @@ async function importMarketFiles(fromDir, files) {
   }
 }
 
-async function importBatch(fromDir) {
+async function importBatch(fromDir, replace) {
   let files;
   try {
     files = await listJson(fromDir);
@@ -162,8 +163,17 @@ async function importBatch(fromDir) {
     process.exit(1);
   }
 
-  // 3. 原樣複製（不重新序列化，確保內容不變）
+  // 3. 整批換新：刪掉這批沒有的舊報告（全部驗證通過、至少一份才刪）
   await mkdir(REPORTS_DIR, { recursive: true });
+  if (replace && accepted.length > 0) {
+    const keep = new Set(accepted.map((a) => `${a.id}.json`));
+    for (const file of (await listJson(REPORTS_DIR)).filter((f) => f !== INDEX_FILE && !keep.has(f))) {
+      await rm(path.join(REPORTS_DIR, file));
+      console.log(`  刪除舊報告 public/data/reports/${file}`);
+    }
+  }
+
+  // 4. 原樣複製（不重新序列化，確保內容不變）
   for (const { file, id } of accepted) {
     await copyFile(path.join(fromDir, file), path.join(REPORTS_DIR, `${id}.json`));
     console.log(`  匯入 ${file} → public/data/reports/${id}.json`);
@@ -189,6 +199,6 @@ async function rebuildIndex() {
 }
 
 const fromDir = parseArgs(process.argv.slice(2));
-const { imported, skipped } = await importBatch(fromDir);
+const { imported, skipped } = await importBatch(fromDir, process.argv.includes('--replace'));
 const total = await rebuildIndex();
 console.log(`完成：匯入 ${imported} 份、略過 ${skipped} 份；index.json 共 ${total} 份報告。`);

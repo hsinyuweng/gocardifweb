@@ -80,6 +80,7 @@
 - 回應 summarizer 輸出的報告 JSON 原文，不包裝、不修改（格式見 `docs/examples/summarizer-example-report.json`）。
 - 找不到時回 404，`code` 為 `REPORT_NOT_FOUND`。
 - 前端已支援的選用欄位（2026-10-20，schema 1.1 草案；格式細節見後端需求文件「AI 詳細版」與各組員分頁）：`report_meta.generated_at`（S11）、`report_meta.source_files.<模組>.skip_reason`（R1-B）、`dimension_scores`（S10；評分方法 1.0：`feasibility`、`market_size`、`market_growth` 各含 `score`、`level`、`basis`、`rationale`、`confidence`，選用 `value`、`unit`、`source`、`source_url`、`as_of`；`profitability`、`saturation`、`brand_fit` 目前固定 null）、`headline.brand_note`／`brand_note_source`（S12）、`sections.*.key_points[].source_url`／`as_of`（A2）、`sections.regulatory.findings[].evidence_scheme`／`evidence_level`／`sources`（R4）、`legend.evidence_<scheme>.<等級>.label`。沒有這些欄位時畫面與原本相同。
+- 2026-10-31 起也讀：`sections.market_demand.competitor_comparison`（M1：`has_direct_competitor`、`no_competitor_reason`、`comparison_dimensions[]`、`competitors[]`（`name`、`issuer`、`is_direct`、`attributes`{維度: 文字}、`currency`、`premium_mode`、`difference`、`source_url`）、`gap_analysis`）；`product_snapshot.source_documents[]`（`title`、`type`、`url`、`publication_date`；後端沒給時 `npm run import` 從 1.json 補）。
 - `npm run sync` 產生報告清單時，把 `generated_at` 與 `dimension_scores` 原樣複製到清單每筆。
 
 ---
@@ -103,11 +104,12 @@
   - 其他欄位不變：`id`、`title`、`summary`、`source`、`url`、`published_at`、`country`、`product_category`。
 - `market-pulse.json`（schema 2.1＝2.0＋每個指標的 `stale`）：
   - 檔案：`schema_version`（`"2.1"`）、`generated_at`、`focus_summary`（`{ "text", "as_of" }`，也接受純字串；缺漏時不顯示本月焦點）、`metrics`。
-  - 每個指標共同欄位：`key`、`group`（`growth` 成長動能、`pricing` 定價環境、`channel` 通路結構、`health` 健康度、`brand` 品牌與競爭；缺漏或其他值當作 `growth`）、`type`（`trend`、`multi_line`、`share`、`timeline`；缺漏當作 `trend`；其他值略過，2026-10-27 起，讓後端可先交 2.2 的 `ranking`）、`featured`（`true` 顯示在首頁，只限 `trend`，最多 2 個）、`label`、`unit`（`%`、`新台幣元`、`萬分比`、`名`，其他照原文）、`source`、`source_url`、`as_of`、`stale`（`true` 顯示「資料較舊」，後端判斷；`_status` 前端不讀）。
+  - 每個指標共同欄位：`key`、`group`（`growth` 成長動能、`pricing` 定價環境、`channel` 通路結構、`health` 健康度、`brand` 品牌與競爭；缺漏或其他值當作 `growth`）、`type`（`trend`、`multi_line`、`share`、`timeline`、`ranking`；缺漏當作 `trend`；其他值略過）、`featured`（`true` 顯示在首頁，只限 `trend`，最多 2 個）、`label`、`unit`（`%`、`新台幣元`、`萬分比`、`名`，其他照原文）、`source`、`source_url`、`as_of`、`stale`（`true` 顯示「資料較舊」，後端判斷；`_status` 前端不讀）。
   - `trend`：`latest_value`、`change_pct`（`null` 時不顯示變化）、`change_unit`（`pct` 百分比，預設；`pp` 百分點）、`change_label`、`series`（`[{ period, value }]`，由舊到新；`period` 可為 `2026-08`、`2026-Q3`、`2026-W43`）。
   - `multi_line`：`lines`（`[{ name, series }]`，最多 4 條，共用同一個 `unit`）。
   - `share`：`periods`（`[{ period, parts: [{ name, share_pct, growth_pct? }] }]`，由舊到新；`growth_pct` 是年增率，沒有去年同期時 `null`；最多 4 項，超過的前端合併為「其他」；不滿 6 期前端註「資料累積中」）。
   - `timeline`：`events`（`[{ date, title, status: done|upcoming, note? }]`）。
+  - `ranking`（schema 2.2，M7；2026-10-31 起支援）：`period`、`rows`（`[{ name, value, rank, is_self }]`，依 `value` 由高到低，`is_self` 只有一筆）。後端還沒交時，`npm run import` 從 `pulse.json` 的 `company_ranking` 轉出（`key: company_ranking`、`group: brand`、`unit: %`、`value`＝市占率）。
   - 沒有任何 `featured` 時，首頁顯示成長動能組的前 2 個 `trend`。schema 1.0（沒有 `group`、`type`）仍可顯示。
 - 尚未提供時回 404（`NOT_FOUND`）：前端該卡片顯示「資料準備中」，不視為錯誤。
 - 錯誤格式與離線備援規則同第 1 節。

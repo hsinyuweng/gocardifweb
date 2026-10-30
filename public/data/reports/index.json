@@ -1,230 +1,98 @@
 {
-  "generated_at": "2026-10-18T03:24:22.598Z",
+  "generated_at": "2026-10-30T16:41:23.934Z",
   "reports": [
     {
-      "report_id": "chakin",
-      "name": "Chakin（チャキン）",
-      "issuer": "住友生命保険相互会社",
-      "country": "JP",
-      "category": "傳統壽險（生死合險/養老險）",
+      "report_id": "16d18d51-488a-4805-a5eb-074f4402de14",
+      "name": "日圓低解約返還型終身壽險 Yen Can",
+      "issuer": "オリックス生命保険株式会社（ORIX Life Insurance Corporation）",
+      "country": "日本",
+      "category": "終身壽險（日圓計價低解約返還金型終身壽險）",
       "recommendation": "hold_missing_info",
       "label": "暫緩，待補資料",
       "signal_color": "yellow",
-      "generated_date": "2026-10-11",
+      "generated_date": "2026-10-29",
+      "generated_at": null,
+      "dimension_scores": {
+        "method_version": "1.1",
+        "scale": "0-100",
+        "dimensions": [
+          "market_size",
+          "market_growth",
+          "feasibility"
+        ],
+        "market_size": {
+          "label": "市場規模",
+          "score": 100,
+          "level": 5,
+          "basis": "market_demand",
+          "rationale": "潛在保費市場92億元～276億元，中間情境 184億元（潛在市場規模法TAM）",
+          "confidence": "C",
+          "value": 18397222500,
+          "unit": "新台幣元",
+          "source": "市場需求模組（翁）：目標人口×滲透率×平均年繳保費",
+          "as_of": "2026-10-29"
+        },
+        "market_growth": {
+          "label": "市場成長",
+          "score": 100,
+          "level": 5,
+          "basis": "market_pulse",
+          "rationale": "人壽保險新契約保費 2026-08 較去年同期 51.94%（市場模組沒有同險別數字，改用市場脈動的險別數字）",
+          "confidence": "B",
+          "value": 51.94,
+          "unit": "%",
+          "source": "保險事業發展中心",
+          "source_url": "https://www.tii.org.tw/report_test/4001/XLS4001Report_202608.xls",
+          "as_of": "2026-08-31"
+        },
+        "feasibility": {
+          "label": "法規可行性",
+          "score": 38,
+          "level": 2.5,
+          "basis": "regulatory",
+          "rationale": "0 紅（含疑似 0）、5 黃；1 項阻斷性待補，分數暫定",
+          "confidence": "B",
+          "value": {
+            "red": 0,
+            "suspected_red": 0,
+            "yellow": 5,
+            "pending": 8,
+            "blocking_pending": 1,
+            "overall_verdict": "待確認"
+          },
+          "unit": "項",
+          "source": "法規模組（孫）逐項審查燈號",
+          "as_of": "2026-10-29"
+        },
+        "profitability": {
+          "label": "獲利性",
+          "score": null,
+          "level": null,
+          "basis": null,
+          "rationale": "本版評分方法不評估此維度",
+          "confidence": null
+        },
+        "saturation": {
+          "label": "市場飽和度",
+          "score": null,
+          "level": null,
+          "basis": null,
+          "rationale": "本版評分方法不評估此維度",
+          "confidence": null
+        },
+        "brand_fit": {
+          "label": "品牌／通路契合度",
+          "score": null,
+          "level": null,
+          "basis": null,
+          "rationale": "本版評分方法不評估此維度",
+          "confidence": null
+        }
+      },
       "module_summary": {
         "market_demand": {
           "signal": "yellow",
           "text": "有限需求"
-        },
-        "actuarial": {
-          "signal": "yellow",
-          "research_status": "partial_evidence"
-        },
-        "regulatory": {
-          "signal": "yellow",
-          "overall_verdict": "待確認"
-        }
-      },
-      "blocker_counts": {
-        "critical": 0,
-        "blocking": 4,
-        "warning": 11
-      }
-    },
-    {
-      "report_id": "fwd-jpy-single-premium-va",
-      "name": "FWD円建一時払変額年金",
-      "issuer": "FWD Life Insurance Japan",
-      "country": "JP",
-      "category": "年金險（變額年金）",
-      "recommendation": "hold_missing_info",
-      "label": "暫緩，待補資料",
-      "signal_color": "yellow",
-      "generated_date": "2026-10-11",
-      "module_summary": {
-        "market_demand": {
-          "signal": "green",
-          "text": "明確需求"
-        },
-        "actuarial": {
-          "signal": "yellow",
-          "research_status": "partial_evidence"
-        },
-        "regulatory": {
-          "signal": "yellow",
-          "overall_verdict": "待確認"
-        }
-      },
-      "blocker_counts": {
-        "critical": 0,
-        "blocking": 7,
-        "warning": 5
-      }
-    },
-    {
-      "report_id": "kyobo-modu-jikim-whole-life",
-      "name": "Kyobo Modu Jikim Whole Life Insurance",
-      "issuer": "Kyobo Life Insurance（教保人壽）",
-      "country": "KR",
-      "category": "傳統壽險（終身壽險）",
-      "recommendation": "hold_missing_info",
-      "label": "暫緩，待補資料",
-      "signal_color": "yellow",
-      "generated_date": "2026-10-11",
-      "module_summary": {
-        "market_demand": {
-          "signal": "yellow",
-          "text": "有限需求"
-        },
-        "actuarial": {
-          "signal": "yellow",
-          "research_status": "partial_evidence"
-        },
-        "regulatory": {
-          "signal": "yellow",
-          "overall_verdict": "待確認"
-        }
-      },
-      "blocker_counts": {
-        "critical": 0,
-        "blocking": 5,
-        "warning": 3
-      }
-    },
-    {
-      "report_id": "oriance",
-      "name": "Oriance",
-      "issuer": "Crédit Agricole Assurances（由 Predica 承保）",
-      "country": "FR",
-      "category": "投資型壽險（其他投資型）",
-      "recommendation": "hold_missing_info",
-      "label": "暫緩，待補資料",
-      "signal_color": "yellow",
-      "generated_date": "2026-10-11",
-      "module_summary": {
-        "market_demand": {
-          "signal": "yellow",
-          "text": "有限需求"
-        },
-        "actuarial": {
-          "signal": "yellow",
-          "research_status": "partial_evidence"
-        },
-        "regulatory": {
-          "signal": "yellow",
-          "overall_verdict": "待確認"
-        }
-      },
-      "blocker_counts": {
-        "critical": 0,
-        "blocking": 8,
-        "warning": 8
-      }
-    },
-    {
-      "report_id": "policyme-guaranteed-issue-life-insurance",
-      "name": "PolicyMe Guaranteed Issue Life Insurance",
-      "issuer": "Securian Canada",
-      "country": "CA",
-      "category": "傳統壽險（終身壽險）",
-      "recommendation": "hold_resolve_red_flag",
-      "label": "暫緩，須先釐清疑似紅燈",
-      "signal_color": "red",
-      "generated_date": "2026-10-11",
-      "module_summary": {
-        "market_demand": {
-          "signal": "green",
-          "text": "明確需求"
-        },
-        "actuarial": {
-          "signal": "yellow",
-          "research_status": "partial_evidence"
-        },
-        "regulatory": {
-          "signal": "red",
-          "overall_verdict": "待確認"
-        }
-      },
-      "blocker_counts": {
-        "critical": 1,
-        "blocking": 9,
-        "warning": 2
-      }
-    },
-    {
-      "report_id": "secure-horizon-iul",
-      "name": "Secure Horizon Indexed Universal Life Insurance",
-      "issuer": "North American Company for Life and Health Insurance",
-      "country": "US",
-      "category": "投資型壽險（IUL，指數連結型）",
-      "recommendation": "hold_missing_info",
-      "label": "暫緩，待補資料",
-      "signal_color": "yellow",
-      "generated_date": "2026-10-11",
-      "module_summary": {
-        "market_demand": {
-          "signal": "green",
-          "text": "明確需求"
-        },
-        "actuarial": {
-          "signal": "yellow",
-          "research_status": "partial_evidence"
-        },
-        "regulatory": {
-          "signal": "yellow",
-          "overall_verdict": "待確認"
-        }
-      },
-      "blocker_counts": {
-        "critical": 0,
-        "blocking": 5,
-        "warning": 16
-      }
-    },
-    {
-      "report_id": "singlife-heritage-reserve",
-      "name": "Singlife HeritageReserve",
-      "issuer": "新加坡人壽",
-      "country": "SG",
-      "category": "傳統壽險（終身壽險）",
-      "recommendation": "incomplete_review",
-      "label": "審查未完成",
-      "signal_color": "gray",
-      "generated_date": "2026-10-11",
-      "module_summary": {
-        "market_demand": {
-          "signal": "yellow",
-          "text": "有限需求"
-        },
-        "actuarial": {
-          "signal": "yellow",
-          "research_status": "partial_evidence"
-        },
-        "regulatory": {
-          "signal": "gray",
-          "overall_verdict": null
-        }
-      },
-      "blocker_counts": {
-        "critical": 0,
-        "blocking": 0,
-        "warning": 4
-      }
-    },
-    {
-      "report_id": "surely-life-certua-uk",
-      "name": "Surely Life",
-      "issuer": "Certua Life Limited",
-      "country": "UK",
-      "category": "定期壽險",
-      "recommendation": "hold_missing_info",
-      "label": "暫緩，待補資料",
-      "signal_color": "yellow",
-      "generated_date": "2026-10-11",
-      "module_summary": {
-        "market_demand": {
-          "signal": "green",
-          "text": "明確需求"
         },
         "actuarial": {
           "signal": "green",
@@ -237,38 +105,756 @@
       },
       "blocker_counts": {
         "critical": 0,
-        "blocking": 9,
-        "warning": 3
+        "blocking": 1,
+        "warning": 7
       }
     },
     {
-      "report_id": "wealth-term-insurance",
-      "name": "Wealth Term Insurance",
-      "issuer": "Dai-ichi Life",
-      "country": "JP",
-      "category": "定期壽險",
-      "recommendation": "not_recommended",
-      "label": "不建議引進",
-      "signal_color": "red",
-      "generated_date": "2026-10-11",
+      "report_id": "2326cc3d-d9c6-40d4-bc34-6d7fa949ad79",
+      "name": "存續型變額萬能壽險加值版",
+      "issuer": "Northwestern Mutual",
+      "country": "美國",
+      "category": "萬能壽險（存續型變額萬能壽險／SVUL）",
+      "recommendation": "hold_missing_info",
+      "label": "暫緩，待補資料",
+      "signal_color": "yellow",
+      "generated_date": "2026-10-30",
+      "generated_at": null,
+      "dimension_scores": {
+        "method_version": "1.1",
+        "scale": "0-100",
+        "dimensions": [
+          "market_size",
+          "market_growth",
+          "feasibility"
+        ],
+        "market_size": {
+          "label": "市場規模",
+          "score": 25,
+          "level": 2,
+          "basis": "market_demand",
+          "rationale": "潛在保費市場3.7億元～11億元，中間情境 7.4億元（潛在市場規模法TAM）",
+          "confidence": "B",
+          "value": 744000000,
+          "unit": "新台幣元",
+          "source": "市場需求模組（翁）：目標人口×滲透率×平均年繳保費",
+          "as_of": "2026-10-30"
+        },
+        "market_growth": {
+          "label": "市場成長",
+          "score": 100,
+          "level": 5,
+          "basis": "market_demand",
+          "rationale": "投資型保單前九月新契約保費，2026年前9月對2025年同期 年增 128.7%",
+          "confidence": "A",
+          "value": 128.7,
+          "unit": "%",
+          "source": "中央社2026-10-20轉述壽險公會統計",
+          "as_of": "2026-10-30"
+        },
+        "feasibility": {
+          "label": "法規可行性",
+          "score": 25,
+          "level": 2,
+          "basis": "regulatory",
+          "rationale": "0 紅（含疑似 0）、6 黃；2 項阻斷性待補，分數暫定",
+          "confidence": "B",
+          "value": {
+            "red": 0,
+            "suspected_red": 0,
+            "yellow": 6,
+            "pending": 14,
+            "blocking_pending": 2,
+            "overall_verdict": "待確認"
+          },
+          "unit": "項",
+          "source": "法規模組（孫）逐項審查燈號",
+          "as_of": "2026-10-30"
+        },
+        "profitability": {
+          "label": "獲利性",
+          "score": null,
+          "level": null,
+          "basis": null,
+          "rationale": "本版評分方法不評估此維度",
+          "confidence": null
+        },
+        "saturation": {
+          "label": "市場飽和度",
+          "score": null,
+          "level": null,
+          "basis": null,
+          "rationale": "本版評分方法不評估此維度",
+          "confidence": null
+        },
+        "brand_fit": {
+          "label": "品牌／通路契合度",
+          "score": null,
+          "level": null,
+          "basis": null,
+          "rationale": "本版評分方法不評估此維度",
+          "confidence": null
+        }
+      },
       "module_summary": {
         "market_demand": {
           "signal": "yellow",
           "text": "有限需求"
         },
         "actuarial": {
-          "signal": "yellow",
-          "research_status": "partial_evidence"
+          "signal": "green",
+          "research_status": "sufficient_evidence"
         },
         "regulatory": {
-          "signal": "red",
-          "overall_verdict": "不可引進"
+          "signal": "yellow",
+          "overall_verdict": "待確認"
         }
       },
       "blocker_counts": {
-        "critical": 1,
-        "blocking": 13,
+        "critical": 0,
+        "blocking": 2,
+        "warning": 3
+      }
+    },
+    {
+      "report_id": "3646b5be-4159-46e0-814e-767ec9713e19",
+      "name": "瑞駿（尊尚版）萬用壽險保險計劃",
+      "issuer": "Zurich Life Insurance (Hong Kong) Limited",
+      "country": "香港",
+      "category": "萬能壽險（固定帳戶、美元計價）",
+      "recommendation": "hold_missing_info",
+      "label": "暫緩，待補資料",
+      "signal_color": "yellow",
+      "generated_date": "2026-10-30",
+      "generated_at": null,
+      "dimension_scores": {
+        "method_version": "1.1",
+        "scale": "0-100",
+        "dimensions": [
+          "market_size",
+          "market_growth",
+          "feasibility"
+        ],
+        "market_size": {
+          "label": "市場規模",
+          "score": 100,
+          "level": 5,
+          "basis": "market_demand",
+          "rationale": "潛在保費市場136億元～272億元，中間情境 204億元（潛在市場規模法TAM）",
+          "confidence": "B",
+          "value": 20406435750,
+          "unit": "新台幣元",
+          "source": "市場需求模組（翁）：目標人口×滲透率×平均年繳保費",
+          "as_of": "2026-10-30"
+        },
+        "market_growth": {
+          "label": "市場成長",
+          "score": 100,
+          "level": 5,
+          "basis": "market_pulse",
+          "rationale": "人壽保險新契約保費 2026-08 較去年同期 51.94%（市場模組沒有同險別數字，改用市場脈動的險別數字）",
+          "confidence": "B",
+          "value": 51.94,
+          "unit": "%",
+          "source": "保險事業發展中心",
+          "source_url": "https://www.tii.org.tw/report_test/4001/XLS4001Report_202608.xls",
+          "as_of": "2026-08-31"
+        },
+        "feasibility": {
+          "label": "法規可行性",
+          "score": 38,
+          "level": 2.5,
+          "basis": "regulatory",
+          "rationale": "0 紅（含疑似 0）、5 黃；2 項阻斷性待補，分數暫定",
+          "confidence": "B",
+          "value": {
+            "red": 0,
+            "suspected_red": 0,
+            "yellow": 5,
+            "pending": 9,
+            "blocking_pending": 2,
+            "overall_verdict": "待確認"
+          },
+          "unit": "項",
+          "source": "法規模組（孫）逐項審查燈號",
+          "as_of": "2026-10-30"
+        },
+        "profitability": {
+          "label": "獲利性",
+          "score": null,
+          "level": null,
+          "basis": null,
+          "rationale": "本版評分方法不評估此維度",
+          "confidence": null
+        },
+        "saturation": {
+          "label": "市場飽和度",
+          "score": null,
+          "level": null,
+          "basis": null,
+          "rationale": "本版評分方法不評估此維度",
+          "confidence": null
+        },
+        "brand_fit": {
+          "label": "品牌／通路契合度",
+          "score": null,
+          "level": null,
+          "basis": null,
+          "rationale": "本版評分方法不評估此維度",
+          "confidence": null
+        }
+      },
+      "module_summary": {
+        "market_demand": {
+          "signal": "yellow",
+          "text": "有限需求"
+        },
+        "actuarial": {
+          "signal": "green",
+          "research_status": "sufficient_evidence"
+        },
+        "regulatory": {
+          "signal": "yellow",
+          "overall_verdict": "待確認"
+        }
+      },
+      "blocker_counts": {
+        "critical": 0,
+        "blocking": 2,
+        "warning": 7
+      }
+    },
+    {
+      "report_id": "61187f98-be85-46f3-a280-0fd61533116f",
+      "name": "CareScout Care Assurance長期照顧保險",
+      "issuer": "CareScout Insurance Company",
+      "country": "美國",
+      "category": "長期照顧保險（傳統長期照顧保險）",
+      "recommendation": "conditional_go",
+      "label": "有條件推進",
+      "signal_color": "yellow",
+      "generated_date": "2026-10-30",
+      "generated_at": null,
+      "dimension_scores": {
+        "method_version": "1.1",
+        "scale": "0-100",
+        "dimensions": [
+          "market_size",
+          "market_growth",
+          "feasibility"
+        ],
+        "market_size": {
+          "label": "市場規模",
+          "score": 100,
+          "level": 5,
+          "basis": "market_demand",
+          "rationale": "潛在保費市場161億元～321億元，中間情境 241億元（潛在市場規模法TAM）",
+          "confidence": "B",
+          "value": 24091114186,
+          "unit": "新台幣元",
+          "source": "市場需求模組（翁）：目標人口×滲透率×平均年繳保費",
+          "as_of": "2026-10-30"
+        },
+        "market_growth": {
+          "label": "市場成長",
+          "score": null,
+          "level": null,
+          "basis": null,
+          "rationale": "險種「長期照顧保險（傳統長期照顧保險）」沒有對應的險別成長數字",
+          "confidence": null,
+          "missing_reason": "險種「長期照顧保險（傳統長期照顧保險）」沒有對應的險別成長數字"
+        },
+        "feasibility": {
+          "label": "法規可行性",
+          "score": 12,
+          "level": 1.5,
+          "basis": "regulatory",
+          "rationale": "0 紅（含疑似 0）、7 黃",
+          "confidence": "A",
+          "value": {
+            "red": 0,
+            "suspected_red": 0,
+            "yellow": 7,
+            "pending": 6,
+            "blocking_pending": 0,
+            "overall_verdict": "修改後可引進"
+          },
+          "unit": "項",
+          "source": "法規模組（孫）逐項審查燈號",
+          "as_of": "2026-10-30"
+        },
+        "profitability": {
+          "label": "獲利性",
+          "score": null,
+          "level": null,
+          "basis": null,
+          "rationale": "本版評分方法不評估此維度",
+          "confidence": null
+        },
+        "saturation": {
+          "label": "市場飽和度",
+          "score": null,
+          "level": null,
+          "basis": null,
+          "rationale": "本版評分方法不評估此維度",
+          "confidence": null
+        },
+        "brand_fit": {
+          "label": "品牌／通路契合度",
+          "score": null,
+          "level": null,
+          "basis": null,
+          "rationale": "本版評分方法不評估此維度",
+          "confidence": null
+        }
+      },
+      "module_summary": {
+        "market_demand": {
+          "signal": "yellow",
+          "text": "有限需求"
+        },
+        "actuarial": {
+          "signal": "green",
+          "research_status": "sufficient_evidence"
+        },
+        "regulatory": {
+          "signal": "yellow",
+          "overall_verdict": "修改後可引進"
+        }
+      },
+      "blocker_counts": {
+        "critical": 0,
+        "blocking": 0,
+        "warning": 5
+      }
+    },
+    {
+      "report_id": "907202d9-4ceb-4961-a199-ec9b443823d6",
+      "name": "林肯財富建構早期現金價值指數型萬能壽險",
+      "issuer": "The Lincoln National Life Insurance Company",
+      "country": "美國",
+      "category": "指數型萬能壽險（IUL）",
+      "recommendation": "hold_missing_info",
+      "label": "暫緩，待補資料",
+      "signal_color": "yellow",
+      "generated_date": "2026-10-30",
+      "generated_at": null,
+      "dimension_scores": {
+        "method_version": "1.1",
+        "scale": "0-100",
+        "dimensions": [
+          "market_size",
+          "market_growth",
+          "feasibility"
+        ],
+        "market_size": {
+          "label": "市場規模",
+          "score": 100,
+          "level": 5,
+          "basis": "market_demand",
+          "rationale": "潛在保費市場212億元～322億元，中間情境 267億元（潛在市場規模法TAM）",
+          "confidence": "B",
+          "value": 26718749800,
+          "unit": "新台幣元",
+          "source": "市場需求模組（翁）：目標人口×滲透率×平均年繳保費",
+          "as_of": "2026-10-30"
+        },
+        "market_growth": {
+          "label": "市場成長",
+          "score": 100,
+          "level": 5,
+          "basis": "market_demand",
+          "rationale": "投資型保險商品新契約保費收入，2026年前9月 vs 2025年同期 年增 128.7%",
+          "confidence": "A",
+          "value": 128.7,
+          "unit": "%",
+          "source": "壽險公會統計，經濟日報2026-10-20轉述",
+          "as_of": "2026-10-30"
+        },
+        "feasibility": {
+          "label": "法規可行性",
+          "score": 12,
+          "level": 1.5,
+          "basis": "regulatory",
+          "rationale": "0 紅（含疑似 0）、7 黃；11 項阻斷性待補，分數暫定",
+          "confidence": "C",
+          "value": {
+            "red": 0,
+            "suspected_red": 0,
+            "yellow": 7,
+            "pending": 11,
+            "blocking_pending": 11,
+            "overall_verdict": "待確認"
+          },
+          "unit": "項",
+          "source": "法規模組（孫）逐項審查燈號",
+          "as_of": "2026-10-30"
+        },
+        "profitability": {
+          "label": "獲利性",
+          "score": null,
+          "level": null,
+          "basis": null,
+          "rationale": "本版評分方法不評估此維度",
+          "confidence": null
+        },
+        "saturation": {
+          "label": "市場飽和度",
+          "score": null,
+          "level": null,
+          "basis": null,
+          "rationale": "本版評分方法不評估此維度",
+          "confidence": null
+        },
+        "brand_fit": {
+          "label": "品牌／通路契合度",
+          "score": null,
+          "level": null,
+          "basis": null,
+          "rationale": "本版評分方法不評估此維度",
+          "confidence": null
+        }
+      },
+      "module_summary": {
+        "market_demand": {
+          "signal": "yellow",
+          "text": "有限需求"
+        },
+        "actuarial": {
+          "signal": "green",
+          "research_status": "sufficient_evidence"
+        },
+        "regulatory": {
+          "signal": "yellow",
+          "overall_verdict": "待確認"
+        }
+      },
+      "blocker_counts": {
+        "critical": 0,
+        "blocking": 11,
+        "warning": 10
+      }
+    },
+    {
+      "report_id": "ac1f9932-f267-4af7-85cf-157629dc2906",
+      "name": "Secure Horizon指數型萬能壽險",
+      "issuer": "North American Company for Life and Health Insurance",
+      "country": "美國",
+      "category": "萬能壽險（IUL）",
+      "recommendation": "hold_missing_info",
+      "label": "暫緩，待補資料",
+      "signal_color": "yellow",
+      "generated_date": "2026-10-30",
+      "generated_at": null,
+      "dimension_scores": {
+        "method_version": "1.1",
+        "scale": "0-100",
+        "dimensions": [
+          "market_size",
+          "market_growth",
+          "feasibility"
+        ],
+        "market_size": {
+          "label": "市場規模",
+          "score": 100,
+          "level": 5,
+          "basis": "market_demand",
+          "rationale": "潛在保費市場73億元～219億元，中間情境 146億元（潛在市場規模法TAM）",
+          "confidence": "B",
+          "value": 14583594000,
+          "unit": "新台幣元",
+          "source": "市場需求模組（翁）：目標人口×滲透率×平均年繳保費",
+          "as_of": "2026-10-30"
+        },
+        "market_growth": {
+          "label": "市場成長",
+          "score": 100,
+          "level": 5,
+          "basis": "market_demand",
+          "rationale": "投資型保險商品新契約保費收入，2026年前8月 vs 2025年同期 年增 135.5%",
+          "confidence": "A",
+          "value": 135.5,
+          "unit": "%",
+          "source": "經濟日報2026-09-21轉述壽險公會統計：https://money.udn.com/money/story/122377/9766775",
+          "as_of": "2026-10-30"
+        },
+        "feasibility": {
+          "label": "法規可行性",
+          "score": 88,
+          "level": 4.5,
+          "basis": "regulatory",
+          "rationale": "0 紅（含疑似 0）、1 黃；3 項阻斷性待補，分數暫定",
+          "confidence": "C",
+          "value": {
+            "red": 0,
+            "suspected_red": 0,
+            "yellow": 1,
+            "pending": 18,
+            "blocking_pending": 3,
+            "overall_verdict": "待確認"
+          },
+          "unit": "項",
+          "source": "法規模組（孫）逐項審查燈號",
+          "as_of": "2026-10-30"
+        },
+        "profitability": {
+          "label": "獲利性",
+          "score": null,
+          "level": null,
+          "basis": null,
+          "rationale": "本版評分方法不評估此維度",
+          "confidence": null
+        },
+        "saturation": {
+          "label": "市場飽和度",
+          "score": null,
+          "level": null,
+          "basis": null,
+          "rationale": "本版評分方法不評估此維度",
+          "confidence": null
+        },
+        "brand_fit": {
+          "label": "品牌／通路契合度",
+          "score": null,
+          "level": null,
+          "basis": null,
+          "rationale": "本版評分方法不評估此維度",
+          "confidence": null
+        }
+      },
+      "module_summary": {
+        "market_demand": {
+          "signal": "yellow",
+          "text": "有限需求"
+        },
+        "actuarial": {
+          "signal": "green",
+          "research_status": "sufficient_evidence"
+        },
+        "regulatory": {
+          "signal": "yellow",
+          "overall_verdict": "待確認"
+        }
+      },
+      "blocker_counts": {
+        "critical": 0,
+        "blocking": 3,
         "warning": 2
+      }
+    },
+    {
+      "report_id": "c302f7ec-bba8-4830-944e-07e220ae9b48",
+      "name": "盛裕精英定期壽險II（限期繳費）",
+      "issuer": "Singapore Life Ltd.",
+      "country": "新加坡",
+      "category": "傳統壽險（限期繳費定期壽險）",
+      "recommendation": "hold_missing_info",
+      "label": "暫緩，待補資料",
+      "signal_color": "yellow",
+      "generated_date": "2026-10-30",
+      "generated_at": null,
+      "dimension_scores": {
+        "method_version": "1.1",
+        "scale": "0-100",
+        "dimensions": [
+          "market_size",
+          "market_growth",
+          "feasibility"
+        ],
+        "market_size": {
+          "label": "市場規模",
+          "score": 75,
+          "level": 4,
+          "basis": "market_demand",
+          "rationale": "潛在保費市場28億元～84億元，中間情境 56億元（潛在市場規模法TAM）",
+          "confidence": "B",
+          "value": 5631803232,
+          "unit": "新台幣元",
+          "source": "市場需求模組（翁）：目標人口×滲透率×平均年繳保費",
+          "as_of": "2026-10-30"
+        },
+        "market_growth": {
+          "label": "市場成長",
+          "score": 100,
+          "level": 5,
+          "basis": "market_pulse",
+          "rationale": "人壽保險新契約保費 2026-08 較去年同期 51.94%（市場模組沒有同險別數字，改用市場脈動的險別數字）",
+          "confidence": "B",
+          "value": 51.94,
+          "unit": "%",
+          "source": "保險事業發展中心",
+          "source_url": "https://www.tii.org.tw/report_test/4001/XLS4001Report_202608.xls",
+          "as_of": "2026-08-31"
+        },
+        "feasibility": {
+          "label": "法規可行性",
+          "score": 50,
+          "level": 3,
+          "basis": "regulatory",
+          "rationale": "0 紅（含疑似 0）、4 黃；6 項阻斷性待補，分數暫定",
+          "confidence": "C",
+          "value": {
+            "red": 0,
+            "suspected_red": 0,
+            "yellow": 4,
+            "pending": 10,
+            "blocking_pending": 6,
+            "overall_verdict": "待確認"
+          },
+          "unit": "項",
+          "source": "法規模組（孫）逐項審查燈號",
+          "as_of": "2026-10-30"
+        },
+        "profitability": {
+          "label": "獲利性",
+          "score": null,
+          "level": null,
+          "basis": null,
+          "rationale": "本版評分方法不評估此維度",
+          "confidence": null
+        },
+        "saturation": {
+          "label": "市場飽和度",
+          "score": null,
+          "level": null,
+          "basis": null,
+          "rationale": "本版評分方法不評估此維度",
+          "confidence": null
+        },
+        "brand_fit": {
+          "label": "品牌／通路契合度",
+          "score": null,
+          "level": null,
+          "basis": null,
+          "rationale": "本版評分方法不評估此維度",
+          "confidence": null
+        }
+      },
+      "module_summary": {
+        "market_demand": {
+          "signal": "yellow",
+          "text": "有限需求"
+        },
+        "actuarial": {
+          "signal": "green",
+          "research_status": "sufficient_evidence"
+        },
+        "regulatory": {
+          "signal": "yellow",
+          "overall_verdict": "待確認"
+        }
+      },
+      "blocker_counts": {
+        "critical": 0,
+        "blocking": 6,
+        "warning": 5
+      }
+    },
+    {
+      "report_id": "e04a643f-d9b1-426a-b54f-95b818a2c746",
+      "name": "RapidProtect即時核保指數型萬能壽險",
+      "issuer": "National Life Insurance Company／Life Insurance Company of the Southwest（National Life Group）",
+      "country": "美國",
+      "category": "指數型萬能壽險（IUL）",
+      "recommendation": "hold_missing_info",
+      "label": "暫緩，待補資料",
+      "signal_color": "yellow",
+      "generated_date": "2026-10-30",
+      "generated_at": null,
+      "dimension_scores": {
+        "method_version": "1.1",
+        "scale": "0-100",
+        "dimensions": [
+          "market_size",
+          "market_growth",
+          "feasibility"
+        ],
+        "market_size": {
+          "label": "市場規模",
+          "score": 75,
+          "level": 4,
+          "basis": "market_demand",
+          "rationale": "潛在保費市場26億元～78億元，中間情境 52億元（潛在市場規模法TAM）",
+          "confidence": "B",
+          "value": 5210257440,
+          "unit": "新台幣元",
+          "source": "市場需求模組（翁）：目標人口×滲透率×平均年繳保費",
+          "as_of": "2026-10-30"
+        },
+        "market_growth": {
+          "label": "市場成長",
+          "score": 100,
+          "level": 5,
+          "basis": "market_demand",
+          "rationale": "投資型保險商品新契約保費收入（含非保險合約），2026年前7月 vs 2025年同期 年增 132.4%",
+          "confidence": "A",
+          "value": 132.4,
+          "unit": "%",
+          "source": "壽險公會統計（中央社2026-08-17轉述）",
+          "as_of": "2026-10-30"
+        },
+        "feasibility": {
+          "label": "法規可行性",
+          "score": 62,
+          "level": 3.5,
+          "basis": "regulatory",
+          "rationale": "0 紅（含疑似 0）、3 黃；2 項阻斷性待補，分數暫定",
+          "confidence": "B",
+          "value": {
+            "red": 0,
+            "suspected_red": 0,
+            "yellow": 3,
+            "pending": 18,
+            "blocking_pending": 2,
+            "overall_verdict": "待確認"
+          },
+          "unit": "項",
+          "source": "法規模組（孫）逐項審查燈號",
+          "as_of": "2026-10-30"
+        },
+        "profitability": {
+          "label": "獲利性",
+          "score": null,
+          "level": null,
+          "basis": null,
+          "rationale": "本版評分方法不評估此維度",
+          "confidence": null
+        },
+        "saturation": {
+          "label": "市場飽和度",
+          "score": null,
+          "level": null,
+          "basis": null,
+          "rationale": "本版評分方法不評估此維度",
+          "confidence": null
+        },
+        "brand_fit": {
+          "label": "品牌／通路契合度",
+          "score": null,
+          "level": null,
+          "basis": null,
+          "rationale": "本版評分方法不評估此維度",
+          "confidence": null
+        }
+      },
+      "module_summary": {
+        "market_demand": {
+          "signal": "yellow",
+          "text": "有限需求"
+        },
+        "actuarial": {
+          "signal": "green",
+          "research_status": "sufficient_evidence"
+        },
+        "regulatory": {
+          "signal": "yellow",
+          "overall_verdict": "待確認"
+        }
+      },
+      "blocker_counts": {
+        "critical": 0,
+        "blocking": 2,
+        "warning": 8
       }
     }
   ]

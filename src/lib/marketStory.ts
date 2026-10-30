@@ -2,6 +2,8 @@ import type {
   PulseGroup,
   PulseMetricViewModel,
   PulsePointViewModel,
+  PulseRankingViewModel,
+  PulseRankRowViewModel,
   PulseShareViewModel,
   PulseTrendViewModel,
 } from '../types/viewModel';
@@ -34,6 +36,75 @@ export function mainTrend(list: PulseMetricViewModel[]): PulseTrendViewModel | u
 
 export function shareMetrics(list: PulseMetricViewModel[]): PulseShareViewModel[] {
   return list.filter((m): m is PulseShareViewModel => m.type === 'share' && m.periods.length > 0);
+}
+
+// ───────── 同業排名 ─────────
+
+/** 一組裡第一個有自家公司（法巴）的排名 */
+export function selfRanking(list: PulseMetricViewModel[]): { m: PulseRankingViewModel; self: PulseRankRowViewModel; index: number } | null {
+  for (const m of list) {
+    if (m.type !== 'ranking') continue;
+    const index = m.rows.findIndex((r) => r.isSelf);
+    if (index !== -1) return { m, self: m.rows[index]!, index };
+  }
+  return null;
+}
+
+export const rankingValue = (m: PulseRankingViewModel, v: number) => formatPulseValue(v, m.unit, pulseDigits(m.group));
+
+/** 差距的數字（不帶符號與單位）：「0.08」 */
+const gapNumber = (m: PulseRankingViewModel, v: number) => rankingValue(m, Math.abs(v)).replace(/%$/, '');
+
+/** 排名預覽：前 top 名＋自家前後各 around 名（重點指標卡用 around=2、只列自家附近） */
+export function rankingPreview(m: PulseRankingViewModel, top: number, around: number): PulseRankRowViewModel[] {
+  const selfIdx = m.rows.findIndex((r) => r.isSelf);
+  return m.rows.filter((_, i) => i < top || (selfIdx !== -1 && Math.abs(i - selfIdx) <= around));
+}
+
+/** 與前後名次的差距：「比第 9 名三商美邦人壽少 0.08 個百分點，比第 11 名安達國際人壽多 0.09 個百分點」 */
+export function rankingGapHeading(list: PulseMetricViewModel[]): string | null {
+  const r = selfRanking(list);
+  if (!r) return null;
+  const { m, self, index } = r;
+  const prev = m.rows[index - 1];
+  const next = m.rows[index + 1];
+  const tr = t.ranking;
+  const parts = [
+    prev ? tr.behind(prev.rank, orDash(prev.name), gapNumber(m, prev.value - self.value)) : null,
+    next ? tr.ahead(next.rank, orDash(next.name), gapNumber(m, self.value - next.value)) : null,
+  ].filter((x): x is string => x !== null);
+  return parts.length > 0 ? parts.join('，') : null;
+}
+
+/** 排名的數字磚：（沒有單線市占率時）自家數值、名次、與前一名差距、前 5 名合計 */
+function rankingTiles(list: PulseMetricViewModel[], withShare: boolean): KeyNumber[] {
+  const r = selfRanking(list);
+  if (!r) return [];
+  const { m, self, index } = r;
+  const tr = t.ranking;
+  const out: KeyNumber[] = [];
+  if (withShare) {
+    out.push({ key: `${m.key}-self`, label: tr.shareOf(orDash(self.name)), value: rankingValue(m, self.value), note: periodLong(m.period), coral: true });
+  }
+  out.push({ key: `${m.key}-rank`, label: tr.tileRank, value: zhTW.market.rank(String(self.rank)), note: tr.ofTotal(m.rows.length) });
+  const prev = m.rows[index - 1];
+  const next = m.rows[index + 1];
+  if (prev) {
+    out.push({ key: `${m.key}-gap`, label: tr.tileGap, value: tr.pp(gapNumber(m, prev.value - self.value)), note: tr.neighbor(prev.rank, orDash(prev.name)) });
+  } else if (next) {
+    out.push({ key: `${m.key}-gap`, label: tr.tileLead, value: tr.pp(gapNumber(m, self.value - next.value)), note: tr.neighbor(next.rank, orDash(next.name)) });
+  }
+  const top = m.rows.slice(0, 5);
+  if (top.length === 5 && m.unit === '%') {
+    const first = m.rows[0]!;
+    out.push({
+      key: `${m.key}-top`,
+      label: tr.tileTop(5),
+      value: rankingValue(m, top.reduce((s, x) => s + x.value, 0)),
+      note: tr.topNote(orDash(first.name), rankingValue(m, first.value)),
+    });
+  }
+  return out;
 }
 
 /** 期間的數量詞：月「個月」、週「週」、其他「期」 */
@@ -192,9 +263,13 @@ export function tabNumbers(list: PulseMetricViewModel[]): KeyNumber[] {
       const tile = shiftTile(s);
       if (tile) out.push(tile);
     }
+    // 只有 1 期的單線（市占率）＋同組排名：名次、差距、前 5 名比最低值更有用
+    out.push(...rankingTiles(list, false));
     if (m.points.length >= 3) out.push(extreme('min'));
     return out.slice(0, MAX_NUMBERS);
   }
+  const ranked = rankingTiles(list, true);
+  if (ranked.length > 0) return ranked.slice(0, MAX_NUMBERS);
   const share = shareMetrics(list)[0];
   const latest = share?.periods.at(-1);
   if (!share || !latest) return [];

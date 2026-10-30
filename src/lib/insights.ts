@@ -8,6 +8,8 @@ import {
   mainTrend,
   periodText,
   periodUnit,
+  rankingValue,
+  selfRanking,
   shareMetrics,
   signMatters,
   streak,
@@ -84,17 +86,31 @@ export function overviewHeadline(metrics: PulseMetricViewModel[]): Headline | nu
 
 /**
  * 分頁：主要指標「8 月新契約保費年增率 68.5%」＋「，連續 8 個月為正」（3 期以上）或「，較上週 ▼ 0.02 個百分點」；
+ * 同組有法巴的同業排名時改接「，同業排第 10 名」；只有排名時「8 月法國巴黎人壽市占率 3.56%，同業排第 10 名」；
  * 只有占比時「壽險公司本身行銷體系占 46.4%，銀行經代保代通路 37.0%」。
  */
 export function tabHeadline(list: PulseMetricViewModel[]): Headline | null {
   const m = mainTrend(list);
+  const ranked = selfRanking(list);
   if (m && m.label) {
     const period = m.points.at(-1)?.period ?? null;
     const parts: HeadlinePart[] = [{ text: t.lead(periodText(period), m.label) }, { text: trendValue(m, m.latestValue), strong: true }];
     const s = streak(m.points);
-    if (signMatters(m) && s.n >= STREAK_MIN) parts.push({ text: t.streakTail(s.n, periodUnit(period), s.positive) });
+    if (ranked) parts.push({ text: zhTW.market.ranking.headTail(ranked.self.rank) });
+    else if (signMatters(m) && s.n >= STREAK_MIN) parts.push({ text: t.streakTail(s.n, periodUnit(period), s.positive) });
     else if (m.change !== null) parts.push({ text: t.changeTail(m.changeLabel, pulseChangeText(m.change, m.changeUnit, trendDigits(m))) });
     return { parts, metricKey: m.key };
+  }
+  if (ranked) {
+    const { m: r, self } = ranked;
+    return {
+      parts: [
+        { text: t.lead(periodText(r.period), zhTW.market.ranking.shareOf(orDash(self.name))) },
+        { text: rankingValue(r, self.value), strong: true },
+        { text: zhTW.market.ranking.headTail(self.rank) },
+      ],
+      metricKey: r.key,
+    };
   }
   const share = shareMetrics(list)[0];
   const top = [...(share?.periods.at(-1)?.parts ?? [])].sort((a, b) => b.sharePct - a.sharePct);

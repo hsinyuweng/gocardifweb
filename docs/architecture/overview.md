@@ -72,6 +72,7 @@ pages/* ─ normalize* ─▶ ViewModel ─▶ components/*
 | 市場脈動 | `data/market-pulse.json` | `/api/v1/market-pulse` | `types/marketPulse.ts`、`validate.ts`、`normalizeMarket.ts` |
 
 - 元件只收 ViewModel（`types/viewModel.ts`）。後端格式改變時只改上表最右欄的檔案。
+- 資料進來的路：後端整包 `agentdata/` →（`npm run import`）→ `public/data/`。
 - 資料檔不存在（404）時，卡片顯示「資料準備中」。本機 vite 對不存在的檔案回傳 HTML，也當作 404 處理（`fetchJson`）。
 - 只有網路錯誤與 5xx 會改讀靜態檔（離線備援）。
 - 瀏覽器存放的資料：`gocardifweb.owner`（我的單位）、`gocardifweb.candidates`（追蹤清單）、`gocardifweb.weights`（權重）、`gocardifweb.reviewed`（已審閱報告）。
@@ -89,17 +90,17 @@ src/
 ├── components/
 │   ├── layout/              AppShell（依網址設 data-theme，整頁底色）、Sidebar、TopBar、PageHeader（每頁頁首）
 │   ├── common/              SignalLabel、StatusMessage、PageIcon（頁面圖示）
-│   ├── charts/              HBarList、MarketSizingBar、RegulatoryDistributionBar、Sparkline、LineChart、ShareBars、Timeline、ColumnChart、BigShareBar、DivergingBars、StackedColumns（純 CSS／SVG，不用套件）
+│   ├── charts/              HBarList、MarketSizingBar、RegulatoryDistributionBar、Sparkline、LineChart、ShareBars、Timeline、ColumnChart、BigShareBar、DivergingBars、StackedColumns、RankingBars（純 CSS／SVG，不用套件）
 │   ├── story/               閱讀路徑元件：Lead（一句結論）、KeyNumbers、StorySection、NextStep
 │   ├── market/              市場脈動分頁頁籤（MarketTabs）、指標卡片
 │   ├── news/                新聞與法規監控（標籤、每則）
 │   ├── home/                市場總覽四框（HomeCard 整框可點）
 │   ├── overview/            競品研究頁（原案件總覽）
-│   ├── report/              報告頁 A–F 區
+│   ├── report/              報告頁 A–F 區、台灣競品比較（CompetitorTable）、商品原始資料（SourceDocuments）
 │   ├── tasks/               我的待辦
 │   └── watchlist/           追蹤清單（權重滑桿、清單列）
 └── pages/                   各頁面、RootLayout、pageChrome（共用狀態 hooks）、useOnDemand
-scripts/                     sync-reports.mjs（匯入報告、feed、market-pulse）、mock-api.mjs（本機模擬後端）
+scripts/                     import-agentdata.mjs（agentdata/ → incoming/agentdata/）、sync-reports.mjs（驗證並匯入報告、feed、market-pulse；--replace 整批換新）、mock-api.mjs（本機模擬後端）
 ```
 
 ## 6. 視覺規則摘要

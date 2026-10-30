@@ -19,7 +19,8 @@
 
 ## 常用指令
 - `npm run dev`：本機開發
-- `npm run sync`：匯入 `incoming/` 的報告
+- `npm run import`：後端交新資料（整包放進 `agentdata/`）後執行，轉換並整批換新網站資料
+- `npm run sync`：匯入 `incoming/` 的報告（單份測試用）
 - `npm run mock-api`：本機模擬後端
 - `npm run build`：建置
 

@@ -6,18 +6,16 @@
 
 - 網站：https://hsinyuweng.github.io/gocardifweb/（repo `hsinyuweng/gocardifweb`，`main` push 後自動部署）
 - 頁面：首頁「市場總覽」四框、新聞與法規監控 `#/news`、市場脈動 `#/market`（＋分頁 `#/market/:tab`）、追蹤清單 `#/watchlist`、競品研究 `#/research`、報告頁、我的待辦、使用說明（見 `architecture/overview.md`）
-- 2026-10-20 新規劃：階段 1（導覽與競品研究）、2（追蹤清單）、3（新聞與法規監控；加入追蹤按鈕移到固定頂部列）、4（市場脈動：schema 2.0 草案、首頁 1–2 指標、`#/market` 五組）、5A（先讀後端新欄位：數值分數、完成時間、來源與可信度、品牌定位、未跑原因）已完成；2026-10-26 追蹤清單改為法規可行性、市場規模、市場成長三維度（S10 評分方法 1.0）
-- 市場資料：`public/data/feed.json`（schema 1.2）、`public/data/market-pulse.json`（schema 2.1）是塗 2026-10-26 交付的第一份真實資料，後端更新時直接換檔；已知資料問題見 `progress/data-status.md`。示意資料仍在 `examples/`
+- 已完成：階段 1–4、5A、5B（競品比較表）、視覺改版 V1–V6（`architecture/diagrams/2026-10-27_視覺改版規劃.md`）
+- 資料（2026-10-31 起一律以後端整包輸出 `agentdata/` 為準，gitignore）：`npm run import` 轉換並整批換新到 `public/data/`。目前 8 份報告（10-30 交付，含 S10 分數、台灣競品比較）、feed 1.2（60 則，含法規 12 則）、market-pulse 2.1＋同業排名（由 `pulse.json` 轉換）。資料夾結構、略過的檔案與已知資料問題見 `progress/data-status.md`
 
 ## 2. 下一步
 
-**2026-10-31 新資料待匯入**：後端整包輸出在 `agentdata/`（gitignore，原樣保留）；網站要用的已移到 `incoming/2026-10-30/`（8 份報告 3.json〔含分數與競品比較〕、feed 1.2 含 12 則法規、market-pulse 2.1 含健康度）。匯入方式 `npm run sync -- --from incoming/2026-10-30`，匯入前要先決定是否刪掉舊 9 份報告（見 `progress/data-status.md`）。這批資料讓 10-28「只用現有資料」的隱藏清單需要重新判斷。
+**2026-10-31 已完成（待使用者驗證與 commit）**：改讀 `agentdata/`（`scripts/import-agentdata.mjs`、`sync --replace`）、市場脈動同業排名（`RankingBars`，品牌與競爭分頁＋總覽卡）、報告頁台灣競品比較（`CompetitorTable`）與商品原始資料（`SourceDocuments`）、新聞頁沒有比對資料時隱藏「只看可能相關」、市場脈動組別說明改成符合現有資料。10-28「只用現有資料、隱藏功能」的計畫已作廢：現有功能都是有資料才出現。
 
-**2026-10-28 待確認：只用現有資料改版**。規劃在 Claude Doc https://claude.ai/artifact/RmncqwTL79AdViGEmSGNAP（會刪掉什麼、網頁怎麼改、組員還要補什麼）；後端需求文件已同步（組員版總覽只剩 9 項、新增「暫停」段）。已決定：追蹤清單只比燈號、不算綜合分數；新聞頁改名「業界新聞」；沒資料的功能**畫面隱藏、程式保留**，設計全記在 `backlog/future-features.md`。使用者說「開始改」後才動程式；改完要同步更新本檔、`backlog/roadmap.md`、`decisions/market-dashboard.md`、`progress/data-status.md`。
+**等後端**（使用者已轉達組員，交付後照 `progress/data-status.md` 檢查再 `npm run import`）：CareScout 兩份選哪份、法規 `affected_categories`／`related_report_ids`、finding 來源、分數鑑別度與分數／結論不一致、理由裡的欄位代號（`verdict.confidence`）、3.json 漏填發行公司與國家、Secure Horizon `af2f7e7a` 沒產出 3.json。其他等資料的功能見 `backlog/future-features.md`；剩餘階段見 `backlog/roadmap.md`（後端需求文件連結在第 4 節）。
 
-**視覺改版已完成**（2026-10-27，V1–V5）。先讀 `architecture/diagrams/2026-10-27_視覺改版規劃.md`（第 11 節是實作決定），並用瀏覽器打開同資料夾的第 7 版樣稿 HTML。**V1、V2 已完成**（全站配色、白底導覽、每頁頁首與底色、首頁一句結論＋四框；市場脈動總覽＋分頁 `#/market/:tab`）。**V3 已完成**（報告頁「← 回…」與上一份／下一份、回清單保留捲動位置並標亮、新聞頁第一個畫面）。**V4 已完成**（追蹤清單比較表＋看重預設、報告頁照閱讀路徑重排）。**V5 已完成**（市場脈動總覽改重點指標卡＋指標表、分頁細節改指標表；新聞清單改日期膠囊＋依領域分組；規劃檔第 13 節）。**V6 已完成**（競品研究第一個畫面照閱讀路徑、使用說明更新、我的待辦從導覽收起、schema 2.2 寫進後端需求文件 M7；規劃檔第 14 節）。下一批待使用者決定。等塗交 schema 2.2（金額、同業排名、10 年債日資料）後加圖。
-
-等後端的項目（剩餘階段在 `backlog/roadmap.md`）：**階段 5B**（競品比較表——已請組員提供跑過 `enrich_reports.py` 的完整報告、每日快照自動抓取、下一步對應待解決事項），要等後端交付範例；交付時先看後端需求文件的「交付紀錄」與 `format_variant`（連結在 `backlog/roadmap.md` 第 4 節）。
+**可以做、未排程**：新契約保費金額、10 年債日資料（`pulse.json` 已有，可比照同業排名轉換）；報告頁的市場需求 `handoffs`、`tag_update_suggestion`。
 
 ## 3. 改動前：依範圍讀
 

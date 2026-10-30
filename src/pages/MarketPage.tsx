@@ -10,6 +10,7 @@ import { BigShareBar } from '../components/charts/BigShareBar';
 import { ColumnChart } from '../components/charts/ColumnChart';
 import { DivergingBars } from '../components/charts/DivergingBars';
 import { LineChart } from '../components/charts/LineChart';
+import { RankingBars } from '../components/charts/RankingBars';
 import { StackedColumns } from '../components/charts/StackedColumns';
 import { KeyNumbers } from '../components/story/KeyNumbers';
 import { Lead } from '../components/story/Lead';
@@ -27,6 +28,10 @@ import {
   mainTrend,
   periodLong,
   periodText,
+  rankingGapHeading,
+  rankingPreview,
+  rankingValue,
+  selfRanking,
   shareDetailHeading,
   shareMetrics,
   tabNumbers,
@@ -84,6 +89,15 @@ function LatestShareBar({ share }: { share: PulseShareViewModel }) {
   );
 }
 
+/** 重點指標卡只有 1 期時：同組有法巴排名就列法巴前後各 2 名，取代「累積中」 */
+function cardFallback(list: PulseMetricViewModel[]): ReactNode {
+  const r = selfRanking(list);
+  if (!r) return null;
+  return (
+    <RankingBars rows={rankingPreview(r.m, 0, 2)} formatValue={(v) => rankingValue(r.m, v)} ariaLabel={orDash(r.m.label)} compact />
+  );
+}
+
 /** 總覽的指標表：膠囊篩組別（網址 `?group=`，replace） */
 function TableSection({ metrics, groups }: { metrics: PulseMetricViewModel[]; groups: PulseGroup[] }) {
   const location = useLocation();
@@ -129,7 +143,12 @@ function Overview({ metrics, groups }: { metrics: PulseMetricViewModel[]; groups
       {cards.length > 0 ? (
         <div className="grid grid-cols-1 gap-3.5 lg:grid-cols-3">
           {cards.map((m) => (
-            <KeyMetricCard key={m.key} metric={m} coral={m.key === headline?.metricKey} />
+            <KeyMetricCard
+              key={m.key}
+              metric={m}
+              coral={m.key === headline?.metricKey}
+              fallback={m.points.length < 2 ? cardFallback(byGroup.get(m.group)!) : null}
+            />
           ))}
         </div>
       ) : null}
@@ -147,6 +166,7 @@ function GroupTab({ list }: { list: PulseMetricViewModel[] }) {
   const m = mainTrend(list);
   const shares = shareMetrics(list);
   const multiShares = shares.filter((s) => s.periods.length >= 2);
+  const ranked = selfRanking(list);
 
   let main: ReactNode = null;
   if (m && m.points.length >= 2) {
@@ -189,15 +209,36 @@ function GroupTab({ list }: { list: PulseMetricViewModel[] }) {
     );
   }
 
+  // 同業排名：前 5 名＋法巴前後各 1 名，標題寫與前後名次的差距（細節區列全部）
+  const rankFmt = ranked ? (v: number) => rankingValue(ranked.m, v) : null;
+  const rankingSection =
+    ranked && rankFmt ? (
+      <StorySection heading={rankingGapHeading(list) ?? orDash(ranked.m.label)}>
+        <div className="max-w-3xl">
+          <ChartTitle note={orDash(ranked.m.label)}>{t.ranking.previewHeading(orDash(ranked.self.name), ranked.self.rank)}</ChartTitle>
+          <RankingBars rows={rankingPreview(ranked.m, 5, 1)} formatValue={rankFmt} ariaLabel={orDash(ranked.m.label)} />
+        </div>
+      </StorySection>
+    ) : null;
+
   return (
     <>
       {headline ? <Lead parts={headline.parts} /> : null}
       <KeyNumbers items={tabNumbers(list)} />
       {main}
+      {rankingSection}
       <NextStep
         down={{ label: multiShares.length > 0 ? t.downShare : t.downPlain, targetId: DETAILS_ID }}
       />
       <DetailDivider id={DETAILS_ID} label={t.details} />
+      {ranked && rankFmt ? (
+        <StorySection heading={t.ranking.all(ranked.m.rows.length, periodLong(ranked.m.period) ?? '')}>
+          <div className="max-w-3xl">
+            <ChartTitle note={orDash(ranked.m.label)}>{orDash(ranked.m.source)}</ChartTitle>
+            <RankingBars rows={ranked.m.rows} formatValue={rankFmt} ariaLabel={orDash(ranked.m.label)} />
+          </div>
+        </StorySection>
+      ) : null}
       {multiShares.map((s) => {
         const lead = growthLeaders(s);
         return (

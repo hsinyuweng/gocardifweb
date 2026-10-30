@@ -110,6 +110,17 @@ export function pulseTableRows(metrics: PulseMetricViewModel[]): PulseTableRow[]
             chart: false,
           });
         });
+    } else if (m.type === 'ranking') {
+      // 同業排名：最新＝法巴名次（沒有法巴時寫家數），「看圖」展開全部
+      const self = m.rows.find((r) => r.isSelf);
+      rows.push({
+        ...base,
+        latest: self ? zhTW.market.ranking.rankOf(self.rank, m.rows.length) : zhTW.market.ranking.ofTotal(m.rows.length),
+        prev: dash,
+        change: dash,
+        period: periodLong(m.period) ?? dash,
+        frequency: frequencyOf(m.period),
+      });
     } else {
       // 時程：最新＝最近發生的事件，上期欄放下一個預計事件
       const done = m.events.filter((e) => !e.upcoming).at(-1);

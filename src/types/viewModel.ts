@@ -261,6 +261,36 @@ export interface ReportDetailsViewModel {
   };
 }
 
+/** 競品比較表的一列（比較維度）；cells 依 competitors 順序 */
+export interface CompetitorRowViewModel {
+  label: string;
+  cells: (string | null)[];
+}
+
+export interface CompetitorViewModel {
+  name: string | null;
+  issuer: string | null;
+  isDirect: boolean;
+  sourceUrl: string | null;
+}
+
+export interface CompetitorComparisonViewModel {
+  /** 後端判斷是否有直接競品；沒填時依各競品的 is_direct */
+  hasDirect: boolean;
+  noCompetitorReason: string | null;
+  competitors: CompetitorViewModel[];
+  rows: CompetitorRowViewModel[];
+  /** 差異分析，依證據等級分段（沒有分段時 level 為 null） */
+  gapAnalysis: { level: string | null; text: string }[];
+}
+
+export interface SourceDocumentViewModel {
+  title: string | null;
+  type: string | null;
+  url: string;
+  date: string | null;
+}
+
 export interface ReportViewModel {
   reportId: string;
   schemaVersionMismatch: boolean;
@@ -279,6 +309,10 @@ export interface ReportViewModel {
   dataQuality: DataQualityViewModel;
   dataGaps: DataGapViewModel[];
   details: ReportDetailsViewModel;
+  /** 台灣競品比較；後端沒提供時為 null */
+  competitors: CompetitorComparisonViewModel | null;
+  /** 商品原始資料（有網址的才列） */
+  sourceDocuments: SourceDocumentViewModel[];
   disclaimer: string | null;
 }
 
@@ -419,11 +453,27 @@ export interface PulseTimelineViewModel extends PulseMetricBase {
   events: PulseEventViewModel[];
 }
 
+export interface PulseRankRowViewModel {
+  name: string | null;
+  value: number;
+  rank: number;
+  /** 自家公司（法巴） */
+  isSelf: boolean;
+}
+
+export interface PulseRankingViewModel extends PulseMetricBase {
+  type: 'ranking';
+  period: string | null;
+  /** 依名次由前到後 */
+  rows: PulseRankRowViewModel[];
+}
+
 export type PulseMetricViewModel =
   | PulseTrendViewModel
   | PulseMultiLineViewModel
   | PulseShareViewModel
-  | PulseTimelineViewModel;
+  | PulseTimelineViewModel
+  | PulseRankingViewModel;
 
 export interface MarketPulseViewModel {
   generatedAt: string | null;

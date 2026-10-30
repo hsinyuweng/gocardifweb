@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "sync": "node scripts/sync-reports.mjs",
+    "import": "node scripts/import-agentdata.mjs && node scripts/sync-reports.mjs --from incoming/agentdata --replace",
     "mock-api": "node scripts/mock-api.mjs"
   },
   "dependencies": {

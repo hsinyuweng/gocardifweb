@@ -68,6 +68,41 @@ export interface RawProductSnapshot {
   currency?: Nullable<string>;
   premium_mode?: Nullable<string>;
   mechanism_summary?: Nullable<string>;
+  /** 商品原始資料（官方新聞稿、說明書等）；目前由 import-agentdata 從 1.json 補上 */
+  source_documents?: Nullable<RawSourceDocument[]>;
+}
+
+export interface RawSourceDocument {
+  title?: Nullable<string>;
+  type?: Nullable<string>;
+  url?: Nullable<string>;
+  publication_date?: Nullable<string>;
+}
+
+/** 台灣競品一項（後端需求 M1；組員 enrich_reports.py 由 2a.json 轉換） */
+export interface RawCompetitor {
+  id?: Nullable<string>;
+  name?: Nullable<string>;
+  issuer?: Nullable<string>;
+  market?: Nullable<string>;
+  is_direct?: Nullable<boolean>;
+  currency?: Nullable<string>;
+  premium_mode?: Nullable<string>;
+  /** 比較維度名稱 → 內容 */
+  attributes?: Nullable<Record<string, Nullable<string>>>;
+  difference?: Nullable<string>;
+  source?: Nullable<string>;
+  source_url?: Nullable<string>;
+  as_of?: Nullable<string>;
+}
+
+export interface RawCompetitorComparison {
+  has_direct_competitor?: Nullable<boolean>;
+  no_competitor_reason?: Nullable<string>;
+  comparison_dimensions?: Nullable<string[]>;
+  competitors?: Nullable<RawCompetitor[]>;
+  /** 差異分析；可能以「A級：…B級：…」分段 */
+  gap_analysis?: Nullable<string>;
 }
 
 export interface RawHeadline {
@@ -162,6 +197,7 @@ export interface RawSections {
     market_sizing?: Nullable<RawMarketSizing>;
     key_points?: Nullable<RawKeyPoint[]>;
     data_gaps?: Nullable<string[]>;
+    competitor_comparison?: Nullable<RawCompetitorComparison>;
   }>;
   actuarial?: Nullable<{
     summary?: Nullable<string>;

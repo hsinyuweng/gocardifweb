@@ -1,0 +1,1037 @@
+{
+  "report_meta": {
+    "schema_version": "1.1",
+    "language": "zh-Hant",
+    "generated_date": "2026-10-30",
+    "report_id": "c302f7ec-bba8-4830-944e-07e220ae9b48",
+    "source_files": {
+      "market_demand": {
+        "status": "provided",
+        "file": "2a.json",
+        "review_date": "2026-10-30"
+      },
+      "actuarial": {
+        "status": "provided",
+        "file": "2b.json",
+        "review_date": "2026-10-30"
+      },
+      "regulatory": {
+        "status": "provided",
+        "file": "2c.json",
+        "review_date": "2026-10-30"
+      }
+    },
+    "_enriched": "report-enricher"
+  },
+  "product_snapshot": {
+    "name": "盛裕精英定期壽險II（限期繳費）",
+    "issuer": "Singapore Life Ltd.",
+    "country": "新加坡",
+    "category": "傳統壽險（限期繳費定期壽險）",
+    "currency": null,
+    "premium_mode": "期繳",
+    "mechanism_summary": "可選5年、10年或繳至65／75歲，保障至99歲；身故或末期疾病一次給付，99歲返還主約已繳保費100%，第3年起有解約給付。",
+    "source_documents": [
+      {
+        "title": "Singlife Elite Term II Offers New Limited Pay Option",
+        "type": "官方新聞稿",
+        "url": "https://singlife.com/en/about-us/newsroom/2024/singlife-elite-term-ii-offers-new-limited-pay-option",
+        "publication_date": "2024-09-05"
+      },
+      {
+        "title": "Elite Term II Life Insurance Coverage | Singlife",
+        "type": "官方商品頁",
+        "url": "https://content.singlife.com/en/life-insurance/elite-term-ii",
+        "publication_date": null
+      },
+      {
+        "title": "Singlife Elite Term II Product Brochure",
+        "type": "官方商品簡介（PDF）",
+        "url": "https://singlife.com/content/dam/public/sg/documents/life-insurance/singlife-elite-term-ii/brochure.pdf",
+        "publication_date": null
+      },
+      {
+        "title": "Singlife Elite Term II Product Summary (Regular Pay)",
+        "type": "官方產品摘要（PDF）",
+        "url": "https://www.comparefirst.sg/wap/prodSummaryPdf/196900499K/SinglifeEliteTermII_PS_NCI_Dec25.pdf",
+        "publication_date": "2025-12"
+      },
+      {
+        "title": "LIMRA: U.S. Individual Life Insurance Sales Post Strong Growth in the Second Quarter 2025; Third Highest Quarter on Record",
+        "type": "產業研究",
+        "url": "https://www.limra.com/en/newsroom/news-releases/2025/limra-u.s.-individual-life-insurance-sales-post-strong-growth-in-the-second-quarter-2025-third-highest-quarter-on-record/",
+        "publication_date": "2025-09-11"
+      },
+      {
+        "title": "2016 Robert I. Mehr Award – Journal of Risk and Insurance",
+        "type": "學術來源",
+        "url": "https://jri.pub/mehr-awards/2016-robert-i-mehr-award",
+        "publication_date": null
+      },
+      {
+        "title": "人壽保險的種類有哪些？",
+        "type": "臺灣監理機關保險消費資訊",
+        "url": "https://rm.ib.gov.tw/pages/Insu.aspx?Dir=001000&PKID=ffce241f-fecf-4193-9adc-915c9709ca67",
+        "publication_date": null
+      },
+      {
+        "title": "e定好定期壽險｜第一金人壽網路投保",
+        "type": "臺灣保險公司商品頁",
+        "url": "https://www.firstlife.com.tw/FirstOnlineInsuranceWeb/fundrich/product/TLT",
+        "publication_date": null
+      }
+    ]
+  },
+  "headline": {
+    "recommendation": "hold_missing_info",
+    "label": "暫緩，待補資料",
+    "signal_color": "yellow",
+    "matched_rule": 4,
+    "one_line_summary": "需求有限且關鍵送審資料未備，暫緩推進。",
+    "reasons": [
+      "regulatory：G-RATE-01缺臺灣版計價幣別、保證／預定利率與準備金資料",
+      "market_demand：需求結論信心為C級",
+      "regulatory：4項黃燈、10項待補"
+    ]
+  },
+  "scorecard": {
+    "market_demand": {
+      "status": "provided",
+      "level": "limited",
+      "label": "有限需求",
+      "confidence": "C",
+      "signal": "yellow"
+    },
+    "actuarial": {
+      "status": "provided",
+      "research_status": "sufficient_evidence",
+      "comparability": "低度可比",
+      "pricing_flag_count": 1,
+      "signal": "green"
+    },
+    "regulatory": {
+      "status": "provided",
+      "overall_verdict": "待確認",
+      "counts": {
+        "red": 0,
+        "yellow": 4,
+        "green": 6,
+        "pending": 10,
+        "not_applicable": 1
+      },
+      "signal": "yellow"
+    }
+  },
+  "sections": {
+    "market_demand": {
+      "summary": "有家庭責任且欲退休前繳清保費者具需求；但台灣缺乏同機制銷售數據，需求規模仍待驗證。",
+      "market_sizing": {
+        "methodology": "潛在市場規模法TAM",
+        "target_population": 10666294,
+        "estimate_low": 2815901616,
+        "estimate_mid": 5631803232,
+        "estimate_high": 8447704848,
+        "reported_unit": "新台幣元",
+        "confidence": "B"
+      },
+      "key_points": [
+        {
+          "id": "md-1",
+          "text": "傳統型壽險新契約保費收入2026年前7月年增12.9%，僅為市場背景。",
+          "evidence_scheme": "market_abc",
+          "evidence_level": "A",
+          "source": "經濟日報引用壽險公會統計",
+          "source_ref": "market_demand:market_growth[0]"
+        },
+        {
+          "id": "md-2",
+          "text": "35至64歲目標情境人口為10,666,294人，2036年人數與占比均下降。",
+          "evidence_scheme": "market_abc",
+          "evidence_level": "A",
+          "source": "國發會人口推估",
+          "source_ref": "market_demand:audience"
+        },
+        {
+          "id": "md-3",
+          "text": "本次公開樣本未見同時具限期繳、99歲返還及比例解約給付的本地商品。",
+          "evidence_scheme": "market_abc",
+          "evidence_level": "B",
+          "source": "台灣人壽、第一金人壽公開商品頁",
+          "source_ref": "market_demand:competitor_comparison"
+        },
+        {
+          "id": "md-4",
+          "text": "市場規模滲透率與平均年繳保費均為代理假設，定價完成後應更新。",
+          "evidence_scheme": "market_abc",
+          "evidence_level": "B",
+          "source": "市場需求模組計算說明",
+          "source_ref": "market_demand:data_gaps[5]"
+        }
+      ],
+      "handoffs": {
+        "to_actuarial": "請評估99歲返還、第三年起解約給付與身故／末期疾病給付並存時的定價、準備金、逆選擇及解約率假設。",
+        "to_regulatory": "請確認商品分類、99歲返還、末期疾病及解約給付的商品審查與揭露要求。"
+      },
+      "data_gaps": [
+        "未取得台灣定期壽險／限期繳長年期壽險的官方專屬新契約保費、件數與續保／解約率。",
+        "競品公開頁未提供完整解約費用率、保單管理費與全部承保年齡。",
+        "市場規模的滲透率和平均年繳保費屬代理假設，應在商品定價完成後更新。",
+        "申訴與爭議統計未按定期壽險或返還型商品拆分。"
+      ],
+      "tag_update_suggestion": {
+        "new_tags": [
+          "[保費返還型滿期給付]",
+          "[限期繳費長年期保障]"
+        ],
+        "reason": "此為待人工確認的標籤建議。"
+      },
+      "competitor_comparison": {
+        "_generated_by": "report-enricher",
+        "has_direct_competitor": true,
+        "no_competitor_reason": null,
+        "comparison_dimensions": [
+          "商品類型",
+          "投保年齡",
+          "保費範圍",
+          "保單管理費",
+          "推估目標客群"
+        ],
+        "competitors": [
+          {
+            "id": "cmp-1",
+            "name": "樂活安鑫美元利率變動型終身保險",
+            "issuer": "台灣人壽",
+            "market": "TW",
+            "is_direct": true,
+            "currency": null,
+            "premium_mode": null,
+            "attributes": {
+              "商品類型": "外幣利率變動型終身壽險",
+              "投保年齡": "0至72歲",
+              "保費範圍": "6年或8年繳費；公開頁未載固定保費區間",
+              "保單管理費": "公開商品頁未載",
+              "推估目標客群": "（反推）可選6／8年繳且提供終身保障，偏向有中長期資金規劃及家庭保障需求者。"
+            },
+            "metrics": [
+              {
+                "key": "min_issue_age",
+                "label": "最低投保年齡",
+                "value": 0,
+                "unit": "歲"
+              },
+              {
+                "key": "max_issue_age",
+                "label": "最高投保年齡",
+                "value": 72,
+                "unit": "歲"
+              },
+              {
+                "key": "surrender_charge_y1",
+                "label": "第1年解約費用率",
+                "value": null,
+                "unit": "%"
+              },
+              {
+                "key": "surrender_charge_years",
+                "label": "收取解約費用年數",
+                "value": null,
+                "unit": "年"
+              }
+            ],
+            "difference": null,
+            "source": "市場需求模組（翁）整理之公開規範文件",
+            "source_url": "https://www.taiwanlife.com/product-feature-protection-product",
+            "as_of": "2026-10-30"
+          },
+          {
+            "id": "cmp-2",
+            "name": "多美旺美元養老保險",
+            "issuer": "台灣人壽",
+            "market": "TW",
+            "is_direct": true,
+            "currency": null,
+            "premium_mode": null,
+            "attributes": {
+              "商品類型": "美元養老保險",
+              "投保年齡": "0至88歲",
+              "保費範圍": "一次繳費；公開頁未載最低或最高保費",
+              "保單管理費": "公開商品頁未載",
+              "推估目標客群": "（反推）一次繳費、10年滿期給付，偏向已有可運用資金並重視特定期滿現金流者。"
+            },
+            "metrics": [
+              {
+                "key": "min_issue_age",
+                "label": "最低投保年齡",
+                "value": 0,
+                "unit": "歲"
+              },
+              {
+                "key": "max_issue_age",
+                "label": "最高投保年齡",
+                "value": 88,
+                "unit": "歲"
+              },
+              {
+                "key": "surrender_charge_y1",
+                "label": "第1年解約費用率",
+                "value": null,
+                "unit": "%"
+              },
+              {
+                "key": "surrender_charge_years",
+                "label": "收取解約費用年數",
+                "value": null,
+                "unit": "年"
+              }
+            ],
+            "difference": null,
+            "source": "市場需求模組（翁）整理之公開規範文件",
+            "source_url": "https://www.taiwanlife.com/product-feature-protection-product",
+            "as_of": "2026-10-30"
+          },
+          {
+            "id": "cmp-3",
+            "name": "好安心終身保險",
+            "issuer": "第一金人壽",
+            "market": "TW",
+            "is_direct": true,
+            "currency": null,
+            "premium_mode": null,
+            "attributes": {
+              "商品類型": "終身意外保險",
+              "投保年齡": "本次公開頁未取得",
+              "保費範圍": "官方案例：25歲男性、保額100萬元、20年期、月繳4,400元（年繳化52,800元）；非壽險同類商品，僅作限期繳／至99歲／滿期返還機制參考。",
+              "保單管理費": "公開商品頁未載",
+              "推估目標客群": "（反推）重視限期繳、長年期保障及到期返還的保障型客群；因承保風險為意外，不能視為壽險直接替代品。"
+            },
+            "metrics": [
+              {
+                "key": "min_issue_age",
+                "label": "最低投保年齡",
+                "value": null,
+                "unit": "歲"
+              },
+              {
+                "key": "max_issue_age",
+                "label": "最高投保年齡",
+                "value": null,
+                "unit": "歲"
+              },
+              {
+                "key": "surrender_charge_y1",
+                "label": "第1年解約費用率",
+                "value": null,
+                "unit": "%"
+              },
+              {
+                "key": "surrender_charge_years",
+                "label": "收取解約費用年數",
+                "value": null,
+                "unit": "年"
+              }
+            ],
+            "difference": null,
+            "source": "市場需求模組（翁）整理之公開規範文件",
+            "source_url": "https://www.firstlife.com.tw/DMD/DM2401",
+            "as_of": "2026-10-30"
+          }
+        ],
+        "gap_analysis": "台灣人壽樂活安鑫提供6／8年繳與終身壽險保障，顯示「退休前完成繳費」並非陌生訴求，但公開頁未見99歲返還已繳保費100%的條件；多美旺則有10年期滿給付，卻為一次繳養老保險。第一金好安心提供至99歲與滿期返還110%應繳保費總和，但承保意外風險、繳費20年，並非身故／末期疾病壽險。故本商品將限期繳、身故及末期疾病一次給付、99歲全額保費返還與第3年起明定比例解約給付結合，於本次公開樣本中屬機制缺口；惟尚未取得各商品完整條款與解約費用表，不能據此認定市場無同類商品。",
+        "metric_list": [
+          {
+            "key": "min_issue_age",
+            "label": "最低投保年齡",
+            "unit": "歲",
+            "how": "投保年齡限制的下限（例如「15-85歲」取 15）"
+          },
+          {
+            "key": "max_issue_age",
+            "label": "最高投保年齡",
+            "unit": "歲",
+            "how": "投保年齡限制的上限（例如「15-85歲」取 85）"
+          },
+          {
+            "key": "surrender_charge_y1",
+            "label": "第1年解約費用率",
+            "unit": "%",
+            "how": "解約費用率表第 1 保單年度的費率"
+          },
+          {
+            "key": "surrender_charge_years",
+            "label": "收取解約費用年數",
+            "unit": "年",
+            "how": "解約費用率表中費率大於 0 的年度數"
+          }
+        ],
+        "subject_metrics": [
+          {
+            "key": "min_issue_age",
+            "label": "最低投保年齡",
+            "value": null,
+            "unit": "歲",
+            "source": null,
+            "source_url": null,
+            "as_of": null
+          },
+          {
+            "key": "max_issue_age",
+            "label": "最高投保年齡",
+            "value": null,
+            "unit": "歲",
+            "source": null,
+            "source_url": null,
+            "as_of": null
+          },
+          {
+            "key": "surrender_charge_y1",
+            "label": "第1年解約費用率",
+            "value": null,
+            "unit": "%",
+            "source": null,
+            "source_url": null,
+            "as_of": null
+          },
+          {
+            "key": "surrender_charge_years",
+            "label": "收取解約費用年數",
+            "value": null,
+            "unit": "年",
+            "source": null,
+            "source_url": null,
+            "as_of": null
+          }
+        ]
+      }
+    },
+    "actuarial": {
+      "summary": "核心死亡率應以新加坡受核保被保險人經驗為起點，但公開資料偏舊；解約與99歲返還的長年期現金流須以商品層級經驗驗證。",
+      "key_points": [
+        {
+          "id": "ac-1",
+          "text": "新加坡受保人死亡研究為1997至2002年資料，時效有限。",
+          "evidence_scheme": "actuarial_tier",
+          "evidence_level": null,
+          "source": "Singapore Actuarial Society, Mortality Investigation 1997–2002",
+          "source_ref": "actuarial:incidence_rate_references[E1]"
+        },
+        {
+          "id": "ac-2",
+          "text": "新加坡壽險業2025年第四季年化解約率為2.24%，非本商品保單件數解約率。",
+          "evidence_scheme": "actuarial_tier",
+          "evidence_level": null,
+          "source": "Life Insurance Association, Singapore",
+          "source_ref": "actuarial:incidence_rate_references[E2]"
+        },
+        {
+          "id": "ac-3",
+          "text": "兩地公開受保人死亡經驗無法直接比較，台灣版須以本地資料校準。",
+          "evidence_scheme": "actuarial_tier",
+          "evidence_level": null,
+          "source": "新加坡精算學會與金融監督管理委員會保險局",
+          "source_ref": "actuarial:comparability_assessment"
+        },
+        {
+          "id": "ac-4",
+          "text": "非分紅保單負債須明示死亡、生存／滿期及解約給付等前瞻現金流參數。",
+          "evidence_scheme": "actuarial_tier",
+          "evidence_level": null,
+          "source": "Monetary Authority of Singapore, MAS Notice 319",
+          "source_ref": "actuarial:economic_regulatory_context[E3]"
+        }
+      ],
+      "pricing_flags": [
+        {
+          "topic": "解約與繼續率／解約給付現金流",
+          "direction": "需進一步評估",
+          "source_count": 2
+        }
+      ],
+      "evidence_gaps": []
+    },
+    "regulatory": {
+      "summary": "無紅燈或疑似紅燈，但商品分類、利率與臺灣版文件等關鍵資料未備，整體判定為待確認。",
+      "findings": [
+        {
+          "item_id": "G-CLS-01",
+          "title": "險種歸類與可銷售性",
+          "light": "yellow",
+          "suspected_red": false,
+          "law": "人身保險商品審查應注意事項，貳、傳統型個人壽險第二點",
+          "remedy": "以終身壽險商品重定名稱、費率、責任準備金、條款與送審資料。",
+          "owner": "商品",
+          "source_ref": "regulatory:findings[G-CLS-01]"
+        },
+        {
+          "item_id": "G-AGE-01",
+          "title": "未滿15歲被保險人身故給付",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "保險法第107條",
+          "remedy": "補最低承保年齡、未成年給付、保額上限與同意作業。",
+          "owner": "法遵",
+          "source_ref": "regulatory:findings[G-AGE-01]"
+        },
+        {
+          "item_id": "G-AGE-02",
+          "title": "受監護宣告者與限制行為能力者",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "保險法第107條適用範圍及相關規定",
+          "remedy": "補中文條款與核保規則。",
+          "owner": "法遵",
+          "source_ref": "regulatory:findings[G-AGE-02]"
+        },
+        {
+          "item_id": "G-AGE-03",
+          "title": "高齡客群銷售管控",
+          "light": "green",
+          "suspected_red": false,
+          "law": "保險業招攬及核保理賠辦法第6條、第7條",
+          "remedy": "建立65歲以上客戶的適合度、招攬留痕與覆核機制。",
+          "owner": "法遵",
+          "source_ref": "regulatory:findings[G-AGE-03]"
+        },
+        {
+          "item_id": "G-DIV-01",
+          "title": "分紅機制",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "保險商品銷售前程序作業準則第18條及第24條之解釋令",
+          "remedy": "補正式條款或商品摘要確認是否分紅。",
+          "owner": "商品",
+          "source_ref": "regulatory:findings[G-DIV-01]"
+        },
+        {
+          "item_id": "G-RATE-01",
+          "title": "保證利率／預定利率",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "人身保險商品審查應注意事項，壹、基本事項第五點及第六點",
+          "remedy": "補計價幣別、保證回報率、預定利率、準備金計算、現金流與簽署精算意見。",
+          "owner": "精算",
+          "source_ref": "regulatory:findings[G-RATE-01]"
+        },
+        {
+          "item_id": "G-GUAR-01",
+          "title": "保證給付機制",
+          "light": "green",
+          "suspected_red": false,
+          "law": "人身保險商品審查應注意事項，壹、基本事項第五點至第七點",
+          "remedy": "揭露給付條件與給付間關係，並完成精算與系統測試。",
+          "owner": "精算",
+          "source_ref": "regulatory:findings[G-GUAR-01]"
+        },
+        {
+          "item_id": "G-PAY-01",
+          "title": "繳費結構",
+          "light": "green",
+          "suspected_red": false,
+          "law": "人身保險商品審查應注意事項，壹、基本事項第五點至第七點",
+          "remedy": "完成現金流／解約敏感度測試與資金來源審查。",
+          "owner": "精算",
+          "source_ref": "regulatory:findings[G-PAY-01]"
+        },
+        {
+          "item_id": "G-CCY-01",
+          "title": "外幣計價",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "外幣收付非投資型保險業務相關規範",
+          "remedy": "補來源商品與臺灣版預計收付幣別。",
+          "owner": "法遵",
+          "source_ref": "regulatory:findings[G-CCY-01]"
+        },
+        {
+          "item_id": "G-TAX-01",
+          "title": "稅務待確認事項",
+          "light": "green",
+          "suspected_red": false,
+          "law": null,
+          "remedy": "若新增稅務文宣或傳承方案，上市前另送稅務與法務覆核。",
+          "owner": "稅務",
+          "source_ref": "regulatory:findings[G-TAX-01]"
+        },
+        {
+          "item_id": "G-AML-01",
+          "title": "反洗錢與跨境",
+          "light": "green",
+          "suspected_red": false,
+          "law": "保險業招攬及核保理賠辦法第6條、第7條",
+          "remedy": "依公司防制洗錢、KYC及財務核保程序執行。",
+          "owner": "風控",
+          "source_ref": "regulatory:findings[G-AML-01]"
+        },
+        {
+          "item_id": "LIFE-01",
+          "title": "保險利益與被保險人書面同意",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "保險法第105條",
+          "remedy": "補臺灣版要保書、被保險人同意及受益人規則。",
+          "owner": "法遵",
+          "source_ref": "regulatory:findings[LIFE-01]"
+        },
+        {
+          "item_id": "LIFE-02",
+          "title": "核保與道德風險",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "保險業招攬及核保理賠辦法第7條",
+          "remedy": "補核保手冊、增額選擇權條款、財務核保與再保安排。",
+          "owner": "商品",
+          "source_ref": "regulatory:findings[LIFE-02]"
+        },
+        {
+          "item_id": "LIFE-03",
+          "title": "契約基本條款",
+          "light": "yellow",
+          "suspected_red": false,
+          "law": "人身保險商品審查應注意事項，壹、基本事項第三點、第四點及貳、傳統型個人壽險第三點",
+          "remedy": "依臺灣版現行示範條款與定型化契約規範完成中文條款。",
+          "owner": "法遵",
+          "source_ref": "regulatory:findings[LIFE-03]"
+        },
+        {
+          "item_id": "LIFE-04",
+          "title": "生命表與準備金",
+          "light": "green",
+          "suspected_red": false,
+          "law": "人身保險商品審查應注意事項，壹、基本事項第五點及第六點",
+          "remedy": "以送審時有效生命表、利率及準備金規定重新定價。",
+          "owner": "精算",
+          "source_ref": "regulatory:findings[LIFE-04]"
+        },
+        {
+          "item_id": "LIFE-05",
+          "title": "利率變動型宣告利率",
+          "light": "not_applicable",
+          "suspected_red": false,
+          "law": null,
+          "remedy": null,
+          "owner": "商品",
+          "source_ref": "regulatory:findings[LIFE-05]"
+        },
+        {
+          "item_id": "C-01",
+          "title": "目標客群與非目標客群",
+          "light": "yellow",
+          "suspected_red": false,
+          "law": "保險業招攬及核保理賠辦法第6條",
+          "remedy": "定義TM／NTM、適投年齡、財務負擔能力與不宜客群。",
+          "owner": "商品",
+          "source_ref": "regulatory:findings[C-01]"
+        },
+        {
+          "item_id": "C-02",
+          "title": "誤導風險",
+          "light": "yellow",
+          "suspected_red": false,
+          "law": "保險業招攬及核保理賠辦法第6條；金管保壽字第11304922511號令",
+          "remedy": "揭露觸發條件、早期解約可能損失及末期疾病定義。",
+          "owner": "法遵",
+          "source_ref": "regulatory:findings[C-02]"
+        },
+        {
+          "item_id": "C-03",
+          "title": "資訊揭露格式",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "金管保壽字第11304922511號令；人身保險商品審查應注意事項壹、基本事項",
+          "remedy": "提交中文說明書、建議書、費用／解約金表與情境演示。",
+          "owner": "商品",
+          "source_ref": "regulatory:findings[C-03]"
+        },
+        {
+          "item_id": "C-04",
+          "title": "通路與佣金",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "保險業招攬及核保理賠辦法第6條",
+          "remedy": "補通路、佣金、續期／解約扣回與轉保控管。",
+          "owner": "通路",
+          "source_ref": "regulatory:findings[C-04]"
+        },
+        {
+          "item_id": "C-05",
+          "title": "條款中文化與系統可落地性",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "保險法施行細則第5條；人身保險商品審查應注意事項壹、基本事項第七點",
+          "remedy": "完成中文條款、系統規格、試算表與端到端測試。",
+          "owner": "IT",
+          "source_ref": "regulatory:findings[C-05]"
+        }
+      ],
+      "key_laws": [
+        "保險法第105條、第107條",
+        "保險法施行細則第5條",
+        "保險業招攬及核保理賠辦法",
+        "人身保險商品審查應注意事項",
+        "金管保壽字第11304922511號令"
+      ]
+    }
+  },
+  "blockers": [
+    {
+      "id": "bl-reg-G-RATE-01",
+      "module": "regulatory",
+      "title": "保證利率／預定利率與臺灣版計價幣別未提供",
+      "severity": "blocking",
+      "owner": "精算",
+      "action": "補計價幣別、保證／預定利率、責任準備金與簽署精算意見。",
+      "source_ref": "regulatory:missing_inputs[0]"
+    },
+    {
+      "id": "bl-reg-G-AGE-01",
+      "module": "regulatory",
+      "title": "未成年給付與承保年齡資料未提供",
+      "severity": "blocking",
+      "owner": "法遵",
+      "action": "補最低承保年齡、未成年給付類型與保額上限。",
+      "source_ref": "regulatory:missing_inputs[1]"
+    },
+    {
+      "id": "bl-reg-G-DIV-01",
+      "module": "regulatory",
+      "title": "分紅狀態及正式條款／商品摘要未提供",
+      "severity": "blocking",
+      "owner": "商品",
+      "action": "補正式條款或商品摘要確認分紅狀態及揭露。",
+      "source_ref": "regulatory:missing_inputs[2]"
+    },
+    {
+      "id": "bl-reg-LIFE-01",
+      "module": "regulatory",
+      "title": "要保關係、書面同意與增額選擇權規則未提供",
+      "severity": "blocking",
+      "owner": "法遵",
+      "action": "補要保書、核保手冊與臺灣版商品規格。",
+      "source_ref": "regulatory:missing_inputs[3]"
+    },
+    {
+      "id": "bl-reg-LIFE-03",
+      "module": "regulatory",
+      "title": "完整中文契約條款未提供",
+      "severity": "blocking",
+      "owner": "法遵",
+      "action": "提供臺灣版條款草案。",
+      "source_ref": "regulatory:missing_inputs[4]"
+    },
+    {
+      "id": "bl-reg-C-01",
+      "module": "regulatory",
+      "title": "目標客群、通路、佣金與銷售文件未提供",
+      "severity": "blocking",
+      "owner": "商品",
+      "action": "補上市計畫及銷售文件。",
+      "source_ref": "regulatory:missing_inputs[5]"
+    },
+    {
+      "id": "bl-reg-G-CLS-01",
+      "module": "regulatory",
+      "title": "99歲祝壽給付與定期壽險分類不一致",
+      "severity": "warning",
+      "owner": "商品",
+      "action": "調整為終身壽險設計並更新送審資料。",
+      "source_ref": "regulatory:findings[G-CLS-01]"
+    },
+    {
+      "id": "bl-reg-LIFE-03-yellow",
+      "module": "regulatory",
+      "title": "契約基本條款須完成臺灣化",
+      "severity": "warning",
+      "owner": "法遵",
+      "action": "依臺灣示範條款及現行法令重製條款。",
+      "source_ref": "regulatory:findings[LIFE-03]"
+    },
+    {
+      "id": "bl-reg-C-01-yellow",
+      "module": "regulatory",
+      "title": "目標與非目標客群定義不足",
+      "severity": "warning",
+      "owner": "商品",
+      "action": "定義TM／NTM、適投條件與不宜客群。",
+      "source_ref": "regulatory:findings[C-01]"
+    },
+    {
+      "id": "bl-reg-C-02",
+      "module": "regulatory",
+      "title": "返還保費與解約給付宣稱有誤導風險",
+      "severity": "warning",
+      "owner": "法遵",
+      "action": "於文宣揭露觸發條件、早期解約損失及末期疾病定義。",
+      "source_ref": "regulatory:findings[C-02]"
+    },
+    {
+      "id": "bl-md-1",
+      "module": "market_demand",
+      "title": "本商品直接市場需求與續保／解約經驗不足",
+      "severity": "warning",
+      "owner": "商品",
+      "action": "取得台灣專屬新契約、續保與解約資料後更新需求驗證。",
+      "source_ref": "market_demand:data_gaps[3]"
+    }
+  ],
+  "next_steps": [
+    {
+      "id": "ns-1",
+      "priority": 1,
+      "action": "補臺灣版計價幣別、保證／預定利率、責任準備金及簽署精算意見。",
+      "owner": "精算",
+      "source_module": "regulatory",
+      "source_ref": "regulatory:missing_inputs[0]"
+    },
+    {
+      "id": "ns-2",
+      "priority": 2,
+      "action": "完成終身壽險分類、名稱、費率與送審文件調整。",
+      "owner": "商品",
+      "source_module": "regulatory",
+      "source_ref": "regulatory:pre_launch_requirements[0]"
+    },
+    {
+      "id": "ns-3",
+      "priority": 3,
+      "action": "補最低承保年齡、未成年給付類型及保額上限。",
+      "owner": "法遵",
+      "source_module": "regulatory",
+      "source_ref": "regulatory:missing_inputs[1]"
+    },
+    {
+      "id": "ns-4",
+      "priority": 4,
+      "action": "補正式條款或商品摘要，確認分紅狀態與所需揭露。",
+      "owner": "商品",
+      "source_module": "regulatory",
+      "source_ref": "regulatory:missing_inputs[2]"
+    },
+    {
+      "id": "ns-5",
+      "priority": 5,
+      "action": "提供臺灣版要保書、核保手冊、完整中文條款與商品規格。",
+      "owner": "法遵",
+      "source_module": "regulatory",
+      "source_ref": "regulatory:missing_inputs[3..4]"
+    },
+    {
+      "id": "ns-6",
+      "priority": 6,
+      "action": "補TM／NTM、通路、佣金與費用／解約金演示等上市計畫資料。",
+      "owner": "商品",
+      "source_module": "regulatory",
+      "source_ref": "regulatory:missing_inputs[5]"
+    },
+    {
+      "id": "ns-7",
+      "priority": 7,
+      "action": "評估99歲返還、解約給付與身故／末期疾病給付並存時的定價、準備金與解約率假設。",
+      "owner": "精算",
+      "source_module": "market_demand",
+      "source_ref": "market_demand:handoff_items.to_actuarial"
+    },
+    {
+      "id": "ns-8",
+      "priority": 8,
+      "action": "確認商品分類及99歲返還、末期疾病與解約給付的商品審查與揭露要求。",
+      "owner": "法遵",
+      "source_module": "market_demand",
+      "source_ref": "market_demand:handoff_items.to_regulatory"
+    }
+  ],
+  "data_quality": {
+    "conflicts": [],
+    "suspected_input_errors": [],
+    "evidence_mismatch": [
+      "市場成長與申訴統計為傳統壽險或全險種背景，非本商品直接經驗；source_ref：market_demand:market_growth、consumer_pain_points。"
+    ],
+    "missing_fields": [
+      "core.product_classification.currency_denomination",
+      "for_孫_法規.compliance_key_attributes.min_insured_age",
+      "for_孫_法規.compliance_key_attributes.minor_death_benefit_type",
+      "for_孫_法規.compliance_key_attributes.dividend_mechanism.has_dividend",
+      "for_孫_法規.compliance_key_attributes.guaranteed_return_rate",
+      "for_孫_法規.compliance_key_attributes.pricing_interest_rate",
+      "for_孫_法規.compliance_key_attributes.contract_terms",
+      "for_翁_市場需求.target_audience_source_market.age_range",
+      "for_塗_發生率暨獲利調查.underlying_risk_coverage.trigger_condition",
+      "for_塗_發生率暨獲利調查.underlying_risk_coverage.exclusions_summary",
+      "for_塗_發生率暨獲利調查.underlying_risk_coverage.waiting_period"
+    ],
+    "notes": [
+      "市場規模數值依market_sizing.calculation_notes可判讀為新台幣元；不同方法或商品不得直接比較。",
+      "市場需求結論信心為C級，市場規模信心為B級。",
+      "三份輸入皆以相同product_id識別，並與產品名稱及發行公司一致。"
+    ]
+  },
+  "legend": {
+    "recommendation": {
+      "go": {
+        "label": "可推進",
+        "color": "green"
+      },
+      "conditional_go": {
+        "label": "有條件推進",
+        "color": "yellow"
+      },
+      "hold_missing_info": {
+        "label": "暫緩，待補資料",
+        "color": "yellow"
+      },
+      "hold_resolve_red_flag": {
+        "label": "暫緩，須先釐清疑似紅燈",
+        "color": "red"
+      },
+      "not_recommended": {
+        "label": "不建議引進",
+        "color": "red"
+      },
+      "incomplete_review": {
+        "label": "審查未完成",
+        "color": "gray"
+      }
+    },
+    "severity": {
+      "critical": {
+        "label": "重大",
+        "color": "red"
+      },
+      "blocking": {
+        "label": "阻斷",
+        "color": "orange"
+      },
+      "warning": {
+        "label": "注意",
+        "color": "yellow"
+      }
+    },
+    "light": {
+      "red": {
+        "label": "紅燈",
+        "color": "red"
+      },
+      "yellow": {
+        "label": "黃燈",
+        "color": "yellow"
+      },
+      "green": {
+        "label": "綠燈",
+        "color": "green"
+      },
+      "pending": {
+        "label": "待補",
+        "color": "gray"
+      },
+      "not_applicable": {
+        "label": "不適用",
+        "color": "gray"
+      }
+    },
+    "module": {
+      "market_demand": {
+        "label": "市場需求（翁）"
+      },
+      "actuarial": {
+        "label": "發生率暨獲利調查（塗）"
+      },
+      "regulatory": {
+        "label": "法規適用（孫）"
+      }
+    },
+    "demand_level": {
+      "strong": {
+        "label": "明確需求",
+        "color": "green"
+      },
+      "limited": {
+        "label": "有限需求",
+        "color": "yellow"
+      },
+      "weak": {
+        "label": "需求不足",
+        "color": "red"
+      },
+      "unclear": {
+        "label": "結論不明",
+        "color": "gray"
+      }
+    }
+  },
+  "disclaimer": "本報告為上游三個模組輸出之整合摘要，非法律意見、非精算意見，亦未重新查證；最終判定須經法遵／法務／精算人員覆核。",
+  "dimension_scores": {
+    "method_version": "1.1",
+    "scale": "0-100",
+    "dimensions": [
+      "market_size",
+      "market_growth",
+      "feasibility"
+    ],
+    "market_size": {
+      "label": "市場規模",
+      "score": 75,
+      "level": 4,
+      "basis": "market_demand",
+      "rationale": "潛在保費市場28億元～84億元，中間情境 56億元（潛在市場規模法TAM）",
+      "confidence": "B",
+      "value": 5631803232,
+      "unit": "新台幣元",
+      "source": "市場需求模組（翁）：目標人口×滲透率×平均年繳保費",
+      "as_of": "2026-10-30"
+    },
+    "market_growth": {
+      "label": "市場成長",
+      "score": 100,
+      "level": 5,
+      "basis": "market_pulse",
+      "rationale": "人壽保險新契約保費 2026-08 較去年同期 51.94%（市場模組沒有同險別數字，改用市場脈動的險別數字）",
+      "confidence": "B",
+      "value": 51.94,
+      "unit": "%",
+      "source": "保險事業發展中心",
+      "source_url": "https://www.tii.org.tw/report_test/4001/XLS4001Report_202608.xls",
+      "as_of": "2026-08-31"
+    },
+    "feasibility": {
+      "label": "法規可行性",
+      "score": 50,
+      "level": 3,
+      "basis": "regulatory",
+      "rationale": "0 紅（含疑似 0）、4 黃；6 項阻斷性待補，分數暫定",
+      "confidence": "C",
+      "value": {
+        "red": 0,
+        "suspected_red": 0,
+        "yellow": 4,
+        "pending": 10,
+        "blocking_pending": 6,
+        "overall_verdict": "待確認"
+      },
+      "unit": "項",
+      "source": "法規模組（孫）逐項審查燈號",
+      "as_of": "2026-10-30"
+    },
+    "profitability": {
+      "label": "獲利性",
+      "score": null,
+      "level": null,
+      "basis": null,
+      "rationale": "本版評分方法不評估此維度",
+      "confidence": null
+    },
+    "saturation": {
+      "label": "市場飽和度",
+      "score": null,
+      "level": null,
+      "basis": null,
+      "rationale": "本版評分方法不評估此維度",
+      "confidence": null
+    },
+    "brand_fit": {
+      "label": "品牌／通路契合度",
+      "score": null,
+      "level": null,
+      "basis": null,
+      "rationale": "本版評分方法不評估此維度",
+      "confidence": null
+    }
+  }
+}

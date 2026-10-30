@@ -1,8 +1,8 @@
 {
   "schema_version": "2.1",
-  "generated_at": "2026-10-26T21:58:48+08:00",
+  "generated_at": "2026-10-29T20:14:38+08:00",
   "focus_summary": {
-    "text": "新契約保費年增率68.47%（較上月下降41.15個百分點）；10年期公債殖利率2%（較上週下降0.02個百分點）。",
+    "text": "新契約保費年增率68.47%（較上月下降41.15個百分點）；10年期公債殖利率2.03%（較上週上升0.03個百分點）。",
     "as_of": "2026-08"
   },
   "metrics": [
@@ -21,14 +21,38 @@
       "change_unit": "pp",
       "change_label": "較上月",
       "series": [
-        { "period": "2026-01", "value": 74.07 },
-        { "period": "2026-02", "value": 5.11 },
-        { "period": "2026-03", "value": 27.53 },
-        { "period": "2026-04", "value": 64.64 },
-        { "period": "2026-05", "value": 79.93 },
-        { "period": "2026-06", "value": 64.96 },
-        { "period": "2026-07", "value": 109.62 },
-        { "period": "2026-08", "value": 68.47 }
+        {
+          "period": "2026-01",
+          "value": 74.07
+        },
+        {
+          "period": "2026-02",
+          "value": 5.11
+        },
+        {
+          "period": "2026-03",
+          "value": 27.53
+        },
+        {
+          "period": "2026-04",
+          "value": 64.64
+        },
+        {
+          "period": "2026-05",
+          "value": 79.93
+        },
+        {
+          "period": "2026-06",
+          "value": 64.96
+        },
+        {
+          "period": "2026-07",
+          "value": 109.62
+        },
+        {
+          "period": "2026-08",
+          "value": 68.47
+        }
       ],
       "stale": false,
       "_status": "ok"
@@ -43,54 +67,206 @@
       "as_of": "2026-08-31",
       "unit": "%",
       "periods": [
-        { "period": "2026-01", "parts": [
-          { "name": "人壽保險", "share_pct": 64.92, "growth_pct": 68.6 },
-          { "name": "傷害保險", "share_pct": 0.86, "growth_pct": 21.38 },
-          { "name": "健康保險", "share_pct": 2.41, "growth_pct": 29.38 },
-          { "name": "年金保險", "share_pct": 31.81, "growth_pct": 94.29 }
-        ] },
-        { "period": "2026-02", "parts": [
-          { "name": "人壽保險", "share_pct": 65.52, "growth_pct": 3.8 },
-          { "name": "傷害保險", "share_pct": 1.26, "growth_pct": -18.52 },
-          { "name": "健康保險", "share_pct": 3.06, "growth_pct": -20.75 },
-          { "name": "年金保險", "share_pct": 30.16, "growth_pct": 13.34 }
-        ] },
-        { "period": "2026-03", "parts": [
-          { "name": "人壽保險", "share_pct": 63.2, "growth_pct": 26.31 },
-          { "name": "傷害保險", "share_pct": 1.18, "growth_pct": 0.27 },
-          { "name": "健康保險", "share_pct": 3.4, "growth_pct": 0.26 },
-          { "name": "年金保險", "share_pct": 32.21, "growth_pct": 35.31 }
-        ] },
-        { "period": "2026-04", "parts": [
-          { "name": "人壽保險", "share_pct": 56.78, "growth_pct": 37.31 },
-          { "name": "傷害保險", "share_pct": 1.07, "growth_pct": -7.59 },
-          { "name": "健康保險", "share_pct": 3.59, "growth_pct": 23.05 },
-          { "name": "年金保險", "share_pct": 38.57, "growth_pct": 151.77 }
-        ] },
-        { "period": "2026-05", "parts": [
-          { "name": "人壽保險", "share_pct": 56.36, "growth_pct": 40.36 },
-          { "name": "傷害保險", "share_pct": 1.23, "growth_pct": 1.03 },
-          { "name": "健康保險", "share_pct": 3.51, "growth_pct": 23.43 },
-          { "name": "年金保險", "share_pct": 38.9, "growth_pct": 242.37 }
-        ] },
-        { "period": "2026-06", "parts": [
-          { "name": "人壽保險", "share_pct": 59.44, "growth_pct": 26.1 },
-          { "name": "傷害保險", "share_pct": 0.86, "growth_pct": -9.12 },
-          { "name": "健康保險", "share_pct": 2.97, "growth_pct": 15.37 },
-          { "name": "年金保險", "share_pct": 36.74, "growth_pct": 268.46 }
-        ] },
-        { "period": "2026-07", "parts": [
-          { "name": "人壽保險", "share_pct": 52.95, "growth_pct": 56.99 },
-          { "name": "傷害保險", "share_pct": 0.8, "growth_pct": -2.25 },
-          { "name": "健康保險", "share_pct": 2.35, "growth_pct": 3.3 },
-          { "name": "年金保險", "share_pct": 43.89, "growth_pct": 303.63 }
-        ] },
-        { "period": "2026-08", "parts": [
-          { "name": "人壽保險", "share_pct": 62.52, "growth_pct": 51.94 },
-          { "name": "傷害保險", "share_pct": 0.96, "growth_pct": -2.61 },
-          { "name": "健康保險", "share_pct": 2.92, "growth_pct": -1.78 },
-          { "name": "年金保險", "share_pct": 33.59, "growth_pct": 135.83 }
-        ] }
+        {
+          "period": "2026-01",
+          "parts": [
+            {
+              "name": "人壽保險",
+              "share_pct": 64.92,
+              "growth_pct": 68.6
+            },
+            {
+              "name": "傷害保險",
+              "share_pct": 0.86,
+              "growth_pct": 21.38
+            },
+            {
+              "name": "健康保險",
+              "share_pct": 2.41,
+              "growth_pct": 29.38
+            },
+            {
+              "name": "年金保險",
+              "share_pct": 31.81,
+              "growth_pct": 94.29
+            }
+          ]
+        },
+        {
+          "period": "2026-02",
+          "parts": [
+            {
+              "name": "人壽保險",
+              "share_pct": 65.52,
+              "growth_pct": 3.8
+            },
+            {
+              "name": "傷害保險",
+              "share_pct": 1.26,
+              "growth_pct": -18.52
+            },
+            {
+              "name": "健康保險",
+              "share_pct": 3.06,
+              "growth_pct": -20.75
+            },
+            {
+              "name": "年金保險",
+              "share_pct": 30.16,
+              "growth_pct": 13.34
+            }
+          ]
+        },
+        {
+          "period": "2026-03",
+          "parts": [
+            {
+              "name": "人壽保險",
+              "share_pct": 63.2,
+              "growth_pct": 26.31
+            },
+            {
+              "name": "傷害保險",
+              "share_pct": 1.18,
+              "growth_pct": 0.27
+            },
+            {
+              "name": "健康保險",
+              "share_pct": 3.4,
+              "growth_pct": 0.26
+            },
+            {
+              "name": "年金保險",
+              "share_pct": 32.21,
+              "growth_pct": 35.31
+            }
+          ]
+        },
+        {
+          "period": "2026-04",
+          "parts": [
+            {
+              "name": "人壽保險",
+              "share_pct": 56.78,
+              "growth_pct": 37.31
+            },
+            {
+              "name": "傷害保險",
+              "share_pct": 1.07,
+              "growth_pct": -7.59
+            },
+            {
+              "name": "健康保險",
+              "share_pct": 3.59,
+              "growth_pct": 23.05
+            },
+            {
+              "name": "年金保險",
+              "share_pct": 38.57,
+              "growth_pct": 151.77
+            }
+          ]
+        },
+        {
+          "period": "2026-05",
+          "parts": [
+            {
+              "name": "人壽保險",
+              "share_pct": 56.36,
+              "growth_pct": 40.36
+            },
+            {
+              "name": "傷害保險",
+              "share_pct": 1.23,
+              "growth_pct": 1.03
+            },
+            {
+              "name": "健康保險",
+              "share_pct": 3.51,
+              "growth_pct": 23.43
+            },
+            {
+              "name": "年金保險",
+              "share_pct": 38.9,
+              "growth_pct": 242.37
+            }
+          ]
+        },
+        {
+          "period": "2026-06",
+          "parts": [
+            {
+              "name": "人壽保險",
+              "share_pct": 59.44,
+              "growth_pct": 26.1
+            },
+            {
+              "name": "傷害保險",
+              "share_pct": 0.86,
+              "growth_pct": -9.12
+            },
+            {
+              "name": "健康保險",
+              "share_pct": 2.97,
+              "growth_pct": 15.37
+            },
+            {
+              "name": "年金保險",
+              "share_pct": 36.74,
+              "growth_pct": 268.46
+            }
+          ]
+        },
+        {
+          "period": "2026-07",
+          "parts": [
+            {
+              "name": "人壽保險",
+              "share_pct": 52.95,
+              "growth_pct": 56.99
+            },
+            {
+              "name": "傷害保險",
+              "share_pct": 0.8,
+              "growth_pct": -2.25
+            },
+            {
+              "name": "健康保險",
+              "share_pct": 2.35,
+              "growth_pct": 3.3
+            },
+            {
+              "name": "年金保險",
+              "share_pct": 43.89,
+              "growth_pct": 303.63
+            }
+          ]
+        },
+        {
+          "period": "2026-08",
+          "parts": [
+            {
+              "name": "人壽保險",
+              "share_pct": 62.52,
+              "growth_pct": 51.94
+            },
+            {
+              "name": "傷害保險",
+              "share_pct": 0.96,
+              "growth_pct": -2.61
+            },
+            {
+              "name": "健康保險",
+              "share_pct": 2.92,
+              "growth_pct": -1.78
+            },
+            {
+              "name": "年金保險",
+              "share_pct": 33.59,
+              "growth_pct": 135.83
+            }
+          ]
+        }
       ],
       "stale": false,
       "_status": "ok"
@@ -101,23 +277,119 @@
       "type": "trend",
       "label": "10年期公債殖利率",
       "source": "櫃買中心",
-      "source_url": "https://www.tpex.org.tw/storage/bond_zone/tradeinfo/govbond/2026/202610/Curve.20261022-C.xls",
-      "as_of": "2026-10-23",
+      "source_url": "https://www.tpex.org.tw/storage/bond_zone/tradeinfo/govbond/2026/202610/Curve.20261029-C.xls",
+      "as_of": "2026-10-30",
       "featured": true,
       "unit": "%",
-      "latest_value": 2.0,
-      "change_pct": -0.02,
+      "latest_value": 2.03,
+      "change_pct": 0.03,
       "change_unit": "pp",
       "change_label": "較上週",
       "series": [
-        { "period": "2026-W36", "value": 1.88 },
-        { "period": "2026-W37", "value": 1.92 },
-        { "period": "2026-W38", "value": 1.92 },
-        { "period": "2026-W39", "value": 1.92 },
-        { "period": "2026-W40", "value": 1.92 },
-        { "period": "2026-W41", "value": 2.02 },
-        { "period": "2026-W42", "value": 2.02 },
-        { "period": "2026-W43", "value": 2.0 }
+        {
+          "period": "2026-W19",
+          "value": 1.535
+        },
+        {
+          "period": "2026-W20",
+          "value": 1.635
+        },
+        {
+          "period": "2026-W21",
+          "value": 1.635
+        },
+        {
+          "period": "2026-W22",
+          "value": 1.635
+        },
+        {
+          "period": "2026-W23",
+          "value": 1.73
+        },
+        {
+          "period": "2026-W24",
+          "value": 1.777
+        },
+        {
+          "period": "2026-W25",
+          "value": 1.777
+        },
+        {
+          "period": "2026-W26",
+          "value": 1.777
+        },
+        {
+          "period": "2026-W27",
+          "value": 1.7
+        },
+        {
+          "period": "2026-W28",
+          "value": 1.7
+        },
+        {
+          "period": "2026-W29",
+          "value": 1.7
+        },
+        {
+          "period": "2026-W30",
+          "value": 1.9203
+        },
+        {
+          "period": "2026-W31",
+          "value": 1.9203
+        },
+        {
+          "period": "2026-W32",
+          "value": 1.9656
+        },
+        {
+          "period": "2026-W33",
+          "value": 1.9609
+        },
+        {
+          "period": "2026-W34",
+          "value": 1.88
+        },
+        {
+          "period": "2026-W35",
+          "value": 1.88
+        },
+        {
+          "period": "2026-W36",
+          "value": 1.88
+        },
+        {
+          "period": "2026-W37",
+          "value": 1.9205
+        },
+        {
+          "period": "2026-W38",
+          "value": 1.9205
+        },
+        {
+          "period": "2026-W39",
+          "value": 1.9205
+        },
+        {
+          "period": "2026-W40",
+          "value": 1.9205
+        },
+        {
+          "period": "2026-W41",
+          "value": 2.0237
+        },
+        {
+          "period": "2026-W42",
+          "value": 2.0225
+        },
+        {
+          "period": "2026-W43",
+          "value": 2.0015
+        },
+        {
+          "period": "2026-W44",
+          "value": 2.03
+        }
       ],
       "stale": false,
       "_status": "ok"
@@ -132,11 +404,124 @@
       "as_of": "2026-09-30",
       "unit": "%",
       "periods": [
-        { "period": "2026-09", "parts": [
-          { "name": "壽險公司本身行銷體系", "share_pct": 46.39, "growth_pct": null },
-          { "name": "銀行經代保代通路", "share_pct": 36.97, "growth_pct": null },
-          { "name": "傳統保險經紀人、代理人", "share_pct": 16.64, "growth_pct": null }
-        ] }
+        {
+          "period": "2026-09",
+          "parts": [
+            {
+              "name": "壽險公司本身行銷體系",
+              "share_pct": 46.39,
+              "growth_pct": null
+            },
+            {
+              "name": "銀行經代保代通路",
+              "share_pct": 36.97,
+              "growth_pct": null
+            },
+            {
+              "name": "傳統保險經紀人、代理人",
+              "share_pct": 16.64,
+              "growth_pct": null
+            }
+          ]
+        }
+      ],
+      "stale": false,
+      "_status": "ok"
+    },
+    {
+      "key": "net_inflow",
+      "group": "health",
+      "type": "trend",
+      "label": "保費收入減保險給付（淨流入）",
+      "source": "金管會保險局",
+      "source_url": "https://www.ib.gov.tw/uploaddowndoc?file=statistics/202610071448110.pdf&filedisplay=115年6月保險市場重要指標.pdf&flag=doc",
+      "as_of": "2026-06-30",
+      "unit": "新台幣元",
+      "latest_value": 15938000000,
+      "change_pct": null,
+      "change_unit": "pct",
+      "change_label": "較上月",
+      "series": [
+        {
+          "period": "2025-07",
+          "value": 23119000000
+        },
+        {
+          "period": "2025-08",
+          "value": 13318000000
+        },
+        {
+          "period": "2025-09",
+          "value": 21338000000
+        },
+        {
+          "period": "2025-10",
+          "value": 1638000000
+        },
+        {
+          "period": "2025-11",
+          "value": 7890000000
+        },
+        {
+          "period": "2025-12",
+          "value": 27787000000
+        },
+        {
+          "period": "2026-01",
+          "value": 51536000000
+        },
+        {
+          "period": "2026-02",
+          "value": 28033000000
+        },
+        {
+          "period": "2026-03",
+          "value": 16183000000
+        },
+        {
+          "period": "2026-04",
+          "value": 17159000000
+        },
+        {
+          "period": "2026-05",
+          "value": -5144000000
+        },
+        {
+          "period": "2026-06",
+          "value": 15938000000
+        }
+      ],
+      "stale": false,
+      "_status": "ok"
+    },
+    {
+      "key": "industry_persistency",
+      "group": "health",
+      "type": "multi_line",
+      "label": "保單繼續率",
+      "source": "金管會保險局",
+      "source_url": "https://www.ib.gov.tw/uploaddowndoc?file=statistics/202610071446060.pdf&filedisplay=115年5月保險市場重要指標.pdf&flag=doc",
+      "as_of": "2025-12-31",
+      "unit": "%",
+      "lines": [
+        {
+          "name": "13個月繼續率（件數）",
+          "series": [
+            {
+              "period": "2025",
+              "value": 95.32
+            }
+          ]
+        },
+        {
+          "name": "25個月繼續率（件數）",
+          "series": [
+            {
+              "period": "2025",
+              "value": 90.91
+            }
+          ]
+        }
       ],
       "stale": false,
       "_status": "ok"
@@ -155,10 +540,147 @@
       "change_unit": "pp",
       "change_label": "較上月",
       "series": [
-        { "period": "2026-08", "value": 3.56 }
+        {
+          "period": "2026-08",
+          "value": 3.56
+        }
       ],
       "stale": false,
       "_status": "ok"
+    },
+    {
+      "key": "company_ranking",
+      "group": "brand",
+      "type": "ranking",
+      "label": "同業新契約保費市占率排名（當年1月起累計）",
+      "unit": "%",
+      "period": "2026-08",
+      "rows": [
+        {
+          "name": "國泰人壽",
+          "value": 24.4,
+          "rank": 1,
+          "is_self": false
+        },
+        {
+          "name": "富邦人壽",
+          "value": 10.66,
+          "rank": 2,
+          "is_self": false
+        },
+        {
+          "name": "新光人壽",
+          "value": 9.09,
+          "rank": 3,
+          "is_self": false
+        },
+        {
+          "name": "凱基人壽",
+          "value": 8.67,
+          "rank": 4,
+          "is_self": false
+        },
+        {
+          "name": "南山人壽",
+          "value": 8.51,
+          "rank": 5,
+          "is_self": false
+        },
+        {
+          "name": "台灣人壽",
+          "value": 7.84,
+          "rank": 6,
+          "is_self": false
+        },
+        {
+          "name": "安聯人壽",
+          "value": 6.44,
+          "rank": 7,
+          "is_self": false
+        },
+        {
+          "name": "元大人壽",
+          "value": 4.53,
+          "rank": 8,
+          "is_self": false
+        },
+        {
+          "name": "三商美邦人壽",
+          "value": 3.64,
+          "rank": 9,
+          "is_self": false
+        },
+        {
+          "name": "法國巴黎人壽",
+          "value": 3.56,
+          "rank": 10,
+          "is_self": true
+        },
+        {
+          "name": "安達國際人壽",
+          "value": 3.47,
+          "rank": 11,
+          "is_self": false
+        },
+        {
+          "name": "保誠人壽",
+          "value": 3.15,
+          "rank": 12,
+          "is_self": false
+        },
+        {
+          "name": "全球人壽",
+          "value": 1.87,
+          "rank": 13,
+          "is_self": false
+        },
+        {
+          "name": "遠雄人壽",
+          "value": 0.95,
+          "rank": 14,
+          "is_self": false
+        },
+        {
+          "name": "第一金人壽",
+          "value": 0.92,
+          "rank": 15,
+          "is_self": false
+        },
+        {
+          "name": "臺銀人壽",
+          "value": 0.78,
+          "rank": 16,
+          "is_self": false
+        },
+        {
+          "name": "合作金庫人壽",
+          "value": 0.75,
+          "rank": 17,
+          "is_self": false
+        },
+        {
+          "name": "中華郵政",
+          "value": 0.54,
+          "rank": 18,
+          "is_self": false
+        },
+        {
+          "name": "友邦人壽",
+          "value": 0.15,
+          "rank": 19,
+          "is_self": false
+        },
+        {
+          "name": "宏泰人壽",
+          "value": 0.08,
+          "rank": 20,
+          "is_self": false
+        }
+      ],
+      "source": "保險事業發展中心",
+      "source_url": "https://www.tii.org.tw/report_test/4001/XLS4001Report_202608.xls",
+      "as_of": "2026-08-31",
+      "stale": false
     }
   ]
 }

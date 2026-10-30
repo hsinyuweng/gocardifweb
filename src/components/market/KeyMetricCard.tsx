@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { PulseTrendViewModel } from '../../types/viewModel';
 import { zhTW } from '../../i18n/zh-TW';
 import { formatPulseTick, orDash, pulseChangeText, shortPeriodLabels } from '../../lib/format';
@@ -14,7 +15,7 @@ const CHART_H = 150;
  * 名稱、最新值與期間、變化、大走勢圖（月資料直條、週資料與名次折線；最新一點珊瑚色、最高點標數字）。
  * 不連到分頁：市場脈動只用最上方的頁籤切換分頁（2026-10-27 使用者要求）。
  */
-export function KeyMetricCard({ metric: m, coral }: { metric: PulseTrendViewModel; coral: boolean }) {
+export function KeyMetricCard({ metric: m, coral, fallback = null }: { metric: PulseTrendViewModel; coral: boolean; fallback?: ReactNode }) {
   const fmt = (v: number) => trendValue(m, v);
   const last = m.points.at(-1)?.period ?? null;
   const monthly = !!last && /^\d{4}-\d{2}$/.test(last);
@@ -37,7 +38,11 @@ export function KeyMetricCard({ metric: m, coral }: { metric: PulseTrendViewMode
         ) : null}
       </p>
       <div className="mt-2">
-        {m.points.length < 2 ? (
+        {m.points.length < 2 && fallback ? (
+          <div className="flex flex-col justify-center" style={{ minHeight: CHART_H }}>
+            {fallback}
+          </div>
+        ) : m.points.length < 2 ? (
           <p
             className="flex items-center justify-center rounded-lg bg-p-faint text-[12.5px] text-muted"
             style={{ height: CHART_H }}

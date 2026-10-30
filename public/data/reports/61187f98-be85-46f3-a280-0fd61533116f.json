@@ -1,0 +1,934 @@
+{
+  "report_meta": {
+    "schema_version": "1.2",
+    "language": "zh-Hant",
+    "generated_date": "2026-10-30",
+    "report_id": "61187f98-be85-46f3-a280-0fd61533116f",
+    "source_files": {
+      "market_demand": {
+        "status": "provided",
+        "file": "/data/61187f98-be85-46f3-a280-0fd61533116f/2a.json",
+        "review_date": "2026-10-30"
+      },
+      "actuarial": {
+        "status": "provided",
+        "file": "/data/61187f98-be85-46f3-a280-0fd61533116f/2b.json",
+        "review_date": "2026-10-30"
+      },
+      "regulatory": {
+        "status": "provided",
+        "file": "/data/61187f98-be85-46f3-a280-0fd61533116f/2c.json",
+        "review_date": "2026-10-30"
+      }
+    },
+    "_enriched": "report-enricher"
+  },
+  "product_snapshot": {
+    "name": "CareScout Care Assurance長期照顧保險",
+    "issuer": "CareScout Insurance Company",
+    "country": "美國",
+    "category": "長期照顧保險（傳統長期照顧保險）",
+    "currency": "美元",
+    "premium_mode": null,
+    "mechanism_summary": "符合資格的長照服務採費用補償，並結合照護資訊、轉介及服務提供者網絡。",
+    "source_documents": [
+      {
+        "title": "CareScout Launches Care Assurance, First Insurance Solution for Company",
+        "type": "官方新聞稿",
+        "url": "https://investor.genworth.com/news-events/press-releases/detail/1045/carescout-launches-care-assurance-first-insurance-solution",
+        "publication_date": "2025-10-01"
+      },
+      {
+        "title": "CareScout Care Assurance",
+        "type": "官方消費者簡介（PDF）",
+        "url": "https://pro.genworth.com/riiproweb/productinfo/pdf/ICC25-892301.pdf",
+        "publication_date": "2025-06-11"
+      },
+      {
+        "title": "Is Life Insurance the Answer to the Growing Long-Term Care Need in the U.S?",
+        "type": "LIMRA產業文章",
+        "url": "https://www.limra.com/en/newsroom/industry-trends/2025/is-life-insurance-the-answer-to-the-growing-long-term-care-need-in-the-u.s/",
+        "publication_date": "2025-01-28"
+      },
+      {
+        "title": "Demand for life annuities, critical illness insurance, and long-term care insurance",
+        "type": "JRI學術文章",
+        "url": "https://onlinelibrary.wiley.com/doi/10.1111/jori.70005",
+        "publication_date": "2025-09-01"
+      },
+      {
+        "title": "安心守護A型長期照顧終身保險（外溢型）（實物給付型保險商品）",
+        "type": "臺灣保險公司官方商品頁",
+        "url": "https://www.cathaylife.com.tw/official/products/health-long-term-care/vsc",
+        "publication_date": null
+      }
+    ]
+  },
+  "headline": {
+    "recommendation": "conditional_go",
+    "label": "有條件推進",
+    "signal_color": "yellow",
+    "one_line_summary": "需求有限，須完成台灣版條款、給付與揭露設計。",
+    "reasons": [
+      "市場需求：有限需求",
+      "法規：7項黃燈及6項待補",
+      "精算：美國與台灣經驗低度可比"
+    ],
+    "matched_rule": 5
+  },
+  "scorecard": {
+    "market_demand": {
+      "status": "provided",
+      "level": "limited",
+      "label": "有限需求",
+      "confidence": "B",
+      "signal": "yellow"
+    },
+    "actuarial": {
+      "status": "provided",
+      "research_status": "sufficient_evidence",
+      "comparability": "低度可比",
+      "pricing_flag_count": 2,
+      "signal": "green"
+    },
+    "regulatory": {
+      "status": "provided",
+      "overall_verdict": "修改後可引進",
+      "counts": {
+        "red": 0,
+        "yellow": 7,
+        "green": 2,
+        "pending": 6,
+        "not_applicable": 1
+      },
+      "signal": "yellow"
+    }
+  },
+  "sections": {
+    "market_demand": {
+      "summary": "台灣長照保障滲透約5%，中年客群龐大；但照護服務網絡並非空白，須以服務整合而非保障本身定位。",
+      "market_sizing": {
+        "methodology": "潛在市場規模法TAM",
+        "target_population": 9410132,
+        "estimate_low": 16060742791,
+        "estimate_mid": 24091114186,
+        "estimate_high": 32121485582,
+        "reported_unit": "新台幣元",
+        "confidence": "B"
+      },
+      "key_points": [
+        {
+          "id": "md-1",
+          "text": "40至65歲目標客群為9,410,132人，但2036年絕對人數減少558,585人。",
+          "evidence_scheme": "market_abc",
+          "evidence_level": "A",
+          "source": "NDC_人口推估_單齡人口數_2026-50.xlsx",
+          "source_ref": "market_demand:audience"
+        },
+        {
+          "id": "md-2",
+          "text": "台灣已有實物給付與合作照護服務，服務網絡不是明確空白市場。",
+          "evidence_scheme": "market_abc",
+          "evidence_level": "A",
+          "source": "國泰人壽、富邦人壽、南山人壽公開商品頁與DM",
+          "source_ref": "market_demand:competitor_comparison.gap_analysis"
+        },
+        {
+          "id": "md-3",
+          "text": "照護費與家庭照顧負荷具痛點，但長照險約5%投保率未取得原始統計交叉驗證。",
+          "evidence_scheme": "market_abc",
+          "evidence_level": "B",
+          "source": "經濟日報轉述衛福部與壽險公會資料",
+          "source_ref": "market_demand:consumer_pain_points[0]"
+        },
+        {
+          "id": "md-4",
+          "text": "長照險專屬通路占比未取得，通路建議為C級。",
+          "evidence_scheme": "market_abc",
+          "evidence_level": "C",
+          "source": null,
+          "source_ref": "market_demand:data_gaps[3]"
+        }
+      ],
+      "handoffs": {
+        "to_actuarial": "實支補償下的照護服務使用率、平均費用、免責期間與服務網絡折扣對損失率的影響，缺乏台灣經驗數據。",
+        "to_regulatory": "費用補償型長照商品、照護服務轉介與優惠定價網絡在台灣的保險給付、個資與合作服務規範適用性需確認。"
+      },
+      "data_gaps": [
+        "上游機制欄位的premium_payment_mode與benefit_period為空值，無法比較繳費與保障期間。",
+        "本地TII兩份新契約.xlsx未能取得長照或個人人壽新契約精確成長率。",
+        "長照險有效契約約5%僅有媒體轉述，未取得原始統計交叉驗證。",
+        "未取得長照險商品專屬通路占比與具名保司通路業績。",
+        "競品公開資料未完整揭露解約費用率與保單管理費。",
+        "未取得台灣費用補償型長照商品的理賠率、服務使用率或損失率。"
+      ],
+      "tag_update_suggestion": {
+        "new_tags": [
+          "[照護服務網絡整合]",
+          "[費用補償型長照]"
+        ],
+        "reason": "既有標籤庫未區分照護服務提供者網絡結合及合格費用補償機制，尚待人工確認。"
+      },
+      "competitor_comparison": {
+        "_generated_by": "report-enricher",
+        "has_direct_competitor": true,
+        "no_competitor_reason": null,
+        "comparison_dimensions": [
+          "商品類型",
+          "投保年齡",
+          "保費範圍",
+          "保單管理費",
+          "推估目標客群"
+        ],
+        "competitors": [
+          {
+            "id": "cmp-1",
+            "name": "安心守護B型長期照顧終身健康保險（外溢型）（實物給付型保險商品）",
+            "issuer": "國泰人壽",
+            "market": "TW",
+            "is_direct": true,
+            "currency": null,
+            "premium_mode": null,
+            "attributes": {
+              "商品類型": "終身型長期照顧健康保險／實物給付型",
+              "投保年齡": "10年期15足歲至70歲；20年期15足歲至60歲",
+              "保費範圍": "保額每年3,000至90,000元；10或20年繳，公開頁面未列標準保費範例",
+              "保單管理費": "公開頁面未列示",
+              "推估目標客群": "15至60／70歲、重視終身分期給付、健康回饋與合作照護服務者（依年齡與保額限制反推）。"
+            },
+            "metrics": [
+              {
+                "key": "min_issue_age",
+                "label": "最低投保年齡",
+                "value": null,
+                "unit": "歲"
+              },
+              {
+                "key": "max_issue_age",
+                "label": "最高投保年齡",
+                "value": null,
+                "unit": "歲"
+              },
+              {
+                "key": "surrender_charge_y1",
+                "label": "第1年解約費用率",
+                "value": null,
+                "unit": "%"
+              },
+              {
+                "key": "surrender_charge_years",
+                "label": "收取解約費用年數",
+                "value": null,
+                "unit": "年"
+              }
+            ],
+            "difference": null,
+            "source": "市場需求模組（翁）整理之公開規範文件",
+            "source_url": "https://www.cathaylife.com.tw/official/products/health-long-term-care/vsd",
+            "as_of": "2026-10-30"
+          },
+          {
+            "id": "cmp-2",
+            "name": "樂齡守護長期照顧定期健康保險（外溢型）（實物給付型保險商品）",
+            "issuer": "國泰人壽",
+            "market": "TW",
+            "is_direct": true,
+            "currency": null,
+            "premium_mode": null,
+            "attributes": {
+              "商品類型": "定期長期照顧健康保險／實物給付型",
+              "投保年齡": "10年期40至75歲；20年期40至65歲；30年期40至55歲",
+              "保費範圍": "40至60歲投保金額每年10,000至30,000元；61至65歲每年5,000至30,000元；66至75歲每年5,000至10,000元",
+              "保單管理費": "公開頁面未列示",
+              "推估目標客群": "40至65歲的中高齡預算型客群；純長照、定期與實物服務設計（依投保年齡與額度反推）。"
+            },
+            "metrics": [
+              {
+                "key": "min_issue_age",
+                "label": "最低投保年齡",
+                "value": 40,
+                "unit": "歲"
+              },
+              {
+                "key": "max_issue_age",
+                "label": "最高投保年齡",
+                "value": 75,
+                "unit": "歲"
+              },
+              {
+                "key": "surrender_charge_y1",
+                "label": "第1年解約費用率",
+                "value": null,
+                "unit": "%"
+              },
+              {
+                "key": "surrender_charge_years",
+                "label": "收取解約費用年數",
+                "value": null,
+                "unit": "年"
+              }
+            ],
+            "difference": null,
+            "source": "市場需求模組（翁）整理之公開規範文件",
+            "source_url": "https://www.cathaylife.com.tw/official/products/health-long-term-care/lcc",
+            "as_of": "2026-10-30"
+          },
+          {
+            "id": "cmp-3",
+            "name": "連馨久久長期照顧終身健康保險（LTQ）",
+            "issuer": "富邦人壽",
+            "market": "TW",
+            "is_direct": true,
+            "currency": null,
+            "premium_mode": null,
+            "attributes": {
+              "商品類型": "終身型長期照顧健康保險／分期給付",
+              "投保年齡": "10年期15至70歲；20年期15至60歲；30年期15至50歲",
+              "保費範圍": "40歲男性、保額1萬元、20年繳，年繳34,480元；轉帳折減後為34,135元（僅為公開試算案例）",
+              "保單管理費": "公開DM未列保單管理費；商品註明無解約金",
+              "推估目標客群": "中年投保、需要失智與長照分期保障、可負擔約3.4萬元年繳範例者（依公開試算與年齡限制反推）。"
+            },
+            "metrics": [
+              {
+                "key": "min_issue_age",
+                "label": "最低投保年齡",
+                "value": 15,
+                "unit": "歲"
+              },
+              {
+                "key": "max_issue_age",
+                "label": "最高投保年齡",
+                "value": 70,
+                "unit": "歲"
+              },
+              {
+                "key": "surrender_charge_y1",
+                "label": "第1年解約費用率",
+                "value": null,
+                "unit": "%"
+              },
+              {
+                "key": "surrender_charge_years",
+                "label": "收取解約費用年數",
+                "value": null,
+                "unit": "年"
+              }
+            ],
+            "difference": null,
+            "source": "市場需求模組（翁）整理之公開規範文件",
+            "source_url": "https://www.fubon.com/life/api/v1/files/12416/download/%E4%B8%8B%E8%BC%89%E5%95%86%E5%93%81DM.pdf",
+            "as_of": "2026-10-30"
+          },
+          {
+            "id": "cmp-4",
+            "name": "相守溢百長期照顧終身保險（HRLTC3）",
+            "issuer": "南山人壽",
+            "market": "TW",
+            "is_direct": true,
+            "currency": null,
+            "premium_mode": null,
+            "attributes": {
+              "商品類型": "終身型長期照顧保險／分期給付與輔具、喘息支持",
+              "投保年齡": "10年期15足歲至70歲；20年期15足歲至60歲",
+              "保費範圍": "最低保險金額120,000元、累計最高2,400,000元；40歲女性、保險金額240,000元、20年繳年繳43,080元（公開試算案例）",
+              "保單管理費": "商品註明無解約金；公開DM未列保單管理費",
+              "推估目標客群": "15至60／70歲、想要終身保障、輔具與照護者喘息支持者（依投保規範與保障設計反推）。"
+            },
+            "metrics": [
+              {
+                "key": "min_issue_age",
+                "label": "最低投保年齡",
+                "value": null,
+                "unit": "歲"
+              },
+              {
+                "key": "max_issue_age",
+                "label": "最高投保年齡",
+                "value": null,
+                "unit": "歲"
+              },
+              {
+                "key": "surrender_charge_y1",
+                "label": "第1年解約費用率",
+                "value": null,
+                "unit": "%"
+              },
+              {
+                "key": "surrender_charge_years",
+                "label": "收取解約費用年數",
+                "value": null,
+                "unit": "年"
+              }
+            ],
+            "difference": null,
+            "source": "市場需求模組（翁）整理之公開規範文件",
+            "source_url": "https://www.nanshanlife.com.tw/nanshanlife/portal-api/File/11225",
+            "as_of": "2026-10-30"
+          }
+        ],
+        "gap_analysis": "A級（台灣競品條款／商品頁）：台灣已非僅現金給付市場。國泰兩檔均可提供合作長照服務，富邦與南山則納入失智、健康回饋、輔具或喘息支持。CareScout的差異不是「首創服務網絡」，而是將費用補償、全程數位投保交付與品質審核且有優惠定價的照護服務提供者網絡整合。現有公開台灣競品中，未見可直接確認「全國性品質審核服務網絡＋優惠定價」同時作為保單核心權利的描述；此為可驗證不足下的B級缺口，而非明確空白。",
+        "metric_list": [
+          {
+            "key": "min_issue_age",
+            "label": "最低投保年齡",
+            "unit": "歲",
+            "how": "投保年齡限制的下限（例如「15-85歲」取 15）"
+          },
+          {
+            "key": "max_issue_age",
+            "label": "最高投保年齡",
+            "unit": "歲",
+            "how": "投保年齡限制的上限（例如「15-85歲」取 85）"
+          },
+          {
+            "key": "surrender_charge_y1",
+            "label": "第1年解約費用率",
+            "unit": "%",
+            "how": "解約費用率表第 1 保單年度的費率"
+          },
+          {
+            "key": "surrender_charge_years",
+            "label": "收取解約費用年數",
+            "unit": "年",
+            "how": "解約費用率表中費率大於 0 的年度數"
+          }
+        ],
+        "subject_metrics": [
+          {
+            "key": "min_issue_age",
+            "label": "最低投保年齡",
+            "value": null,
+            "unit": "歲",
+            "source": null,
+            "source_url": null,
+            "as_of": null
+          },
+          {
+            "key": "max_issue_age",
+            "label": "最高投保年齡",
+            "value": null,
+            "unit": "歲",
+            "source": null,
+            "source_url": null,
+            "as_of": null
+          },
+          {
+            "key": "surrender_charge_y1",
+            "label": "第1年解約費用率",
+            "value": null,
+            "unit": "%",
+            "source": null,
+            "source_url": null,
+            "as_of": null
+          },
+          {
+            "key": "surrender_charge_years",
+            "label": "收取解約費用年數",
+            "value": null,
+            "unit": "年",
+            "source": null,
+            "source_url": null,
+            "as_of": null
+          }
+        ]
+      }
+    },
+    "actuarial": {
+      "summary": "美國長照險經驗顯示理賠發生、終止與解約為核心假設；台灣同口徑經驗、完整條款與給付期間未取得。",
+      "key_points": [
+        {
+          "id": "ac-1",
+          "text": "美國SOA彙總研究將理賠發生與終止作為長照險核心罹病假設。",
+          "evidence_scheme": "actuarial_tier",
+          "evidence_level": "T2",
+          "source": "Society of Actuaries, Long-Term Care Intercompany Experience Study – Aggregate Database 2000–2016 Report",
+          "source_ref": "actuarial:incidence_rate_references[E1]"
+        },
+        {
+          "id": "ac-2",
+          "text": "既有美國區塊曾受低解約與高理賠成本影響。",
+          "evidence_scheme": "actuarial_tier",
+          "evidence_level": "T2",
+          "source": "Maryland Insurance Administration, Genworth Life Insurance Company Actuarial Memorandum, Policy Form 7046MD",
+          "source_ref": "actuarial:incidence_rate_references[E3]"
+        },
+        {
+          "id": "ac-3",
+          "text": "台灣公共長照服務將影響費用補償保障的重疊與自付額。",
+          "evidence_scheme": "actuarial_tier",
+          "evidence_level": "T1",
+          "source": "Executive Yuan, Long-term Care Plan 2.0",
+          "source_ref": "actuarial:economic_regulatory_context[E5]"
+        },
+        {
+          "id": "ac-4",
+          "text": "台美沒有可直接對齊的被保險人長照發生率或解約經驗。",
+          "evidence_scheme": "actuarial_tier",
+          "evidence_level": null,
+          "source": null,
+          "source_ref": "actuarial:comparability_assessment.incidence_rate_gap"
+        }
+      ],
+      "pricing_flags": [
+        {
+          "topic": "失能發生率、失能後死亡與復原、給付期間／長照理賠發生率、理賠終止率與給付期間假設",
+          "direction": "需進一步評估",
+          "source_count": 2
+        },
+        {
+          "topic": "解約假設／健康體解約率與長期有效契約組合假設",
+          "direction": "需進一步評估",
+          "source_count": 2
+        }
+      ],
+      "evidence_gaps": []
+    },
+    "regulatory": {
+      "summary": "修改後可引進；實支實付長照、網絡服務與數位交付須本地化，條款、費率與揭露資料上市前仍待補。",
+      "findings": [
+        {
+          "item_id": "G-CLS-01",
+          "title": "險種歸類與可銷售性",
+          "light": "green",
+          "suspected_red": false,
+          "law": "保險商品銷售前程序作業準則第2、7條；人身保險商品審查應注意事項第2點",
+          "remedy": "完成本地商品分類、條款對照、送審及簽署程序；服務網絡依C-05處理。",
+          "owner": "法遵",
+          "source_ref": "regulatory:findings[G-CLS-01]"
+        },
+        {
+          "item_id": "G-AGE-01",
+          "title": "未滿15歲被保險人身故給付",
+          "light": "not_applicable",
+          "suspected_red": false,
+          "law": null,
+          "remedy": null,
+          "owner": "法遵",
+          "source_ref": "regulatory:findings[G-AGE-01]"
+        },
+        {
+          "item_id": "G-AGE-02",
+          "title": "受監護宣告者與其他限制行為能力者",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "保險法第107-1條",
+          "remedy": "補充臺灣版對受監護宣告者、要保人及被保險人同意與死亡／退費給付規則。",
+          "owner": "法遵",
+          "source_ref": "regulatory:findings[G-AGE-02]"
+        },
+        {
+          "item_id": "G-AGE-03",
+          "title": "高齡客群銷售管控",
+          "light": "green",
+          "suspected_red": false,
+          "law": "保險業招攬及核保理賠辦法第6條第1項第10、11款",
+          "remedy": "建置65歲案件的適合度、留存與覆審控制。",
+          "owner": "法遵",
+          "source_ref": "regulatory:findings[G-AGE-03]"
+        },
+        {
+          "item_id": "G-DIV-01",
+          "title": "分紅機制",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "人身保險商品審查應注意事項第3點第1項第8款及第196點",
+          "remedy": "補充臺灣版是否分紅；若分紅，補分紅辦法、分配與揭露設計。",
+          "owner": "精算",
+          "source_ref": "regulatory:findings[G-DIV-01]"
+        },
+        {
+          "item_id": "G-GUAR-01",
+          "title": "保證給付機制",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "保險商品銷售前程序作業準則第9、13條",
+          "remedy": "補所有保證給付、保證續保及通膨保護條款，並轉精算評估。",
+          "owner": "精算",
+          "source_ref": "regulatory:findings[G-GUAR-01]"
+        },
+        {
+          "item_id": "G-CCY-01",
+          "title": "外幣計價",
+          "light": "yellow",
+          "suspected_red": false,
+          "law": "保險業辦理外匯業務管理辦法第3、4、6、13條",
+          "remedy": "確認採新臺幣或美元；美元版完成匯率風險揭露及外匯業務許可。",
+          "owner": "法遵",
+          "source_ref": "regulatory:findings[G-CCY-01]"
+        },
+        {
+          "item_id": "MED-01",
+          "title": "與全民健保及長照服務的互動",
+          "light": "yellow",
+          "suspected_red": false,
+          "law": "長期照顧服務法第3、8、9、10、18、19、21、23條；人身保險商品審查應注意事項第57點",
+          "remedy": "列定可補償服務、單據、限額及與政府補助和其他保險的規則。",
+          "owner": "商品",
+          "source_ref": "regulatory:findings[MED-01]"
+        },
+        {
+          "item_id": "MED-02",
+          "title": "疾病與長照資格定義",
+          "light": "yellow",
+          "suspected_red": false,
+          "law": "保險商品銷售前程序作業準則第7條；長期照顧服務法第3、8條",
+          "remedy": "訂定臺灣版失能／認知障礙、持續期間、照護計畫、理賠文件及服務定義。",
+          "owner": "商品",
+          "source_ref": "regulatory:findings[MED-02]"
+        },
+        {
+          "item_id": "MED-03",
+          "title": "續保與費率調整",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "人身保險商品審查應注意事項第5點",
+          "remedy": "補保險期間、續保權、費率調整條件、上限、通知、申訴及精算依據。",
+          "owner": "精算",
+          "source_ref": "regulatory:findings[MED-03]"
+        },
+        {
+          "item_id": "MED-04",
+          "title": "等待期與除外責任",
+          "light": "yellow",
+          "suspected_red": false,
+          "law": "保險商品銷售前程序作業準則第7、9條；人身保險商品審查應注意事項第68點",
+          "remedy": "明定等待期間、除外責任、復效及費率反映，並於中文文件揭露。",
+          "owner": "商品",
+          "source_ref": "regulatory:findings[MED-04]"
+        },
+        {
+          "item_id": "C-01",
+          "title": "目標客群與非目標客群",
+          "light": "yellow",
+          "suspected_red": false,
+          "law": "保險商品銷售前程序作業準則第6、22條；人身保險商品審查應注意事項第3點第1項第13款",
+          "remedy": "建立臺灣版目標／非目標市場、適合度問項及65歲案件覆審。",
+          "owner": "商品",
+          "source_ref": "regulatory:findings[C-01]"
+        },
+        {
+          "item_id": "C-02",
+          "title": "誤導風險",
+          "light": "yellow",
+          "suspected_red": false,
+          "law": "保險業招攬及核保理賠辦法第6條第1項第8款第3目；保險商品銷售前程序作業準則第6條第1項第5款",
+          "remedy": "揭露網絡範圍、資格、價格差異、異動及保險公司責任，不用保證性語言。",
+          "owner": "法遵",
+          "source_ref": "regulatory:findings[C-02]"
+        },
+        {
+          "item_id": "C-03",
+          "title": "資訊揭露格式",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "保險商品銷售前程序作業準則第22條；人身保險商品審查應注意事項第3、7點",
+          "remedy": "提出中文說明書、要保書、條款、費率／解約金表及服務網絡揭露。",
+          "owner": "法遵",
+          "source_ref": "regulatory:findings[C-03]"
+        },
+        {
+          "item_id": "C-04",
+          "title": "通路與佣金",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "保險業招攬及核保理賠辦法第5、6、10條",
+          "remedy": "補通路模式、電子留存、佣金考核、適合度及申訴流程。",
+          "owner": "法遵",
+          "source_ref": "regulatory:findings[C-04]"
+        },
+        {
+          "item_id": "C-05",
+          "title": "條款中文化與系統可落地性",
+          "light": "yellow",
+          "suspected_red": false,
+          "law": "人身保險商品審查應注意事項第173-1至173-6點；保險商品銷售前程序作業準則第7、22條",
+          "remedy": "界定服務契約地位；若納入給付，完成實物給付條款、供應者控管、替代補償及系統測試。",
+          "owner": "商品",
+          "source_ref": "regulatory:findings[C-05]"
+        }
+      ],
+      "key_laws": [
+        "保險商品銷售前程序作業準則",
+        "人身保險商品審查應注意事項",
+        "長期照顧服務法",
+        "保險業辦理外匯業務管理辦法",
+        "保險業招攬及核保理賠辦法"
+      ]
+    }
+  },
+  "blockers": [
+    {
+      "id": "bl-reg-MED-01",
+      "module": "regulatory",
+      "title": "與全民健保及長照服務的互動為黃燈",
+      "severity": "warning",
+      "owner": "商品",
+      "action": "列定可補償服務、單據、限額及與政府補助和其他保險的規則。"
+    },
+    {
+      "id": "bl-reg-MED-02",
+      "module": "regulatory",
+      "title": "疾病與長照資格定義為黃燈",
+      "severity": "warning",
+      "owner": "商品",
+      "action": "訂定臺灣版失能、認知障礙、照護計畫與理賠文件定義。"
+    },
+    {
+      "id": "bl-reg-C-05",
+      "module": "regulatory",
+      "title": "條款中文化與系統可落地性為黃燈",
+      "severity": "warning",
+      "owner": "商品",
+      "action": "界定服務契約地位並完成本地服務、條款與系統設計。"
+    },
+    {
+      "id": "bl-act-comparability",
+      "module": "actuarial",
+      "title": "台美長照發生率與解約經驗低度可比",
+      "severity": "warning",
+      "owner": "精算",
+      "action": "以台灣核保、年齡與資格定義重建假設。"
+    },
+    {
+      "id": "bl-md-loss-ratio",
+      "module": "market_demand",
+      "title": "未取得台灣費用補償型長照商品的理賠率、服務使用率或損失率",
+      "severity": "warning",
+      "owner": null,
+      "action": "補足台灣經驗數據。"
+    }
+  ],
+  "next_steps": [
+    {
+      "priority": 1,
+      "action": "逐項列定可補償臺灣長照服務、單據、給付限額及與公費長照、其他保險的規則。",
+      "owner": "商品",
+      "source_module": "regulatory"
+    },
+    {
+      "priority": 2,
+      "action": "訂定臺灣版失能／認知障礙、持續期間、照護計畫、理賠文件及可補償服務定義。",
+      "owner": "商品",
+      "source_module": "regulatory"
+    },
+    {
+      "priority": 3,
+      "action": "界定照護網絡、轉介及優惠價格是否為契約給付；若是，完成實物給付設計與系統測試。",
+      "owner": "商品",
+      "source_module": "regulatory"
+    },
+    {
+      "priority": 4,
+      "action": "確認臺灣版採新臺幣或美元；美元版完成外匯合規、重要事項告知與匯率風險揭露。",
+      "owner": "法遵",
+      "source_module": "regulatory"
+    },
+    {
+      "priority": 5,
+      "action": "補保險期間、繳費方式、保證續保、費率調整、費率表、等待期及除外責任。",
+      "owner": "精算",
+      "source_module": "regulatory"
+    },
+    {
+      "priority": 6,
+      "action": "提出中文商品說明書、要保書、條款、費率／解約金表、重要事項告知與服務網絡揭露。",
+      "owner": "法遵",
+      "source_module": "regulatory"
+    },
+    {
+      "priority": 7,
+      "action": "補台灣長照服務使用率、平均費用、免責期間與服務網絡折扣對損失率的經驗資料。",
+      "owner": "精算",
+      "source_module": "market_demand"
+    },
+    {
+      "priority": 8,
+      "action": "建立臺灣版目標／非目標客群、通路、佣金、數位招攬留存及適合度流程。",
+      "owner": "通路",
+      "source_module": "regulatory"
+    }
+  ],
+  "data_quality": {
+    "conflicts": [],
+    "suspected_input_errors": [],
+    "evidence_mismatch": [
+      "市場成長指標為全保險業年度保費收入，非長期照顧保險專屬指標；source_ref: market_demand:market_growth[0]。"
+    ],
+    "missing_fields": [
+      "premium_payment_mode與benefit_period未提供；source_ref: market_demand:data_gaps[0]。",
+      "臺灣版契約條款、幣別、長照失能與認知障礙定義、可補償服務、等待期、除外責任、續保、費率、通路及佣金未提供；source_ref: regulatory:missing_inputs。",
+      "台灣同口徑被保險人長照發生率或終止率未找到；source_ref: actuarial:comparability_assessment.incidence_rate_gap。"
+    ],
+    "notes": [
+      "市場規模欄位依calculation_notes為年繳保費潛力，單位為新台幣元；不同方法的市場規模不可比較。",
+      "三份輸入的product_id均為61187f98-be85-46f3-a280-0fd61533116f，已以PID精確比對。"
+    ]
+  },
+  "legend": {
+    "recommendation": {
+      "go": {
+        "label": "可推進",
+        "color": "green"
+      },
+      "conditional_go": {
+        "label": "有條件推進",
+        "color": "yellow"
+      },
+      "hold_missing_info": {
+        "label": "暫緩，待補資料",
+        "color": "yellow"
+      },
+      "hold_resolve_red_flag": {
+        "label": "暫緩，須先釐清疑似紅燈",
+        "color": "red"
+      },
+      "not_recommended": {
+        "label": "不建議引進",
+        "color": "red"
+      },
+      "incomplete_review": {
+        "label": "審查未完成",
+        "color": "gray"
+      }
+    },
+    "severity": {
+      "critical": {
+        "label": "重大",
+        "color": "red"
+      },
+      "blocking": {
+        "label": "阻斷",
+        "color": "orange"
+      },
+      "warning": {
+        "label": "注意",
+        "color": "yellow"
+      }
+    },
+    "light": {
+      "red": {
+        "label": "紅燈",
+        "color": "red"
+      },
+      "yellow": {
+        "label": "黃燈",
+        "color": "yellow"
+      },
+      "green": {
+        "label": "綠燈",
+        "color": "green"
+      },
+      "pending": {
+        "label": "待補",
+        "color": "gray"
+      },
+      "not_applicable": {
+        "label": "不適用",
+        "color": "gray"
+      }
+    },
+    "module": {
+      "market_demand": {
+        "label": "市場需求（翁）"
+      },
+      "actuarial": {
+        "label": "發生率暨獲利調查（塗）"
+      },
+      "regulatory": {
+        "label": "法規適用（孫）"
+      }
+    },
+    "demand_level": {
+      "strong": {
+        "label": "明確需求",
+        "color": "green"
+      },
+      "limited": {
+        "label": "有限需求",
+        "color": "yellow"
+      },
+      "weak": {
+        "label": "需求不足",
+        "color": "red"
+      },
+      "unclear": {
+        "label": "結論不明",
+        "color": "gray"
+      }
+    }
+  },
+  "disclaimer": "本報告僅整合上游資料，非法律意見、非精算意見，仍須法遵、法務與精算覆核。",
+  "dimension_scores": {
+    "method_version": "1.1",
+    "scale": "0-100",
+    "dimensions": [
+      "market_size",
+      "market_growth",
+      "feasibility"
+    ],
+    "market_size": {
+      "label": "市場規模",
+      "score": 100,
+      "level": 5,
+      "basis": "market_demand",
+      "rationale": "潛在保費市場161億元～321億元，中間情境 241億元（潛在市場規模法TAM）",
+      "confidence": "B",
+      "value": 24091114186,
+      "unit": "新台幣元",
+      "source": "市場需求模組（翁）：目標人口×滲透率×平均年繳保費",
+      "as_of": "2026-10-30"
+    },
+    "market_growth": {
+      "label": "市場成長",
+      "score": null,
+      "level": null,
+      "basis": null,
+      "rationale": "險種「長期照顧保險（傳統長期照顧保險）」沒有對應的險別成長數字",
+      "confidence": null,
+      "missing_reason": "險種「長期照顧保險（傳統長期照顧保險）」沒有對應的險別成長數字"
+    },
+    "feasibility": {
+      "label": "法規可行性",
+      "score": 12,
+      "level": 1.5,
+      "basis": "regulatory",
+      "rationale": "0 紅（含疑似 0）、7 黃",
+      "confidence": "A",
+      "value": {
+        "red": 0,
+        "suspected_red": 0,
+        "yellow": 7,
+        "pending": 6,
+        "blocking_pending": 0,
+        "overall_verdict": "修改後可引進"
+      },
+      "unit": "項",
+      "source": "法規模組（孫）逐項審查燈號",
+      "as_of": "2026-10-30"
+    },
+    "profitability": {
+      "label": "獲利性",
+      "score": null,
+      "level": null,
+      "basis": null,
+      "rationale": "本版評分方法不評估此維度",
+      "confidence": null
+    },
+    "saturation": {
+      "label": "市場飽和度",
+      "score": null,
+      "level": null,
+      "basis": null,
+      "rationale": "本版評分方法不評估此維度",
+      "confidence": null
+    },
+    "brand_fit": {
+      "label": "品牌／通路契合度",
+      "score": null,
+      "level": null,
+      "basis": null,
+      "rationale": "本版評分方法不評估此維度",
+      "confidence": null
+    }
+  }
+}

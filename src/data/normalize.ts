@@ -16,6 +16,8 @@ import type {
   AppMetaViewModel,
   BackendDimensionScores,
   BlockerViewModel,
+  CompetitorComparisonViewModel,
+  CompetitorRowViewModel,
   DataGapViewModel,
   DataQualityGroupKey,
   DataQualityViewModel,
@@ -33,8 +35,10 @@ import type {
   ReportDetailsViewModel,
   ReportViewModel,
   ScorecardViewModel,
+  SourceDocumentViewModel,
   SourceRefViewModel,
 } from '../types/viewModel';
+import { zhTW } from '../i18n/zh-TW';
 import { countryLabel } from '../lib/country';
 import { formatDateTimeTaipei, formatMarketEstimate, formatPopulation, formatScoreValue } from '../lib/format';
 import { legendColor, legendLabel } from '../lib/legend';
@@ -222,7 +226,10 @@ function normalizeSummary(r: Report): DecisionSummaryViewModel {
     mechanismSummary: str(snap?.mechanism_summary),
     recommendation: { color: toSignalColor(head.signal_color), text: str(head.label) },
     oneLineSummary: str(head.one_line_summary),
-    reasons: strList(head.reasons),
+    // 理由開頭的模組代號（「regulatory：…」）換成模組名稱
+    reasons: strList(head.reasons).map((text) =>
+      text.replace(/^(market_demand|actuarial|regulatory)\s*[:：]\s*/, (_, k: ModuleKey) => `${moduleLabel(r.legend, k)}：`),
+    ),
     brandNote: str(head.brand_note) ? { text: str(head.brand_note)!, source: sourceRef(head.brand_note_source) } : null,
     generatedDate: str(r.report_meta.generated_date),
     reviewDates: MODULE_KEYS.map((k) => ({
@@ -439,6 +446,63 @@ function normalizeDetails(r: Report): ReportDetailsViewModel {
   };
 }
 
+/** 差異分析依證據等級分段：「A級：」「【A級】」「A級（依據）：」三種寫法；括號裡的依據留在文字開頭 */
+function splitGapAnalysis(text: string | null): CompetitorComparisonViewModel['gapAnalysis'] {
+  if (text === null) return [];
+  const parts = text
+    .replace(/【([A-E])級】/g, '$1級：')
+    .split(/(?=[A-E]級[（(：:])/)
+    .map((p) => p.trim())
+    .filter(Boolean);
+  return parts.map((p) => {
+    const m = /^([A-E])級(?:[（(]([^）)]*)[）)])?[：:]\s*/.exec(p);
+    if (!m) return { level: null, text: p };
+    const rest = p.slice(m[0].length);
+    return { level: m[1]!, text: m[2] ? `${m[2]}：${rest}` : rest };
+  });
+}
+
+/** 台灣競品比較：列＝比較維度（後端列的維度，再補競品屬性裡多出來的），欄＝每項競品 */
+function normalizeCompetitors(r: Report): CompetitorComparisonViewModel | null {
+  const cc = r.sections?.market_demand?.competitor_comparison;
+  if (!cc) return null;
+  const list = objList(cc.competitors);
+  const t = zhTW.report.competitors;
+  const attrs = list.map((c) => (c.attributes && typeof c.attributes === 'object' ? c.attributes : {}));
+  const dims = [...new Set([...strList(cc.comparison_dimensions), ...attrs.flatMap((a) => Object.keys(a))])];
+  const rows: CompetitorRowViewModel[] = dims.map((d) => ({ label: d, cells: attrs.map((a) => str(a[d])) }));
+  // 幣別、繳費方式、與本商品差異：有任一項競品有值才列
+  const extra: [string, (c: (typeof list)[number]) => unknown][] = [
+    [t.currency, (c) => c.currency],
+    [t.premiumMode, (c) => c.premium_mode],
+    [t.difference, (c) => c.difference],
+  ];
+  for (const [label, get] of extra) {
+    const cells = list.map((c) => str(get(c)));
+    if (cells.some((x) => x !== null)) rows.push({ label, cells });
+  }
+  const competitors = list.map((c) => ({
+    name: str(c.name),
+    issuer: str(c.issuer),
+    isDirect: c.is_direct === true,
+    sourceUrl: safeUrl(c.source_url),
+  }));
+  return {
+    hasDirect: typeof cc.has_direct_competitor === 'boolean' ? cc.has_direct_competitor : competitors.some((c) => c.isDirect),
+    noCompetitorReason: str(cc.no_competitor_reason),
+    competitors,
+    rows,
+    gapAnalysis: splitGapAnalysis(str(cc.gap_analysis)),
+  };
+}
+
+function normalizeSourceDocuments(r: Report): SourceDocumentViewModel[] {
+  return objList(r.product_snapshot?.source_documents).flatMap((d) => {
+    const url = safeUrl(d.url);
+    return url === null ? [] : [{ title: str(d.title), type: str(d.type), url, date: str(d.publication_date) }];
+  });
+}
+
 export function normalizeReport(r: Report): ReportViewModel {
   const sources = r.report_meta.source_files;
   const blockers = normalizeBlockers(r);
@@ -456,6 +520,8 @@ export function normalizeReport(r: Report): ReportViewModel {
     dataQuality: normalizeDataQuality(r),
     dataGaps: normalizeDataGaps(r),
     details: normalizeDetails(r),
+    competitors: normalizeCompetitors(r),
+    sourceDocuments: normalizeSourceDocuments(r),
     disclaimer: str(r.disclaimer),
   };
 }

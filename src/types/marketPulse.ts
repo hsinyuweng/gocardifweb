@@ -1,4 +1,4 @@
-// 市場脈動 market-pulse.json 原始型別（schema 2.1：2.0 加 stale；後端需求文件 M5）
+// 市場脈動 market-pulse.json 原始型別（schema 2.1：2.0 加 stale；後端需求文件 M5。2.2 的 ranking 型別見 M7）
 // 改格式時只改這裡、validate.ts、normalizeMarket.ts
 
 type Nullable<T> = T | null | undefined;
@@ -35,11 +35,20 @@ export interface RawPulseEvent {
   note?: Nullable<string>;
 }
 
+export interface RawPulseRankRow {
+  name?: Nullable<string>;
+  /** 數值（單位見指標 unit，例如市占率 %） */
+  value?: Nullable<number>;
+  rank?: Nullable<number>;
+  /** 自家公司（法巴），只有一筆 */
+  is_self?: Nullable<boolean>;
+}
+
 export interface RawPulseMetric {
   key?: Nullable<string>;
   /** growth、pricing、channel、health、brand；缺漏或其他值當作 growth */
   group?: Nullable<string>;
-  /** trend、multi_line、share、timeline；缺漏當作 trend，其他值（例如 2.2 的 ranking）略過 */
+  /** trend、multi_line、share、timeline、ranking（schema 2.2）；缺漏當作 trend，其他值略過 */
   type?: Nullable<string>;
   /** true 時顯示在首頁（最多 2 個） */
   featured?: Nullable<boolean>;
@@ -61,6 +70,10 @@ export interface RawPulseMetric {
   periods?: Nullable<RawPulseSharePeriod[]>;
   // timeline
   events?: Nullable<RawPulseEvent[]>;
+  // ranking（schema 2.2）
+  period?: Nullable<string>;
+  /** 依 value 由高到低 */
+  rows?: Nullable<RawPulseRankRow[]>;
   source?: Nullable<string>;
   source_url?: Nullable<string>;
   as_of?: Nullable<string>;

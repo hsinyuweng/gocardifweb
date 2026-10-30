@@ -94,11 +94,11 @@ export function NewsPage() {
   // 日期、勾選、收合寫進網址（date、affects=1、closed），切換用 replace，不新增瀏覽紀錄
   const [searchParams, setSearchParams] = useSearchParams();
   const date = searchParams.get('date');
-  const affectsOnly = searchParams.get('affects') === '1';
+  const affectsParam = searchParams.get('affects') === '1';
   const closed = new Set((searchParams.get('closed') ?? '').split(',').filter((x): x is GroupKey => (GROUP_KEYS as readonly string[]).includes(x)));
   const update = (next: { date?: string | null; affects?: boolean; closed?: Set<GroupKey> }) => {
     const d = next.date !== undefined ? next.date : date;
-    const a = next.affects ?? affectsOnly;
+    const a = next.affects ?? affectsParam;
     const c = next.closed ?? closed;
     const p = new URLSearchParams();
     if (d) p.set('date', d);
@@ -145,6 +145,9 @@ export function NewsPage() {
   }, [watchlist, reports]);
 
   const items = feedState.status === 'ok' ? feedState.data.items : [];
+  // 法規都沒有可能相關商品或險種（後端還沒比對）時，不顯示「只看可能相關」，網址的 affects=1 也不作用
+  const hasLinks = items.some((i) => i.kind === 'regulation' && (i.relatedReportIds.length > 0 || i.affectedCategories.length > 0));
+  const affectsOnly = hasLinks && affectsParam;
   const recent = useMemo(() => (feedState.status === 'ok' ? recentFeed(feedState.data) : null), [feedState]);
   const days = useMemo(() => recentDays(items), [items]);
   // 網址的日期不在最近 5 天內時回到近 30 天
@@ -244,15 +247,17 @@ export function NewsPage() {
                 </button>
               ))}
             </div>
-            <label className="flex shrink-0 cursor-pointer items-center gap-2 text-slate-700">
-              <input
-                type="checkbox"
-                checked={affectsOnly}
-                onChange={(e) => update({ affects: e.target.checked })}
-                className="size-4 accent-[#2fa58a]"
-              />
-              {t.affectsToggle}
-            </label>
+            {hasLinks ? (
+              <label className="flex shrink-0 cursor-pointer items-center gap-2 text-slate-700">
+                <input
+                  type="checkbox"
+                  checked={affectsOnly}
+                  onChange={(e) => update({ affects: e.target.checked })}
+                  className="size-4 accent-[#2fa58a]"
+                />
+                {t.affectsToggle}
+              </label>
+            ) : null}
           </div>
           {affectsOnly && visible.length === 0 ? <StatusMessage tone="info" message={t.emptyAffects} /> : null}
           {groups.map((g) => (

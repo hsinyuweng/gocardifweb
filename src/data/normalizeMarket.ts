@@ -132,7 +132,21 @@ function normalizeMetric(m: RawPulseMetric, i: number): PulseMetricViewModel | n
         .sort((a, b) => (a.date ?? '￿').localeCompare(b.date ?? '￿')),
     };
   }
-  // 不認得的 type（例如 schema 2.2 的 ranking，網站尚未支援）略過，不當成單線趨勢
+  if (type === 'ranking') {
+    return {
+      ...base,
+      type,
+      period: str(m.period),
+      rows: objList(m.rows)
+        .flatMap((r, j) => {
+          const value = num(r.value);
+          // 缺名次時依原本順序
+          return value === null ? [] : [{ name: str(r.name), value, rank: num(r.rank) ?? j + 1, isSelf: r.is_self === true }];
+        })
+        .sort((a, b) => a.rank - b.rank),
+    };
+  }
+  // 不認得的 type 略過，不當成單線趨勢
   if (type !== null && type !== 'trend') return null;
   // 舊格式沒有 type：當作單線趨勢
   return {

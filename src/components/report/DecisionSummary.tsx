@@ -10,13 +10,16 @@ const t = zhTW.report;
 // ① 頁首（商品名、基本資料、流程一行字、列印、日期）② 一句結論（整體建議＋摘要）④ 判斷理由（理由、品牌定位、商品機制）
 
 /** ① 頁首：商品名、發行公司 · 國家 · 險種 · 幣別 · 繳費；流程一行字；右側列印與產出、審閱日期 */
-export function ReportHeader({ summary: s, flow }: { summary: DecisionSummaryViewModel; flow: ReactNode }) {
+export function ReportHeader({ summary: s, flow, docsLink = null }: { summary: DecisionSummaryViewModel; flow: ReactNode; docsLink?: ReactNode }) {
   const meta = [s.issuer, s.countryLabel, s.category, s.currency, s.premiumMode].map(orDash).join(' · ');
   return (
     <header className="flex flex-col gap-3 border-b border-p-pale pb-3.5 lg:flex-row lg:items-end lg:justify-between lg:gap-6">
       <div className="min-w-0">
         <h1 className="text-[24px] leading-tight font-semibold text-ink">{orDash(s.name)}</h1>
-        <p className="mt-1 text-[13px] text-ink2">{meta}</p>
+        <p className="mt-1 text-[13px] text-ink2">
+          {meta}
+          {docsLink ? <span className="ml-3 print:hidden">{docsLink}</span> : null}
+        </p>
         <div className="mt-1">{flow}</div>
       </div>
       <div className="flex shrink-0 flex-col items-start gap-1.5 lg:items-end">

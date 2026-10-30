@@ -14,12 +14,15 @@ import { DataQualityPanel } from './DataQualityPanel';
 import { DataGapsPanel } from './DataGapsPanel';
 import { DetailTabs } from './DetailTabs';
 import { ReportFooter } from './ReportFooter';
+import { CompetitorTable } from './CompetitorTable';
+import { SourceDocuments } from './SourceDocuments';
 import { NextStep } from '../story/NextStep';
 import { DetailDivider, StorySection } from '../story/StorySection';
 
 const t = zhTW.report;
 const DETAILS_ID = 'report-details';
 const BLOCKERS_ID = 'report-blockers';
+const DOCS_ID = 'report-source-docs';
 /** 建議下一步先列幾項 */
 const STEP_LIMIT = 5;
 /** 預設列出的嚴重度（其他收在「看全部」） */
@@ -51,6 +54,7 @@ export function ReportView({ vm, owner, onOwnerChange, tasksLinkState }: ReportV
   const [allBlockers, setAllBlockers] = useState(false);
   const [allSteps, setAllSteps] = useState(false);
   const detailsRef = useRef<HTMLElement>(null);
+  const topRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
 
   const blockers = vm.blockers.filter((b) => matchesOwner(b.owners, owner));
@@ -72,8 +76,22 @@ export function ReportView({ vm, owner, onOwnerChange, tasksLinkState }: ReportV
   };
 
   return (
-    <div className="space-y-6">
-      <ReportHeader summary={vm.summary} flow={<FlowBar provided={vm.analysisProvided} total={vm.analysisTotal} />} />
+    <div ref={topRef} className="scroll-mt-28 space-y-6">
+      <ReportHeader
+        summary={vm.summary}
+        flow={<FlowBar provided={vm.analysisProvided} total={vm.analysisTotal} />}
+        docsLink={
+          vm.sourceDocuments.length > 0 ? (
+            <button
+              type="button"
+              onClick={() => document.getElementById(DOCS_ID)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+              className="text-ink2 underline-offset-2 hover:text-ink hover:underline"
+            >
+              {t.sourceDocs.headerLink(vm.sourceDocuments.length)}
+            </button>
+          ) : null
+        }
+      />
       <ReportLead summary={vm.summary} />
       <div ref={cardsRef} className="scroll-mt-20">
         <ScorecardRow
@@ -159,9 +177,10 @@ export function ReportView({ vm, owner, onOwnerChange, tasksLinkState }: ReportV
         )}
       </StorySection>
 
-      <NextStep down={{ label: t.downDetails, targetId: DETAILS_ID }} links={[]} />
+      <NextStep down={{ label: vm.competitors ? t.downDetailsWithCompetitors : t.downDetails, targetId: DETAILS_ID }} links={[]} />
 
       <DetailDivider id={DETAILS_ID} label={t.detailsDivider} />
+      {vm.competitors ? <CompetitorTable data={vm.competitors} /> : null}
       <DetailTabs
         ref={detailsRef}
         details={vm.details}
@@ -177,6 +196,13 @@ export function ReportView({ vm, owner, onOwnerChange, tasksLinkState }: ReportV
           <DataGapsPanel gaps={vm.dataGaps} />
         </StorySection>
       </div>
+      {vm.sourceDocuments.length > 0 ? (
+        <SourceDocuments
+          id={DOCS_ID}
+          docs={vm.sourceDocuments}
+          onBack={() => topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+        />
+      ) : null}
       <ReportFooter disclaimer={vm.disclaimer} />
     </div>
   );

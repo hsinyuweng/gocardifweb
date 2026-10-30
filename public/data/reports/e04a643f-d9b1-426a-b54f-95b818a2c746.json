@@ -1,0 +1,1017 @@
+{
+  "report_meta": {
+    "schema_version": "1.1",
+    "language": "zh-Hant",
+    "generated_date": "2026-10-30",
+    "report_id": "e04a643f-d9b1-426a-b54f-95b818a2c746",
+    "source_files": {
+      "market_demand": {
+        "status": "provided",
+        "file": "/data/e04a643f-d9b1-426a-b54f-95b818a2c746/2a.json",
+        "review_date": "2026-10-30"
+      },
+      "actuarial": {
+        "status": "provided",
+        "file": "/data/e04a643f-d9b1-426a-b54f-95b818a2c746/2b.json",
+        "review_date": "2026-10-30"
+      },
+      "regulatory": {
+        "status": "provided",
+        "file": "/data/e04a643f-d9b1-426a-b54f-95b818a2c746/2c.json",
+        "review_date": "2026-10-30"
+      }
+    },
+    "_enriched": "report-enricher"
+  },
+  "product_snapshot": {
+    "name": "RapidProtect即時核保指數型萬能壽險",
+    "issuer": "National Life Insurance Company／Life Insurance Company of the Southwest（National Life Group）",
+    "country": "美國",
+    "category": "指數型萬能壽險（IUL）",
+    "currency": "美元",
+    "premium_mode": "彈性繳",
+    "mechanism_summary": null,
+    "source_documents": [
+      {
+        "title": "National Life Group launches Rapid Protect: Instant-decision life insurance with lifelong coverage",
+        "type": "保險公司新聞稿",
+        "url": "https://www.nationallife.com/our-story/newsroom/rapidprotect",
+        "publication_date": "2025-09-22"
+      },
+      {
+        "title": "Lifelong Protection in an Instant",
+        "type": "商品消費者指南（PDF）",
+        "url": "https://www.fmiagent.com/wp-content/uploads/2026-07-10_National_Life_Group_Rapid_Protect_Consumer_Guide_108294_1-26.pdf",
+        "publication_date": "2026-01"
+      },
+      {
+        "title": "Life Insurance for Living: Global Insights Into Next-Gen Expectations",
+        "type": "LIMRA研究報告",
+        "url": "https://www.limra.com/siteassets/research/research-abstracts/2026/life-insurance-for-living/life-insurance-for-living.pdf",
+        "publication_date": "2026"
+      },
+      {
+        "title": "Why Do Life Insurance Policyholders Lapse? The Roles of Income, Health, and Bequest Motive Shocks",
+        "type": "學術研究摘要",
+        "url": "https://www.jri.pub/witt-awards/2022-robert-c-witt-award/",
+        "publication_date": "2021-12"
+      },
+      {
+        "title": "金管會提醒國人善用保障型保險商品平台規劃基本保險保障",
+        "type": "臺灣主管機關新聞稿",
+        "url": "https://www.ib.gov.tw/ch/home.jsp?dataserno=202301180009&dtable=News&id=239&mcustomize=news_view.jsp&parentpath=0",
+        "publication_date": "2023-01-27"
+      },
+      {
+        "title": "指數型保單海外爆夯 壽險業摩拳擦掌",
+        "type": "產業新聞",
+        "url": "https://www.ctee.com.tw/news/20251019700086-439901",
+        "publication_date": "2025-10-19"
+      }
+    ]
+  },
+  "headline": {
+    "recommendation": "hold_missing_info",
+    "label": "暫緩，待補資料",
+    "signal_color": "yellow",
+    "matched_rule": 4,
+    "one_line_summary": "需求有限，分類與定價資料未齊，暫緩。",
+    "reasons": [
+      "market_demand：verdict.confidence 為 C",
+      "regulatory：G-RATE-01 與 INV-01 為阻斷性待補"
+    ]
+  },
+  "scorecard": {
+    "market_demand": {
+      "status": "provided",
+      "level": "limited",
+      "label": "有限需求",
+      "confidence": "C",
+      "signal": "yellow"
+    },
+    "actuarial": {
+      "status": "provided",
+      "research_status": "sufficient_evidence",
+      "comparability": "低度可比",
+      "pricing_flag_count": 0,
+      "signal": "green"
+    },
+    "regulatory": {
+      "status": "provided",
+      "overall_verdict": "待確認",
+      "counts": {
+        "red": 0,
+        "yellow": 3,
+        "green": 5,
+        "pending": 18,
+        "not_applicable": 1
+      },
+      "signal": "yellow"
+    }
+  },
+  "sections": {
+    "market_demand": {
+      "summary": "投資型壽險需求強勁，但IUL仍屬待開放新制，且即時核保與失智提前給付的本地需求證據不足。",
+      "market_sizing": {
+        "methodology": "潛在市場規模法TAM",
+        "target_population": 10854703,
+        "estimate_low": 2605128720,
+        "estimate_mid": 5210257440,
+        "estimate_high": 7815386160,
+        "reported_unit": "新台幣元",
+        "confidence": "B"
+      },
+      "key_points": [
+        {
+          "id": "md-1",
+          "text": "2026年前7月投資型保險新契約保費年增132.4%，但非IUL單一商品。",
+          "evidence_scheme": "market_abc",
+          "evidence_level": "A",
+          "source": "壽險公會統計（中央社2026-08-17轉述）",
+          "source_ref": "market_demand:market_growth[0]"
+        },
+        {
+          "id": "md-2",
+          "text": "台灣尚無本國居民可投保的IUL公開競品；比較僅以變額萬能壽險替代。",
+          "evidence_scheme": "market_abc",
+          "evidence_level": "A",
+          "source": null,
+          "source_ref": "market_demand:data_gaps[2]"
+        },
+        {
+          "id": "md-3",
+          "text": "即時核保與失智提前給付缺乏可驗證的台灣消費者聲量及轉換率資料。",
+          "evidence_scheme": "market_abc",
+          "evidence_level": "C",
+          "source": null,
+          "source_ref": "market_demand:data_gaps[4]"
+        }
+      ],
+      "handoffs": {
+        "to_actuarial": "0%最低計息、利息加給、解約費用與疾病提前給付折減的精算假設、COI費用及持續率敏感度。",
+        "to_regulatory": "IUL是否可在台灣本國居民市場銷售；外部指數、0%最低計息、即時核保、失智疾病提前給付及外幣計價的商品審查、招攬與適合度要求。"
+      },
+      "data_gaps": [
+        "上游輸入的mechanism、risk/disease與age_limit皆有內容，未見空值或明顯佔位字；但商品核心機制多為C級第三方商品指南佐證，台灣需求判斷受限。",
+        "本地TII兩份xlsx的工作表名稱不符合讀取工具預期，無法由本次本地檔取得個人投資型或傳統人壽的件數／保費成長率；改採壽險公會統計的媒體轉述。",
+        "查無可供本國居民投保的台灣IUL公開競品；比較表僅能以台灣變額萬能壽險作替代，且本次取得的完整官方費用資料集中於安達人壽兩項商品。",
+        "查無RapidProtect台灣版保費、解約費用率、參與率、封頂費率或個別銷售數據；市場規模為情境估計，不是預測。",
+        "即時核保、阿茲海默症／路易氏體失智症提前給付的台灣消費者聲量與轉換率，查無可驗證的本地精確數據。"
+      ],
+      "tag_update_suggestion": {
+        "new_tags": [
+          "[即時核保]",
+          "[生前提前給付]"
+        ],
+        "reason": "建議新增至商品機制／保障給付分類：兩者與既有外部指數、保底利率、身故／失能／醫療標籤不重複，分別描述投保流程與以身故保險金折減取得生前給付的核心機制；尚未寫入標籤庫。"
+      },
+      "competitor_comparison": {
+        "_generated_by": "report-enricher",
+        "has_direct_competitor": true,
+        "no_competitor_reason": null,
+        "comparison_dimensions": [
+          "商品類型",
+          "投保年齡",
+          "保費範圍",
+          "保單管理費",
+          "推估目標客群"
+        ],
+        "competitors": [
+          {
+            "id": "cmp-1",
+            "name": "安達人壽新聚富傳家變額萬能壽險",
+            "issuer": "安達國際人壽保險股份有限公司",
+            "market": "TW",
+            "is_direct": true,
+            "currency": null,
+            "premium_mode": null,
+            "attributes": {
+              "商品類型": "變額萬能壽險",
+              "投保年齡": "15足歲至80歲",
+              "保費範圍": "年繳最低24,000元；彈性繳最低100,000元",
+              "保單管理費": "每月100元；已繳保費扣除累積部分提領後達150萬元（含）以上免收。保費費用率第1至6年為60%、50%、20%、10%、10%、0%；超額保費3%。",
+              "推估目標客群": "反推：年繳24,000元起、彈性繳10萬元起，且150萬元以上才免月管理費，對應具持續儲蓄與資產累積能力的成年人。"
+            },
+            "metrics": [
+              {
+                "key": "min_issue_age",
+                "label": "最低投保年齡",
+                "value": null,
+                "unit": "歲"
+              },
+              {
+                "key": "max_issue_age",
+                "label": "最高投保年齡",
+                "value": null,
+                "unit": "歲"
+              },
+              {
+                "key": "surrender_charge_y1",
+                "label": "第1年解約費用率",
+                "value": null,
+                "unit": "%"
+              },
+              {
+                "key": "surrender_charge_years",
+                "label": "收取解約費用年數",
+                "value": null,
+                "unit": "年"
+              }
+            ],
+            "difference": null,
+            "source": "市場需求模組（翁）整理之公開規範文件",
+            "source_url": "https://www.lia-roc.org.tw/storage/uploads/6639e0bb43a44.pdf",
+            "as_of": "2026-10-30T00:00:00Z"
+          },
+          {
+            "id": "cmp-2",
+            "name": "安達人壽新聚富人生變額萬能壽險",
+            "issuer": "安達國際人壽保險股份有限公司",
+            "market": "TW",
+            "is_direct": true,
+            "currency": null,
+            "premium_mode": null,
+            "attributes": {
+              "商品類型": "變額萬能壽險",
+              "投保年齡": "40至80歲",
+              "保費範圍": "月繳最低5,000元、季繳15,000元、半年繳30,000元、年繳60,000元",
+              "保單管理費": "每月100元。保費費用率第1至6年為36%、26%、16%、6%、6%、0%；超額保費3%。",
+              "推估目標客群": "反推：40歲起且年繳門檻60,000元，對應中年、可承擔較高定期投入的資產累積客群。"
+            },
+            "metrics": [
+              {
+                "key": "min_issue_age",
+                "label": "最低投保年齡",
+                "value": 40,
+                "unit": "歲"
+              },
+              {
+                "key": "max_issue_age",
+                "label": "最高投保年齡",
+                "value": 80,
+                "unit": "歲"
+              },
+              {
+                "key": "surrender_charge_y1",
+                "label": "第1年解約費用率",
+                "value": null,
+                "unit": "%"
+              },
+              {
+                "key": "surrender_charge_years",
+                "label": "收取解約費用年數",
+                "value": null,
+                "unit": "年"
+              }
+            ],
+            "difference": null,
+            "source": "市場需求模組（翁）整理之公開規範文件",
+            "source_url": "https://www.lia-roc.org.tw/storage/uploads/6639e0bb43a44.pdf",
+            "as_of": "2026-10-30T00:00:00Z"
+          }
+        ],
+        "gap_analysis": "A級：兩項台灣變額萬能壽險皆揭露投資標的與死亡給付對帳戶價值最低比率，但公開規範未見與外部指數報酬直接連動、0%最低計息或第6年起利息加給的欄位。RapidProtect的0%最低計息、即時核保及阿茲海默症／路易氏體失智症折減提前給付，構成與本表兩項競品不同的機制組合；但RapidProtect前15年可能有解約費用，仍須以台灣版費用表比較，不能據此判斷費率優劣。",
+        "metric_list": [
+          {
+            "key": "min_issue_age",
+            "label": "最低投保年齡",
+            "unit": "歲",
+            "how": "投保年齡限制的下限（例如「15-85歲」取 15）"
+          },
+          {
+            "key": "max_issue_age",
+            "label": "最高投保年齡",
+            "unit": "歲",
+            "how": "投保年齡限制的上限（例如「15-85歲」取 85）"
+          },
+          {
+            "key": "surrender_charge_y1",
+            "label": "第1年解約費用率",
+            "unit": "%",
+            "how": "解約費用率表第 1 保單年度的費率"
+          },
+          {
+            "key": "surrender_charge_years",
+            "label": "收取解約費用年數",
+            "unit": "年",
+            "how": "解約費用率表中費率大於 0 的年度數"
+          }
+        ],
+        "subject_metrics": [
+          {
+            "key": "min_issue_age",
+            "label": "最低投保年齡",
+            "value": null,
+            "unit": "歲",
+            "source": null,
+            "source_url": null,
+            "as_of": null
+          },
+          {
+            "key": "max_issue_age",
+            "label": "最高投保年齡",
+            "value": null,
+            "unit": "歲",
+            "source": null,
+            "source_url": null,
+            "as_of": null
+          },
+          {
+            "key": "surrender_charge_y1",
+            "label": "第1年解約費用率",
+            "value": null,
+            "unit": "%",
+            "source": null,
+            "source_url": null,
+            "as_of": null
+          },
+          {
+            "key": "surrender_charge_years",
+            "label": "收取解約費用年數",
+            "value": null,
+            "unit": "年",
+            "source": null,
+            "source_url": null,
+            "as_of": null
+          }
+        ]
+      }
+    },
+    "actuarial": {
+      "summary": "RapidProtect採彈性繳的IUL結構，SOA/LIMRA的美國UL經驗研究直接顯示IUL的解約率在2019至2020年相對前期明顯上升，故保費持續性與解約行為為核心假設。即時、免醫療檢驗核保與簡易核保研究所述的逆選擇及較差理賠經驗風",
+      "key_points": [
+        {
+          "id": "ac-1",
+          "text": "SOA/LIMRA研究顯示，美國IUL在2019至2020年失效率較2015至2018年明顯升高。",
+          "evidence_scheme": "actuarial_tier",
+          "evidence_level": "T3",
+          "source": "Society of Actuaries Research Institute／LIMRA，2015-2021 Universal Life Insurance Lapse Rate Experience Study",
+          "source_ref": "actuarial:incidence_rate_references[E1]"
+        },
+        {
+          "id": "ac-2",
+          "text": "SOA研究指出，簡易核保的風險區隔工具較少，早期死亡率與解約差異較大。",
+          "evidence_scheme": "actuarial_tier",
+          "evidence_level": "T3",
+          "source": "Society of Actuaries，Simplified Issue Underwriting；2017 Simplified Issue Composite Mortality Tables Report",
+          "source_ref": "actuarial:incidence_rate_references[E2]"
+        },
+        {
+          "id": "ac-3",
+          "text": "NAIC AG 49-A規範指數計息壽險的示範利率、0%下限、避險預算與揭露。",
+          "evidence_scheme": "actuarial_tier",
+          "evidence_level": "T2",
+          "source": "National Association of Insurance Commissioners，Actuarial Guideline XLIX-A",
+          "source_ref": "actuarial:economic_regulatory_context[E3]"
+        },
+        {
+          "id": "ac-4",
+          "text": "生前給付附約可因慢性疾病或嚴重認知障礙觸發，且給付額小於折減的身故保額。",
+          "evidence_scheme": "actuarial_tier",
+          "evidence_level": "T3",
+          "source": "Society of Actuaries／Milliman，Report on Life and Annuity Living Benefit Riders: Considerations for Insurers and Reinsurers",
+          "source_ref": "actuarial:incidence_rate_references[E4]"
+        }
+      ],
+      "pricing_flags": [],
+      "evidence_gaps": [
+        "無台美可比保戶經驗，不能直接換算",
+        "未取得正式保單條款、費率、台灣同口徑保戶經驗及再保條件"
+      ]
+    },
+    "regulatory": {
+      "summary": "G-CLS-01 尚不能確認臺灣版應歸為萬能／利率變動型或投資型商品；此將決定送審及揭露規範。INV-01 缺少指數連結與帳戶／標的法律結構，若屬投資型則為阻斷性待補。另因最低投保年齡為0歲，G-AGE-01 已確定須將未滿15歲的死亡給付",
+      "findings": [
+        {
+          "item_id": "G-CLS-01",
+          "title": "險種歸類與可銷售性",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "保險商品銷售前程序作業準則第17條、第18條；人身保險商品審查應注意事項（傳統型、利率變動型或萬能人壽保險與投資型人壽保險分類）",
+          "remedy": "補具完整計息公式、指數連結法律結構、帳戶歸屬、風險承擔及臺灣版商品設計，先由法遵取得主管機關或同業公會之分類確認。",
+          "owner": "法遵",
+          "source_ref": "regulatory:findings[G-CLS-01]"
+        },
+        {
+          "item_id": "G-AGE-01",
+          "title": "未滿15歲死亡給付",
+          "light": "yellow",
+          "suspected_red": false,
+          "law": "保險法第107條",
+          "remedy": "針對未滿15歲投保件，在條款、要保書、系統與核保規則落實第107條；取得當年度喪葬費扣除額後設定跨保單控管限額。",
+          "owner": "商品",
+          "source_ref": "regulatory:findings[G-AGE-01]"
+        },
+        {
+          "item_id": "G-AGE-02",
+          "title": "受監護宣告者及限制行為能力者",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "保險法第107條及相關適用範圍",
+          "remedy": "補充特殊人口投保、法定代理／輔助同意及給付處理條款。",
+          "owner": "法遵",
+          "source_ref": "regulatory:findings[G-AGE-02]"
+        },
+        {
+          "item_id": "G-AGE-03",
+          "title": "高齡客群銷售管控",
+          "light": "not_applicable",
+          "suspected_red": false,
+          "law": null,
+          "remedy": null,
+          "owner": "法遵",
+          "source_ref": "regulatory:findings[G-AGE-03]"
+        },
+        {
+          "item_id": "G-DIV-01",
+          "title": "分紅機制",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "分紅人壽保險相關規範",
+          "remedy": "補充是否分紅、可分配盈餘基礎、保戶分配比例及零分紅／非保證揭露。",
+          "owner": "精算",
+          "source_ref": "regulatory:findings[G-DIV-01]"
+        },
+        {
+          "item_id": "G-RATE-01",
+          "title": "保證利率／預定利率",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "保險業各種準備金提存辦法及主管機關預定利率規範",
+          "remedy": "補充臺灣版計價幣別、預定利率、計息公式、保證期間與準備金試算。",
+          "owner": "精算",
+          "source_ref": "regulatory:findings[G-RATE-01]"
+        },
+        {
+          "item_id": "G-GUAR-01",
+          "title": "保證給付機制",
+          "light": "green",
+          "suspected_red": false,
+          "law": "人身保險商品審查應注意事項第36、37項（萬能人壽保險之保證及資產負債配合）",
+          "remedy": "提出保證條件、壓力測試、準備金與資產負債配置計畫。",
+          "owner": "精算",
+          "source_ref": "regulatory:findings[G-GUAR-01]"
+        },
+        {
+          "item_id": "G-PAY-01",
+          "title": "繳費結構",
+          "light": "green",
+          "suspected_red": false,
+          "law": "人身保險商品審查應注意事項第39項",
+          "remedy": "送審時附保費範圍、維持有效條件、保單價值及失效情境試算。",
+          "owner": "精算",
+          "source_ref": "regulatory:findings[G-PAY-01]"
+        },
+        {
+          "item_id": "G-CCY-01",
+          "title": "外幣計價",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "投資型保險投資管理辦法第18條（若臺灣版屬投資型）",
+          "remedy": "確認臺灣版收付幣別；如為外幣，建立匯率風險揭露與公司層級許可流程。",
+          "owner": "法遵",
+          "source_ref": "regulatory:findings[G-CCY-01]"
+        },
+        {
+          "item_id": "G-TAX-01",
+          "title": "稅務待確認事項",
+          "light": "green",
+          "suspected_red": false,
+          "law": "未能查證",
+          "remedy": "限制行銷素材使用節稅、免稅或傳承保證用語，改版前送稅務／法務覆核。",
+          "owner": "稅務",
+          "source_ref": "regulatory:findings[G-TAX-01]"
+        },
+        {
+          "item_id": "G-AML-01",
+          "title": "反洗錢與跨境",
+          "light": "green",
+          "suspected_red": false,
+          "law": "未能查證",
+          "remedy": "在核保與收費流程納入資金來源、實質受益人、制裁及FATCA／CRS判斷。",
+          "owner": "法遵",
+          "source_ref": "regulatory:findings[G-AML-01]"
+        },
+        {
+          "item_id": "INV-01",
+          "title": "連結標的",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "投資型保險投資管理辦法第14條",
+          "remedy": "補具所有連結指數／基金／衍生性安排、法律關係、風險承擔、標的資格、替換及下架機制。",
+          "owner": "法遵",
+          "source_ref": "regulatory:findings[INV-01]"
+        },
+        {
+          "item_id": "INV-02",
+          "title": "專設帳簿與保管",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "投資型保險投資管理辦法",
+          "remedy": "如採投資型路徑，提交專設帳簿資產、保管與估值制度；否則在分類意見說明不適用理由。",
+          "owner": "風控",
+          "source_ref": "regulatory:findings[INV-02]"
+        },
+        {
+          "item_id": "INV-03",
+          "title": "風險屬性與適合度",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "投資型保險商品銷售應注意事項第6點、第13點",
+          "remedy": "建立商品風險分級、KYC、適合度、拒保／限制銷售及高齡客戶措施。",
+          "owner": "法遵",
+          "source_ref": "regulatory:findings[INV-03]"
+        },
+        {
+          "item_id": "INV-04",
+          "title": "費用揭露",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "投資型保險商品銷售應注意事項（銷售文件與費用揭露）",
+          "remedy": "補具臺灣版全期間費用率、各項費用扣除順序、解約金表與利益演示。",
+          "owner": "商品",
+          "source_ref": "regulatory:findings[INV-04]"
+        },
+        {
+          "item_id": "INV-05",
+          "title": "保證機制",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "人身保險商品審查應注意事項第36、37項",
+          "remedy": "補具保證成本、避險策略、準備金與壓力測試。",
+          "owner": "精算",
+          "source_ref": "regulatory:findings[INV-05]"
+        },
+        {
+          "item_id": "INV-06",
+          "title": "外幣與匯率風險",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "投資型保險投資管理辦法第18條",
+          "remedy": "確認幣別、收付款帳戶、匯率風險與中央銀行許可需求。",
+          "owner": "法遵",
+          "source_ref": "regulatory:findings[INV-06]"
+        },
+        {
+          "item_id": "LIFE-01",
+          "title": "保險利益與被保險人書面同意",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "保險法關於人身保險利益及被保險人同意之規定",
+          "remedy": "提出臺灣版要保書、受益人指定與被保險人書面同意流程。",
+          "owner": "法遵",
+          "source_ref": "regulatory:findings[LIFE-01]"
+        },
+        {
+          "item_id": "LIFE-02",
+          "title": "核保與道德風險",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "保險商品銷售前程序作業準則（商品設計、風險控管及核保相關要求）",
+          "remedy": "補具問卷、拒保／加費規則、資料蒐集合法性、反詐欺與人工覆核流程。",
+          "owner": "核保",
+          "source_ref": "regulatory:findings[LIFE-02]"
+        },
+        {
+          "item_id": "LIFE-03",
+          "title": "契約基本條款",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "人身保險商品審查應注意事項；定型化契約相關規範",
+          "remedy": "補具中文保單全條款、要保書、費率表、解約金表及對照表。",
+          "owner": "法遵",
+          "source_ref": "regulatory:findings[LIFE-03]"
+        },
+        {
+          "item_id": "LIFE-04",
+          "title": "生命表",
+          "light": "green",
+          "suspected_red": false,
+          "law": "保險商品銷售前程序作業準則",
+          "remedy": "精算人員確認臺灣版生命表、定價及準備金一致性。",
+          "owner": "精算",
+          "source_ref": "regulatory:findings[LIFE-04]"
+        },
+        {
+          "item_id": "LIFE-05",
+          "title": "利變型宣告利率",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "人身保險商品審查應注意事項第36、37項",
+          "remedy": "補具利率／指數計息公式、決定頻率、調整權限、上限／下限及利益演示。",
+          "owner": "精算",
+          "source_ref": "regulatory:findings[LIFE-05]"
+        },
+        {
+          "item_id": "C-01",
+          "title": "目標客群與非目標客群",
+          "light": "yellow",
+          "suspected_red": false,
+          "law": "保險商品銷售前程序作業準則（風險控管與商品設計）",
+          "remedy": "設定TM／NTM、兒童件法定代理與保額規則、低風險承受／短期資金需求客群限制。",
+          "owner": "商品",
+          "source_ref": "regulatory:findings[C-01]"
+        },
+        {
+          "item_id": "C-02",
+          "title": "誤導風險",
+          "light": "yellow",
+          "suspected_red": false,
+          "law": "金融服務業提供金融商品或服務前說明契約重要內容及揭露風險辦法第2、3條",
+          "remedy": "所有文宣並列費用扣除、失效／解約風險、非保證項目、核保條件及適用範圍；完成中文文宣審核。",
+          "owner": "法遵",
+          "source_ref": "regulatory:findings[C-02]"
+        },
+        {
+          "item_id": "C-03",
+          "title": "資訊揭露格式",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "投資型保險商品銷售應注意事項；人身保險商品審查應注意事項",
+          "remedy": "提交臺灣版全部銷售文件及不利情境演示。",
+          "owner": "商品",
+          "source_ref": "regulatory:findings[C-03]"
+        },
+        {
+          "item_id": "C-04",
+          "title": "通路與佣金",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "投資型保險商品銷售應注意事項第13點（若屬投資型）",
+          "remedy": "補具通路、佣金、考核、教育訓練及轉保控管政策。",
+          "owner": "通路",
+          "source_ref": "regulatory:findings[C-04]"
+        },
+        {
+          "item_id": "C-05",
+          "title": "條款中文化與系統可落地性",
+          "light": "pending",
+          "suspected_red": false,
+          "law": "人身保險商品審查應注意事項（銷售前電腦作業及配合措施）",
+          "remedy": "完成中文條款、規則引擎、保單價值與給付試算、跨保單限額及UAT。",
+          "owner": "IT",
+          "source_ref": "regulatory:findings[C-05]"
+        }
+      ],
+      "key_laws": [
+        "保險法第107條",
+        "投資型保險投資管理辦法",
+        "保險商品銷售前程序作業準則",
+        "人身保險商品審查應注意事項",
+        "投資型保險商品銷售應注意事項"
+      ]
+    }
+  },
+  "blockers": [
+    {
+      "id": "bl-reg-G-RATE-01",
+      "module": "regulatory",
+      "title": "保證利率／預定利率",
+      "severity": "blocking",
+      "owner": "精算",
+      "action": "補充臺灣版計價幣別、預定利率、計息公式、保證期間與準備金試算。",
+      "source_ref": "regulatory:findings[G-RATE-01]"
+    },
+    {
+      "id": "bl-reg-INV-01",
+      "module": "regulatory",
+      "title": "連結標的",
+      "severity": "blocking",
+      "owner": "法遵",
+      "action": "補具所有連結指數／基金／衍生性安排、法律關係、風險承擔、標的資格、替換及下架機制。",
+      "source_ref": "regulatory:findings[INV-01]"
+    },
+    {
+      "id": "bl-reg-G-AGE-01",
+      "module": "regulatory",
+      "title": "未滿15歲死亡給付",
+      "severity": "warning",
+      "owner": "商品",
+      "action": "針對未滿15歲投保件，在條款、要保書、系統與核保規則落實第107條；取得當年度喪葬費扣除額後設定跨保單控管限額。",
+      "source_ref": "regulatory:findings[G-AGE-01]"
+    },
+    {
+      "id": "bl-reg-C-01",
+      "module": "regulatory",
+      "title": "目標客群與非目標客群",
+      "severity": "warning",
+      "owner": "商品",
+      "action": "設定TM／NTM、兒童件法定代理與保額規則、低風險承受／短期資金需求客群限制。",
+      "source_ref": "regulatory:findings[C-01]"
+    },
+    {
+      "id": "bl-reg-C-02",
+      "module": "regulatory",
+      "title": "誤導風險",
+      "severity": "warning",
+      "owner": "法遵",
+      "action": "所有文宣並列費用扣除、失效／解約風險、非保證項目、核保條件及適用範圍；完成中文文宣審核。",
+      "source_ref": "regulatory:findings[C-02]"
+    },
+    {
+      "id": "bl-md-1",
+      "module": "market_demand",
+      "title": "上游輸入的mechanism、risk/disease與age_limit皆有內容，未見空值或明顯佔位字；但商品核心機制多為C級第三方商品指南佐證，台灣需求判斷受限。",
+      "severity": "warning",
+      "owner": null,
+      "action": null,
+      "source_ref": "market_demand:data_gaps[0]"
+    },
+    {
+      "id": "bl-md-2",
+      "module": "market_demand",
+      "title": "本地TII兩份xlsx的工作表名稱不符合讀取工具預期，無法由本次本地檔取得個人投資型或傳統人壽的件數／保費成長率；改採壽險公會統計的媒體轉述。",
+      "severity": "warning",
+      "owner": null,
+      "action": null,
+      "source_ref": "market_demand:data_gaps[1]"
+    },
+    {
+      "id": "bl-md-3",
+      "module": "market_demand",
+      "title": "查無可供本國居民投保的台灣IUL公開競品；比較表僅能以台灣變額萬能壽險作替代，且本次取得的完整官方費用資料集中於安達人壽兩項商品。",
+      "severity": "warning",
+      "owner": null,
+      "action": null,
+      "source_ref": "market_demand:data_gaps[2]"
+    },
+    {
+      "id": "bl-md-4",
+      "module": "market_demand",
+      "title": "查無RapidProtect台灣版保費、解約費用率、參與率、封頂費率或個別銷售數據；市場規模為情境估計，不是預測。",
+      "severity": "warning",
+      "owner": null,
+      "action": null,
+      "source_ref": "market_demand:data_gaps[3]"
+    },
+    {
+      "id": "bl-md-5",
+      "module": "market_demand",
+      "title": "即時核保、阿茲海默症／路易氏體失智症提前給付的台灣消費者聲量與轉換率，查無可驗證的本地精確數據。",
+      "severity": "warning",
+      "owner": null,
+      "action": null,
+      "source_ref": "market_demand:data_gaps[4]"
+    }
+  ],
+  "next_steps": [
+    {
+      "priority": 1,
+      "action": "完成商品分類與送審路徑的書面確認。",
+      "owner": "法遵",
+      "source_module": "regulatory",
+      "source_ref": "regulatory:pre_launch_requirements[0]"
+    },
+    {
+      "priority": 2,
+      "action": "完成未滿15歲死亡給付、保額與跨保單控管的臺灣版條款與系統設計。",
+      "owner": "商品",
+      "source_module": "regulatory",
+      "source_ref": "regulatory:pre_launch_requirements[1]"
+    },
+    {
+      "priority": 3,
+      "action": "補具臺灣版計價幣別、預定利率、計息公式、保證期間與準備金試算。",
+      "owner": "精算",
+      "source_module": "regulatory",
+      "source_ref": "regulatory:findings[G-RATE-01]"
+    },
+    {
+      "priority": 4,
+      "action": "補具連結指數／基金／衍生性安排、法律關係、風險承擔及標的資格。",
+      "owner": "法遵",
+      "source_module": "regulatory",
+      "source_ref": "regulatory:findings[INV-01]"
+    },
+    {
+      "priority": 5,
+      "action": "完成完整條款、費率、費用與解約金表、利益演示、文宣及中文化審核。",
+      "owner": "商品／法務",
+      "source_module": "regulatory",
+      "source_ref": "regulatory:pre_launch_requirements[2]"
+    },
+    {
+      "priority": 6,
+      "action": "如屬投資型或外幣商品，完成標的、專設帳簿、適合度、匯率風險與收付幣別要求。",
+      "owner": "法遵",
+      "source_module": "regulatory",
+      "source_ref": "regulatory:pre_launch_requirements[3]"
+    },
+    {
+      "priority": 7,
+      "action": "完成簡化核保、反洗錢、資安／個資、通路及佣金治理的內部作業。",
+      "owner": "核保／法遵",
+      "source_module": "regulatory",
+      "source_ref": "regulatory:pre_launch_requirements[4]"
+    },
+    {
+      "priority": 8,
+      "action": "釐清0%最低計息、利息加給、解約費用及疾病提前給付折減的精算假設與持續率敏感度。",
+      "owner": null,
+      "source_module": "market_demand",
+      "source_ref": "market_demand:handoff_items.to_actuarial[0]"
+    }
+  ],
+  "data_quality": {
+    "conflicts": [],
+    "suspected_input_errors": [
+      "商品機制、承保風險與附約細節的上游欄位信心為 C 級，未取得正式保單條款與費率資料。",
+      "上游資料將提前給付歸為一次性給付；公開消費者指南僅證實可折減方式提前動用全部或部分身故保險金，實際選擇權與州別條款仍待確認。"
+    ],
+    "evidence_mismatch": [],
+    "missing_fields": [
+      "for_孫_法規.compliance_key_attributes.minor_death_benefit_type",
+      "for_孫_法規.compliance_key_attributes.dividend_mechanism.has_dividend",
+      "for_孫_法規.compliance_key_attributes.pricing_interest_rate",
+      "for_孫_法規.compliance_key_attributes.contract_terms.suicide_clause",
+      "for_孫_法規.compliance_key_attributes.contract_terms.incontestability_clause",
+      "for_孫_法規.compliance_key_attributes.contract_terms.free_look_period",
+      "for_孫_法規.compliance_key_attributes.contract_terms.policy_loan",
+      "investment_linked_details",
+      "sales_channel_and_commission",
+      "beneficiary_and_consent_structure",
+      "臺灣版商品分類、送審方式與指數連結法律結構",
+      "minor_death_benefit_type、兒童保額與跨保單限額控管",
+      "pricing_interest_rate、計息公式、保證期間、臺灣版幣別與準備金資料",
+      "完整契約條款、要保書、費率表、解約金表與利益演示",
+      "通路、佣金、商品風險分級、KYC與適合度程序",
+      "actuarial:pricing_implication_flags",
+      "market_demand:核心機制台灣需求的可驗證資料"
+    ],
+    "notes": [
+      "市場需求結論信心為C，但市場規模信心為B；上游結論採較低的C。",
+      "市場規模為情境估計，非預測；數值單位依上游 calculation_notes 為新台幣元。",
+      "精算研究雖標示 sufficient_evidence，仍明示無台美同口徑可比保戶經驗，無法直接量化移植差距。"
+    ]
+  },
+  "legend": {
+    "recommendation": {
+      "go": {
+        "label": "可推進",
+        "color": "green"
+      },
+      "conditional_go": {
+        "label": "有條件推進",
+        "color": "yellow"
+      },
+      "hold_missing_info": {
+        "label": "暫緩，待補資料",
+        "color": "yellow"
+      },
+      "hold_resolve_red_flag": {
+        "label": "暫緩，須先釐清疑似紅燈",
+        "color": "red"
+      },
+      "not_recommended": {
+        "label": "不建議引進",
+        "color": "red"
+      },
+      "incomplete_review": {
+        "label": "審查未完成",
+        "color": "gray"
+      }
+    },
+    "severity": {
+      "critical": {
+        "label": "重大",
+        "color": "red"
+      },
+      "blocking": {
+        "label": "阻斷",
+        "color": "orange"
+      },
+      "warning": {
+        "label": "注意",
+        "color": "yellow"
+      }
+    },
+    "light": {
+      "red": {
+        "label": "紅燈",
+        "color": "red"
+      },
+      "yellow": {
+        "label": "黃燈",
+        "color": "yellow"
+      },
+      "green": {
+        "label": "綠燈",
+        "color": "green"
+      },
+      "pending": {
+        "label": "待補",
+        "color": "gray"
+      },
+      "not_applicable": {
+        "label": "不適用",
+        "color": "gray"
+      }
+    },
+    "module": {
+      "market_demand": {
+        "label": "市場需求（翁）"
+      },
+      "actuarial": {
+        "label": "發生率暨獲利調查（塗）"
+      },
+      "regulatory": {
+        "label": "法規適用（孫）"
+      }
+    },
+    "demand_level": {
+      "strong": {
+        "label": "明確需求",
+        "color": "green"
+      },
+      "limited": {
+        "label": "有限需求",
+        "color": "yellow"
+      },
+      "weak": {
+        "label": "需求不足",
+        "color": "red"
+      },
+      "unclear": {
+        "label": "結論不明",
+        "color": "gray"
+      }
+    }
+  },
+  "disclaimer": "本報告為上游三個模組輸出之整合摘要，非法律意見、非精算意見，亦未重新查證；最終判定須經法遵／法務／精算人員覆核。",
+  "dimension_scores": {
+    "method_version": "1.1",
+    "scale": "0-100",
+    "dimensions": [
+      "market_size",
+      "market_growth",
+      "feasibility"
+    ],
+    "market_size": {
+      "label": "市場規模",
+      "score": 75,
+      "level": 4,
+      "basis": "market_demand",
+      "rationale": "潛在保費市場26億元～78億元，中間情境 52億元（潛在市場規模法TAM）",
+      "confidence": "B",
+      "value": 5210257440,
+      "unit": "新台幣元",
+      "source": "市場需求模組（翁）：目標人口×滲透率×平均年繳保費",
+      "as_of": "2026-10-30"
+    },
+    "market_growth": {
+      "label": "市場成長",
+      "score": 100,
+      "level": 5,
+      "basis": "market_demand",
+      "rationale": "投資型保險商品新契約保費收入（含非保險合約），2026年前7月 vs 2025年同期 年增 132.4%",
+      "confidence": "A",
+      "value": 132.4,
+      "unit": "%",
+      "source": "壽險公會統計（中央社2026-08-17轉述）",
+      "as_of": "2026-10-30"
+    },
+    "feasibility": {
+      "label": "法規可行性",
+      "score": 62,
+      "level": 3.5,
+      "basis": "regulatory",
+      "rationale": "0 紅（含疑似 0）、3 黃；2 項阻斷性待補，分數暫定",
+      "confidence": "B",
+      "value": {
+        "red": 0,
+        "suspected_red": 0,
+        "yellow": 3,
+        "pending": 18,
+        "blocking_pending": 2,
+        "overall_verdict": "待確認"
+      },
+      "unit": "項",
+      "source": "法規模組（孫）逐項審查燈號",
+      "as_of": "2026-10-30"
+    },
+    "profitability": {
+      "label": "獲利性",
+      "score": null,
+      "level": null,
+      "basis": null,
+      "rationale": "本版評分方法不評估此維度",
+      "confidence": null
+    },
+    "saturation": {
+      "label": "市場飽和度",
+      "score": null,
+      "level": null,
+      "basis": null,
+      "rationale": "本版評分方法不評估此維度",
+      "confidence": null
+    },
+    "brand_fit": {
+      "label": "品牌／通路契合度",
+      "score": null,
+      "level": null,
+      "basis": null,
+      "rationale": "本版評分方法不評估此維度",
+      "confidence": null
+    }
+  }
+}
