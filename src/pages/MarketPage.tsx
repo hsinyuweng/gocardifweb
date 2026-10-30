@@ -21,7 +21,9 @@ import { zhTW } from '../i18n/zh-TW';
 import { formatPulseTick, formatSharePct, orDash, shortPeriodLabels } from '../lib/format';
 import { overviewHeadline, tabHeadline } from '../lib/insights';
 import {
+  amountHeading,
   availableGroups,
+  extraMonthlyTrends,
   growthLeaders,
   isRank,
   isTrend,
@@ -51,6 +53,24 @@ const FULL_PERIODS = 6;
 
 const isGroup = (x: string): x is PulseGroup => (PULSE_GROUP_ORDER as readonly string[]).includes(x);
 const isMonthly = (period: string | null | undefined) => !!period && /^\d{4}-\d{2}$/.test(period);
+const isDaily = (period: string | null | undefined) => !!period && /^\d{4}-\d{2}-\d{2}$/.test(period);
+
+/** 圖表標題右側的單位：新台幣元的數字都換成億元 */
+const unitNote = (m: PulseTrendViewModel) => (m.unit === zhTW.units.ntd ? zhTW.units.hundredMillion : orDash(m.unit));
+
+/** 月資料直條圖（最新一期深色） */
+function MonthlyColumns({ m }: { m: PulseTrendViewModel }) {
+  return (
+    <ColumnChart
+      values={m.points.map((p) => p.value)}
+      labels={shortPeriodLabels(m.points.map((p) => p.period))}
+      highlight={m.points.length - 1}
+      formatValue={(v) => trendValue(m, v)}
+      height={180}
+      ariaLabel={orDash(m.label)}
+    />
+  );
+}
 
 /** 折線圖 y 軸：名次只標整數（formatPulseTick），其他與數值同格式（利率「2.05%」） */
 const axisTick = (m: PulseTrendViewModel, v: number) => (isRank(m) ? formatPulseTick(v, m.unit) : trendValue(m, v));
@@ -174,17 +194,12 @@ function GroupTab({ list }: { list: PulseMetricViewModel[] }) {
     main = (
       <StorySection heading={trendHeading(m)}>
         <div>
-          <ChartTitle note={orDash(m.unit)}>{orDash(m.label)}</ChartTitle>
-          {/* 月資料用直條；週資料與名次（y 軸反向）用折線 */}
+          <ChartTitle note={unitNote(m)}>
+            {isDaily(m.points.at(-1)?.period) && m.label ? t.dailyTitle(m.label) : orDash(m.label)}
+          </ChartTitle>
+          {/* 月資料用直條；日、週資料與名次（y 軸反向）用折線 */}
           {isMonthly(m.points.at(-1)?.period) && !isRank(m) ? (
-            <ColumnChart
-              values={m.points.map((p) => p.value)}
-              labels={shortPeriodLabels(m.points.map((p) => p.period))}
-              highlight={m.points.length - 1}
-              formatValue={fmt}
-              height={180}
-              ariaLabel={orDash(m.label)}
-            />
+            <MonthlyColumns m={m} />
           ) : (
             <LineChart
               lines={[{ name: orDash(m.label), points: m.points }]}
@@ -226,6 +241,14 @@ function GroupTab({ list }: { list: PulseMetricViewModel[] }) {
       {headline ? <Lead parts={headline.parts} /> : null}
       <KeyNumbers items={tabNumbers(list)} />
       {main}
+      {extraMonthlyTrends(list).map((x) => (
+        <StorySection key={x.key} heading={amountHeading(x)}>
+          <div>
+            <ChartTitle note={unitNote(x)}>{x.label ? t.heading.amountChart(x.label) : orDash(x.label)}</ChartTitle>
+            <MonthlyColumns m={x} />
+          </div>
+        </StorySection>
+      ))}
       {rankingSection}
       <NextStep
         down={{ label: multiShares.length > 0 ? t.downShare : t.downPlain, targetId: DETAILS_ID }}

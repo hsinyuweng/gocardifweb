@@ -110,6 +110,25 @@ export function pulseTableRows(metrics: PulseMetricViewModel[]): PulseTableRow[]
             chart: false,
           });
         });
+      // 各項目金額（schema 2.2 的 amount_ntd），依金額由大到小
+      [...(last?.parts ?? [])]
+        .filter((p) => p.amountNtd !== null)
+        .sort((a, b) => b.amountNtd! - a.amountNtd!)
+        .forEach((p, i) => {
+          const before = prev?.parts.find((x) => x.name !== null && x.name === p.name)?.amountNtd ?? null;
+          rows.push({
+            ...base,
+            key: `${m.key}-amount-${p.name ?? i}`,
+            level: 'item',
+            label: t.amountOf(orDash(p.name)),
+            latest: formatPulseValue(p.amountNtd, zhTW.units.ntd),
+            prev: before !== null ? formatPulseValue(before, zhTW.units.ntd) : dash,
+            change: before !== null ? diffText(p.amountNtd!, before, zhTW.units.ntd, 1) : dash,
+            period: '',
+            frequency: '',
+            chart: false,
+          });
+        });
     } else if (m.type === 'ranking') {
       // 同業排名：最新＝法巴名次（沒有法巴時寫家數），「看圖」展開全部
       const self = m.rows.find((r) => r.isSelf);

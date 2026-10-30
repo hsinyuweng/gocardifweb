@@ -31,9 +31,15 @@ export function ColumnChart({ values, labels, highlight, formatValue, height = 1
   const step = width / values.length;
   const barW = Math.min(40, step * 0.55);
   const maxIndex = values.indexOf(Math.max(...values));
-  const shown = new Set([maxIndex, highlight, hover].filter((i): i is number => i != null));
-  // 標籤太擠時只標部分月份（約每 40px 一個）
+  // 最高與重點（最新）的數值標籤會疊在一起時只標重點；滑過仍會顯示
+  // 12px 字：中文約 12px、數字與符號約 6.5px
+  const textW = (i: number) => [...formatValue(values[i]!)].reduce((w, c) => w + (/[\u3000-\u9fff]/.test(c) ? 12 : 6.5), 0);
+  const clash = highlight != null && maxIndex !== highlight && Math.abs(maxIndex - highlight) * step < (textW(maxIndex) + textW(highlight)) / 2 + 2;
+  const shown = new Set([clash ? null : maxIndex, highlight, hover].filter((i): i is number => i != null));
+  // 標籤太擠時只標部分月份（約每 40px 一個）；最後一期一定標，太靠近它的就略過
   const labelEvery = Math.max(1, Math.ceil(36 / Math.max(step, 1)));
+  const lastIdx = values.length - 1;
+  const showLabel = (i: number) => i === lastIdx || (i % labelEvery === 0 && lastIdx - i >= labelEvery);
 
   return (
     <div ref={ref} className="w-full">
@@ -67,7 +73,7 @@ export function ColumnChart({ values, labels, highlight, formatValue, height = 1
                     {formatValue(v)}
                   </text>
                 ) : null}
-                {i % labelEvery === 0 || i === values.length - 1 ? (
+                {showLabel(i) ? (
                   <text x={cx} y={height - 5} textAnchor="middle" fontSize={11.5} className="fill-muted">
                     {labels[i]}
                   </text>

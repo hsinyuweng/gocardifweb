@@ -268,6 +268,8 @@ export const zhTW = {
       all: '全部',
       cols: { label: '指標', latest: '最新', prev: '上期', change: '變化', period: '資料期間', frequency: '頻率', source: '來源' },
       freq: { month: '月', week: '週', day: '日', quarter: '季', year: '年' },
+      /** 占比指標底下的金額列（schema 2.2） */
+      amountOf: (name: string) => `${name}金額`,
       showChart: '看圖 ▾',
       hideChart: '收起 ▴',
     },
@@ -276,11 +278,16 @@ export const zhTW = {
     details: '細節',
     missingGroup: (title: string, desc: string) => `${title}（${desc}）尚無資料，有資料後會多一個分頁`,
     periodLong: (y: number, m: number) => `${y} 年 ${m} 月`,
+    /** 日資料的完整日期 */
+    dayLong: (y: number, m: number, d: number) => `${y} 年 ${m} 月 ${d} 日`,
+    /** 日資料主圖的標題（約 250 個交易日） */
+    dailyTitle: (label: string) => `近一年每日 ${label}`,
     headerAside: (period: string | null, updated: string) => (period ? `${period} · 資料更新於 ${updated}` : `資料更新於 ${updated}`),
     tabTitle: (tab: string) => `市場脈動 · ${tab}`,
     unitMonth: '個月',
     unitWeek: '週',
     unitPeriod: '期',
+    unitTradingDay: '個交易日',
     tile: {
       latest: '最新',
       high: (n: number, unit: string) => `近 ${n} ${unit}最高`,
@@ -298,6 +305,9 @@ export const zhTW = {
       shareDetail: '各項目占比',
       shiftTail: (more: boolean, v: string) => `，占比比上期${more ? '多' : '少'} ${v} 個百分點`,
       shareByPeriod: '每期占比',
+      /** 金額圖的標題：「8 月新契約保費 1,245.9 億元，比去年同期 +68.5%」 */
+      amountYoy: (lead: string, value: string, yoy: string) => `${lead}${value}，比去年同期 ${yoy}`,
+      amountChart: (label: string) => `每月${label}`,
       growthLatest: (p: string) => `${p}各項目年增率`,
     },
     // 同業排名（schema 2.2 ranking；2026-10-31 由 pulse.json 轉換）

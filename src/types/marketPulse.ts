@@ -20,6 +20,8 @@ export interface RawPulsePart {
   share_pct?: Nullable<number>;
   /** 成長率（可省略），4.1 表示 +4.1% */
   growth_pct?: Nullable<number>;
+  /** schema 2.2：金額（新台幣元整數） */
+  amount_ntd?: Nullable<number>;
 }
 
 export interface RawPulseSharePeriod {

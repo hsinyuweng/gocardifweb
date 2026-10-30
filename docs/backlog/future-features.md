@@ -22,8 +22,7 @@
 
 | 功能 | 原本的設計 | 需要的資料（組員編號） |
 |---|---|---|
-| 新契約保費金額 | 成長動能分頁每月金額直條；各險別金額（億元 1 位小數） | market-pulse 2.2 `new_premium_amount`、`product_mix` 的 `amount_ntd`（M7）；`pulse.json` 已有，可比照同業排名在 `import-agentdata.mjs` 轉換 |
-| 10 年債日資料、指標一句話 | 定價環境改日線；每個指標可選 `headline` 當圖表標題 | `tw_10y_yield_daily`、`headline`（M7）；`pulse.json` 已有 250 天日資料 |
+| 指標一句話 | 每個指標可選 `headline` 當圖表標題 | `headline`（M7） |
 | 來源抓取狀態 | 新聞頁提示「主管機關與公會來源這次沒有抓到」 | feed 1.3 `sources_status`（M7）；內部檔 `news-monitor-work/output/feed.json` 的 `run.sources_status` 已有（10-29 全部成功，暫不需要） |
 | 每日自動更新 | 網站每天固定時間抓後端快照 | 每日快照網址與完成時刻（S9） |
 | 燈號變化提示 | 標出「燈號有變化的商品」、報告歷史版本 | 報告歷史版本（S6） |
@@ -36,4 +35,4 @@
 ## 3. 已有資料、還沒用的（可直接做）
 
 - 市場需求交給精算／法規的待確認事項 `sections.market_demand.handoffs`（9 份都有）：可放在報告頁對應面向。
-- 標籤更新建議 `sections.market_demand.tag_update_suggestion`。
+- 標籤更新建議 `sections.market_demand.tag_update_suggestion`：不顯示（2026-10-31 使用者決定；是給後端維護標籤庫用的，讀報告的人用處不大）。

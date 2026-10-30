@@ -110,6 +110,7 @@ function rankingTiles(list: PulseMetricViewModel[], withShare: boolean): KeyNumb
 /** 期間的數量詞：月「個月」、週「週」、其他「期」 */
 export function periodUnit(period: string | null): string {
   if (period && /^\d{4}-\d{2}$/.test(period)) return t.unitMonth;
+  if (period && /^\d{4}-\d{2}-\d{2}$/.test(period)) return t.unitTradingDay;
   if (period && /^\d{4}-W\d{2}$/.test(period)) return t.unitWeek;
   return t.unitPeriod;
 }
@@ -119,6 +120,8 @@ export function periodLong(period: string | null): string | null {
   if (period === null) return null;
   const m = /^(\d{4})-(\d{2})$/.exec(period);
   if (m) return t.periodLong(+m[1]!, +m[2]!);
+  const d = /^(\d{4})-(\d{2})-(\d{2})$/.exec(period);
+  if (d) return t.dayLong(+d[1]!, +d[2]!, +d[3]!);
   return formatPulsePeriod(period);
 }
 
@@ -159,9 +162,9 @@ export function extremes(m: PulseTrendViewModel): { high: PulsePointViewModel; l
   return { high, low };
 }
 
-/** 跨年的月資料寫成「2025 年 10 月」，否則「10 月」 */
+/** 跨年的月資料寫成「2025 年 10 月」、日資料「2025 年 10 月 21 日」，否則「10 月」「10/29」 */
 function pointPeriod(points: PulsePointViewModel[], period: string | null): string {
-  const years = new Set(points.map((p) => /^(\d{4})-\d{2}$/.exec(p.period ?? '')?.[1]).filter(Boolean));
+  const years = new Set(points.map((p) => /^(\d{4})-\d{2}(?:-\d{2})?$/.exec(p.period ?? '')?.[1]).filter(Boolean));
   return (years.size > 1 ? periodLong(period) : periodText(period)) ?? '';
 }
 export const trendValue = (m: PulseTrendViewModel, v: number | null) => formatPulseValue(v, m.unit, trendDigits(m));
@@ -297,6 +300,25 @@ export function trendHeading(m: PulseTrendViewModel): string | null {
   if (signMatters(m) && pts.every((x) => x.value > 0)) return t.heading.allPositive(pts.length, unit, p(high), trendValue(m, high.value));
   if (signMatters(m) && pts.every((x) => x.value < 0)) return t.heading.allNegative(pts.length, unit, p(low), trendValue(m, low.value));
   return t.heading.highLow(p(high), trendValue(m, high.value), p(low), trendValue(m, low.value));
+}
+
+/** 主要指標以外、有 2 期以上的月資料單線（例：成長動能的新契約保費金額），各畫一張直條圖 */
+export function extraMonthlyTrends(list: PulseMetricViewModel[]): PulseTrendViewModel[] {
+  const main = mainTrend(list);
+  return list
+    .filter(isTrend)
+    .filter((m) => m !== main && m.points.length >= 2 && /^\d{4}-\d{2}$/.test(m.points.at(-1)!.period ?? '') && !isRank(m));
+}
+
+/** 金額圖的標題：有去年同月時「8 月新契約保費 1,245.9 億元，比去年同期 +68.5%」，否則同 trendHeading */
+export function amountHeading(m: PulseTrendViewModel): string | null {
+  const last = m.points.at(-1);
+  const ym = /^(\d{4})-(\d{2})$/.exec(last?.period ?? '');
+  if (!last || !ym || !m.label) return trendHeading(m);
+  const before = m.points.find((p) => p.period === `${+ym[1]! - 1}-${ym[2]}`);
+  if (!before || before.value === 0) return trendHeading(m);
+  const yoy = (last.value / before.value - 1) * 100;
+  return t.heading.amountYoy(zhTW.insights.lead(periodText(last.period), m.label), trendValue(m, last.value), `${yoy > 0 ? '+' : ''}${formatSharePct(yoy)}`);
 }
 
 /** 細節的占比段落標題：年增最快的項目＋（同一項目時）占比比上期多或少幾個百分點 */

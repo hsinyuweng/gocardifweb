@@ -398,6 +398,8 @@ export interface PulsePartViewModel {
   name: string | null;
   sharePct: number;
   growthPct: number | null;
+  /** 金額（新台幣元）；沒有時為 null */
+  amountNtd: number | null;
 }
 
 export interface PulseSharePeriodViewModel {

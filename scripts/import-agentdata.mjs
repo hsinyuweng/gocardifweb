@@ -145,6 +145,131 @@ function rankingMetric(pulse, metrics) {
   };
 }
 
+/** pulse.json 的一個指標（status ok、有 series），沒有時為 null */
+function pulseIndicator(pulse, key) {
+  const ind = isObject(pulse?.indicators) ? pulse.indicators[key] : null;
+  return isObject(ind) && ind.status === 'ok' && Array.isArray(ind.series) ? ind : null;
+}
+
+const round = (v, d) => Math.round(v * 10 ** d) / 10 ** d;
+
+/** 單線趨勢的最新值與變化（後端需求 M7：change_pct 為比上一期的百分比，或 pp 的差） */
+function trendTail(series, unit) {
+  const last = series.at(-1)?.value ?? null;
+  const prev = series.at(-2)?.value ?? null;
+  let change = null;
+  if (last !== null && prev !== null) change = unit === 'pp' ? round(last - prev, 4) : prev !== 0 ? round((last / prev - 1) * 100, 2) : null;
+  return { latest_value: last, change_pct: change };
+}
+
+/** pulse.json 的 new_premium_total（億元）→ market-pulse 2.2 的 new_premium_amount（新台幣元，月資料） */
+function premiumAmountMetric(pulse, metrics) {
+  const ind = pulseIndicator(pulse, 'new_premium_total');
+  if (!ind) return null;
+  const series = ind.series.flatMap((p) =>
+    typeof p?.values?.total === 'number' ? [{ period: p.period ?? null, value: Math.round(p.values.total * 100_000_000) }] : [],
+  );
+  if (series.length === 0) return null;
+  const sibling = metrics.find((m) => isObject(m) && m.source_url === ind.source_url);
+  return {
+    key: 'new_premium_amount',
+    group: 'growth',
+    type: 'trend',
+    label: '新契約保費',
+    source: sibling?.source ?? null,
+    source_url: ind.source_url ?? null,
+    as_of: monthEnd(series.at(-1).period),
+    stale: sibling?.stale === true,
+    unit: '新台幣元',
+    ...trendTail(series, 'pct'),
+    change_unit: 'pct',
+    change_label: '較上月',
+    series,
+  };
+}
+
+/** pulse.json 的 gov_bond_yield_10y（日資料）→ market-pulse 2.2 的 tw_10y_yield_daily */
+function dailyYieldMetric(pulse, metrics) {
+  const ind = pulseIndicator(pulse, 'gov_bond_yield_10y');
+  if (!ind) return null;
+  const series = ind.series.flatMap((p) =>
+    typeof p?.values?.yield_pct === 'number' && /^\d{4}-\d{2}-\d{2}$/.test(p.period ?? '')
+      ? [{ period: p.period, value: round(p.values.yield_pct, 4) }]
+      : [],
+  );
+  if (series.length === 0) return null;
+  const weekly = metrics.find((m) => isObject(m) && m.key === 'tw_10y_yield');
+  return {
+    key: 'tw_10y_yield_daily',
+    group: 'pricing',
+    type: 'trend',
+    label: weekly?.label ?? '10年期公債殖利率',
+    source: weekly?.source ?? null,
+    source_url: ind.source_url ?? weekly?.source_url ?? null,
+    as_of: series.at(-1).period,
+    featured: weekly?.featured === true,
+    unit: '%',
+    ...trendTail(series, 'pp'),
+    change_unit: 'pp',
+    change_label: '較前一交易日',
+    series,
+  };
+}
+
+/** product_mix 每個 part 補 amount_ntd（新台幣元整數；pulse.json 的 new_premium_by_type，依險別名稱對應） */
+function fillProductMixAmounts(pulse, metrics) {
+  const ind = pulseIndicator(pulse, 'new_premium_by_type');
+  const mix = metrics.find((m) => isObject(m) && m.key === 'product_mix' && Array.isArray(m.periods));
+  if (!ind || !mix || !isObject(ind.series_labels)) return 0;
+  const keyOf = new Map(Object.entries(ind.series_labels).map(([k, name]) => [name, k]));
+  let filled = 0;
+  for (const p of mix.periods) {
+    const src = ind.series.find((s) => s?.period === p?.period);
+    if (!src || !Array.isArray(p.parts)) continue;
+    for (const part of p.parts) {
+      if (!isObject(part) || 'amount_ntd' in part) continue;
+      const v = src.values?.[keyOf.get(part.name)];
+      part.amount_ntd = typeof v === 'number' ? Math.round(v * 100_000_000) : null;
+      if (part.amount_ntd !== null) filled += 1;
+    }
+  }
+  return filled;
+}
+
+/** 後端還沒交 market-pulse 2.2 時，由 pulse.json 補上 2.2 的欄位（後端已有同 key 就不補） */
+function fillFromPulse(pulse, market) {
+  const metrics = market.metrics;
+  const has = (key) => metrics.some((m) => isObject(m) && m.key === key);
+  const added = [];
+  if (!metrics.some((m) => isObject(m) && m.type === 'ranking')) {
+    const ranking = rankingMetric(pulse, metrics);
+    if (ranking) {
+      metrics.push(ranking);
+      added.push(`同業排名（${ranking.period}，${ranking.rows.length} 家）`);
+    }
+  }
+  if (!has('new_premium_amount')) {
+    const amount = premiumAmountMetric(pulse, metrics);
+    if (amount) {
+      // 放在年增率後面
+      const at = metrics.findIndex((m) => isObject(m) && m.key === 'new_premium_yoy');
+      metrics.splice(at === -1 ? metrics.length : at + 1, 0, amount);
+      added.push(`新契約保費金額（${amount.series.length} 個月）`);
+    }
+  }
+  if (!has('tw_10y_yield_daily')) {
+    const daily = dailyYieldMetric(pulse, metrics);
+    if (daily) {
+      const at = metrics.findIndex((m) => isObject(m) && m.key === 'tw_10y_yield');
+      metrics.splice(at === -1 ? metrics.length : at, 0, daily);
+      added.push(`10 年債日資料（${daily.series.length} 天）`);
+    }
+  }
+  const filled = fillProductMixAmounts(pulse, metrics);
+  if (filled > 0) added.push(`各險別金額（${filled} 筆）`);
+  if (added.length > 0) console.log(`  市場脈動：由 pulse.json 補上${added.join('、')}`);
+}
+
 async function importMarket(fromDir) {
   const feed = await readJsonOrNull(path.join(fromDir, 'news-monitor-work', 'news-regulatory-monitor.json'));
   if (feed) await writeJson('feed.json', feed);
@@ -155,15 +280,9 @@ async function importMarket(fromDir) {
     console.warn('  沒有 market-pulse.json，市場脈動不更新');
     return;
   }
-  const metrics = Array.isArray(market.metrics) ? market.metrics : [];
-  if (!metrics.some((m) => isObject(m) && m.type === 'ranking')) {
-    const pulse = await readJsonOrNull(path.join(fromDir, 'market-pulse-work', 'output', 'pulse.json'));
-    const ranking = rankingMetric(pulse, metrics);
-    if (ranking) {
-      market.metrics = [...metrics, ranking];
-      console.log(`  市場脈動：由 pulse.json 補上同業排名（${ranking.period}，${ranking.rows.length} 家）`);
-    }
-  }
+  if (!Array.isArray(market.metrics)) market.metrics = [];
+  const pulse = await readJsonOrNull(path.join(fromDir, 'market-pulse-work', 'output', 'pulse.json'));
+  if (pulse) fillFromPulse(pulse, market);
   await writeJson('market-pulse.json', market);
 }
 

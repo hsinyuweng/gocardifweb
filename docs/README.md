@@ -11,9 +11,9 @@
 
 ## 2. 下一步
 
-**新對話先做：照 `backlog/next-steps.md` 實作 C（市場脈動金額與 10 年債日資料）→ D（報告頁交給精算／法規的待確認事項）；兩項都要先把介面文字列給使用者確認。**
+**新對話先做：`backlog/next-steps.md` 的 D（報告頁的 `handoffs`）——使用者 10-31 說先不分部門、當作給一個人看，要不要做、怎麼呈現待使用者回覆。**
 
-**2026-10-31 第三批（待驗證與 commit）**：報告頁、我的待辦改用競品研究黃色；全站舊樣式（`slate`／`navy`／`amber`、小圓角、粗體）換成新設計的文字色、框線與代表色深淺，新增 `text-p-ink`（連結用的代表色深色）；競品研究列表的整體建議加色點。
+**2026-10-31 第三批（待驗證與 commit）**：報告頁、我的待辦改用競品研究黃色；全站舊樣式（`slate`／`navy`／`amber`、小圓角、粗體）換成新設計的文字色、框線與代表色深淺，新增 `text-p-ink`（連結用的代表色深色）；競品研究列表的整體建議加色點；市場脈動補新契約保費金額（成長動能新圖、指標表各險別金額）與 10 年債日資料（定價環境改日線），由 `pulse.json` 轉換成 schema 2.2。
 
 **2026-10-31 已完成（待使用者驗證與 commit）**：改讀 `agentdata/`（`scripts/import-agentdata.mjs`、`sync --replace`）、市場脈動同業排名（`RankingBars`，品牌與競爭分頁＋總覽卡）、報告頁台灣競品比較（`CompetitorTable`）與商品原始資料（`SourceDocuments`）、新聞頁沒有比對資料時隱藏「只看可能相關」、市場脈動組別說明改成符合現有資料。10-28「只用現有資料、隱藏功能」的計畫已作廢：現有功能都是有資料才出現。
 
@@ -21,7 +21,6 @@
 
 **等後端**（使用者已轉達組員，交付後照 `progress/data-status.md` 檢查再 `npm run import`）：CareScout 兩份選哪份、法規 `affected_categories`／`related_report_ids`、finding 來源、分數鑑別度與分數／結論不一致、理由裡的欄位代號（`verdict.confidence`）、3.json 漏填發行公司與國家、Secure Horizon `af2f7e7a` 沒產出 3.json、各等級（市場需求 A/B/C、精算 T1/T2、信心）的定義。其他等資料的功能見 `backlog/future-features.md`；剩餘階段見 `backlog/roadmap.md`（後端需求文件連結在第 4 節）。
 
-**可以做、未排程**：新契約保費金額、10 年債日資料（`pulse.json` 已有，可比照同業排名轉換）；報告頁的市場需求 `handoffs`、`tag_update_suggestion`。
 
 ## 3. 改動前：依範圍讀
 

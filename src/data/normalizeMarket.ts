@@ -118,7 +118,7 @@ function normalizeMetric(m: RawPulseMetric, i: number): PulseMetricViewModel | n
         period: str(p.period),
         parts: objList(p.parts).flatMap((part) => {
           const sharePct = num(part.share_pct);
-          return sharePct === null ? [] : [{ name: str(part.name), sharePct, growthPct: num(part.growth_pct) }];
+          return sharePct === null ? [] : [{ name: str(part.name), sharePct, growthPct: num(part.growth_pct), amountNtd: num(part.amount_ntd) }];
         }),
       })),
     };
@@ -168,10 +168,21 @@ function focusSummary(v: MarketPulse['focus_summary']): MarketPulseViewModel['fo
   return text ? { text, asOf: str(v.as_of) } : null;
 }
 
+/** 有日資料版本（key 加 `_daily`，schema 2.2）的指標只顯示日資料，首頁重點標記沿用舊的 */
+function preferDaily(metrics: PulseMetricViewModel[]): PulseMetricViewModel[] {
+  const daily = new Map(metrics.filter((m) => m.key.endsWith('_daily')).map((m) => [m.key.slice(0, -'_daily'.length), m]));
+  return metrics.flatMap((m) => {
+    const d = daily.get(m.key);
+    if (!d) return [m];
+    if (m.featured) d.featured = true;
+    return [];
+  });
+}
+
 export function normalizeMarketPulse(pulse: MarketPulse): MarketPulseViewModel {
   return {
     generatedAt: formatDateTimeTaipei(str(pulse.generated_at)),
     focus: focusSummary(pulse.focus_summary),
-    metrics: objList(pulse.metrics).flatMap((m, i) => normalizeMetric(m, i) ?? []),
+    metrics: preferDaily(objList(pulse.metrics).flatMap((m, i) => normalizeMetric(m, i) ?? [])),
   };
 }

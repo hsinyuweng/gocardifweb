@@ -163,7 +163,9 @@ export function LineChart({ lines, formatValue, formatTick = formatValue, height
               {notes && pts.length > 1
                 ? (() => {
                     const peak = pts.reduce((a, b) => ((invert ? b.v < a.v : b.v > a.v) ? b : a));
-                    return peak !== lastPts[li] ? (
+                    // 最高點與最新值顯示成同一個數字時只標最新值（日資料常見），避免兩個標籤疊在一起
+                    const last = lastPts[li];
+                    return peak !== last && (!last || formatValue(peak.v) !== formatValue(last.v)) ? (
                       <g>
                         <circle cx={x(peak.i)} cy={y(peak.v)} r="4" fill="#fff" className="stroke-p" strokeWidth="2" />
                         <text x={x(peak.i)} y={y(peak.v) - 9} textAnchor="middle" fontSize={12} className="fill-ink2">
