@@ -12,7 +12,7 @@ interface MarketSizingBarProps {
 
 function TextList({ low, mid, high }: MarketSizingBarProps) {
   return (
-    <p className="text-slate-800">
+    <p className="text-ink">
       {t.low} {orDash(low.text)} · {t.mid} {orDash(mid.text)} · {t.high} {orDash(high.text)}
     </p>
   );
@@ -33,15 +33,15 @@ export function MarketSizingBar(props: MarketSizingBarProps) {
 
   return (
     <div className="max-w-xl">
-      <div className="relative h-3 rounded-full bg-slate-100" aria-hidden>
+      <div className="relative h-3 rounded-full bg-line" aria-hidden>
         <div
-          className="absolute inset-y-0 rounded-full bg-navy-600/35"
+          className="absolute inset-y-0 rounded-full bg-p-mid"
           style={{ left: `${lowPct}%`, width: `${100 - lowPct}%` }}
         />
-        <div className="absolute inset-y-0 w-0.5 bg-navy-700" style={{ left: `${lowPct}%` }} />
-        <div className="absolute inset-y-0 right-0 w-0.5 bg-navy-700" />
+        <div className="absolute inset-y-0 w-0.5 bg-p" style={{ left: `${lowPct}%` }} />
+        <div className="absolute inset-y-0 right-0 w-0.5 bg-p" />
         <div
-          className="absolute top-1/2 size-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-navy-800"
+          className="absolute top-1/2 size-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-p"
           style={{ left: `${midPct}%` }}
         />
       </div>
@@ -52,8 +52,8 @@ export function MarketSizingBar(props: MarketSizingBarProps) {
           { label: t.high, e: high },
         ].map(({ label, e }) => (
           <div key={label}>
-            <dt className="text-slate-500">{label}</dt>
-            <dd className="text-sm font-semibold text-slate-900 tabular-nums">{e.text}</dd>
+            <dt className="text-muted">{label}</dt>
+            <dd className="text-sm font-medium text-ink tabular-nums">{e.text}</dd>
           </div>
         ))}
       </dl>

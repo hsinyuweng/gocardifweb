@@ -41,7 +41,7 @@ const reportLink = (c: Candidate) => (
  * 還沒追蹤任何商品時（2026-10-31）：列出綜合分數最高的 3 件，每件「＋ 追蹤」直接加入（不跳頁）；加入後換成一般內容。
  */
 function Suggestions({ suggestions }: { suggestions: Candidate[] }) {
-  if (suggestions.length === 0) return <p className="text-slate-500">{t.homeEmpty}</p>;
+  if (suggestions.length === 0) return <p className="text-muted">{t.homeEmpty}</p>;
   return (
     <>
       <p className="text-ink2">{t.homeSuggestLead(suggestions.length)}</p>

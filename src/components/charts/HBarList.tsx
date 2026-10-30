@@ -20,7 +20,7 @@ export function HBarList({ rows, ariaLabel, unit = '' }: { rows: HBarRow[]; aria
           <span className="flex min-w-0 items-center gap-1.5">
             {r.value > 0 ? (
               <span
-                className={`h-2.5 shrink-0 rounded ${BAR[Math.min(i, BAR.length - 1)]}`}
+                className={`h-2.5 shrink-0 rounded-md ${BAR[Math.min(i, BAR.length - 1)]}`}
                 style={{ width: `calc((100% - 2.5rem) * ${r.value / max})`, minWidth: 4 }}
               />
             ) : null}

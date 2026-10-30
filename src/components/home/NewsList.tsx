@@ -15,7 +15,7 @@ const LIST_LIMIT = 2;
  * 各領域則數大橫條、最新 2 則（標題新分頁開原文）。
  */
 export function NewsList({ feed }: { feed: FeedViewModel }) {
-  if (feed.items.length === 0) return <p className="text-slate-500">{t.noFeedItems}</p>;
+  if (feed.items.length === 0) return <p className="text-muted">{t.noFeedItems}</p>;
   const recent = recentFeed(feed);
   return (
     <>

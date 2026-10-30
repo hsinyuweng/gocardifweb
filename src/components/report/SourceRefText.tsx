@@ -8,7 +8,7 @@ export function SourceRefText({ source }: { source: SourceRefViewModel }) {
   return (
     <>
       {source.url ? (
-        <a href={source.url} target="_blank" rel="noopener noreferrer" className="text-navy-700 hover:underline">
+        <a href={source.url} target="_blank" rel="noopener noreferrer" className="text-p-ink hover:underline">
           {name}
         </a>
       ) : (

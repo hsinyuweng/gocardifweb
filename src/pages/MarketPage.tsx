@@ -304,7 +304,7 @@ export function MarketPage() {
     aside = t.headerAside(tab === 'overview' ? dataPeriod(metricsByGroup(metrics).get(groups[0] ?? 'growth')!) : dataPeriod(list), orDash(generatedAt));
     body =
       metrics.length === 0 ? (
-        <p className="text-slate-500">{zhTW.home.noMetrics}</p>
+        <p className="text-muted">{zhTW.home.noMetrics}</p>
       ) : (
         <>
           <MarketTabs groups={groups} current={tab} state={location.state} />

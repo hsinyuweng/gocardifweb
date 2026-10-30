@@ -4,7 +4,7 @@ import type { ReactNode } from 'react';
 export function DetailBlock({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div className="break-inside-avoid">
-      <h3 className="mb-1.5 text-sm font-semibold text-slate-700">{title}</h3>
+      <h3 className="mb-1.5 text-sm font-medium text-ink">{title}</h3>
       {children}
     </div>
   );

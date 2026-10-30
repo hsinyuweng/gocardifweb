@@ -1,32 +1,7 @@
 # 下一批實作計畫（2026-10-31 使用者確認方向，新對話照此實作）
 
-> 依序做 A → D。每項做完：`npm run build`、無頭 Chrome 截圖 1440 與 390 寬檢查（方法見 `guides/environment.md`）、更新對應的 `decisions/*.md`，完成的項目從本檔刪掉。全部做完後刪除本檔，並把 `README.md` 第 2 節改寫成現況。
+> 依序做 C → D（A 子頁代表色、B 視覺統一已完成）。每項做完：`npm run build`、無頭 Chrome 截圖 1440 與 390 寬檢查（方法見 `guides/environment.md`）、更新對應的 `decisions/*.md`，完成的項目從本檔刪掉。全部做完後刪除本檔，並把 `README.md` 第 2 節改寫成現況。
 > 共同原則：資料裡的代號、欄位名、組員姓氏一律清掉（`data/cleanText.ts`）；A/B/C 這類等級一律在格子最下面用小灰字註明高低（`components/common/GradeNote.tsx`）；每個往下一頁或下一步的地方都要能回來。
-
-## A. 子頁一律用所屬首頁框的代表色（使用者明確要求，最優先）
-
-- 規則：首頁四框各自的子頁都用該框的顏色，不論從哪裡點進去。**競品的個別報告頁一律黃色（research），不可回到藍色或中性灰藍**，否則會錯亂。
-- 對照：
-  | 路徑 | 代表色 |
-  |---|---|
-  | `#/market`、`#/market/:tab` | pulse 天空藍（已是） |
-  | `#/news` | news 薄荷綠（已是） |
-  | `#/watchlist` | watch 薰衣草（已是） |
-  | `#/research`、`#/cases`、**`#/report/:id`、`#/tasks`**（我的待辦只從報告頁進入，屬於競品研究） | research 奶油黃（`report`、`tasks` 要改） |
-  | `#/guide`、找不到頁面 | plain（不變） |
-- 改 `src/lib/pageTheme.ts` 的 `themeForPath`（加 `report`、`tasks` → `research`），同步改檔頭註解、`architecture/overview.md` 第 6 節、`decisions/deviations.md` 或視覺規劃檔中「報告頁中性灰藍」的敘述。
-- 驗證：從首頁、競品研究、追蹤清單、新聞分別點進同一份報告，整頁底色、頁首色、卡片強調色都是黃色；報告頁的追蹤按鈕仍是薰衣草色（它代表「追蹤」動作，不跟頁面色）。
-
-## B. 競品研究表格與報告頁細節區的視覺統一
-
-這些地方還是改版前的樣式（`slate-*`、`navy-*`、`amber-*` 色、`rounded` 小圓角、粗體），和其他頁的新設計（代表色深淺、`ink`／`ink2`／`muted` 文字色、`line` 框線、`rounded-xl` 白卡、中等字重）不一致，是目前最像「開發到一半」的地方。
-
-- 範圍（先 grep `slate-\|navy-\|amber-\|font-semibold` 列出全部，再逐一改）：
-  - `components/overview/ReportTable.tsx`、`RecommendationBar.tsx`、`OverviewToolbar.tsx`、`ModuleSignalTable.tsx`（競品研究列表、篩選膠囊、搜尋框）。
-  - `components/report/` 的 `BlockersTable`、`NextStepsList`、`DetailTabs`、`DetailBlock`、`MarketDemandDetail`、`ActuarialDetail`、`RegulatoryDetail`、`DataQualityPanel`（黃色警示框改成代表色淡底）、`DataGapsPanel`、`KeyPointList`、`OwnerFilter`、`ReportNav`、`ReportFooter`、`FlowBar`。
-  - `components/tasks/`（我的待辦，A 之後是黃色頁）。
-- 規則照 `architecture/diagrams/2026-10-27_視覺改版規劃.md` 與 `decisions/`：60-30-10（白卡＋代表色深淺，珊瑚只標最重要的一點）、燈號一律色點＋文字、表頭用 `bg-p-faint`、膠囊選中用 `bg-p`。**只換樣式，不改內容、文字與行為**；若有要改文字或結構的地方，先列給使用者確認。
-- 驗證：競品研究頁與報告頁全頁截圖和市場脈動、追蹤清單並排比較，看起來是同一套設計；列印預覽（`window.print`）仍正常。
 
 ## C. 市場脈動補新契約保費金額與 10 年債日資料（不用等後端）
 

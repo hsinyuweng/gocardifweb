@@ -26,7 +26,7 @@ function DetailLine({ d }: { d: DimensionScore }) {
       <>
         {t.detailSource}
         {b.source.url ? (
-          <a href={b.source.url} target="_blank" rel="noreferrer" className="break-all text-navy-700 hover:underline">
+          <a href={b.source.url} target="_blank" rel="noreferrer" className="break-all text-p-ink hover:underline">
             {label}
           </a>
         ) : (
@@ -37,7 +37,7 @@ function DetailLine({ d }: { d: DimensionScore }) {
   }
   if (parts.length === 0) return null;
   return (
-    <span className="block text-xs text-slate-500">
+    <span className="block text-xs text-muted">
       {parts.map((p, i) => (
         <span key={i}>
           {i > 0 ? ' · ' : null}

@@ -3,7 +3,7 @@ import type { BlockerCounts, OverviewRow } from '../../types/viewModel';
 import type { SortDir, SortKey } from '../../lib/overviewFilter';
 import { zhTW } from '../../i18n/zh-TW';
 import { orDash } from '../../lib/format';
-import { SOFT_BADGE_CLASS } from '../../lib/signalColor';
+import { DOT_CLASS, SOFT_BADGE_CLASS } from '../../lib/signalColor';
 import { SignalLabel } from '../common/SignalLabel';
 import { WatchToggle } from './WatchToggle';
 
@@ -42,9 +42,9 @@ function SortHeader({
       aria-sort={active ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'}
       className="px-3 font-medium"
     >
-      <button type="button" onClick={() => onSort(column)} className="inline-flex items-center gap-1 hover:text-navy-800">
+      <button type="button" onClick={() => onSort(column)} className="inline-flex items-center gap-1 hover:text-p-ink">
         {label}
-        <span aria-hidden className={`text-[10px] ${active ? 'text-navy-800' : 'text-slate-300'}`}>
+        <span aria-hidden className={`text-[10px] ${active ? 'text-p-ink' : 'text-axis'}`}>
           {active && sortDir === 'asc' ? t.sortAsc : t.sortDesc}
         </span>
       </button>
@@ -58,7 +58,7 @@ function BlockerCell({ counts }: { counts: BlockerCounts }) {
     <span className="whitespace-nowrap">
       {counts.critical > 0 ? (
         <>
-          <span className="font-semibold text-red-600">{t.blockerCritical(counts.critical)}</span>
+          <span className="font-medium text-coral">{t.blockerCritical(counts.critical)}</span>
           {' · '}
         </>
       ) : null}
@@ -77,9 +77,9 @@ export function ReportTable({ rows, sortKey, sortDir, onSort, onOpen, unreadIds,
   };
 
   return (
-    <div className="overflow-x-auto rounded border border-slate-200 bg-white">
+    <div className="overflow-x-auto rounded-xl border border-line bg-white">
       <table className="w-full min-w-[1100px] border-collapse text-left">
-        <thead className="border-b border-slate-200 bg-slate-50 text-slate-600">
+        <thead className="border-b border-line bg-p-faint text-ink2">
           <tr className="h-10">
             <th scope="col" className="w-24 pl-4 pr-1 font-medium">{zhTW.watchlist.column}</th>
             <SortHeader label={c.product} column="name" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
@@ -103,15 +103,15 @@ export function ReportTable({ rows, sortKey, sortDir, onSort, onOpen, unreadIds,
                 tabIndex={clickable ? 0 : undefined}
                 onClick={clickable ? () => onOpen(r.reportId as string) : undefined}
                 onKeyDown={(e) => handleKey(e, r.reportId)}
-                className={`border-b border-slate-100 transition-colors duration-700 last:border-b-0 ${
-                  clickable ? 'cursor-pointer hover:bg-slate-50 focus:bg-slate-50 focus:outline-none' : ''
+                className={`border-b border-line transition-colors duration-700 last:border-b-0 ${
+                  clickable ? 'cursor-pointer hover:bg-p-faint focus:bg-p-faint focus:outline-none' : ''
                 } ${r.reportId !== null && r.reportId === highlightId ? 'bg-p-pale' : ''}`}
               >
                 <td className="py-2 pr-1 pl-4">
                   {r.reportId !== null ? <WatchToggle reportId={r.reportId} name={orDash(r.name)} /> : null}
                 </td>
                 <td className="px-3 py-2">
-                  <div className="font-semibold text-slate-900">
+                  <div className="font-medium text-ink">
                     {r.reportId !== null && unreadIds.has(r.reportId) ? (
                       <span title={t.unreadHint} className="mr-1.5 inline-block size-2 rounded-full bg-p align-middle">
                         <span className="sr-only">{t.unread}</span>
@@ -119,7 +119,7 @@ export function ReportTable({ rows, sortKey, sortDir, onSort, onOpen, unreadIds,
                     ) : null}
                     {orDash(r.name)}
                   </div>
-                  <div className="text-xs text-slate-500">{orDash(r.issuer)}</div>
+                  <div className="text-xs text-muted">{orDash(r.issuer)}</div>
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap">{orDash(r.countryLabel)}</td>
                 <td className="px-3 py-2">{orDash(r.category)}</td>
@@ -128,10 +128,11 @@ export function ReportTable({ rows, sortKey, sortDir, onSort, onOpen, unreadIds,
                 <td className="px-3 py-2"><SignalLabel signal={r.regulatory} /></td>
                 <td className="px-3 py-2">
                   <span
-                    className={`inline-block whitespace-nowrap rounded px-2 py-0.5 text-[13px] ring-1 ${
+                    className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-2 py-0.5 text-[13px] ring-1 ${
                       SOFT_BADGE_CLASS[r.recommendation.color]
                     }`}
                   >
+                    <span aria-hidden className={`inline-block size-2 rounded-full ${DOT_CLASS[r.recommendation.color]}`} />
                     {orDash(r.recommendation.text)}
                   </span>
                 </td>

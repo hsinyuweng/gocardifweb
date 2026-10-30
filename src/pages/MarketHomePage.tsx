@@ -29,7 +29,7 @@ function cardBody<T>(state: LoadState<T>, render: (data: T) => ReactNode): React
     const { message, detail } = errorText(state.error, t.pending);
     return <StatusMessage tone="error" message={message} detail={detail} />;
   }
-  return <p className="text-slate-500">{zhTW.common.loading}</p>;
+  return <p className="text-muted">{zhTW.common.loading}</p>;
 }
 
 /**
@@ -60,7 +60,7 @@ export function MarketHomePage() {
 
   // 追蹤清單、競品研究都靠報告清單：載入中與錯誤時顯示相同訊息
   let indexPending: ReactNode = null;
-  if (indexState.status === 'loading') indexPending = <p className="text-slate-500">{zhTW.common.loading}</p>;
+  if (indexState.status === 'loading') indexPending = <p className="text-muted">{zhTW.common.loading}</p>;
   else if (indexState.status === 'error') {
     const { message, detail } = errorText(indexState.error, zhTW.errors.notFoundIndex);
     indexPending = <StatusMessage tone="error" message={message} detail={detail} />;
@@ -69,7 +69,7 @@ export function MarketHomePage() {
   const researchBody =
     indexPending ??
     (vm && vm.rows.length === 0 ? (
-      <p className="text-slate-500">{zhTW.overview.empty}</p>
+      <p className="text-muted">{zhTW.overview.empty}</p>
     ) : (
       <ResearchList rows={rankedRows} groups={vm?.recommendationGroups ?? []} />
     ));

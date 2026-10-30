@@ -29,30 +29,30 @@ interface TopBarProps {
 /** 頂部列（第 10.2 節） */
 export function TopBar({ breadcrumb, notices, menuOpen, onMenuClick, actionSlotRef }: TopBarProps) {
   return (
-    <header className="sticky top-0 z-20 flex h-14 items-center justify-between gap-3 border-b border-slate-200 bg-white px-6 print:hidden">
+    <header className="sticky top-0 z-20 flex h-14 items-center justify-between gap-3 border-b border-line bg-white px-6 print:hidden">
       <button
         type="button"
         onClick={onMenuClick}
         aria-label={zhTW.layout.openMenu}
         aria-expanded={menuOpen}
-        className="-ml-2 rounded p-1.5 text-slate-600 hover:bg-slate-100 lg:hidden"
+        className="-ml-2 rounded-md p-1.5 text-ink2 hover:bg-p-faint lg:hidden"
       >
         <svg viewBox="0 0 20 20" className="size-5" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
           <path d="M3 5h14M3 10h14M3 15h14" strokeLinecap="round" />
         </svg>
       </button>
-      <nav aria-label="breadcrumb" className="flex min-w-0 flex-1 items-center gap-2 text-slate-500">
+      <nav aria-label="breadcrumb" className="flex min-w-0 flex-1 items-center gap-2 text-muted">
         {breadcrumb.map((item, i) => {
           const last = i === breadcrumb.length - 1;
           return (
             <Fragment key={`${i}-${item.label}`}>
-              {i > 0 ? <span className="text-slate-300">/</span> : null}
+              {i > 0 ? <span className="text-axis">/</span> : null}
               {item.to && !last ? (
-                <Link to={item.to} state={item.state} className="hover:text-navy-800 hover:underline">
+                <Link to={item.to} state={item.state} className="hover:text-p-ink hover:underline">
                   {item.label}
                 </Link>
               ) : (
-                <span className={`truncate ${last ? 'font-medium text-slate-800' : ''}`}>{item.label}</span>
+                <span className={`truncate ${last ? 'font-medium text-ink' : ''}`}>{item.label}</span>
               )}
             </Fragment>
           );
@@ -65,8 +65,8 @@ export function TopBar({ breadcrumb, notices, menuOpen, onMenuClick, actionSlotR
             <span
               key={n.text}
               title={n.text}
-              className={`truncate rounded px-2 py-1 text-xs ${
-                n.tone === 'warning' ? 'bg-amber-50 text-amber-800 ring-1 ring-amber-200' : 'bg-slate-100 text-slate-700'
+              className={`truncate rounded-md px-2 py-1 text-xs ${
+                n.tone === 'warning' ? 'bg-coral-pale text-ink' : 'bg-line text-ink'
               }`}
             >
               {n.text}

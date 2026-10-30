@@ -23,7 +23,7 @@ export function SourceDocuments({ docs, id, onBack }: { docs: SourceDocumentView
       <ul className="divide-y divide-line">
         {docs.map((d, i) => (
           <li key={i} className="flex flex-wrap items-baseline gap-x-3 gap-y-1 py-2">
-            {d.type ? <span className="shrink-0 rounded bg-slate-100 px-1.5 py-0.5 text-xs text-ink2">{d.type}</span> : null}
+            {d.type ? <span className="shrink-0 rounded-md bg-line px-1.5 py-0.5 text-xs text-ink2">{d.type}</span> : null}
             <a href={d.url} target="_blank" rel="noopener noreferrer" className="min-w-0 text-ink hover:underline">
               {orDash(d.title)} ↗
             </a>

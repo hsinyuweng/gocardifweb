@@ -64,13 +64,13 @@ export function GuidePage() {
           {t.flowSteps.map((step, i) => (
             <li key={step} className="flex items-center gap-2">
               {i > 0 ? (
-                <span aria-hidden className="text-slate-300">
+                <span aria-hidden className="text-axis">
                   →
                 </span>
               ) : null}
               <span
-                className={`rounded px-2 py-0.5 ${
-                  i === t.flowSteps.length - 1 ? 'bg-slate-100 text-slate-400' : 'bg-p-pale text-ink'
+                className={`rounded-md px-2 py-0.5 ${
+                  i === t.flowSteps.length - 1 ? 'bg-line text-muted' : 'bg-p-pale text-ink'
                 }`}
               >
                 {step}

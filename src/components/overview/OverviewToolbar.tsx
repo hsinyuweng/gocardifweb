@@ -15,7 +15,7 @@ interface OverviewToolbarProps {
 }
 
 const field =
-  'h-9 rounded border border-slate-300 bg-white px-3 text-slate-800 focus:border-navy-600 focus:outline-none focus:ring-1 focus:ring-navy-600';
+  'h-9 rounded-md border border-line bg-white px-3 text-ink focus:border-p focus:outline-none focus:ring-1 focus:ring-p';
 
 /** 工具列（第 11.2 節第 3 點）：只有搜尋、國家、險種三個篩選 */
 export function OverviewToolbar(props: OverviewToolbarProps) {

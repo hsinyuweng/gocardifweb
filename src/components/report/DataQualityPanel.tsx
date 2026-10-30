@@ -31,13 +31,13 @@ export function DataQualityPanel({ dq }: { dq: DataQualityViewModel }) {
   const [open, setOpen] = useOpenWhilePrinting();
   const hasErrors = dq.suspectedInputErrors.length > 0;
   const hasMore = dq.moreGroups.length > 0;
-  if (!hasErrors && !hasMore) return <p className="text-slate-600">{zhTW.common.none}</p>;
+  if (!hasErrors && !hasMore) return <p className="text-ink2">{zhTW.common.none}</p>;
 
   return (
     <div className="space-y-3">
       {hasErrors ? (
-        <div role="note" className="rounded border border-amber-300 bg-amber-50 px-3 py-2 text-amber-900">
-          <p className="font-semibold">{t.suspectedInputErrors}</p>
+        <div role="note" className="rounded-lg border border-p-mid bg-p-faint px-4 py-3 text-ink">
+          <p className="font-medium">{t.suspectedInputErrors}</p>
           <ul className="mt-1 list-disc space-y-1 pl-5">
             {dq.suspectedInputErrors.map((e, i) => (
               <li key={i}>{e}</li>
@@ -50,16 +50,16 @@ export function DataQualityPanel({ dq }: { dq: DataQualityViewModel }) {
         <details
           open={open}
           onToggle={(e) => setOpen(e.currentTarget.open)}
-          className="group rounded border border-slate-200"
+          className="group rounded-lg border border-line"
         >
-          <summary className="cursor-pointer px-3 py-2 text-slate-700 select-none hover:bg-slate-50">
+          <summary className="cursor-pointer px-3 py-2 text-ink select-none hover:bg-p-faint">
             {t.moreDataQuality}
           </summary>
-          <div className="space-y-3 border-t border-slate-200 px-3 py-2">
+          <div className="space-y-3 border-t border-line px-3 py-2">
             {dq.moreGroups.map((g) => (
               <div key={g.key}>
-                <h3 className="text-xs font-medium text-slate-500">{t.dataQualityGroups[g.key]}</h3>
-                <ul className="mt-1 list-disc space-y-1 pl-5 text-slate-700">
+                <h3 className="text-xs font-medium text-muted">{t.dataQualityGroups[g.key]}</h3>
+                <ul className="mt-1 list-disc space-y-1 pl-5 text-ink">
                   {g.items.map((item, i) => (
                     <li key={i} className="break-words">
                       {item}

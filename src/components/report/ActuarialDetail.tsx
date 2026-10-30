@@ -12,18 +12,18 @@ export function ActuarialDetail({ detail }: { detail: ReportDetailsViewModel['ac
   return (
     <div className="space-y-5">
       <DetailBlock title={t.summary}>
-        <p className="text-slate-800">{orDash(detail.summary)}</p>
+        <p className="text-ink">{orDash(detail.summary)}</p>
       </DetailBlock>
       <DetailBlock title={t.keyPoints}>
         <KeyPointList points={detail.keyPoints} />
       </DetailBlock>
       <DetailBlock title={t.pricingFlags}>
         {detail.pricingFlags.length === 0 ? (
-          <p className="text-slate-600">{zhTW.common.none}</p>
+          <p className="text-ink2">{zhTW.common.none}</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-[480px] border-collapse text-left">
-              <thead className="border-b border-slate-200 text-slate-600">
+              <thead className="border-b border-line text-ink2">
                 <tr className="h-10">
                   <th scope="col" className="px-3 font-medium">{c.topic}</th>
                   <th scope="col" className="px-3 font-medium">{c.direction}</th>
@@ -32,8 +32,8 @@ export function ActuarialDetail({ detail }: { detail: ReportDetailsViewModel['ac
               </thead>
               <tbody>
                 {detail.pricingFlags.map((p, i) => (
-                  <tr key={i} className="border-b border-slate-100 last:border-b-0">
-                    <td className="px-3 py-2 text-slate-900">{orDash(p.topic)}</td>
+                  <tr key={i} className="border-b border-line last:border-b-0">
+                    <td className="px-3 py-2 text-ink">{orDash(p.topic)}</td>
                     <td className="px-3 py-2">{orDash(p.direction)}</td>
                     <td className="px-3 py-2 tabular-nums">{orDash(p.sourceCount)}</td>
                   </tr>

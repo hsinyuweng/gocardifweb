@@ -73,7 +73,7 @@ export function TasksPage() {
     );
   } else {
     const allUnitsLink = (
-      <Link to={`/tasks?${OWNER_PARAM}=`} state={location.state} className="text-navy-700 hover:underline print:hidden">
+      <Link to={`/tasks?${OWNER_PARAM}=`} state={location.state} className="text-p-ink hover:underline print:hidden">
         {t.allUnits}
       </Link>
     );
@@ -89,7 +89,7 @@ export function TasksPage() {
         <div className="space-y-4">
           <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
             {allUnitsLink}
-            <p className="text-slate-700">
+            <p className="text-ink">
               {t.summary(s.blockerCount, s.criticalCount, s.nextStepCount, s.productCount)}
             </p>
           </div>
@@ -111,7 +111,7 @@ export function TasksPage() {
           <>
             {t.title}
             {owner !== null ? (
-              <span className="ml-3 hidden text-xs font-normal text-slate-600 print:inline">
+              <span className="ml-3 hidden text-xs font-normal text-ink2 print:inline">
                 {zhTW.report.printOwnerNote(owner)}
               </span>
             ) : null}
@@ -126,7 +126,7 @@ export function TasksPage() {
                 <button
                   type="button"
                   onClick={() => window.print()}
-                  className="h-8 rounded border border-slate-300 bg-white px-3 text-slate-700 hover:border-navy-600 hover:text-navy-800 print:hidden"
+                  className="h-8 rounded-full border border-line bg-white px-3.5 text-ink hover:border-p print:hidden"
                 >
                   {zhTW.report.print}
                 </button>

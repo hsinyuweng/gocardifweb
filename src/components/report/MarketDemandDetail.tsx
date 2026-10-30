@@ -12,8 +12,8 @@ const t = zhTW.report.details;
 function Field({ label, value }: { label: string; value: string | null }) {
   return (
     <div className="flex gap-2">
-      <dt className="w-24 shrink-0 text-slate-500">{label}</dt>
-      <dd className="text-slate-900">{orDash(value)}</dd>
+      <dt className="w-24 shrink-0 text-muted">{label}</dt>
+      <dd className="text-ink">{orDash(value)}</dd>
     </div>
   );
 }
@@ -24,14 +24,14 @@ export function MarketDemandDetail({ detail }: { detail: ReportDetailsViewModel[
   return (
     <div className="space-y-5">
       <DetailBlock title={t.summary}>
-        <p className="text-slate-800">{orDash(detail.summary)}</p>
+        <p className="text-ink">{orDash(detail.summary)}</p>
       </DetailBlock>
       <DetailBlock title={t.marketSizing}>
         <dl className="space-y-1.5">
           <Field label={t.methodology} value={s.methodology} />
           <Field label={t.targetPopulation} value={s.targetPopulation} />
           <div className="flex gap-2">
-            <dt className="w-24 shrink-0 text-slate-500">{t.estimate}</dt>
+            <dt className="w-24 shrink-0 text-muted">{t.estimate}</dt>
             <dd className="flex-1">
               <MarketSizingBar low={s.low} mid={s.mid} high={s.high} />
             </dd>

@@ -29,10 +29,10 @@ export function BlockersTable({ blockers, collapsed }: { blockers: BlockerViewMo
               className={`border-b border-line align-top last:border-b-0 ${collapsed?.(b) ? 'hidden print:table-row' : ''}`}
             >
               <td className="px-3 py-2"><SignalLabel signal={b.severity} /></td>
-              <td className="px-3 py-2 text-slate-600">{orDash(b.moduleLabel)}</td>
-              <td className="px-3 py-2 text-slate-900">{orDash(b.title)}</td>
+              <td className="px-3 py-2 text-ink2">{orDash(b.moduleLabel)}</td>
+              <td className="px-3 py-2 text-ink">{orDash(b.title)}</td>
               <td className="px-3 py-2 whitespace-nowrap">{orDash(b.ownerText)}</td>
-              <td className="px-3 py-2 text-slate-700">{orDash(b.action)}</td>
+              <td className="px-3 py-2 text-ink">{orDash(b.action)}</td>
             </tr>
           ))}
         </tbody>

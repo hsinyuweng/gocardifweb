@@ -46,7 +46,7 @@ export function HomeCard({ theme, icon, title, to, children }: HomeCardProps) {
 
 /** 後端尚未提供資料時的卡片內容 */
 export function PendingContent() {
-  return <p className="text-slate-500">{zhTW.home.pending}</p>;
+  return <p className="text-muted">{zhTW.home.pending}</p>;
 }
 
 /** 框內第一行：重點數字（大字）＋一句說明 */

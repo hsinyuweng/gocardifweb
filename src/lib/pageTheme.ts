@@ -3,7 +3,7 @@
 
 export type PageTheme = 'home' | 'pulse' | 'news' | 'watch' | 'research' | 'plain';
 
-/** 路徑 → 代表色；報告頁、我的待辦、使用說明、找不到頁面用中性色 */
+/** 路徑 → 代表色；子頁用所屬首頁框的顏色（報告頁、我的待辦屬於競品研究），使用說明、找不到頁面用中性色 */
 export function themeForPath(pathname: string): PageTheme {
   if (pathname === '/' || pathname === '') return 'home';
   const first = pathname.split('/')[1];
@@ -16,6 +16,8 @@ export function themeForPath(pathname: string): PageTheme {
       return 'watch';
     case 'research':
     case 'cases':
+    case 'report':
+    case 'tasks':
       return 'research';
     default:
       return 'plain';

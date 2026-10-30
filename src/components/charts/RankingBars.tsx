@@ -36,7 +36,7 @@ export function RankingBars({ rows, formatValue, ariaLabel, compact = false }: R
               <span className={`max-w-[11rem] truncate ${tone}`}>{orDash(r.name)}</span>
               <span className="flex min-w-0 items-center gap-2">
                 <span
-                  className={`${compact ? 'h-2' : 'h-2.5'} shrink-0 rounded ${r.isSelf ? 'bg-coral' : 'bg-p-pale'}`}
+                  className={`${compact ? 'h-2' : 'h-2.5'} shrink-0 rounded-md ${r.isSelf ? 'bg-coral' : 'bg-p-pale'}`}
                   style={{ width: `calc((100% - 3.5rem) * ${r.value / max})`, minWidth: 4 }}
                 />
                 <span className={`tabular-nums ${tone}`}>{formatValue(r.value)}</span>

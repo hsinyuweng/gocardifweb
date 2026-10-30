@@ -40,7 +40,7 @@ export function CompetitorTable({ data: c, id }: { data: CompetitorComparisonVie
                     <div className="font-medium text-ink">{orDash(x.name)}</div>
                     <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12.5px] text-ink2">
                       <span>{orDash(x.issuer)}</span>
-                      <span className={`rounded px-1.5 py-px text-[11.5px] ${x.isDirect ? 'bg-p-pale text-ink' : 'bg-slate-100 text-ink2'}`}>
+                      <span className={`rounded-md px-1.5 py-px text-[11.5px] ${x.isDirect ? 'bg-p-pale text-ink' : 'bg-line text-ink2'}`}>
                         {x.isDirect ? t.direct : t.similar}
                       </span>
                       {x.sourceUrl ? (
@@ -77,7 +77,7 @@ export function CompetitorTable({ data: c, id }: { data: CompetitorComparisonVie
             {c.gapAnalysis.map((g, i) => (
               <li key={i} className="flex items-start gap-2">
                 {g.level ? (
-                  <span className="mt-0.5 shrink-0 rounded bg-navy-800/10 px-1.5 py-0.5 text-xs text-navy-800">{t.level(g.level)}</span>
+                  <span className="mt-0.5 shrink-0 rounded-md bg-p-pale px-1.5 py-0.5 text-xs text-p-ink">{t.level(g.level)}</span>
                 ) : null}
                 <p className="leading-relaxed text-ink">{g.text}</p>
               </li>

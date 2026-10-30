@@ -7,7 +7,7 @@ export function NotFoundPage() {
   useBreadcrumb([{ label: zhTW.placeholder.notFound }]);
   return (
     <StatusMessage tone="info" message={zhTW.placeholder.notFound}>
-      <Link to="/" className="text-navy-700 underline hover:text-navy-900">
+      <Link to="/" className="text-p-ink underline hover:text-p-ink">
         {zhTW.common.backToHome}
       </Link>
     </StatusMessage>

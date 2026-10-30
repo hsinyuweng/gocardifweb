@@ -115,7 +115,7 @@ export function Sidebar({ meta, showRoadmapNav, myUnit, mobileOpen, onClose }: S
           type="button"
           onClick={onClose}
           aria-label={zhTW.layout.closeMenu}
-          className="-mr-2 rounded p-1 text-muted hover:bg-slate-100 hover:text-ink lg:hidden"
+          className="-mr-2 rounded p-1 text-muted hover:bg-p-faint hover:text-ink lg:hidden"
         >
           <svg viewBox="0 0 20 20" className="size-5" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
             <path d="M5 5l10 10M15 5L5 15" strokeLinecap="round" />
@@ -147,7 +147,7 @@ export function Sidebar({ meta, showRoadmapNav, myUnit, mobileOpen, onClose }: S
                   className="flex cursor-default items-center justify-between rounded px-3 py-2 text-muted select-none"
                 >
                   <span>{item}</span>
-                  <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[11px] text-muted">
+                  <span className="rounded bg-line px-1.5 py-0.5 text-[11px] text-muted">
                     {zhTW.common.roadmap}
                   </span>
                 </li>

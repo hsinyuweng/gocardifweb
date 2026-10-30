@@ -41,7 +41,7 @@ export function DivergingBars({ rows, formatValue, ariaLabel, compact = false }:
             <div className={`relative ${compact ? 'h-[18px]' : 'h-6'}`} title={`${r.name}：${formatValue(r.value)}`}>
               <span aria-hidden className="absolute inset-y-0 w-px bg-axis" style={{ left: `${zero}%` }} />
               <span
-                className={`absolute top-1/2 h-[60%] -translate-y-1/2 rounded ${color}`}
+                className={`absolute top-1/2 h-[60%] -translate-y-1/2 rounded-md ${color}`}
                 style={
                   r.value >= 0
                     ? { left: `${zero}%`, width: `max(3px, ${len}%)` }

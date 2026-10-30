@@ -15,7 +15,7 @@ function FindingsTable({ findings }: { findings: FindingViewModel[] }) {
   return (
     <div className="overflow-x-auto">
       <table className="w-full min-w-[860px] border-collapse text-left">
-        <thead className="border-b border-slate-200 text-slate-600">
+        <thead className="border-b border-line text-ink2">
           <tr className="h-10">
             <th scope="col" className="px-3 font-medium">{c.title}</th>
             <th scope="col" className="w-24 px-3 font-medium">{c.light}</th>
@@ -39,11 +39,11 @@ function FindingRow({ f }: { f: FindingViewModel }) {
   const [open, setOpen] = useState(false);
   const hasDetail = f.sources.length > 0 || f.evidenceLevel !== null;
   return (
-    <tr className="border-b border-slate-100 align-top last:border-b-0">
-      <td className="px-3 py-2 text-slate-900">
+    <tr className="border-b border-line align-top last:border-b-0">
+      <td className="px-3 py-2 text-ink">
         {orDash(f.title)}
         {f.suspectedRed ? (
-          <span className="ml-2 inline-block rounded bg-red-50 px-1.5 py-0.5 text-xs font-semibold text-red-700 ring-1 ring-red-200">
+          <span className="ml-2 inline-block rounded-md bg-coral-pale px-1.5 py-0.5 text-xs font-medium text-coral">
             {t.suspectedRed}
           </span>
         ) : null}
@@ -53,11 +53,11 @@ function FindingRow({ f }: { f: FindingViewModel }) {
               type="button"
               aria-expanded={open}
               onClick={() => setOpen((v) => !v)}
-              className="text-navy-700 hover:underline print:hidden"
+              className="text-p-ink hover:underline print:hidden"
             >
               {t.findingSources} {open ? '▴' : '▾'}
             </button>
-            <div className={`${open ? 'block' : 'hidden'} mt-1 space-y-0.5 text-slate-600 print:block`}>
+            <div className={`${open ? 'block' : 'hidden'} mt-1 space-y-0.5 text-ink2 print:block`}>
               {f.evidenceLevel ? <p>{t.findingEvidence(f.evidenceLevel, f.evidenceLabel ?? gradeScale([f.evidenceLevel]))}</p> : null}
               {f.sources.length > 0 ? (
                 <ul className="list-disc pl-4">
@@ -73,16 +73,16 @@ function FindingRow({ f }: { f: FindingViewModel }) {
         ) : null}
       </td>
       <td className="px-3 py-2"><SignalLabel signal={f.light} /></td>
-      <td className="px-3 py-2 text-slate-700">{orDash(f.law)}</td>
-      <td className="px-3 py-2 text-slate-700">{orDash(f.remedy)}</td>
+      <td className="px-3 py-2 text-ink">{orDash(f.law)}</td>
+      <td className="px-3 py-2 text-ink">{orDash(f.remedy)}</td>
       <td className="px-3 py-2 whitespace-nowrap">{orDash(f.owner)}</td>
     </tr>
   );
 }
 
 const chip = 'inline-flex h-7 items-center gap-1.5 rounded-full px-3 ring-1 transition-colors';
-const on = 'bg-navy-800 text-white ring-navy-800';
-const off = 'bg-white text-slate-700 ring-slate-300 hover:ring-slate-400';
+const on = 'bg-p text-white ring-p';
+const off = 'bg-white text-ink ring-line hover:ring-p-mid';
 
 /** E 區：法規適用。燈號篩選只影響畫面；列印時一律印出全部 findings */
 export function RegulatoryDetail({ detail }: { detail: ReportDetailsViewModel['regulatory'] }) {
@@ -92,17 +92,17 @@ export function RegulatoryDetail({ detail }: { detail: ReportDetailsViewModel['r
   return (
     <div className="space-y-5">
       <DetailBlock title={t.summary}>
-        <p className="text-slate-800">{orDash(detail.summary)}</p>
+        <p className="text-ink">{orDash(detail.summary)}</p>
       </DetailBlock>
 
       <div>
         {detail.findings.length === 0 ? (
-          <p className="text-slate-600">{zhTW.common.none}</p>
+          <p className="text-ink2">{zhTW.common.none}</p>
         ) : (
           <>
             <div className="mb-2 flex flex-wrap items-center gap-2 print:hidden">
               <button type="button" className={`${chip} ${light === null ? on : off}`} onClick={() => setLight(null)}>
-                {t.lightAll} <span className={light === null ? 'text-white/80' : 'text-slate-500'}>{detail.findings.length}</span>
+                {t.lightAll} <span className={light === null ? 'text-white/80' : 'text-muted'}>{detail.findings.length}</span>
               </button>
               {detail.lightOptions.map((o) => {
                 const active = light === o.key;
@@ -115,7 +115,7 @@ export function RegulatoryDetail({ detail }: { detail: ReportDetailsViewModel['r
                     onClick={() => setLight(active ? null : o.key)}
                   >
                     <span aria-hidden className={`inline-block size-2 rounded-full ${DOT_CLASS[o.color]}`} />
-                    {o.label} <span className={active ? 'text-white/80' : 'text-slate-500'}>{o.count}</span>
+                    {o.label} <span className={active ? 'text-white/80' : 'text-muted'}>{o.count}</span>
                   </button>
                 );
               })}
@@ -124,7 +124,7 @@ export function RegulatoryDetail({ detail }: { detail: ReportDetailsViewModel['r
               {filtered.length > 0 ? (
                 <FindingsTable findings={filtered} />
               ) : (
-                <p className="text-slate-600">{t.noLightMatch}</p>
+                <p className="text-ink2">{t.noLightMatch}</p>
               )}
             </div>
             <div className="hidden print:block">
@@ -136,9 +136,9 @@ export function RegulatoryDetail({ detail }: { detail: ReportDetailsViewModel['r
 
       <DetailBlock title={t.keyLaws}>
         {detail.keyLaws.length === 0 ? (
-          <p className="text-slate-600">{zhTW.common.none}</p>
+          <p className="text-ink2">{zhTW.common.none}</p>
         ) : (
-          <ul className="list-disc space-y-0.5 pl-5 text-slate-800">
+          <ul className="list-disc space-y-0.5 pl-5 text-ink">
             {detail.keyLaws.map((law, i) => (
               <li key={i}>{law}</li>
             ))}

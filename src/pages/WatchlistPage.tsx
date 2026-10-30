@@ -101,9 +101,9 @@ export function WatchlistPage() {
     body = <StatusMessage tone="error" message={message} detail={detail} />;
   } else if (ids.length === 0) {
     body = (
-      <div className="space-y-2 rounded border border-slate-200 bg-white px-4 py-4">
-        <p className="text-slate-600">{t.empty}</p>
-        <Link to="/research" className="text-sm text-navy-700 hover:underline">
+      <div className="space-y-2 rounded-xl border border-line bg-white px-5 py-4">
+        <p className="text-ink2">{t.empty}</p>
+        <Link to="/research" className="text-sm text-p-ink hover:underline">
           {t.goResearch}
         </Link>
       </div>
@@ -156,7 +156,7 @@ export function WatchlistPage() {
         </div>
       ) : null}
       {removed ? (
-        <p className="rounded bg-slate-100 px-4 py-2 text-sm text-slate-700" role="status">
+        <p className="rounded-md bg-line px-4 py-2 text-sm text-ink" role="status">
           {t.removed(removed.name)}
           <button
             type="button"
@@ -164,7 +164,7 @@ export function WatchlistPage() {
               addToWatchlist(removed.id, removed.index);
               setRemoved(null);
             }}
-            className="ml-2 text-navy-700 underline underline-offset-2 hover:text-navy-800"
+            className="ml-2 text-p-ink underline underline-offset-2 hover:text-p-ink"
           >
             {t.undo}
           </button>

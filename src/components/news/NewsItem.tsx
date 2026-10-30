@@ -26,7 +26,7 @@ function ToggleButton({ label, open, onClick }: { label: string; open: boolean; 
   return (
     <>
       {' · '}
-      <button type="button" aria-expanded={open} onClick={onClick} className="text-navy-700 underline-offset-2 hover:underline">
+      <button type="button" aria-expanded={open} onClick={onClick} className="text-p-ink underline-offset-2 hover:underline">
         {label} {open ? '▴' : '▾'}
       </button>
     </>
@@ -51,7 +51,7 @@ export function NewsItem({ item, affected, sameCategory, linkState }: NewsItemPr
           {company ? <span className="text-ink2">{t.company(company)}</span> : null}
         </span>
         <span className="text-xs whitespace-nowrap text-muted">
-          {item.selfReported ? <span className="mr-1.5 inline-block rounded bg-slate-100 px-1 text-[11px]">{t.selfReported}</span> : null}
+          {item.selfReported ? <span className="mr-1.5 inline-block rounded-md bg-line px-1 text-[11px]">{t.selfReported}</span> : null}
           {relativeTimeText(item.publishedTime, item.dateOnly, item.publishedAt)}
         </span>
         {affected.length > 0 || sameCategory.length > 0 ? (
@@ -66,10 +66,10 @@ export function NewsItem({ item, affected, sameCategory, linkState }: NewsItemPr
         ) : null}
       </p>
       {products.length > 0 ? (
-        <ul className="mt-1 ml-12 space-y-0.5 border-l-2 border-slate-200 pl-3 text-sm">
+        <ul className="mt-1 ml-12 space-y-0.5 border-l-2 border-line pl-3 text-sm">
           {products.map((p) => (
             <li key={p.id}>
-              <Link to={`/report/${encodeURIComponent(p.id)}`} state={linkState} className="text-navy-700 hover:underline">
+              <Link to={`/report/${encodeURIComponent(p.id)}`} state={linkState} className="text-p-ink hover:underline">
                 {p.name}
               </Link>
             </li>

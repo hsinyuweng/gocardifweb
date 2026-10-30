@@ -11,9 +11,9 @@ interface StatusMessageProps {
 /** 載入中、錯誤、空狀態共用的訊息區塊 */
 export function StatusMessage({ tone, message, detail, children }: StatusMessageProps) {
   const toneClass =
-    tone === 'error' ? 'border-red-200 bg-red-50 text-red-800' : 'border-slate-200 bg-white text-slate-600';
+    tone === 'error' ? 'border-red-200 bg-red-50 text-red-800' : 'border-line bg-white text-ink2';
   return (
-    <div role={tone === 'error' ? 'alert' : 'status'} className={`rounded border px-4 py-3 ${toneClass}`}>
+    <div role={tone === 'error' ? 'alert' : 'status'} className={`rounded-md border px-4 py-3 ${toneClass}`}>
       <p>{message}</p>
       {detail ? <p className="mt-1 text-xs opacity-80">{detail}</p> : null}
       {children ? <div className="mt-2">{children}</div> : null}

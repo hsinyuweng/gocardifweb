@@ -28,22 +28,24 @@
   --color-p-mid: var(--p-mid);
   --color-p-pale: var(--p-pale);
   --color-p-faint: var(--p-faint);
+  /* 文字用的深色（連結、選中分頁），在白底上夠清楚 */
+  --color-p-ink: var(--p-ink);
 }
 
-[data-theme="home"] { --p: #3b4a7a; --p-mid: #b9c1dd; --p-pale: #e3e7f3; --p-faint: #f3f5fb; }
-[data-theme="pulse"] { --p: #5b8def; --p-mid: #a9c5f7; --p-pale: #dbe7fd; --p-faint: #f0f5ff; }
-[data-theme="news"] { --p: #2fa58a; --p-mid: #96d8c4; --p-pale: #d5f1e8; --p-faint: #eefaf5; }
-[data-theme="watch"] { --p: #9a7ee6; --p-mid: #cbb9f4; --p-pale: #ebe3fd; --p-faint: #f7f3ff; }
-[data-theme="research"] { --p: #d9962a; --p-mid: #f1cf8a; --p-pale: #fbecc8; --p-faint: #fff8e8; }
-/* 報告頁、我的待辦、使用說明：中性淡灰藍，不跟燈號混 */
-[data-theme="plain"] { --p: #6b7489; --p-mid: #c3c8d4; --p-pale: #e8eaf1; --p-faint: #f5f6f9; }
+[data-theme="home"] { --p: #3b4a7a; --p-mid: #b9c1dd; --p-pale: #e3e7f3; --p-faint: #f3f5fb; --p-ink: #3b4a7a; }
+[data-theme="pulse"] { --p: #5b8def; --p-mid: #a9c5f7; --p-pale: #dbe7fd; --p-faint: #f0f5ff; --p-ink: #3466c9; }
+[data-theme="news"] { --p: #2fa58a; --p-mid: #96d8c4; --p-pale: #d5f1e8; --p-faint: #eefaf5; --p-ink: #1f7d68; }
+[data-theme="watch"] { --p: #9a7ee6; --p-mid: #cbb9f4; --p-pale: #ebe3fd; --p-faint: #f7f3ff; --p-ink: #6b4fc0; }
+[data-theme="research"] { --p: #d9962a; --p-mid: #f1cf8a; --p-pale: #fbecc8; --p-faint: #fff8e8; --p-ink: #9a640f; }
+/* 使用說明、找不到頁面：中性淡灰藍，不跟燈號混（報告頁、我的待辦用 research） */
+[data-theme="plain"] { --p: #6b7489; --p-mid: #c3c8d4; --p-pale: #e8eaf1; --p-faint: #f5f6f9; --p-ink: #4a5368; }
 
 html {
   font-size: 14px;
 }
 
 body {
-  @apply bg-[#f5f6f9] text-slate-800 antialiased;
+  @apply bg-[#f5f6f9] text-ink antialiased;
 }
 
 /* 列印樣式（第 12 節）；隱藏導覽列、按鈕、篩選器等以 print:hidden 標在各元件上 */

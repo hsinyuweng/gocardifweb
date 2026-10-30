@@ -15,7 +15,7 @@ const OTHERS_LIMIT = 3;
  */
 export function PulseList({ metrics }: { metrics: PulseMetricViewModel[] }) {
   const main = homeMetrics(metrics)[0];
-  if (!main) return <p className="text-slate-500">{zhTW.home.noMetrics}</p>;
+  if (!main) return <p className="text-muted">{zhTW.home.noMetrics}</p>;
 
   const digits = pulseDigits(main.group);
   const fmt = (v: number) => formatPulseValue(v, main.unit, digits);

@@ -209,21 +209,21 @@ export function LineChart({ lines, formatValue, formatTick = formatValue, height
         </svg>
         {hover !== null && hoverRows.length > 0 ? (
           <div
-            className="pointer-events-none absolute top-0 z-10 rounded border border-slate-200 bg-white px-2.5 py-1.5 text-xs shadow-sm"
+            className="pointer-events-none absolute top-0 z-10 rounded-md border border-line bg-white px-2.5 py-1.5 text-xs shadow-sm"
             style={
               tipLeft > width / 2
                 ? { right: width - tipLeft + 10 }
                 : { left: tipLeft + 10 }
             }
           >
-            <div className="text-slate-500">{periodText(periods[hover]!)}</div>
+            <div className="text-muted">{periodText(periods[hover]!)}</div>
             {hoverRows.map((r) => (
-              <div key={r.li} className="flex items-center gap-1.5 whitespace-nowrap text-slate-800">
+              <div key={r.li} className="flex items-center gap-1.5 whitespace-nowrap text-ink">
                 {multi ? (
                   <span aria-hidden className="inline-block h-0.5 w-3" style={{ background: SERIES_COLORS[r.li] }} />
                 ) : null}
-                {multi ? <span className="text-slate-600">{r.name}</span> : null}
-                <span className="font-semibold tabular-nums">{formatValue(r.v)}</span>
+                {multi ? <span className="text-ink2">{r.name}</span> : null}
+                <span className="font-medium tabular-nums">{formatValue(r.v)}</span>
               </div>
             ))}
           </div>
@@ -242,7 +242,7 @@ export function LineChart({ lines, formatValue, formatTick = formatValue, height
 /** 多線圖的圖例：線條樣式＋名稱＋最新值 */
 export function LineLegend({ lines, formatValue }: { lines: LineChartSeries[]; formatValue: (v: number) => string }) {
   return (
-    <ul className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-600">
+    <ul className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-ink2">
       {lines.map((l, i) => {
         const last = l.points[l.points.length - 1];
         return (
@@ -251,7 +251,7 @@ export function LineLegend({ lines, formatValue }: { lines: LineChartSeries[]; f
               <line x1="1" x2="17" y1="3" y2="3" stroke={SERIES_COLORS[i]} strokeWidth="2" strokeDasharray={SERIES_DASH[i]} strokeLinecap="round" />
             </svg>
             {l.name}
-            {last ? <span className="font-semibold text-slate-800 tabular-nums">{formatValue(last.value)}</span> : null}
+            {last ? <span className="font-medium text-ink tabular-nums">{formatValue(last.value)}</span> : null}
           </li>
         );
       })}

@@ -105,7 +105,7 @@ scripts/                     import-agentdata.mjs（agentdata/ → incoming/agen
 
 ## 6. 視覺規則摘要
 
-- 每頁代表色（`lib/pageTheme.ts` → `data-theme`，色碼在 `index.css`）：首頁靛藍、新聞薄荷綠、市場脈動天空藍、追蹤清單薰衣草、競品研究奶油黃、其他頁中性淡灰藍。整頁底色是代表色極淡色，白卡片；Tailwind 用 `bg-p`、`bg-p-mid`、`bg-p-pale`、`bg-p-faint`、`border-p`、`fill-p-mid`。
+- 每頁代表色（`lib/pageTheme.ts` → `data-theme`，色碼在 `index.css`）：首頁靛藍、新聞薄荷綠、市場脈動天空藍、追蹤清單薰衣草、競品研究奶油黃（報告頁、我的待辦也是，子頁一律用所屬首頁框的顏色，不論從哪裡進入）、使用說明與找不到頁面中性淡灰藍。整頁底色是代表色極淡色，白卡片；Tailwind 用 `bg-p`、`bg-p-mid`、`bg-p-pale`、`bg-p-faint`、`border-p`、`fill-p-mid`；連結與選中分頁的文字用 `text-p-ink`（代表色的深色，白底上夠清楚）。舊的 `slate-*`、`navy-*` 已全部換成 `ink`／`ink2`／`muted`／`line` 與代表色深淺。
 - 珊瑚 `coral` 只標每個畫面最重要的一點；文字色 `ink`、`ink2`、`muted`，框線 `line`。字型 Noto Sans TC（Google Fonts，失敗時系統字）。
 - 燈號一律「色點＋文字」。漲跌用 ▲▼ 加文字。新圖表用代表色深淺＋珊瑚；細節區的指標卡片（多線、占比）仍用藍紫系 4 色（`lib/chartPalette.ts`）。
 - 每頁頁首 `PageHeader`；首頁與市場脈動總覽 1440×900 一個畫面看完。寬度 ≥1024px（`lg`）才顯示側邊導覽。

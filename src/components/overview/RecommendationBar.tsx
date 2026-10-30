@@ -16,8 +16,8 @@ interface RecommendationBarProps {
 
 // shrink-0 + whitespace-nowrap：窄螢幕時按鈕不被擠扁，整列改為橫向捲動
 const base = 'inline-flex h-7 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3 ring-1 transition-colors';
-const on = 'bg-navy-800 text-white ring-navy-800';
-const off = 'bg-white text-slate-700 ring-slate-300 hover:ring-slate-400';
+const on = 'bg-p text-white ring-p';
+const off = 'bg-white text-ink ring-line hover:ring-p-mid';
 
 /** 建議分布列（第 11.2 節第 2 點）：點擊篩選，再點一次取消 */
 export function RecommendationBar({
@@ -45,18 +45,18 @@ export function RecommendationBar({
           >
             <span aria-hidden className={`inline-block size-2 rounded-full ${DOT_CLASS[g.color]}`} />
             <span>{orDash(g.label)}</span>
-            <span className={active ? 'text-white/80' : 'text-slate-500'}>{g.count}</span>
+            <span className={active ? 'text-white/80' : 'text-muted'}>{g.count}</span>
           </button>
         );
       })}
       {/* 沒看過（2026-10-31 改名、移到最後）：這台瀏覽器還沒打開過的報告；全部看過時不顯示 */}
       {unreadCount > 0 || unreadOn ? (
         <>
-          <span aria-hidden className="h-5 w-px shrink-0 bg-slate-300" />
+          <span aria-hidden className="h-5 w-px shrink-0 bg-line" />
           <button type="button" aria-pressed={unreadOn} className={`${base} ${unreadOn ? on : off}`} onClick={onToggleUnread}>
             <span aria-hidden className="inline-block size-2 rounded-full bg-p" />
             <span>{zhTW.overview.unread}</span>
-            <span className={unreadOn ? 'text-white/80' : 'text-slate-500'}>{unreadCount}</span>
+            <span className={unreadOn ? 'text-white/80' : 'text-muted'}>{unreadCount}</span>
           </button>
         </>
       ) : null}

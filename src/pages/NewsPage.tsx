@@ -66,9 +66,9 @@ function DomainGroup({
         <p className="px-5 py-2.5 text-[13px] text-muted">{t.groupEmpty}</p>
       ) : (
         <>
-          <ul className="divide-y divide-slate-100">{items.slice(0, shown).map(render)}</ul>
+          <ul className="divide-y divide-line">{items.slice(0, shown).map(render)}</ul>
           {items.length > shown ? (
-            <div className="border-t border-slate-100 px-5 py-2">
+            <div className="border-t border-line px-5 py-2">
               <button type="button" onClick={() => setShown(shown + PAGE_SIZE)} className="text-[13px] text-p hover:underline">
                 {t.showMore}
               </button>
@@ -243,12 +243,12 @@ export function NewsPage() {
                   className={`${chipBase} ${day === x.date ? chipOn : chipOff}`}
                 >
                   <span>{x.label}</span>
-                  <span className={day === x.date ? 'text-white/80' : 'text-slate-500'}>{x.count}</span>
+                  <span className={day === x.date ? 'text-white/80' : 'text-muted'}>{x.count}</span>
                 </button>
               ))}
             </div>
             {hasLinks ? (
-              <label className="flex shrink-0 cursor-pointer items-center gap-2 text-slate-700">
+              <label className="flex shrink-0 cursor-pointer items-center gap-2 text-ink">
                 <input
                   type="checkbox"
                   checked={affectsOnly}
