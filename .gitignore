@@ -5,3 +5,6 @@ dist/
 
 # 待匯入報告（第 5 節）
 incoming/
+
+# 後端原始輸出（每次交付的整包資料；網站要用的檔已移到 incoming/<日期>/）
+agentdata/
