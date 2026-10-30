@@ -8,7 +8,7 @@
 
 | 功能 | 原本的設計（畫面） | 需要的資料（組員編號） | 程式位置 |
 |---|---|---|---|
-| 報告完成時間（時分） | 首頁競品研究「日本 · 完成於 2026-10-11 14:30」，同一天的報告依完成時間排先後 | `report_meta.generated_at`（ISO 8601 含時區）（S11） | `data/normalize.ts`（`generatedAt`、`generatedTime`）、`pages/MarketHomePage.tsx`、`components/home/ResearchList.tsx` |
+| 報告完成時間（時分） | 原本首頁競品研究「完成於 2026-10-11 14:30」（2026-10-31 首頁改列建議，暫不用；有資料後可放回報告頁頁首） | `report_meta.generated_at`（ISO 8601 含時區）（S11） | `data/normalize.ts`（`generatedAt`、`generatedTime`） |
 | 模組未跑原因 | 三面向卡「未提供（原因：…）」取代原始狀態 | `report_meta.source_files.<模組>.skip_reason`（R1-B） | `components/report/ScorecardRow.tsx` |
 | 品牌定位一句 | 報告頁一句話結論下方灰字「品牌定位：…（來源）」 | `headline.brand_note`、`brand_note_source`（M6、S12） | `components/report/DecisionSummary.tsx` |
 | 法規發現的來源與可信度 | 每筆 finding 標題下「來源 ▾」，展開為「可信度 A：說明」與來源清單（新分頁），列印一律展開 | `findings[].sources[]`（name、url、as_of）、`evidence_scheme`、`evidence_level`，legend `evidence_<scheme>`（R4）；孫的 `2c.json` 已有 `rule_basis.source_url`，統整時沒帶進 3.json | `components/report/RegulatoryDetail.tsx` |

@@ -11,6 +11,7 @@ import type {
 } from '../types/viewModel';
 import { formatDateTimeTaipei } from '../lib/format';
 import { num, objList, safeUrl, str, strList } from './normalize';
+import { cleanText } from './cleanText';
 
 // 動態清單與市場脈動的原始欄位只在這裡讀取（正式格式未定版，改格式時改這裡）
 
@@ -44,8 +45,8 @@ function normalizeFeedItem(item: RawFeedItem, i: number): FeedItemViewModel {
     id: str(item.id) ?? `feed-${i}`,
     kind: feedKind(item),
     domain: feedDomain(item.domain),
-    title: str(item.title),
-    summary: str(item.summary),
+    title: str(item.title) === null ? null : cleanText(str(item.title)!),
+    summary: str(item.summary) === null ? null : cleanText(str(item.summary)!),
     source: str(item.source),
     selfReported: item.self_reported === true,
     url: safeUrl(item.url),

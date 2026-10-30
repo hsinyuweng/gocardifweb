@@ -2,6 +2,8 @@ import type { ReactNode } from 'react';
 import type { ModuleKey, ScorecardViewModel } from '../../types/viewModel';
 import { zhTW } from '../../i18n/zh-TW';
 import { orDash } from '../../lib/format';
+import { confidenceNote } from '../../lib/grade';
+import { GradeNote } from '../common/GradeNote';
 import { SignalLabel } from '../common/SignalLabel';
 import { RegulatoryDistributionBar } from '../charts/RegulatoryDistributionBar';
 
@@ -64,8 +66,13 @@ function ScorecardCard({ card, onShowDetail }: { card: ScorecardViewModel; onSho
         </p>
       )}
 
-      {/* 推到底部，三欄的連結對齊 */}
-      <div className="mt-auto pt-2 print:hidden">
+      {/* 推到底部，三欄的連結對齊；等級說明小灰字放在連結上方 */}
+      <div className="mt-auto pt-2">
+        {card.moduleKey === 'market_demand' && card.provided ? (
+          <GradeNote className="mb-1">{confidenceNote([card.confidence])}</GradeNote>
+        ) : null}
+      </div>
+      <div className="print:hidden">
         <button type="button" onClick={onShowDetail} className="text-[13px] text-ink2 hover:text-ink hover:underline">
           {t.showDetail} →
         </button>

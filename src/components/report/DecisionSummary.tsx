@@ -2,6 +2,8 @@ import type { ReactNode } from 'react';
 import type { DecisionSummaryViewModel } from '../../types/viewModel';
 import { zhTW } from '../../i18n/zh-TW';
 import { orDash } from '../../lib/format';
+import { confidenceNote } from '../../lib/grade';
+import { GradeNote } from '../common/GradeNote';
 import { DOT_CLASS, SOFT_BADGE_CLASS } from '../../lib/signalColor';
 
 const t = zhTW.report;
@@ -10,7 +12,17 @@ const t = zhTW.report;
 // ① 頁首（商品名、基本資料、流程一行字、列印、日期）② 一句結論（整體建議＋摘要）④ 判斷理由（理由、品牌定位、商品機制）
 
 /** ① 頁首：商品名、發行公司 · 國家 · 險種 · 幣別 · 繳費；流程一行字；右側列印與產出、審閱日期 */
-export function ReportHeader({ summary: s, flow, docsLink = null }: { summary: DecisionSummaryViewModel; flow: ReactNode; docsLink?: ReactNode }) {
+export function ReportHeader({
+  summary: s,
+  flow,
+  docsLink = null,
+  action = null,
+}: {
+  summary: DecisionSummaryViewModel;
+  flow: ReactNode;
+  docsLink?: ReactNode;
+  action?: ReactNode;
+}) {
   const meta = [s.issuer, s.countryLabel, s.category, s.currency, s.premiumMode].map(orDash).join(' · ');
   return (
     <header className="flex flex-col gap-3 border-b border-p-pale pb-3.5 lg:flex-row lg:items-end lg:justify-between lg:gap-6">
@@ -22,7 +34,8 @@ export function ReportHeader({ summary: s, flow, docsLink = null }: { summary: D
         </p>
         <div className="mt-1">{flow}</div>
       </div>
-      <div className="flex shrink-0 flex-col items-start gap-1.5 lg:items-end">
+      <div className="flex shrink-0 flex-col items-start gap-2 lg:items-end">
+        {action}
         <button
           type="button"
           onClick={() => window.print()}
@@ -61,6 +74,8 @@ export function ReportLead({ summary: s }: { summary: DecisionSummaryViewModel }
 
 /** ④ 判斷理由：理由清單、品牌定位、商品機制 */
 export function ReportReasons({ summary: s }: { summary: DecisionSummaryViewModel }) {
+  // 理由提到「信心為 C」時，段落最下面小灰字說明等級高低
+  const levels = s.reasons.flatMap((r) => /信心(?:等級)?為?\s*([A-E])/.exec(r)?.[1] ?? []);
   return (
     <div className="space-y-3">
       {s.reasons.length > 0 ? (
@@ -91,6 +106,7 @@ export function ReportReasons({ summary: s }: { summary: DecisionSummaryViewMode
         <span className="font-medium text-ink">{t.mechanism}：</span>
         {orDash(s.mechanismSummary)}
       </p>
+      <GradeNote>{confidenceNote(levels)}</GradeNote>
     </div>
   );
 }

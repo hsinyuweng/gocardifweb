@@ -4,6 +4,8 @@ import { orDash } from '../../lib/format';
 import { MarketSizingBar } from '../charts/MarketSizingBar';
 import { DetailBlock } from './DetailBlock';
 import { KeyPointList } from './KeyPointList';
+import { confidenceNote } from '../../lib/grade';
+import { GradeNote } from '../common/GradeNote';
 
 const t = zhTW.report.details;
 
@@ -36,6 +38,7 @@ export function MarketDemandDetail({ detail }: { detail: ReportDetailsViewModel[
           </div>
           <Field label={t.confidence} value={s.confidence} />
         </dl>
+        <GradeNote className="mt-2">{confidenceNote([s.confidence])}</GradeNote>
       </DetailBlock>
       <DetailBlock title={t.keyPoints}>
         <KeyPointList points={detail.keyPoints} />

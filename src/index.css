@@ -15,6 +15,10 @@
   /* 強調：每個畫面只標最重要的一點 */
   --color-coral: #ec6a60;
   --color-coral-pale: #fde3e0;
+  /* 追蹤清單的代表色（任何頁面上的「加入追蹤」都用它，2026-10-31） */
+  --color-watch: #8a6ad9;
+  --color-watch-dark: #6b4fc0;
+  --color-watch-pale: #ebe3fd;
   --font-sans: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
 }
 
@@ -67,4 +71,10 @@ body {
   tr {
     break-inside: avoid;
   }
+}
+
+/* 頂部列按鈕出現時淡入（2026-10-31） */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: none; }
 }

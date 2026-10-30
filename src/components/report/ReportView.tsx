@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, type ReactNode } from 'react';
 import { Link } from 'react-router';
 import { OWNER_PARAM } from '../../lib/ownerParam';
 import type { ModuleKey, ReportViewModel } from '../../types/viewModel';
@@ -35,6 +35,8 @@ interface ReportViewProps {
   onOwnerChange: (owner: string | null) => void;
   /** 進我的待辦時帶的 location.state（麵包屑回到這份報告） */
   tasksLinkState: unknown;
+  /** 頁首右側的主要動作（加入追蹤清單大按鈕） */
+  headerAction?: ReactNode;
 }
 
 /** 篩選後沒有項目時：原本就沒有 →「無」；被篩掉 → 提示 */
@@ -49,7 +51,7 @@ const toggleClass = 'text-[13px] text-ink2 hover:text-ink hover:underline print:
  * ① 頁首 ② 整體建議＋一句摘要 ③ 三面向＋待解決件數 ④ 判斷理由、待解決事項（先列重大與阻斷）
  * ⑤ 建議下一步（先列 5 項）＋往下看 → 細節：三面向分頁、資料品質、資料缺口。列印時全部展開。
  */
-export function ReportView({ vm, owner, onOwnerChange, tasksLinkState }: ReportViewProps) {
+export function ReportView({ vm, owner, onOwnerChange, tasksLinkState, headerAction = null }: ReportViewProps) {
   const [activeTab, setActiveTab] = useState<ModuleKey>('market_demand');
   const [allBlockers, setAllBlockers] = useState(false);
   const [allSteps, setAllSteps] = useState(false);
@@ -79,6 +81,7 @@ export function ReportView({ vm, owner, onOwnerChange, tasksLinkState }: ReportV
     <div ref={topRef} className="scroll-mt-28 space-y-6">
       <ReportHeader
         summary={vm.summary}
+        action={headerAction}
         flow={<FlowBar provided={vm.analysisProvided} total={vm.analysisTotal} />}
         docsLink={
           vm.sourceDocuments.length > 0 ? (

@@ -10,23 +10,16 @@ import { Lead } from '../components/story/Lead';
 import { DataSourceError, normalizeReportIndex } from '../data';
 import { zhTW } from '../i18n/zh-TW';
 import { orDash } from '../lib/format';
-import { isUnreviewed, readReviewed, subscribeReviewed } from '../lib/reviewed';
 import { recentFeed } from '../lib/feedSummary';
 import { homeHeadline } from '../lib/insights';
 import { buildCandidates } from '../lib/score';
+import { rankRows } from '../lib/researchStory';
 import { readWatchlist, subscribeWatchlist } from '../lib/watchlist';
 import { PRESET_WEIGHTS, readPreset, subscribePreset } from '../lib/weights';
 import { errorText, useBreadcrumb, useFeed, useIndexState, useMarketPulse } from './pageChrome';
 import type { LoadState } from './useOnDemand';
-import type { OverviewRow } from '../types/viewModel';
 
 const t = zhTW.home;
-
-function completedTime(r: OverviewRow): number {
-  if (r.generatedTime !== null) return r.generatedTime;
-  const t = r.generatedDate ? Date.parse(`${r.generatedDate}T00:00:00+08:00`) : NaN;
-  return Number.isNaN(t) ? -Infinity : t;
-}
 
 /** 卡片內容依讀取狀態切換：載入中／資料準備中（檔案不存在）／錯誤（只影響這張卡片）／內容 */
 function cardBody<T>(state: LoadState<T>, render: (data: T) => ReactNode): ReactNode {
@@ -51,21 +44,19 @@ export function MarketHomePage() {
   const pulseState = useMarketPulse();
   const watchlist = useSyncExternalStore(subscribeWatchlist, readWatchlist);
   const weights = PRESET_WEIGHTS[useSyncExternalStore(subscribePreset, readPreset)];
-  const reviewed = useSyncExternalStore(subscribeReviewed, readReviewed);
 
   const vm = useMemo(
     () => (indexState.status === 'ok' ? normalizeReportIndex(indexState.index) : null),
     [indexState],
   );
-  // 未審閱報告：完成時間新到舊；沒有時間的用日期當天 0 點（台北），都缺的排最後
-  const unreviewedRows = useMemo(
-    () =>
-      (vm?.rows ?? [])
-        .filter((r) => isUnreviewed(r, reviewed))
-        .sort((a, b) => completedTime(b) - completedTime(a)),
-    [vm, reviewed],
-  );
+  // 競品研究框：建議由好到壞、再依綜合分數（2026-10-31 取代未審閱）
+  const rankedRows = useMemo(() => rankRows(vm?.rows ?? [], weights), [vm, weights]);
   const candidates = useMemo(() => buildCandidates(watchlist, vm?.rows ?? [], weights), [watchlist, vm, weights]);
+  // 還沒追蹤任何商品時，列綜合分數最高的 3 件當建議（2026-10-31）
+  const suggestions = useMemo(() => {
+    const rows = vm?.rows ?? [];
+    return buildCandidates(rows.flatMap((r) => (r.reportId ? [r.reportId] : [])), rows, weights).ranked.slice(0, 3);
+  }, [vm, weights]);
 
   // 追蹤清單、競品研究都靠報告清單：載入中與錯誤時顯示相同訊息
   let indexPending: ReactNode = null;
@@ -74,13 +65,13 @@ export function MarketHomePage() {
     const { message, detail } = errorText(indexState.error, zhTW.errors.notFoundIndex);
     indexPending = <StatusMessage tone="error" message={message} detail={detail} />;
   }
-  const watchBody = indexPending ?? <WatchlistCardContent ranked={candidates.ranked} />;
+  const watchBody = indexPending ?? <WatchlistCardContent ranked={candidates.ranked} suggestions={suggestions} />;
   const researchBody =
     indexPending ??
     (vm && vm.rows.length === 0 ? (
       <p className="text-slate-500">{zhTW.overview.empty}</p>
     ) : (
-      <ResearchList rows={unreviewedRows} total={vm?.rows.length ?? 0} groups={vm?.recommendationGroups ?? []} />
+      <ResearchList rows={rankedRows} groups={vm?.recommendationGroups ?? []} />
     ));
 
   const headline = useMemo(
@@ -116,7 +107,7 @@ export function MarketHomePage() {
           theme="research"
           icon="research"
           title={t.cards.research}
-          to={unreviewedRows.length > 0 ? '/research?unread=1' : '/research'}
+          to="/research"
         >
           {researchBody}
         </HomeCard>

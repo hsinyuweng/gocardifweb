@@ -30,11 +30,6 @@ export function RecommendationBar({
 }: RecommendationBarProps) {
   return (
     <div className="flex h-12 items-center gap-2 overflow-x-auto px-px">
-      <button type="button" aria-pressed={unreadOn} className={`${base} ${unreadOn ? on : off}`} onClick={onToggleUnread}>
-        <span>{zhTW.overview.unread}</span>
-        <span className={unreadOn ? 'text-white/80' : 'text-slate-500'}>{unreadCount}</span>
-      </button>
-      <span aria-hidden className="h-5 w-px shrink-0 bg-slate-300" />
       <button type="button" className={`${base} ${selected === null ? on : off}`} onClick={() => onSelect(null)}>
         {zhTW.overview.all}
       </button>
@@ -54,6 +49,17 @@ export function RecommendationBar({
           </button>
         );
       })}
+      {/* 沒看過（2026-10-31 改名、移到最後）：這台瀏覽器還沒打開過的報告；全部看過時不顯示 */}
+      {unreadCount > 0 || unreadOn ? (
+        <>
+          <span aria-hidden className="h-5 w-px shrink-0 bg-slate-300" />
+          <button type="button" aria-pressed={unreadOn} className={`${base} ${unreadOn ? on : off}`} onClick={onToggleUnread}>
+            <span aria-hidden className="inline-block size-2 rounded-full bg-p" />
+            <span>{zhTW.overview.unread}</span>
+            <span className={unreadOn ? 'text-white/80' : 'text-slate-500'}>{unreadCount}</span>
+          </button>
+        </>
+      ) : null}
     </div>
   );
 }

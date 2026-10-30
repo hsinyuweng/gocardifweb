@@ -46,6 +46,7 @@ import { collectOwnerOptions, splitOwners } from '../lib/owner';
 import { researchStatusLabel } from '../lib/researchStatus';
 import { toSignalColor } from '../lib/signalColor';
 import { isSchemaVersionSupported } from './validate';
+import { cleanReport, cleanReportIndex } from './cleanText';
 
 export function str(v: unknown): string | null {
   return typeof v === 'string' && v !== '' ? v : null;
@@ -191,7 +192,8 @@ function uniqueOptions(pairs: Array<[string | null, string | null]>): FilterOpti
     .sort((a, b) => a.label.localeCompare(b.label, 'zh-Hant-TW'));
 }
 
-export function normalizeReportIndex(index: ReportIndex): OverviewViewModel {
+export function normalizeReportIndex(raw: ReportIndex): OverviewViewModel {
+  const index = cleanReportIndex(raw);
   const rows = index.reports
     .filter((e): e is RawReportIndexEntry => typeof e === 'object' && e !== null)
     .map(normalizeIndexEntry);
@@ -503,7 +505,8 @@ function normalizeSourceDocuments(r: Report): SourceDocumentViewModel[] {
   });
 }
 
-export function normalizeReport(r: Report): ReportViewModel {
+export function normalizeReport(raw: Report): ReportViewModel {
+  const r = cleanReport(raw);
   const sources = r.report_meta.source_files;
   const blockers = normalizeBlockers(r);
   const nextSteps = normalizeNextSteps(r);

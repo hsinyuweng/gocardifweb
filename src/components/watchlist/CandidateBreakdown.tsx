@@ -91,6 +91,7 @@ export function CandidateBreakdown({ score }: { score: CandidateScore }) {
         {formula ? <span className="mr-2 tabular-nums text-ink2">{formula}</span> : null}
         {t.formula}
       </p>
+      <p className="mt-1 text-[11.5px] text-muted">{zhTW.grade.scoreNote}</p>
     </div>
   );
 }

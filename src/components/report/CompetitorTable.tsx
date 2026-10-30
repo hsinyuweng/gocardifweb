@@ -2,6 +2,8 @@ import type { CompetitorComparisonViewModel } from '../../types/viewModel';
 import { zhTW } from '../../i18n/zh-TW';
 import { orDash } from '../../lib/format';
 import { StorySection } from '../story/StorySection';
+import { evidenceNote } from '../../lib/grade';
+import { GradeNote } from '../common/GradeNote';
 
 const t = zhTW.report.competitors;
 
@@ -17,6 +19,7 @@ function heading(c: CompetitorComparisonViewModel): string {
  * 列＝比較項目；下方差異分析依證據等級分段。表格太寬時只有表格本身左右捲動。
  */
 export function CompetitorTable({ data: c, id }: { data: CompetitorComparisonViewModel; id?: string }) {
+  const note = evidenceNote(c.gapAnalysis.map((g) => g.level));
   return (
     <StorySection id={id} heading={heading(c)}>
       {c.noCompetitorReason ? <p className="text-ink2">{c.noCompetitorReason}</p> : null}
@@ -80,6 +83,7 @@ export function CompetitorTable({ data: c, id }: { data: CompetitorComparisonVie
               </li>
             ))}
           </ul>
+          <GradeNote>{note}</GradeNote>
         </div>
       ) : null}
     </StorySection>

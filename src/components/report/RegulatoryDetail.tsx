@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { FindingViewModel, ReportDetailsViewModel } from '../../types/viewModel';
 import { zhTW } from '../../i18n/zh-TW';
+import { gradeScale } from '../../lib/grade';
 import { orDash } from '../../lib/format';
 import { DOT_CLASS } from '../../lib/signalColor';
 import { SignalLabel } from '../common/SignalLabel';
@@ -16,7 +17,6 @@ function FindingsTable({ findings }: { findings: FindingViewModel[] }) {
       <table className="w-full min-w-[860px] border-collapse text-left">
         <thead className="border-b border-slate-200 text-slate-600">
           <tr className="h-10">
-            <th scope="col" className="w-24 px-3 font-medium">{c.itemId}</th>
             <th scope="col" className="px-3 font-medium">{c.title}</th>
             <th scope="col" className="w-24 px-3 font-medium">{c.light}</th>
             <th scope="col" className="px-3 font-medium">{c.law}</th>
@@ -40,7 +40,6 @@ function FindingRow({ f }: { f: FindingViewModel }) {
   const hasDetail = f.sources.length > 0 || f.evidenceLevel !== null;
   return (
     <tr className="border-b border-slate-100 align-top last:border-b-0">
-      <td className="px-3 py-2 whitespace-nowrap text-slate-600 tabular-nums">{orDash(f.itemId)}</td>
       <td className="px-3 py-2 text-slate-900">
         {orDash(f.title)}
         {f.suspectedRed ? (
@@ -59,7 +58,7 @@ function FindingRow({ f }: { f: FindingViewModel }) {
               {t.findingSources} {open ? '▴' : '▾'}
             </button>
             <div className={`${open ? 'block' : 'hidden'} mt-1 space-y-0.5 text-slate-600 print:block`}>
-              {f.evidenceLevel ? <p>{t.findingEvidence(f.evidenceLevel, f.evidenceLabel)}</p> : null}
+              {f.evidenceLevel ? <p>{t.findingEvidence(f.evidenceLevel, f.evidenceLabel ?? gradeScale([f.evidenceLevel]))}</p> : null}
               {f.sources.length > 0 ? (
                 <ul className="list-disc pl-4">
                   {f.sources.map((s, k) => (

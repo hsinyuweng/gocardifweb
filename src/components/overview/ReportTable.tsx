@@ -5,6 +5,7 @@ import { zhTW } from '../../i18n/zh-TW';
 import { orDash } from '../../lib/format';
 import { SOFT_BADGE_CLASS } from '../../lib/signalColor';
 import { SignalLabel } from '../common/SignalLabel';
+import { WatchToggle } from './WatchToggle';
 
 const t = zhTW.overview;
 const c = t.columns;
@@ -17,7 +18,7 @@ interface ReportTableProps {
   onOpen: (reportId: string) => void;
   /** 從報告頁回來時標亮的那一列 */
   highlightId?: string | null;
-  /** 未審閱的 report_id */
+  /** 這台瀏覽器還沒打開過的 report_id（商品名前小圓點） */
   unreadIds: ReadonlySet<string>;
 }
 
@@ -80,6 +81,7 @@ export function ReportTable({ rows, sortKey, sortDir, onSort, onOpen, unreadIds,
       <table className="w-full min-w-[1100px] border-collapse text-left">
         <thead className="border-b border-slate-200 bg-slate-50 text-slate-600">
           <tr className="h-10">
+            <th scope="col" className="w-24 pl-4 pr-1 font-medium">{zhTW.watchlist.column}</th>
             <SortHeader label={c.product} column="name" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
             <th scope="col" className="px-3 font-medium">{c.country}</th>
             <th scope="col" className="px-3 font-medium">{c.category}</th>
@@ -105,14 +107,17 @@ export function ReportTable({ rows, sortKey, sortDir, onSort, onOpen, unreadIds,
                   clickable ? 'cursor-pointer hover:bg-slate-50 focus:bg-slate-50 focus:outline-none' : ''
                 } ${r.reportId !== null && r.reportId === highlightId ? 'bg-p-pale' : ''}`}
               >
+                <td className="py-2 pr-1 pl-4">
+                  {r.reportId !== null ? <WatchToggle reportId={r.reportId} name={orDash(r.name)} /> : null}
+                </td>
                 <td className="px-3 py-2">
                   <div className="font-semibold text-slate-900">
-                    {orDash(r.name)}
                     {r.reportId !== null && unreadIds.has(r.reportId) ? (
-                      <span className="ml-2 inline-block rounded bg-slate-100 px-1.5 py-0.5 align-middle text-xs font-medium text-navy-700 ring-1 ring-slate-200">
-                        {t.unread}
+                      <span title={t.unreadHint} className="mr-1.5 inline-block size-2 rounded-full bg-p align-middle">
+                        <span className="sr-only">{t.unread}</span>
                       </span>
                     ) : null}
+                    {orDash(r.name)}
                   </div>
                   <div className="text-xs text-slate-500">{orDash(r.issuer)}</div>
                 </td>

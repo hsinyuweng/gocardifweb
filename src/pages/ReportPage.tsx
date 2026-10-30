@@ -5,6 +5,7 @@ import { StatusMessage } from '../components/common/StatusMessage';
 import { ReportNav } from '../components/report/ReportNav';
 import { ReportView } from '../components/report/ReportView';
 import { WatchlistButton } from '../components/report/WatchlistButton';
+import { VisibilityProbe } from '../components/common/VisibilityProbe';
 import { useConfig } from '../config/ConfigContext';
 import { getDataSource, normalizeReport, normalizeReportIndex } from '../data';
 import type { ReportViewModel } from '../types/viewModel';
@@ -39,6 +40,7 @@ export function ReportPage() {
   const myUnit = useSyncExternalStore(subscribeOwnerPreference, readOwnerPreference);
   const watchlist = useSyncExternalStore(subscribeWatchlist, readWatchlist);
   const actionSlot = usePageActionSlot();
+  const [headerButtonVisible, setHeaderButtonVisible] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -153,26 +155,35 @@ export function ReportPage() {
       </div>
     );
   }
+  const watch = {
+    added: watchlist.includes(reportId),
+    onAdd: () => addToWatchlist(reportId),
+    onRemove: () => removeFromWatchlist(reportId),
+    listLinkState: {
+      from: location.pathname + location.search,
+      fromState: location.state,
+      fromLabel: orDash(state.vm.summary.name),
+    },
+  };
   return (
     <div className="space-y-4">
       {nav}
-      {actionSlot
+      {/* 頂部列的小按鈕：頁首大按鈕捲出畫面後才出現（2026-10-31） */}
+      {actionSlot && !headerButtonVisible
         ? createPortal(
-            <WatchlistButton
-              added={watchlist.includes(reportId)}
-              onAdd={() => addToWatchlist(reportId)}
-              onRemove={() => removeFromWatchlist(reportId)}
-              listLinkState={{
-                from: location.pathname + location.search,
-                fromState: location.state,
-                fromLabel: orDash(state.vm.summary.name),
-              }}
-            />,
+            <div className="animate-[fadeIn_200ms_ease-out]">
+              <WatchlistButton {...watch} />
+            </div>,
             actionSlot,
           )
         : null}
       <ReportView
         vm={state.vm}
+        headerAction={
+          <VisibilityProbe onChange={setHeaderButtonVisible}>
+            <WatchlistButton {...watch} size="large" />
+          </VisibilityProbe>
+        }
         owner={owner}
         onOwnerChange={setOwnerParam}
         tasksLinkState={{ from: location.pathname + location.search, fromState: location.state, fromLabel: orDash(state.vm.summary.name) }}

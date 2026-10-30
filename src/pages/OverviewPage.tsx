@@ -29,6 +29,7 @@ import { Lead } from '../components/story/Lead';
 import { NextStep } from '../components/story/NextStep';
 import { ChartTitle, DetailDivider, StorySection } from '../components/story/StorySection';
 import { researchHeading, researchHeadline, researchNumbers } from '../lib/researchStory';
+import { PRESET_WEIGHTS, readPreset, subscribePreset } from '../lib/weights';
 
 const t = zhTW.overview;
 const s = t.story;
@@ -58,6 +59,7 @@ export function OverviewPage() {
     [indexState],
   );
   const reviewed = useSyncExternalStore(subscribeReviewed, readReviewed);
+  const weights = PRESET_WEIGHTS[useSyncExternalStore(subscribePreset, readPreset)];
   const unreadIds = useMemo(
     () => new Set((vm?.rows ?? []).filter((r) => isUnreviewed(r, reviewed)).map((r) => r.reportId as string)),
     [vm, reviewed],
@@ -106,8 +108,8 @@ export function OverviewPage() {
   } else if (vm) {
     const story = vm.rows.length > 0 ? (
       <>
-        <Lead parts={researchHeadline(vm.rows, unreadIds.size)} />
-        <KeyNumbers items={researchNumbers(vm.rows, vm.recommendationGroups, unreadIds.size)} />
+        <Lead parts={researchHeadline(vm.rows, vm.recommendationGroups)} />
+        <KeyNumbers items={researchNumbers(vm.rows, vm.recommendationGroups, weights)} />
         <StorySection heading={researchHeading(vm.rows, vm.recommendationGroups)}>
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
             <div>

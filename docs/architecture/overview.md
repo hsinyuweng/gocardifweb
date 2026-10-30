@@ -83,9 +83,9 @@ pages/* ─ normalize* ─▶ ViewModel ─▶ components/*
 src/
 ├── main.tsx                 路由
 ├── config/                  config.json 讀取
-├── data/                    DataSource 四種實作、validate、normalize、normalizeMarket、allReports、connectionStatus
+├── data/                    DataSource 四種實作、validate、normalize、normalizeMarket、cleanText（後端文字清理）、allReports、connectionStatus
 ├── types/                   原始 JSON 型別（report、reportIndex、feed、marketPulse）、viewModel
-├── lib/                     格式、國家、篩選、負責單位、追蹤清單、待辦彙整等工具
+├── lib/                     格式、國家、篩選、負責單位、追蹤清單、待辦彙整、等級說明（grade）等工具
 ├── i18n/zh-TW.ts            所有介面文字
 ├── components/
 │   ├── layout/              AppShell（依網址設 data-theme，整頁底色）、Sidebar、TopBar、PageHeader（每頁頁首）
@@ -95,7 +95,7 @@ src/
 │   ├── market/              市場脈動分頁頁籤（MarketTabs）、指標卡片
 │   ├── news/                新聞與法規監控（標籤、每則）
 │   ├── home/                市場總覽四框（HomeCard 整框可點）
-│   ├── overview/            競品研究頁（原案件總覽）
+│   ├── overview/            競品研究頁（原案件總覽；列表的加入追蹤 WatchToggle）
 │   ├── report/              報告頁 A–F 區、台灣競品比較（CompetitorTable）、商品原始資料（SourceDocuments）
 │   ├── tasks/               我的待辦
 │   └── watchlist/           追蹤清單（權重滑桿、清單列）
