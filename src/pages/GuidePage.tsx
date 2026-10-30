@@ -68,13 +68,7 @@ export function GuidePage() {
                   →
                 </span>
               ) : null}
-              <span
-                className={`rounded-md px-2 py-0.5 ${
-                  i === t.flowSteps.length - 1 ? 'bg-line text-muted' : 'bg-p-pale text-ink'
-                }`}
-              >
-                {step}
-              </span>
+              <span className="rounded-md bg-p-pale px-2 py-0.5 text-ink">{step}</span>
             </li>
           ))}
         </ol>

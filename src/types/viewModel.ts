@@ -94,11 +94,6 @@ export interface OverviewViewModel {
 
 export type ModuleKey = 'market_demand' | 'actuarial' | 'regulatory';
 
-export interface ReviewDate {
-  moduleLabel: string;
-  date: string | null;
-}
-
 /** B 區決策摘要 */
 export interface DecisionSummaryViewModel {
   name: string | null;
@@ -114,7 +109,6 @@ export interface DecisionSummaryViewModel {
   /** 品牌定位一句話（S12）；沒有時為 null */
   brandNote: { text: string; source: SourceRefViewModel | null } | null;
   generatedDate: string | null;
-  reviewDates: ReviewDate[];
 }
 
 /** 分布條的一段（第 13 節） */
@@ -294,9 +288,6 @@ export interface SourceDocumentViewModel {
 export interface ReportViewModel {
   reportId: string;
   schemaVersionMismatch: boolean;
-  /** 流程列：三面向中 status 為 provided 的數量 */
-  analysisProvided: number;
-  analysisTotal: number;
   summary: DecisionSummaryViewModel;
   /** 固定順序：market_demand、actuarial、regulatory */
   moduleCards: ScorecardViewModel[];

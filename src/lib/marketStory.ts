@@ -8,7 +8,7 @@ import type {
   PulseTrendViewModel,
 } from '../types/viewModel';
 import { zhTW } from '../i18n/zh-TW';
-import { formatPulsePeriod, formatPulseValue, formatSharePct, orDash, pulseChangeParts } from './format';
+import { formatPulsePeriod, formatPulseValue, formatSharePct, isFlatChange, orDash, pulseChangeParts, pulseChangeWithLabel } from './format';
 import { metricsByGroup, PULSE_GROUP_ORDER, pulseDigits } from './pulse';
 
 // 市場脈動分頁的閱讀路徑內容（2026-10-27 視覺改版 V2）：數字磚、圖表標題。
@@ -213,12 +213,14 @@ export interface KeyNumber {
 const MAX_NUMBERS = 4;
 
 function trendTile(m: PulseTrendViewModel, coral: boolean): KeyNumber {
-  const change = m.change !== null ? pulseChangeParts(m.change, m.changeUnit, trendDigits(m)) : null;
   return {
     key: m.key,
     label: orDash(m.label),
     value: trendValue(m, m.latestValue),
-    note: change ? `${change.value}${change.unit ? ` ${change.unit}` : ''}${m.changeLabel ? `，${m.changeLabel}` : ''}` : periodLong(m.points.at(-1)?.period ?? null),
+    note:
+      m.change !== null
+        ? pulseChangeWithLabel(m.change, m.changeUnit, trendDigits(m), m.changeLabel, 'label-last')
+        : periodLong(m.points.at(-1)?.period ?? null),
     coral,
     spark: m.points.length >= 2 ? m.points.map((p) => p.value) : undefined,
   };
@@ -247,7 +249,10 @@ export function tabNumbers(list: PulseMetricViewModel[]): KeyNumber[] {
     out.push({ key: `${m.key}-latest`, label: orDash(m.label), value: trendValue(m, m.latestValue), note: periodLong(period), coral: true });
     if (m.change !== null) {
       const c = pulseChangeParts(m.change, m.changeUnit, trendDigits(m));
-      out.push({ key: `${m.key}-change`, label: m.changeLabel ?? t.tile.vsPrev, value: c.value, note: c.unit || null });
+      const label = m.changeLabel ?? t.tile.vsPrev;
+      // 持平時讀成「與前一交易日／持平」
+      const flat = isFlatChange(m.change, m.changeUnit, trendDigits(m));
+      out.push({ key: `${m.key}-change`, label: flat ? label.replace(/^較/, '與') : label, value: c.value, note: c.unit || null });
     }
     const ext = extremes(m)!;
     const extreme = (pick: 'max' | 'min') => {

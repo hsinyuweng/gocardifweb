@@ -1,6 +1,6 @@
 import type { PulseMetricViewModel, PulseTrendViewModel } from '../../types/viewModel';
 import { zhTW } from '../../i18n/zh-TW';
-import { formatPulseValue, orDash, pulseChangeText, shortPeriodLabels } from '../../lib/format';
+import { formatPulseValue, orDash, pulseChangeWithLabel, shortPeriodLabels } from '../../lib/format';
 import { homeMetrics, pulseDigits } from '../../lib/pulse';
 import { ColumnChart } from '../charts/ColumnChart';
 import { StaleTag } from '../market/StaleTag';
@@ -30,7 +30,7 @@ export function PulseList({ metrics }: { metrics: PulseMetricViewModel[] }) {
     <>
       <KeyLine num={formatPulseValue(main.latestValue, main.unit, digits)} coral>
         {orDash(main.label)}
-        {main.change !== null ? `，${main.changeLabel ?? ''} ${pulseChangeText(main.change, main.changeUnit, digits)}` : null}
+        {main.change !== null ? `，${pulseChangeWithLabel(main.change, main.changeUnit, digits, main.changeLabel)}` : null}
         {main.stale ? <StaleTag /> : null}
       </KeyLine>
       {points.length >= 2 ? (

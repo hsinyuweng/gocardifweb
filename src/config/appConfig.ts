@@ -11,7 +11,7 @@ export const DEFAULT_CONFIG: AppConfig = {
   dataSource: 'static',
   apiBaseUrl: '',
   fallbackToStatic: true,
-  showRoadmapNav: true,
+  showRoadmapNav: false,
 };
 
 /** 逐欄檢查型別；型別不符的欄位使用預設值 */

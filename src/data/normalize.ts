@@ -4,7 +4,6 @@
 import type { AppConfig } from '../config/appConfig';
 import type { RawReportIndexEntry, ReportIndex } from '../types/reportIndex';
 import {
-  MODULE_KEYS,
   type ModuleKey,
   type RawDimensionScores,
   type RawKeyPoint,
@@ -217,7 +216,6 @@ function moduleLabel(legend: RawLegend | null | undefined, key: ModuleKey): stri
 function normalizeSummary(r: Report): DecisionSummaryViewModel {
   const snap = r.product_snapshot;
   const head = r.headline;
-  const sources = r.report_meta.source_files;
   return {
     name: str(snap?.name),
     issuer: str(snap?.issuer),
@@ -234,10 +232,6 @@ function normalizeSummary(r: Report): DecisionSummaryViewModel {
     ),
     brandNote: str(head.brand_note) ? { text: str(head.brand_note)!, source: sourceRef(head.brand_note_source) } : null,
     generatedDate: str(r.report_meta.generated_date),
-    reviewDates: MODULE_KEYS.map((k) => ({
-      moduleLabel: moduleLabel(r.legend, k),
-      date: str(sources?.[k]?.review_date),
-    })),
   };
 }
 
@@ -507,14 +501,11 @@ function normalizeSourceDocuments(r: Report): SourceDocumentViewModel[] {
 
 export function normalizeReport(raw: Report): ReportViewModel {
   const r = cleanReport(raw);
-  const sources = r.report_meta.source_files;
   const blockers = normalizeBlockers(r);
   const nextSteps = normalizeNextSteps(r);
   return {
     reportId: r.report_meta.report_id,
     schemaVersionMismatch: !isSchemaVersionSupported(r.report_meta.schema_version),
-    analysisProvided: MODULE_KEYS.filter((k) => sources?.[k]?.status === PROVIDED).length,
-    analysisTotal: MODULE_KEYS.length,
     summary: normalizeSummary(r),
     moduleCards: normalizeScorecards(r),
     ownerOptions: collectOwnerOptions([...blockers.map((b) => b.owners), ...nextSteps.map((s) => s.owners)]),

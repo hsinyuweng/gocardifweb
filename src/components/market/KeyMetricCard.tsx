@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import type { PulseTrendViewModel } from '../../types/viewModel';
 import { zhTW } from '../../i18n/zh-TW';
-import { formatPulseTick, orDash, pulseChangeText, shortPeriodLabels } from '../../lib/format';
+import { formatPulseTick, orDash, pulseChangeWithLabel, shortPeriodLabels } from '../../lib/format';
 import { isRank, periodLong, trendDigits, trendValue } from '../../lib/marketStory';
 import { ColumnChart } from '../charts/ColumnChart';
 import { LineChart } from '../charts/LineChart';
@@ -19,7 +19,7 @@ export function KeyMetricCard({ metric: m, coral, fallback = null }: { metric: P
   const fmt = (v: number) => trendValue(m, v);
   const last = m.points.at(-1)?.period ?? null;
   const monthly = !!last && /^\d{4}-\d{2}$/.test(last);
-  const change = m.change !== null ? pulseChangeText(m.change, m.changeUnit, trendDigits(m)) : null;
+  const change = m.change !== null ? pulseChangeWithLabel(m.change, m.changeUnit, trendDigits(m), m.changeLabel, 'label-last') : null;
   return (
     <section className="flex min-w-0 flex-col gap-1 rounded-xl border border-line bg-white px-5 pt-3.5 pb-3">
       <h2 className="text-[13px] text-ink2">
@@ -33,7 +33,6 @@ export function KeyMetricCard({ metric: m, coral, fallback = null }: { metric: P
           <>
             {' · '}
             <span className="tabular-nums">{change}</span>
-            {m.changeLabel ? `，${m.changeLabel}` : null}
           </>
         ) : null}
       </p>

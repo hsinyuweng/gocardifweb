@@ -11,7 +11,9 @@
 
 ## 2. 下一步
 
-**新對話先做：`backlog/next-steps.md` 的 D（報告頁的 `handoffs`）——使用者 10-31 說先不分部門、當作給一個人看，要不要做、怎麼呈現待使用者回覆。**
+**目前沒有排定的下一批**；等後端新資料（見下方）或使用者新指示。報告頁 `handoffs` 先不做。
+
+**2026-10-31 第四批（待驗證與 commit）**：介面清理——報告頁拿掉流程列與審閱日期、頁首沒值的項目不列；導覽列拿掉「資料來源」與「規劃中」；使用說明拿掉「部門審查（規劃中）」；畫面上不出現「後端」；市場脈動變化為 0 時寫「與前一交易日持平」。
 
 **2026-10-31 第三批（待驗證與 commit）**：報告頁、我的待辦改用競品研究黃色；全站舊樣式（`slate`／`navy`／`amber`、小圓角、粗體）換成新設計的文字色、框線與代表色深淺，新增 `text-p-ink`（連結用的代表色深色）；競品研究列表的整體建議加色點；市場脈動補新契約保費金額（成長動能新圖、指標表各險別金額）與 10 年債日資料（定價環境改日線），由 `pulse.json` 轉換成 schema 2.2。
 
@@ -34,7 +36,7 @@
 | 我的待辦、負責單位、麵包屑 | `decisions/tasks-owner-backnav.md` |
 | 資料層、JSON、後端串接 | `spec/web-spec.md` 第 6–8 節、`spec/api-contract.md`、`progress/data-status.md` |
 | 部署、套件、測試 | `guides/environment.md` |
-| 規劃新方向、後端需求、恢復隱藏功能 | `backlog/next-steps.md`（下一批）、`backlog/roadmap.md`、`backlog/future-features.md`、`backlog/open-questions.md` |
+| 規劃新方向、後端需求、恢復隱藏功能 | `backlog/roadmap.md`、`backlog/future-features.md`、`backlog/open-questions.md` |
 
 ## 4. 改動後：要更新的檔
 
@@ -53,7 +55,7 @@ spec/            正式規格（修改要使用者同意）：web-spec.md、api-
 architecture/    overview.md（現在的頁面、路由、資料流、程式目錄）；diagrams/（使用者的規劃圖，PDF＋.md 文字版；視覺改版規劃與樣稿 HTML）
 decisions/       已確認的介面文字與實作規則：market-dashboard、tasks-owner-backnav、spec-stages、deviations
 progress/        data-status.md（現有報告與資料問題）
-backlog/         next-steps.md（下一批實作計畫）、roadmap.md（未來架構與分階段計畫）、future-features.md（等資料才做、先隱藏的功能）、open-questions.md
+backlog/         roadmap.md（未來架構與分階段計畫）、future-features.md（等資料才做、先隱藏的功能）、open-questions.md
 guides/          collaboration.md（合作方式、導覽原則）、environment.md（環境、驗證方法）
 examples/        JSON 範例；references/ 舊原型截圖，不必讀
 ```

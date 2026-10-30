@@ -163,10 +163,6 @@ export function Sidebar({ meta, showRoadmapNav, myUnit, mobileOpen, onClose }: S
           {t.dataUpdated}
           {orDash(meta.generatedAt)}
         </div>
-        <div>
-          {t.dataSource}
-          {meta.dataSource === 'api' ? t.dataSourceApi : t.dataSourceStatic}
-        </div>
       </div>
     </aside>
   );

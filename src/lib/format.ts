@@ -110,7 +110,7 @@ function fixed(value: number, digits: number): string {
 /**
  * 市場脈動的變化，拆成數字與單位（數字磚用）：{ value: '▼ 41.2', unit: '個百分點' }、{ value: '▲ 3.2%', unit: '' }。
  * 百分比 1 位小數；百分點跟著指標的小數位（digits，見 lib/pulse.ts 的 pulseDigits），沒給時最多 2 位並去掉多餘的 0。
- * 四捨五入後為 0 時 value 為「— 0」；null 時為「—」。
+ * 四捨五入後為 0 時 value 為「持平」；null 時為「—」。
  */
 export function pulseChangeParts(change: number | null, unit: 'pct' | 'pp' = 'pct', digits?: number): { value: string; unit: string } {
   const t = zhTW.market.change;
@@ -118,7 +118,7 @@ export function pulseChangeParts(change: number | null, unit: 'pct' | 'pp' = 'pc
   if (change === null) return { value: zhTW.common.dash, unit: '' };
   const d = unit === 'pp' ? (digits ?? 2) : 1;
   const pctSuffix = unit === 'pct' ? '%' : '';
-  if (Math.abs(change) + 1e-9 < 0.5 * 10 ** -d) return { value: `${t.flat}${pctSuffix}`, unit: unitText };
+  if (isFlatChange(change, unit, digits)) return { value: t.flat, unit: '' };
   const abs =
     unit === 'pp' && digits === undefined
       ? new Intl.NumberFormat('zh-TW', { maximumFractionDigits: 2 }).format(Math.abs(change))
@@ -126,7 +126,31 @@ export function pulseChangeParts(change: number | null, unit: 'pct' | 'pp' = 'pc
   return { value: `${change > 0 ? t.up : t.down} ${abs}${pctSuffix}`, unit: unitText };
 }
 
-/** 市場脈動的變化一整句：「▲ 3.2%」「▼ 41.2 個百分點」「— 0 個百分點」；null 顯示「—」 */
+/** 四捨五入到顯示的小數位後為 0 */
+export function isFlatChange(change: number, unit: 'pct' | 'pp' = 'pct', digits?: number): boolean {
+  const d = unit === 'pp' ? (digits ?? 2) : 1;
+  return Math.abs(change) + 1e-9 < 0.5 * 10 ** -d;
+}
+
+/**
+ * 變化連同比較基準：「較上月 ▲ 3.2%」；持平時寫成「與前一交易日持平」（2026-10-31 使用者要求，取代「— 0 個百分點，較前一交易日」）。
+ * order 決定非持平時基準在前（label-first）或在後（「▲ 3.2%，較上月」）。
+ */
+export function pulseChangeWithLabel(
+  change: number,
+  unit: 'pct' | 'pp',
+  digits: number | undefined,
+  label: string | null,
+  order: 'label-first' | 'label-last' = 'label-first',
+): string {
+  const t = zhTW.market.change;
+  if (isFlatChange(change, unit, digits)) return t.flatWith(label);
+  const text = pulseChangeText(change, unit, digits);
+  if (!label) return text;
+  return order === 'label-first' ? `${label} ${text}` : `${text}，${label}`;
+}
+
+/** 市場脈動的變化一整句：「▲ 3.2%」「▼ 41.2 個百分點」「持平」；null 顯示「—」 */
 export function pulseChangeText(change: number | null, unit: 'pct' | 'pp' = 'pct', digits?: number): string {
   const p = pulseChangeParts(change, unit, digits);
   return p.unit ? `${p.value} ${p.unit}` : p.value;

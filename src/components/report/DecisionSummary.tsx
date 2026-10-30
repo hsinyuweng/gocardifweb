@@ -11,19 +11,17 @@ const t = zhTW.report;
 // 報告頁 B 區（第 11.3 節 B；2026-10-27 V4 照閱讀路徑拆成三段）：
 // ① 頁首（商品名、基本資料、流程一行字、列印、日期）② 一句結論（整體建議＋摘要）④ 判斷理由（理由、品牌定位、商品機制）
 
-/** ① 頁首：商品名、發行公司 · 國家 · 險種 · 幣別 · 繳費；流程一行字；右側列印與產出、審閱日期 */
+/** ① 頁首：商品名、發行公司 · 國家 · 險種 · 幣別 · 繳費（沒資料的項目不列）；右側列印與產出日期 */
 export function ReportHeader({
   summary: s,
-  flow,
   docsLink = null,
   action = null,
 }: {
   summary: DecisionSummaryViewModel;
-  flow: ReactNode;
   docsLink?: ReactNode;
   action?: ReactNode;
 }) {
-  const meta = [s.issuer, s.countryLabel, s.category, s.currency, s.premiumMode].map(orDash).join(' · ');
+  const meta = [s.issuer, s.countryLabel, s.category, s.currency, s.premiumMode].filter(Boolean).join(' · ');
   return (
     <header className="flex flex-col gap-3 border-b border-p-pale pb-3.5 lg:flex-row lg:items-end lg:justify-between lg:gap-6">
       <div className="min-w-0">
@@ -32,7 +30,6 @@ export function ReportHeader({
           {meta}
           {docsLink ? <span className="ml-3 print:hidden">{docsLink}</span> : null}
         </p>
-        <div className="mt-1">{flow}</div>
       </div>
       <div className="flex shrink-0 flex-col items-start gap-2 lg:items-end">
         {action}
@@ -43,13 +40,7 @@ export function ReportHeader({
         >
           {t.print}
         </button>
-        <div className="text-xs text-muted lg:text-right">
-          <div>{t.generatedDate(orDash(s.generatedDate))}</div>
-          <div>
-            {t.reviewDates}
-            {s.reviewDates.map((d) => `${d.moduleLabel} ${orDash(d.date)}`).join(' · ')}
-          </div>
-        </div>
+        {s.generatedDate ? <div className="text-xs text-muted">{t.generatedDate(s.generatedDate)}</div> : null}
       </div>
     </header>
   );

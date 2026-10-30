@@ -1,6 +1,6 @@
 import type { MarketPulseViewModel, PulseMetricViewModel } from '../types/viewModel';
 import { zhTW } from '../i18n/zh-TW';
-import { formatSharePct, orDash, pulseChangeText } from './format';
+import { formatSharePct, orDash, pulseChangeWithLabel } from './format';
 import { homeMetrics, metricsByGroup, PULSE_GROUP_ORDER } from './pulse';
 import {
   biggestShareShift,
@@ -98,7 +98,7 @@ export function tabHeadline(list: PulseMetricViewModel[]): Headline | null {
     const s = streak(m.points);
     if (ranked) parts.push({ text: zhTW.market.ranking.headTail(ranked.self.rank) });
     else if (signMatters(m) && s.n >= STREAK_MIN) parts.push({ text: t.streakTail(s.n, periodUnit(period), s.positive) });
-    else if (m.change !== null) parts.push({ text: t.changeTail(m.changeLabel, pulseChangeText(m.change, m.changeUnit, trendDigits(m))) });
+    else if (m.change !== null) parts.push({ text: `，${pulseChangeWithLabel(m.change, m.changeUnit, trendDigits(m), m.changeLabel)}` });
     return { parts, metricKey: m.key };
   }
   if (ranked) {

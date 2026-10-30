@@ -4,7 +4,6 @@ import { OWNER_PARAM } from '../../lib/ownerParam';
 import type { ModuleKey, ReportViewModel } from '../../types/viewModel';
 import { zhTW } from '../../i18n/zh-TW';
 import { matchesOwner } from '../../lib/owner';
-import { FlowBar } from './FlowBar';
 import { ReportHeader, ReportLead, ReportReasons } from './DecisionSummary';
 import { BlockerTile, ScorecardRow } from './ScorecardRow';
 import { OwnerFilter } from './OwnerFilter';
@@ -82,7 +81,6 @@ export function ReportView({ vm, owner, onOwnerChange, tasksLinkState, headerAct
       <ReportHeader
         summary={vm.summary}
         action={headerAction}
-        flow={<FlowBar provided={vm.analysisProvided} total={vm.analysisTotal} />}
         docsLink={
           vm.sourceDocuments.length > 0 ? (
             <button
