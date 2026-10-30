@@ -11,6 +11,8 @@
 
 ## 2. 下一步
 
+**新對話先做：照 `backlog/next-steps.md` 依序實作 A（子頁用所屬首頁框代表色：報告頁、我的待辦改黃色）→ B（競品研究與報告頁細節區視覺統一）→ C（市場脈動金額與 10 年債日資料）→ D（報告頁交給精算／法規的待確認事項）。**
+
 **2026-10-31 已完成（待使用者驗證與 commit）**：改讀 `agentdata/`（`scripts/import-agentdata.mjs`、`sync --replace`）、市場脈動同業排名（`RankingBars`，品牌與競爭分頁＋總覽卡）、報告頁台灣競品比較（`CompetitorTable`）與商品原始資料（`SourceDocuments`）、新聞頁沒有比對資料時隱藏「只看可能相關」、市場脈動組別說明改成符合現有資料。10-28「只用現有資料、隱藏功能」的計畫已作廢：現有功能都是有資料才出現。
 
 **2026-10-31 第二批（待驗證與 commit）**：後端文字清理（`data/cleanText.ts`，規則見 `decisions/deviations.md`）；競品研究改成建議與卡關、列表最左欄「＋ 追蹤」、「未審閱」改「沒看過」小圓點；報告頁頁首大的「☆ 加入追蹤清單」；等級一律註明高低（`lib/grade.ts`）；法規表拿掉編號欄；首頁追蹤框沒候選時列綜合分數前 3 件可直接加入；頂部列追蹤按鈕只在頁首大按鈕捲出畫面後出現；等級說明改成格子最下面的小灰字。
@@ -31,7 +33,7 @@
 | 我的待辦、負責單位、麵包屑 | `decisions/tasks-owner-backnav.md` |
 | 資料層、JSON、後端串接 | `spec/web-spec.md` 第 6–8 節、`spec/api-contract.md`、`progress/data-status.md` |
 | 部署、套件、測試 | `guides/environment.md` |
-| 規劃新方向、後端需求、恢復隱藏功能 | `backlog/roadmap.md`、`backlog/future-features.md`、`backlog/open-questions.md` |
+| 規劃新方向、後端需求、恢復隱藏功能 | `backlog/next-steps.md`（下一批）、`backlog/roadmap.md`、`backlog/future-features.md`、`backlog/open-questions.md` |
 
 ## 4. 改動後：要更新的檔
 
@@ -50,7 +52,7 @@ spec/            正式規格（修改要使用者同意）：web-spec.md、api-
 architecture/    overview.md（現在的頁面、路由、資料流、程式目錄）；diagrams/（使用者的規劃圖，PDF＋.md 文字版；視覺改版規劃與樣稿 HTML）
 decisions/       已確認的介面文字與實作規則：market-dashboard、tasks-owner-backnav、spec-stages、deviations
 progress/        data-status.md（現有報告與資料問題）
-backlog/         roadmap.md（未來架構與分階段計畫）、future-features.md（等資料才做、先隱藏的功能）、open-questions.md
+backlog/         next-steps.md（下一批實作計畫）、roadmap.md（未來架構與分階段計畫）、future-features.md（等資料才做、先隱藏的功能）、open-questions.md
 guides/          collaboration.md（合作方式、導覽原則）、environment.md（環境、驗證方法）
 examples/        JSON 範例；references/ 舊原型截圖，不必讀
 ```
