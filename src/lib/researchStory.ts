@@ -59,10 +59,17 @@ export function researchHeadline(rows: OverviewRow[], groups: RecommendationGrou
   const list = (gs: RecommendationGroup[]) => gs.map((g) => `${t.count(g.count)}${g.label ?? t.missing}`).join('、');
   if (good.length === 0) return { parts: [{ text: t.noneRecommended(rows.length) }], sub: [{ text: list(rest) }] };
   const recRows = rankRows(rows).filter((r) => isRecommended(r.recommendationKey));
-  const who = recRows.length <= NAME_LIMIT ? recRows.map(display).join('、') : t.count(recRows.length);
   const labels = good.map((g) => g.label ?? t.missing).join('、');
+  // 推薦的商品名用珊瑚紅字突顯、可點進報告頁（2026-11-01：首頁淺綠底上綠字不夠突顯；試過白框不好看）；超過 2 件只寫件數
+  const who: HeadlinePart[] =
+    recRows.length <= NAME_LIMIT
+      ? recRows.flatMap((r, i) => [
+          ...(i > 0 ? [{ text: '、' }] : []),
+          { text: display(r), highlight: true, href: reportHref(r) },
+        ])
+      : [{ text: t.count(recRows.length), tone: 'good' }];
   return {
-    parts: [{ text: t.recommend }, { text: who, tone: 'good' }, { text: t.paren(labels) }],
+    parts: [{ text: t.recommend }, ...who, { text: t.paren(labels) }],
     sub: rest.length > 0 ? [{ text: t.restOf(list(rest)) }] : [],
   };
 }

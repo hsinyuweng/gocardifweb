@@ -11,6 +11,10 @@ export interface HeadlinePart {
   text: string;
   strong?: boolean;
   tone?: Tone;
+  /** 突顯色（珊瑚紅字，例如推薦的商品名，2026-11-01 使用者指定） */
+  highlight?: boolean;
+  /** 可點，連到這裡（例如報告頁） */
+  href?: string;
 }
 
 /**

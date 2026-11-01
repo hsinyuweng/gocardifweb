@@ -1,10 +1,31 @@
+import { Link, useLocation } from 'react-router';
 import type { HeadlinePart } from '../../lib/insights';
 import { TONE_TEXT } from '../../lib/tone';
+
+// 突顯：深紅字（--color-highlight）、粗體，沒有底色（2026-11-01 使用者回饋：推薦商品不夠突顯；試過白框不好看）
+const HIGHLIGHT = 'font-bold text-highlight';
+
+function Highlight({ part }: { part: HeadlinePart }) {
+  const location = useLocation();
+  return part.href ? (
+    <Link
+      to={part.href}
+      state={{ from: location.pathname + location.search, fromState: location.state }}
+      className={`${HIGHLIGHT} underline-offset-4 hover:underline`}
+    >
+      {part.text}
+    </Link>
+  ) : (
+    <span className={HIGHLIGHT}>{part.text}</span>
+  );
+}
 
 const Parts = ({ parts }: { parts: HeadlinePart[] }) => (
   <>
     {parts.map((p, i) =>
-      p.tone || p.strong ? (
+      p.highlight ? (
+        <Highlight key={i} part={p} />
+      ) : p.tone || p.strong ? (
         <span key={i} className={`${TONE_TEXT[p.tone ?? 'key']} tabular-nums`}>
           {p.text}
         </span>

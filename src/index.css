@@ -17,6 +17,8 @@
   --color-good-ink: #1f7a43;
   --color-coral: #ec6a60;
   --color-coral-pale: #fde3e0;
+  /* 大標推薦商品名的突顯色（比珊瑚紅深，2026-11-01 使用者指定）；只用在這裡，不代表「壞」 */
+  --color-highlight: #d1372c;
   /* 追蹤清單的代表色（任何頁面上的「加入追蹤」都用它，2026-10-31） */
   --color-watch: #8a6ad9;
   --color-watch-dark: #6b4fc0;
@@ -34,7 +36,7 @@
   --color-p-ink: var(--p-ink);
 }
 
-[data-theme="home"] { --p: #00915a; --p-mid: #8fd0b4; --p-pale: #d6efe3; --p-faint: #f1f9f5; --p-ink: #00744a; }
+[data-theme="home"] { --p: #00915a; --p-mid: #8fd0b4; --p-pale: #d6efe3; --p-faint: #f8fbf9; --p-ink: #00744a; }
 [data-theme="pulse"] { --p: #5b8def; --p-mid: #a9c5f7; --p-pale: #dbe7fd; --p-faint: #f0f5ff; --p-ink: #3466c9; }
 [data-theme="news"] { --p: #2fa58a; --p-mid: #96d8c4; --p-pale: #d5f1e8; --p-faint: #eefaf5; --p-ink: #1f7d68; }
 [data-theme="watch"] { --p: #9a7ee6; --p-mid: #cbb9f4; --p-pale: #ebe3fd; --p-faint: #f7f3ff; --p-ink: #6b4fc0; }
