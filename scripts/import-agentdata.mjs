@@ -10,6 +10,7 @@
 //   news-monitor-work/news-regulatory-monitor.json → feed.json
 //   market-pulse.json                          → market-pulse.json
 //   market-pulse-work/output/pulse.json        → 同業排名（market-pulse 沒有 ranking 指標時補上，格式同後端需求 M7）
+//   manual-data/self-market-share.json（本專案，非後端）→ 法巴歷年市占率指標 self_market_share_history
 // 後端日後直接交這些欄位時，這裡的補充會自動跳過。只使用 Node.js 內建模組。
 
 import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
@@ -307,6 +308,34 @@ function fillFromPulse(pulse, market) {
   if (added.length > 0) console.log(`  市場脈動：由 pulse.json 補上${added.join('、')}`);
 }
 
+/**
+ * 法巴歷年市占率（2026-11-01 使用者提供，manual-data/self-market-share.json）→ 市場脈動指標 self_market_share_history：
+ * 「合計・初年度」每年一點，品牌組。後端日後交同 key 的指標時不覆蓋。
+ */
+async function selfShareHistoryMetric(metrics) {
+  if (metrics.some((m) => isObject(m) && m.key === 'self_market_share_history')) return null;
+  const data = await readJsonOrNull(path.join(ROOT, 'manual-data', 'self-market-share.json'));
+  const values = data?.lines?.['合計']?.first_year;
+  if (!Array.isArray(data?.years) || !Array.isArray(values) || values.length !== data.years.length) return null;
+  const series = data.years.map((y, i) => ({ period: String(y), value: values[i] }));
+  const last = data.years.at(-1);
+  return {
+    key: 'self_market_share_history',
+    group: 'brand',
+    type: 'trend',
+    label: '法巴初年度保費市占率',
+    source: data.source ?? null,
+    source_url: null,
+    as_of: `${last}-12-31`,
+    unit: data.unit ?? '%',
+    latest_value: values.at(-1),
+    change_pct: null,
+    change_unit: 'pp',
+    change_label: null,
+    series,
+  };
+}
+
 async function importMarket(fromDir) {
   const feed = await readJsonOrNull(path.join(fromDir, 'news-monitor-work', 'news-regulatory-monitor.json'));
   if (feed) await writeJson('feed.json', feed);
@@ -320,6 +349,11 @@ async function importMarket(fromDir) {
   if (!Array.isArray(market.metrics)) market.metrics = [];
   const pulse = await readJsonOrNull(path.join(fromDir, 'market-pulse-work', 'output', 'pulse.json'));
   if (pulse) fillFromPulse(pulse, market);
+  const history = await selfShareHistoryMetric(market.metrics);
+  if (history) {
+    market.metrics.push(history);
+    console.log(`  市場脈動：由 manual-data 補上法巴歷年市占率（${history.series.length} 年）`);
+  }
   await writeJson('market-pulse.json', market);
 }
 

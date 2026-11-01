@@ -98,6 +98,7 @@ src/
 │   ├── tasks/               我的待辦
 │   └── watchlist/           追蹤清單（權重滑桿、清單列）
 └── pages/                   各頁面、RootLayout、pageChrome（共用狀態 hooks）、useOnDemand
+manual-data/                 使用者手動提供的資料（非後端）：self-market-share.json（法巴歷年市占率，抄自同資料夾的 PDF），import 時併入市場脈動
 scripts/                     import-agentdata.mjs（agentdata/ → incoming/agentdata/）、sync-reports.mjs（驗證並匯入報告、feed、market-pulse；--replace 整批換新）、mock-api.mjs（本機模擬後端）
 ```
 

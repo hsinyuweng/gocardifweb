@@ -279,16 +279,17 @@ export const zhTW = {
     channel: {
       heading: (v: string) => `銀行通路占 ${v}，是法巴的主力通路`,
     },
-    // 法巴市占率過去五年（2026-11-01）
+    // 法巴歷年市占率（2026-11-01）
     selfShare: {
-      title: '法巴新契約保費市占率（過去五年）',
+      title: '法巴歷年市占率',
+      note: (first: string, last: string) => `${first}–${last}，人壽、傷害、健康、年金合計`,
       years: (n: number) => `近 ${n} 年`,
       sincePeriod: (p: string) => `自 ${p} `,
       from: (v: string) => `從 ${v} `,
       up: '升到 ',
       down: '降到 ',
       pending: '資料準備中',
-      pendingNote: (v: string | null) => (v ? `目前只有最新一期 ${v}，等過去五年的資料` : '等過去五年的資料'),
+      pendingNote: (v: string | null) => (v ? `目前只有最新一期 ${v}，等歷年資料` : '等歷年資料'),
     },
     change: {
       up: '▲',

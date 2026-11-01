@@ -8,7 +8,6 @@ import { ColumnChart } from '../components/charts/ColumnChart';
 import { LineBars } from '../components/charts/LineBars';
 import { LineChart } from '../components/charts/LineChart';
 import { PointLine } from '../components/charts/PointLine';
-import { RankingBars } from '../components/charts/RankingBars';
 import { Lead } from '../components/story/Lead';
 import { ChartCard, ChartTitle } from '../components/story/StorySection';
 import { DataSourceError, normalizeReportIndex } from '../data';
@@ -24,10 +23,6 @@ import {
   periodLong,
   periodText,
   pickMetrics,
-  rankingGapHeading,
-  rankingHeadline,
-  rankingPreview,
-  rankingValue,
   selfShareHeading,
   trendValue,
   yieldChange,
@@ -157,19 +152,11 @@ function SelfShareCard({ p }: { p: Picked }) {
     );
   }
   return (
-    <ChartCard heading={<HeadingParts parts={selfShareHeading(m)} />} note={orDash(m.label)}>
+    <ChartCard
+      heading={<HeadingParts parts={selfShareHeading(m)} />}
+      note={t.selfShare.note(m.points[0]?.period ?? '', m.points.at(-1)?.period ?? '')}
+    >
       <PointLine points={m.points} formatValue={(v) => trendValue(m, v)} ariaLabel={t.selfShare.title} />
-    </ChartCard>
-  );
-}
-
-/** ③ 法巴排名：前 3 名＋法巴前後各 1 名，法巴實心 */
-function RankingCard({ p }: { p: Picked }) {
-  const r = p.ranking;
-  if (!r) return null;
-  return (
-    <ChartCard heading={<HeadingParts parts={rankingHeadline(r)} />} note={rankingGapHeading(r) ?? orDash(r.m.label)}>
-      <RankingBars rows={rankingPreview(r.m, 3, 1)} formatValue={(v) => rankingValue(r.m, v)} ariaLabel={orDash(r.m.label)} />
     </ChartCard>
   );
 }
@@ -200,7 +187,7 @@ function ChannelCard({ p }: { p: Picked }) {
 
 /**
  * 市場脈動（2026-11-01 使用者回饋第二輪：不分頁，一眼看出市場動態）：
- * 大標題＋大卡（最新年增率＋每月直條）→ 圖卡（候選商品險種、法巴市占率過去五年、利率、法巴排名、銀行通路整列）→ 資料來源。
+ * 大標題＋大卡（最新年增率＋每月直條）→ 2×2 圖卡（候選商品險種、法巴歷年市占率、利率、銀行通路）→ 資料來源。
  * 舊分頁網址 `#/market/*` 一律 replace 到 `#/market`。
  */
 export function MarketPage() {
@@ -239,12 +226,9 @@ export function MarketPage() {
             <LinesCard metrics={metrics} rows={rows} />
             <SelfShareCard p={p} />
             <YieldCard p={p} />
-            <RankingCard p={p} />
-            <div className="lg:col-span-2">
-              <ChannelCard p={p} />
-            </div>
+            <ChannelCard p={p} />
           </div>
-          <Sources metrics={[p.yoy, p.amount, p.mix, p.selfShare, p.yieldM, p.ranking?.m, p.channel]} />
+          <Sources metrics={[p.yoy, p.amount, p.mix, p.selfShare, p.yieldM, p.channel]} />
         </>
       );
   }
