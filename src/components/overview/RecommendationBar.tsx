@@ -24,6 +24,7 @@ interface RecommendationBarProps {
 const base = 'inline-flex h-7 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3 ring-1 transition-colors';
 const on = 'bg-p text-white ring-p';
 const off = 'bg-white text-ink ring-line hover:ring-p-mid';
+const faded = 'cursor-not-allowed bg-white text-muted/60 ring-line/60';
 
 const same = (a: BarChoice, b: BarChoice) =>
   a.kind === b.kind && ('key' in a ? 'key' in b && a.key === b.key : true);
@@ -36,14 +37,15 @@ const buttonLabel = (g: RecommendationGroup) => (g.key !== null ? zhTW.overview.
  * 市場、法規是排序（全部商品），各建議與新商品是篩選（依引進分數排）；點一次選取、再點一次回到全部。
  */
 export function RecommendationBar({ groups, active, onSelect, unreadCount }: RecommendationBarProps) {
-  const button = (choice: BarChoice, content: ReactNode, key: string) => {
+  const button = (choice: BarChoice, content: ReactNode, key: string, disabled = false) => {
     const isOn = same(active, choice);
     return (
       <button
         key={key}
         type="button"
         aria-pressed={isOn}
-        className={`${base} ${isOn ? on : off}`}
+        disabled={disabled}
+        className={`${base} ${isOn ? on : disabled ? faded : off}`}
         onClick={() => onSelect(isOn ? { kind: 'all' } : choice)}
       >
         {content}
@@ -71,18 +73,17 @@ export function RecommendationBar({ groups, active, onSelect, unreadCount }: Rec
           `rec-${g.key ?? '__null__'}`,
         );
       })}
-      {/* 新商品（2026-11-02 由「沒看過」改名）：這台瀏覽器還沒打開過的報告；全部看過時不顯示 */}
-      {unreadCount > 0 || unreadOn
-        ? button(
-            { kind: 'unread' },
-            <>
-              <span aria-hidden className="inline-block size-2 rounded-full bg-p" />
-              <span>{zhTW.overview.unread}</span>
-              {count(unreadCount, unreadOn)}
-            </>,
-            'unread',
-          )
-        : null}
+      {/* 新商品（2026-11-02 由「沒看過」改名）：這台瀏覽器還沒打開過的報告；全部看過時變淡、按不下去 */}
+      {button(
+        { kind: 'unread' },
+        <>
+          <span aria-hidden className={`inline-block size-2 rounded-full ${unreadCount > 0 || unreadOn ? 'bg-p' : 'bg-line'}`} />
+          <span>{zhTW.overview.unread}</span>
+          {count(unreadCount, unreadOn)}
+        </>,
+        'unread',
+        unreadCount === 0 && !unreadOn,
+      )}
     </div>
   );
 }
