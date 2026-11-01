@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useElementWidth } from './useElementWidth';
 
 // 直條圖（純 SVG，不用圖表套件）。顏色用目前頁面代表色，強調的那一根深色；
-// signed：成長率這類有好壞的數字，正值綠、負值珊瑚紅（2026-11-01 全站好壞色），強調的那一根實心、其他淡色。
+// signed：成長率這類有好壞的數字，正值藍、負值珊瑚紅（2026-11-01 全站好壞色），強調的那一根實心、其他淡色。
 
 interface ColumnChartProps {
   /** 由舊到新 */

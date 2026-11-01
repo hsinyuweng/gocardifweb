@@ -7,7 +7,7 @@ import { StatusMessage } from '../components/common/StatusMessage';
 import { normalizeReportIndex } from '../data';
 import { zhTW } from '../i18n/zh-TW';
 import { orDash } from '../lib/format';
-import { readFromPath } from '../lib/ownerParam';
+import { readFromPath, readFromState } from '../lib/ownerParam';
 import { readLastReport, saveListScroll, takeListScroll } from '../lib/listReturn';
 import { isUnreviewed, readReviewed, subscribeReviewed } from '../lib/reviewed';
 import {
@@ -38,10 +38,15 @@ export function OverviewPage() {
   const indexState = useIndexState();
 
   const location = useLocation();
-  // 從市場總覽進來時，麵包屑可以點回首頁
-  const fromHome = readFromPath(location.state) === '/';
+  // 從市場總覽或追蹤清單進來時，麵包屑可以點回去（追蹤清單帶回它原本的來源）
+  const from = readFromPath(location.state);
+  const self = { label: zhTW.nav.overview };
   useBreadcrumb(
-    fromHome ? [{ label: zhTW.nav.home, to: '/' }, { label: zhTW.nav.overview }] : [{ label: zhTW.nav.overview }],
+    from === '/'
+      ? [{ label: zhTW.nav.home, to: '/' }, self]
+      : from === '/watchlist'
+        ? [{ label: zhTW.nav.watchlist, to: '/watchlist', state: readFromState(location.state) }, self]
+        : [self],
   );
   // 篩選與排序存在網址：進報告頁再返回時恢復（替換目前紀錄，不新增瀏覽紀錄）
   const [searchParams, setSearchParams] = useSearchParams();

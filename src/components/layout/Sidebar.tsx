@@ -3,6 +3,7 @@ import type { AppMetaViewModel } from '../../types/viewModel';
 import { zhTW } from '../../i18n/zh-TW';
 import { orDash } from '../../lib/format';
 import type { PageTheme } from '../../lib/pageTheme';
+import { PageGlyph, type PageIconName } from '../common/PageIcon';
 
 const t = zhTW.nav;
 
@@ -20,12 +21,12 @@ function navClass({ isActive }: { isActive: boolean }) {
   }`;
 }
 
-/** 導覽項目：前面一個代表色圓點；目前頁用代表色淡底（2026-10-27 視覺改版） */
-function NavItem({ to, theme, label, end }: { to: string; theme: PageTheme; label: string; end?: boolean }) {
+/** 導覽項目：前面是該頁圖示（代表色，2026-11-01 取代色點）；目前頁用代表色淡底 */
+function NavItem({ to, theme, icon, label, end }: { to: string; theme: PageTheme; icon: PageIconName; label: string; end?: boolean }) {
   return (
     <li data-theme={theme}>
       <NavLink to={to} end={end} className={navClass}>
-        <span aria-hidden className="size-2 shrink-0 rounded-full bg-p" />
+        <PageGlyph icon={icon} />
         {label}
       </NavLink>
     </li>
@@ -40,7 +41,7 @@ export function Sidebar({ meta, showRoadmapNav, mobileOpen, onClose }: SidebarPr
         mobileOpen ? 'translate-x-0' : '-translate-x-full'
       }`}
     >
-      <div className="flex h-14 items-center justify-between border-b border-line px-5 text-base font-semibold tracking-wide text-[#3b4a7a]">
+      <div className="flex h-14 items-center justify-between border-b border-line px-5 text-base font-semibold tracking-wide text-brand">
         {zhTW.appName}
         <button
           type="button"
@@ -56,14 +57,14 @@ export function Sidebar({ meta, showRoadmapNav, mobileOpen, onClose }: SidebarPr
 
       <nav className="flex-1 overflow-y-auto px-3 py-4">
         <ul className="space-y-1">
-          <NavItem to="/" end theme="home" label={t.home} />
+          <NavItem to="/" end theme="home" icon="home" label={t.home} />
           {/* 市場脈動在新聞上面（2026-10-27 使用者指定，與首頁四框順序一致） */}
-          <NavItem to="/market" theme="pulse" label={t.market} />
-          <NavItem to="/news" theme="news" label={t.news} />
-          <NavItem to="/watchlist" theme="watch" label={t.watchlist} />
-          <NavItem to="/research" theme="research" label={t.overview} />
+          <NavItem to="/market" theme="pulse" icon="pulse" label={t.market} />
+          <NavItem to="/news" theme="news" icon="news" label={t.news} />
+          <NavItem to="/watchlist" theme="watch" icon="watchlist" label={t.watchlist} />
+          <NavItem to="/research" theme="research" icon="research" label={t.overview} />
           {/* 我的待辦 2026-10-27 V6 從導覽收起（只從報告頁負責單位篩選旁進入，網址照舊） */}
-          <NavItem to="/guide" theme="plain" label={t.guide} />
+          <NavItem to="/guide" theme="plain" icon="guide" label={t.guide} />
         </ul>
 
         {showRoadmapNav ? (

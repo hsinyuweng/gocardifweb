@@ -75,7 +75,7 @@ export function GuidePage() {
         <Card title={t.colorsTitle}>
           <ul className="space-y-2.5">
             {t.colors.map((c) => (
-              <li key={c.key} className="flex items-center gap-3" data-theme={c.key === 'key' ? 'pulse' : undefined}>
+              <li key={c.key} className="flex items-center gap-3" data-theme={c.key === 'key' ? 'research' : undefined}>
                 <span aria-hidden className={`h-4 w-10 shrink-0 rounded-md ${COLOR_CHIP[c.key]}`} />
                 <span className="font-medium text-ink">{c.name}</span>
                 <span className="text-[13.5px] text-ink2">{c.body}</span>

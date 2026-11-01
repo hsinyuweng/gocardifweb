@@ -24,7 +24,8 @@ export function DetailTabs({ details, active, onChange, onBackToCards, ref }: De
   return (
     <section ref={ref} className="scroll-mt-20 rounded-xl border border-line bg-white">
       <div className="flex items-center justify-between gap-2 border-b border-line px-2 print:hidden">
-      <div role="tablist" className="flex min-w-0 overflow-x-auto">
+      {/* overflow-y-hidden：左右捲動會讓上下也變成可捲動，分頁籤 -mb-px 多出的 1px 會在 Windows／Linux 冒出上下捲軸 */}
+      <div role="tablist" className="flex min-w-0 overflow-x-auto overflow-y-hidden">
         {ORDER.map((key) => {
           const selected = key === active;
           return (

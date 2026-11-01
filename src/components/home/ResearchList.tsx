@@ -29,7 +29,7 @@ const blockerLine = (r: OverviewRow) => (
 
 /**
  * 競品研究框（2026-11-01 使用者回饋：直接寫推薦、和其他件分清楚）：
- * 推薦的商品放最上面（粗字、綠色實心標籤），粗分隔線下面是其餘商品（灰色，寫卡在哪裡）；每件右側寫引進分數。
+ * 推薦的商品放最上面（粗字、藍色實心標籤），粗分隔線下面是其餘商品（灰色，寫卡在哪裡）；每件右側寫引進分數。
  */
 export function ResearchList({ rows, groups }: { rows: OverviewRow[]; groups: RecommendationGroup[] }) {
   const rec = rows.filter((r) => isRecommended(r.recommendationKey));

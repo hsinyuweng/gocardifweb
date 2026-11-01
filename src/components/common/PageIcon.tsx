@@ -53,3 +53,21 @@ export function PageBadge({ icon, size = 'lg' }: { icon: PageIconName; size?: 'l
     </span>
   );
 }
+
+/** 只有線條、沒有底色的圖示，顏色用目前頁面代表色（側欄，2026-11-01 取代色點） */
+export function PageGlyph({ icon }: { icon: PageIconName }) {
+  return (
+    <svg
+      viewBox="0 0 20 20"
+      className="size-[18px] shrink-0 text-p"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      {PATHS[icon]}
+    </svg>
+  );
+}

@@ -19,7 +19,7 @@ function readFromLabel(state: unknown): string | null {
   return typeof label === 'string' ? label : null;
 }
 
-/** 追蹤清單（2026-10-20 新規劃；2026-11-01 使用者回饋：拿掉綜合分數與看重切換，固定依建議 → 阻斷少 → 潛在市場大排序） */
+/** 追蹤清單（2026-10-20 新規劃；2026-11-01 使用者回饋：依引進分數排序，頁首右側「＋ 到競品研究加入商品」） */
 export function WatchlistPage() {
   const location = useLocation();
   const from = readFromPath(location.state);
@@ -67,7 +67,7 @@ export function WatchlistPage() {
     body = (
       <div className="space-y-2 rounded-xl border border-line bg-white px-5 py-4">
         <p className="text-ink2">{t.empty}</p>
-        <Link to="/research" className="text-sm text-p-ink hover:underline">
+        <Link to="/research" state={{ from: location.pathname + location.search, fromState: location.state }} className="text-sm text-p-ink hover:underline">
           {t.goResearch}
         </Link>
       </div>
@@ -94,6 +94,16 @@ export function WatchlistPage() {
         icon="watchlist"
         title={t.title}
         desc={zhTW.pageDesc.watchlist}
+        aside={
+          // 直接到競品研究挑商品加入（2026-11-01 使用者回饋）；競品研究的麵包屑可回到這裡
+          <Link
+            to="/research"
+            state={{ from: location.pathname + location.search, fromState: location.state }}
+            className="inline-flex h-9 items-center rounded-full bg-watch px-4 text-[13.5px] font-medium text-white hover:bg-watch-dark"
+          >
+            {t.addFromResearch}
+          </Link>
+        }
       />
       {removed ? (
         <p className="rounded-md bg-line px-4 py-2 text-sm text-ink" role="status">
