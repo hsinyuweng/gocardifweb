@@ -3,6 +3,7 @@ import type { RecommendationGroup } from '../../types/viewModel';
 import { zhTW } from '../../i18n/zh-TW';
 import { DOT_CLASS } from '../../lib/signalColor';
 import { orDash } from '../../lib/format';
+import { groupsByRank } from '../../lib/researchStory';
 
 /** 列上目前選的那一個（一次只選一個，2026-11-02 使用者要求） */
 export type BarChoice =
@@ -57,7 +58,8 @@ export function RecommendationBar({ groups, active, onSelect, unreadCount }: Rec
       {button({ kind: 'all' }, zhTW.overview.all, 'all')}
       {button({ kind: 'sort', key: 'market' }, zhTW.overview.sortMarket, 'market')}
       {button({ kind: 'sort', key: 'feasibility' }, zhTW.overview.sortLegal, 'legal')}
-      {groups.map((g) => {
+      {/* 建議由好到壞：有條件推進在暫緩推進前面 */}
+      {groupsByRank(groups).map((g) => {
         const choice: BarChoice = { kind: 'rec', key: g.key };
         return button(
           choice,
