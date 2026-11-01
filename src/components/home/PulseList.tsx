@@ -1,51 +1,38 @@
-import type { PulseMetricViewModel, PulseTrendViewModel } from '../../types/viewModel';
+import type { PulseMetricViewModel } from '../../types/viewModel';
 import { zhTW } from '../../i18n/zh-TW';
-import { formatPulseValue, orDash, pulseChangeWithLabel, shortPeriodLabels } from '../../lib/format';
+import { formatPulseValue, formatSharePct, orDash } from '../../lib/format';
+import { growthLeaders, periodText, shareMetrics } from '../../lib/marketStory';
 import { homeMetrics, pulseDigits } from '../../lib/pulse';
-import { ColumnChart } from '../charts/ColumnChart';
-import { StaleTag } from '../market/StaleTag';
 import { KeyLine } from './HomeCard';
 
-const COLUMN_LIMIT = 12;
-const OTHERS_LIMIT = 3;
+const t = zhTW.home;
 
 /**
- * 市場脈動框（2026-10-27 視覺改版）：首頁指標的最新值（珊瑚色）＋變化、每期直條圖（最新一期珊瑚色）；
- * 最下面一行列其他單線指標的最新值。
+ * 市場脈動框（2026-11-01 顯示資料整理）：只留一個結論——哪個險種新契約保費年增最快（對應商品的險種），
+ * 下面一行列整體年增率。不放圖。
  */
 export function PulseList({ metrics }: { metrics: PulseMetricViewModel[] }) {
+  const share = shareMetrics(metrics)[0];
+  const lead = share ? growthLeaders(share) : null;
   const main = homeMetrics(metrics)[0];
-  if (!main) return <p className="text-muted">{zhTW.home.noMetrics}</p>;
-
-  const digits = pulseDigits(main.group);
-  const fmt = (v: number) => formatPulseValue(v, main.unit, digits);
-  const points = main.points.slice(-COLUMN_LIMIT);
-  const others = metrics
-    .filter((m): m is PulseTrendViewModel => m.type === 'trend' && m !== main && m.latestValue !== null)
-    .slice(0, OTHERS_LIMIT)
-    .map((m) => `${orDash(m.label)} ${formatPulseValue(m.latestValue, m.unit, pulseDigits(m.group))}`)
-    .join(zhTW.home.listSeparator);
-
+  if (!lead && !main) return <p className="text-muted">{t.noMetrics}</p>;
+  const period = periodText(share?.periods.at(-1)?.period ?? null);
+  const others = lead
+    ? (share!.periods.at(-1)?.parts ?? [])
+        .filter((p) => p.name && p.name !== lead.fastest.name && p.growthPct !== null)
+        .sort((a, b) => b.growthPct! - a.growthPct!)
+        .map((p) => `${p.name} ${formatSharePct(p.growthPct!)}`)
+        .join(t.listSeparator)
+    : null;
   return (
     <>
-      <KeyLine num={formatPulseValue(main.latestValue, main.unit, digits)} coral>
-        {orDash(main.label)}
-        {main.change !== null ? `，${pulseChangeWithLabel(main.change, main.changeUnit, digits, main.changeLabel)}` : null}
-        {main.stale ? <StaleTag /> : null}
-      </KeyLine>
-      {points.length >= 2 ? (
-        <ColumnChart
-          values={points.map((p) => p.value)}
-          labels={shortPeriodLabels(points.map((p) => p.period))}
-          highlight={points.length - 1}
-          formatValue={fmt}
-          height={120}
-          ariaLabel={orDash(main.label)}
-        />
+      {lead ? (
+        <KeyLine num={formatSharePct(lead.fastest.growthPct!)}>{t.pulseFastest(period, orDash(lead.fastest.name))}</KeyLine>
       ) : null}
-      {others ? (
-        <p className="mt-auto truncate text-[13px] text-ink2" title={others}>
-          {others}
+      {others ? <p className="text-[13px] text-ink2">{t.pulseOthers(others)}</p> : null}
+      {main && main.latestValue !== null ? (
+        <p className="mt-auto text-[13px] text-ink2">
+          {t.pulseOverall(orDash(main.label), formatPulseValue(main.latestValue, main.unit, pulseDigits(main.group)))}
         </p>
       ) : null}
     </>

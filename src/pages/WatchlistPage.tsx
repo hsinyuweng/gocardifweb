@@ -60,8 +60,8 @@ export function WatchlistPage() {
   );
   const { ranked, missing } = useMemo(() => buildCandidates(ids, rows, weights), [ids, rows, weights]);
   const hasBrandFit = anyBrandFitScore(ranked.map((c) => c.row));
-  // 所有候選都沒有品牌分數時不顯示品牌欄
-  const dims = hasBrandFit ? DIMENSIONS : DIMENSIONS.filter((k) => k !== 'brandFit');
+  // 所有候選都沒有品牌分數時不顯示品牌欄；市場成長各商品都一樣（同一個市場數字），比較表不列（2026-11-01）
+  const dims = DIMENSIONS.filter((k) => k !== 'marketGrowth' && (hasBrandFit || k !== 'brandFit'));
   const sorted = useMemo(() => sortCandidates(ranked, sortKey, sortDir), [ranked, sortKey, sortDir]);
   const rankOf = (id: string) => ranked.findIndex((c) => c.row.reportId === id) + 1;
   // 一行說明：哪些面向還沒有資料

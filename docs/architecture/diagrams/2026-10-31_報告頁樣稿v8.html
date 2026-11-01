@@ -1,0 +1,256 @@
+<title>報告頁樣稿 v8</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600&display=swap">
+<style>
+/* 版面概念：第一個畫面只回答「結論是什麼、卡在哪、先做什麼」；其餘全部放在「詳細資料」分隔線下面。
+   沿用 v7 設計：競品研究黃色頁、白卡、珊瑚色只給一個重點（阻斷件數）。樣稿刻意只做淺色。 */
+:root {
+  --bg: #eef0f5; --base: #fafbfd; --card: #ffffff;
+  --ink: #2a3142; --ink2: #5a6275; --muted: #8a92a3; --line: #e8eaf1;
+  --p: #d9962a; --p-mid: #f1cf8a; --p-pale: #fbecc8; --p-faint: #fff8e8; --p-ink: #9a640f;
+  --lilac: #9a7ee6; --lilac-pale: #ebe3fd; --lilac-ink: #6b4fc0;
+  --coral: #ec6a60; --coral-pale: #fde3e0;
+  --sig-yellow: #e6a817; --sig-green: #2fa58a; --sig-orange: #f08a3c; --sig-gray: #a3aaba;
+  --indigo: #3b4a7a;
+  --font: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 14px; line-height: 1.65; margin: 0; }
+.wrap { max-width: 1340px; margin: 0 auto; padding-block: 36px 72px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+/* 樣稿說明 */
+.intro { display: grid; gap: 14px; max-width: 980px; }
+.intro h1 { font-size: 22px; font-weight: 600; margin: 0; }
+.intro p { margin: 0; color: var(--ink2); }
+.changes { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; margin: 6px 0 0; padding: 0; list-style: none; }
+.changes li { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: grid; gap: 2px; }
+.changes b { font-weight: 500; }
+.changes span { color: var(--ink2); font-size: 13px; }
+.mock-label { display: flex; align-items: baseline; gap: 12px; margin: 40px 0 12px; flex-wrap: wrap; }
+.mock-label span { font-size: 16px; font-weight: 600; }
+.mock-label small { color: var(--muted); font-size: 13px; }
+
+.scroller { overflow-x: auto; border-radius: 14px; box-shadow: 0 1px 2px rgba(38,45,61,.05), 0 10px 30px rgba(38,45,61,.07); }
+.frame { position: relative; min-width: 1240px; display: grid; grid-template-columns: 208px 1fr; background: var(--base); }
+.fold { position: absolute; left: 0; right: 0; top: 860px; border-top: 2px dashed var(--coral); z-index: 3; pointer-events: none; }
+.fold span { position: absolute; right: 16px; top: -26px; font-size: 12px; color: var(--coral); background: var(--card); padding: 0 8px; border-radius: 4px; }
+
+.side { background: var(--card); border-right: 1px solid var(--line); padding: 22px 14px; display: grid; align-content: start; gap: 4px; }
+.side .brand { color: var(--indigo); font-weight: 600; padding: 0 10px 18px; margin-bottom: 6px; border-bottom: 1px solid var(--line); }
+.side .nav { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; color: var(--ink2); }
+.side .nav i { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.side .nav.on { background: var(--p-pale); color: var(--ink); font-weight: 500; }
+
+.main { min-width: 0; background: var(--p-faint); display: flex; flex-direction: column; }
+.crumbbar { display: flex; align-items: center; gap: 12px; padding: 12px 48px; background: var(--card); border-bottom: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+.crumbbar b { color: var(--ink); font-weight: 500; }
+.crumbbar .pager { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+.btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 999px; padding: 4px 12px; font-size: 13px; cursor: pointer; font-family: inherit; }
+.content { padding: 22px 48px 56px; display: grid; gap: 20px; }
+
+/* 頁首 */
+.head { display: flex; gap: 24px; align-items: flex-end; }
+.head .who { display: grid; gap: 4px; min-width: 0; }
+.back { color: var(--p-ink); font-size: 13px; }
+.head h2 { margin: 0; font-size: 24px; font-weight: 600; line-height: 1.3; }
+.head .meta { color: var(--ink2); font-size: 13px; }
+.watch { margin-left: auto; background: var(--lilac); color: #fff; border: 0; border-radius: 999px; padding: 9px 18px; font-size: 14px; font-weight: 500; font-family: inherit; white-space: nowrap; }
+
+/* ② 結論 */
+.verdict { background: var(--card); border: 1px solid var(--p-pale); border-radius: 16px; padding: 24px 28px; display: grid; gap: 10px; }
+.pill { justify-self: start; display: inline-flex; align-items: center; gap: 8px; background: var(--p-pale); color: var(--p-ink); border-radius: 999px; padding: 4px 14px; font-size: 14px; font-weight: 500; }
+.pill i { width: 9px; height: 9px; border-radius: 50%; background: var(--sig-yellow); }
+.verdict h3 { margin: 0; font-size: 30px; font-weight: 500; line-height: 1.35; text-wrap: balance; }
+
+/* ③ 三面向：只放燈號和一行 */
+.facets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.facet { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 20px; display: grid; gap: 4px; }
+.facet .k { color: var(--muted); font-size: 13px; }
+.facet .v { display: flex; align-items: center; gap: 8px; font-size: 20px; font-weight: 500; }
+.facet .v i { width: 10px; height: 10px; border-radius: 50%; }
+.facet .s { color: var(--ink2); font-size: 13px; }
+.facet .go { color: var(--p-ink); font-size: 13px; }
+
+/* ④ 先解決 */
+.todo { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 20px 28px; display: grid; gap: 6px; }
+.todo h4 { margin: 0 0 4px; font-size: 18px; font-weight: 500; }
+.todo h4 em { font-style: normal; color: var(--coral); font-weight: 600; }
+.todo ol { margin: 0; padding: 0; list-style: none; display: grid; }
+.todo li { display: grid; grid-template-columns: 28px 1fr; gap: 2px 8px; padding: 10px 0; border-top: 1px solid var(--line); }
+.todo li:first-child { border-top: 0; }
+.todo .n { grid-row: span 2; width: 22px; height: 22px; border-radius: 50%; background: var(--coral-pale); color: var(--coral); font-size: 12px; font-weight: 600; display: grid; place-items: center; margin-top: 2px; }
+.todo .t { font-weight: 500; }
+.todo .a { color: var(--ink2); font-size: 13px; }
+.todo .more { color: var(--p-ink); font-size: 13px; }
+
+/* ⑤ 分隔線 */
+.divider { display: flex; align-items: center; gap: 14px; margin-top: 8px; color: var(--ink2); font-size: 14px; }
+.divider::before, .divider::after { content: ""; flex: 1; border-top: 1px solid var(--p-mid); }
+.divider b { font-weight: 500; color: var(--ink); }
+
+/* 詳細資料（樣稿只示意順序） */
+.detail { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px 24px; display: grid; gap: 8px; }
+.detail h5 { margin: 0; font-size: 17px; font-weight: 500; }
+.detail p, .detail ul { margin: 0; color: var(--ink2); }
+.detail ul { padding-left: 20px; }
+.ghost { color: var(--muted); font-size: 12.5px; }
+.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tbl th { text-align: left; font-weight: 500; color: var(--muted); padding: 6px 8px; border-bottom: 1px solid var(--line); }
+.tbl td { padding: 7px 8px; border-bottom: 1px solid var(--line); color: var(--ink); vertical-align: top; }
+.sev { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.sev i { width: 8px; height: 8px; border-radius: 50%; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.foot { color: var(--muted); font-size: 12.5px; display: flex; gap: 16px; }
+.foot u { text-decoration: none; color: var(--p-ink); }
+
+.notes { margin-top: 28px; display: grid; gap: 8px; max-width: 980px; }
+.notes h2 { font-size: 16px; font-weight: 600; margin: 0; }
+.notes ul { margin: 0; padding-left: 20px; color: var(--ink2); }
+@media (max-width: 640px) { .intro h1 { font-size: 19px; } }
+</style>
+
+<div class="wrap">
+  <section class="intro">
+    <h1>報告頁樣稿 v8：重點一次看完，細節往下捲</h1>
+    <p>用真實報告「盛裕精英定期壽險II（限期繳費）」示範。紅色虛線是 1440×900 螢幕第一個畫面的底部：線上面只回答三件事，<b>結論是什麼、卡在哪裡、先做什麼</b>。</p>
+    <ul class="changes">
+      <li><b>結論變成最大的一塊</b><span>燈號和一句話單獨一張卡，字最大，眼睛第一個看這裡。</span></li>
+      <li><b>三面向只剩燈號＋一行</b><span>拿掉說明段落、紅黃綠長條、等級圖例和被截斷的「…」，細節移到下面。</span></li>
+      <li><b>「先解決的 3 件事」取代判斷理由</b><span>判斷理由和待解決表其實講同一件事，第一個畫面只放最前面 3 件。</span></li>
+      <li><b>紅色只用一次</b><span>只標「6 項阻斷」，其他地方都不用紅。</span></li>
+      <li><b>頁首按鈕從 5 個減到 2 個</b><span>留「上一份／下一份」和「加入追蹤清單」；列印移到頁面最下面。</span></li>
+      <li><b>一條「詳細資料」分隔線</b><span>線下面依序是判斷理由、全部待解決、台灣競品、三面向細節、原始資料。</span></li>
+    </ul>
+  </section>
+
+  <div class="mock-label"><span>報告頁（新）</span><small>寬 1440 的畫面，左右可捲動</small></div>
+  <div class="scroller">
+    <div class="frame">
+      <div class="fold"><span>第一個畫面到這裡為止（1440×900）</span></div>
+      <nav class="side">
+        <div class="brand">Cardif 商品引入評估</div>
+        <div class="nav"><i style="background:var(--indigo)"></i>市場總覽</div>
+        <div class="nav"><i style="background:#5b8def"></i>市場脈動</div>
+        <div class="nav"><i style="background:#2fa58a"></i>新聞與法規監控</div>
+        <div class="nav"><i style="background:var(--lilac)"></i>追蹤清單</div>
+        <div class="nav on"><i style="background:var(--p)"></i>競品研究</div>
+        <div class="nav"><i style="background:#6b7489"></i>使用說明</div>
+      </nav>
+
+      <main class="main">
+        <div class="crumbbar">
+          <span>競品研究</span><span>/</span><b>盛裕精英定期壽險II（限期繳費）</b>
+          <span class="pager"><button class="btn" type="button">‹ 上一份</button><span>6 / 8</span><button class="btn" type="button">下一份 ›</button></span>
+        </div>
+
+        <div class="content">
+          <!-- ① 在哪裡 -->
+          <div class="head">
+            <div class="who">
+              <span class="back">← 回競品研究</span>
+              <h2>盛裕精英定期壽險II（限期繳費）</h2>
+              <span class="meta">Singapore Life Ltd. ・ 新加坡 ・ 傳統壽險（限期繳費定期壽險）・ 期繳 ・ 產出日期 2026-10-30</span>
+            </div>
+            <button class="watch" type="button">☆ 加入追蹤清單</button>
+          </div>
+
+          <!-- ② 結論 -->
+          <section class="verdict">
+            <span class="pill"><i></i>暫緩，待補資料</span>
+            <h3>需求有限且關鍵送審資料未備，暫緩推進。</h3>
+          </section>
+
+          <!-- ③ 三面向 -->
+          <section class="facets">
+            <div class="facet">
+              <span class="k">市場需求</span>
+              <span class="v"><i style="background:var(--sig-yellow)"></i>有限需求</span>
+              <span class="s">信心 C 級（A 最高）</span>
+              <span class="go">看細節 ↓</span>
+            </div>
+            <div class="facet">
+              <span class="k">發生率暨獲利</span>
+              <span class="v"><i style="background:var(--sig-green)"></i>證據充分</span>
+              <span class="s">低度可比，1 項定價提示</span>
+              <span class="go">看細節 ↓</span>
+            </div>
+            <div class="facet">
+              <span class="k">法規適用</span>
+              <span class="v"><i style="background:var(--sig-yellow)"></i>待確認</span>
+              <span class="s">紅燈 0、黃燈 4、待補 10</span>
+              <span class="go">看細節 ↓</span>
+            </div>
+          </section>
+
+          <!-- ④ 先解決 -->
+          <section class="todo">
+            <h4>要推進，得先解決 <em>6 項阻斷</em>，最前面 3 件：</h4>
+            <ol>
+              <li><span class="n">1</span><span class="t">保證利率／預定利率與臺灣版計價幣別未提供</span><span class="a">補計價幣別、保證／預定利率、責任準備金與簽署精算意見。</span></li>
+              <li><span class="n">2</span><span class="t">未成年給付與承保年齡資料未提供</span><span class="a">補最低承保年齡、未成年給付類型與保額上限。</span></li>
+              <li><span class="n">3</span><span class="t">分紅狀態及正式條款／商品摘要未提供</span><span class="a">補正式條款或商品摘要確認分紅狀態及揭露。</span></li>
+            </ol>
+            <span class="more">看全部 11 項（阻斷 6、注意 5）↓</span>
+          </section>
+
+          <!-- ⑤ 分隔線 -->
+          <div class="divider"><b>詳細資料</b>判斷理由・全部待解決・台灣競品・三面向細節・原始資料 ↓</div>
+
+          <section class="detail">
+            <h5>判斷理由</h5>
+            <ul>
+              <li>法規適用：「保證利率／預定利率」缺臺灣版計價幣別、保證／預定利率與準備金資料</li>
+              <li>市場需求：需求結論信心為 C 級</li>
+              <li>法規適用：4 項黃燈、10 項待補</li>
+            </ul>
+            <p><b style="font-weight:500;color:var(--ink)">商品機制：</b>可選5年、10年或繳至65／75歲，保障至99歲；身故或末期疾病一次給付，99歲返還主約已繳保費100%，第3年起有解約給付。</p>
+          </section>
+
+          <section class="detail">
+            <h5>全部待解決事項（11 項）</h5>
+            <table class="tbl">
+              <thead><tr><th>嚴重度</th><th>面向</th><th>事項</th><th>處理方式</th></tr></thead>
+              <tbody>
+                <tr><td><span class="sev"><i style="background:var(--sig-orange)"></i>阻斷</span></td><td>法規適用</td><td>保證利率／預定利率與臺灣版計價幣別未提供</td><td>補計價幣別、保證／預定利率、責任準備金與簽署精算意見。</td></tr>
+                <tr><td><span class="sev"><i style="background:var(--sig-orange)"></i>阻斷</span></td><td>法規適用</td><td>未成年給付與承保年齡資料未提供</td><td>補最低承保年齡、未成年給付類型與保額上限。</td></tr>
+                <tr><td><span class="sev"><i style="background:var(--sig-orange)"></i>阻斷</span></td><td>法規適用</td><td>分紅狀態及正式條款／商品摘要未提供</td><td>補正式條款或商品摘要確認分紅狀態及揭露。</td></tr>
+                <tr><td colspan="4" class="ghost">……其餘 8 項（和現在網站一樣的表格）</td></tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section class="detail">
+            <h5>台灣有 3 項直接競品</h5>
+            <p>樂活安鑫美元利率變動型終身保險・多美旺美元養老保險・好安心終身保險</p>
+            <span class="ghost">（比較表與差異分析，和現在網站一樣）</span>
+          </section>
+
+          <section class="detail">
+            <h5>三面向細節</h5>
+            <span class="ghost">（市場需求／發生率暨獲利調查／法規適用 三個分頁，和現在網站一樣；上面三張卡的「看細節 ↓」會直接打開對應分頁）</span>
+          </section>
+
+          <div class="two">
+            <section class="detail"><h5>資料缺口</h5><span class="ghost">（和現在一樣）</span></section>
+            <section class="detail"><h5>商品原始資料（8 份）</h5><span class="ghost">（和現在一樣）</span></section>
+          </div>
+
+          <div class="foot"><span>免責聲明：本報告為原始商品資料三個審查結果之整合摘要…</span><u>列印／另存 PDF</u><u>↑ 回到頁首</u></div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <section class="notes">
+    <h2>確認後，其他頁照同一條規則改</h2>
+    <ul>
+      <li>第一個畫面只放：一句結論、最多 3 個重點、一個主要內容（圖或清單）。</li>
+      <li>重點數字卡裡不放圖、不放說明段落、不出現「…」截斷。</li>
+      <li>同一件事在第一個畫面只講一次；紅色只標一個地方。</li>
+      <li>其餘內容都放在「詳細資料」分隔線下面。</li>
+    </ul>
+  </section>
+</div>

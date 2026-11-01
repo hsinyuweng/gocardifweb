@@ -1,11 +1,13 @@
 import type { KeyNumber } from '../../lib/marketStory';
 import { Sparkline } from '../charts/Sparkline';
 
+const COLS: Record<number, string> = { 1: 'md:grid-cols-1', 2: 'md:grid-cols-2', 3: 'md:grid-cols-3' };
+
 /** 閱讀路徑 ③「關鍵數字」：3–4 個白卡並排，小標、數字（30px）、變化，可加迷你線（2026-10-27 視覺改版） */
 export function KeyNumbers({ items }: { items: KeyNumber[] }) {
   if (items.length === 0) return null;
   return (
-    <div className="grid grid-cols-2 gap-3.5 md:grid-cols-4">
+    <div className={`grid grid-cols-2 gap-3.5 ${COLS[items.length] ?? 'md:grid-cols-4'}`}>
       {items.map((k) => (
         <div key={k.key} className="min-w-0 rounded-xl border border-line bg-white px-[18px] pt-3.5 pb-3">
           <p className="truncate text-[12.5px] text-muted" title={k.label}>

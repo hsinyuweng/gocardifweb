@@ -28,6 +28,10 @@ export interface RawReportIndexEntry {
     blocking?: Nullable<number>;
     warning?: Nullable<number>;
   }>;
+  /** 台灣直接競品件數（sync 由 competitor_comparison 計算）；報告沒有比較時為 null */
+  direct_competitor_count?: Nullable<number>;
+  /** 最嚴重的一項待解決事項標題（重大優先，其次阻斷） */
+  top_blocker?: Nullable<string>;
 }
 
 export interface ReportIndex {

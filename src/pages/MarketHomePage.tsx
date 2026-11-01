@@ -13,7 +13,7 @@ import { orDash } from '../lib/format';
 import { recentFeed } from '../lib/feedSummary';
 import { homeHeadline } from '../lib/insights';
 import { buildCandidates } from '../lib/score';
-import { rankRows } from '../lib/researchStory';
+import { rankRows, researchHeadline } from '../lib/researchStory';
 import { readWatchlist, subscribeWatchlist } from '../lib/watchlist';
 import { PRESET_WEIGHTS, readPreset, subscribePreset } from '../lib/weights';
 import { errorText, useBreadcrumb, useFeed, useIndexState, useMarketPulse } from './pageChrome';
@@ -34,7 +34,7 @@ function cardBody<T>(state: LoadState<T>, render: (data: T) => ReactNode): React
 
 /**
  * 市場總覽（首頁，2026-10-20 新規劃，規格 D1；2026-10-27 視覺改版）。
- * 1440×900 一個畫面看完：頁首、一句結論、四框依 Z 字順序（市場脈動、新聞與法規監控、追蹤清單、競品研究）。
+ * 1440×900 一個畫面看完：頁首、一句商品結論、四框（2026-11-01：競品研究、追蹤清單、新聞與法規監控、市場脈動）。
  * 市場脈動讀市場指標；新聞與法規監控讀動態清單；追蹤清單、競品研究用報告清單。
  */
 export function MarketHomePage() {
@@ -49,8 +49,8 @@ export function MarketHomePage() {
     () => (indexState.status === 'ok' ? normalizeReportIndex(indexState.index) : null),
     [indexState],
   );
-  // 競品研究框：建議由好到壞、再依綜合分數（2026-10-31 取代未審閱）
-  const rankedRows = useMemo(() => rankRows(vm?.rows ?? [], weights), [vm, weights]);
+  // 競品研究框：建議由好到壞、再依法規可行性（2026-11-01）
+  const rankedRows = useMemo(() => rankRows(vm?.rows ?? []), [vm]);
   const candidates = useMemo(() => buildCandidates(watchlist, vm?.rows ?? [], weights), [watchlist, vm, weights]);
   // 還沒追蹤任何商品時，列綜合分數最高的 3 件當建議（2026-10-31）
   const suggestions = useMemo(() => {
@@ -74,13 +74,16 @@ export function MarketHomePage() {
       <ResearchList rows={rankedRows} groups={vm?.recommendationGroups ?? []} />
     ));
 
+  // 一句結論是商品結論（2026-11-01）；沒有報告時才用市場數字
   const headline = useMemo(
     () =>
-      homeHeadline(
-        pulseState.status === 'ok' ? pulseState.data : null,
-        feedState.status === 'ok' ? recentFeed(feedState.data) : null,
-      ),
-    [pulseState, feedState],
+      vm && vm.rows.length > 0
+        ? researchHeadline(vm.rows, vm.recommendationGroups)
+        : homeHeadline(
+            pulseState.status === 'ok' ? pulseState.data : null,
+            feedState.status === 'ok' ? recentFeed(feedState.data) : null,
+          ),
+    [vm, pulseState, feedState],
   );
 
   return (
@@ -93,23 +96,19 @@ export function MarketHomePage() {
       />
       {headline ? <Lead parts={headline} /> : null}
       {/* 2×2 依 Z 字順序（2026-10-27 使用者確認）；窄螢幕一欄同順序 */}
+      {/* 2026-11-01：商品在上（競品研究、追蹤清單），市場資訊在下（新聞只看法規、市場脈動） */}
       <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:auto-rows-fr lg:grid-cols-2">
-        <HomeCard theme="pulse" icon="pulse" title={t.cards.pulse} to="/market">
-          {cardBody(pulseState, (pulse) => <PulseList metrics={pulse.metrics} />)}
-        </HomeCard>
-        <HomeCard theme="news" icon="news" title={t.cards.news} to="/news">
-          {cardBody(feedState, (feed) => <NewsList feed={feed} />)}
+        <HomeCard theme="research" icon="research" title={t.cards.research} to="/research">
+          {researchBody}
         </HomeCard>
         <HomeCard theme="watch" icon="watchlist" title={t.cards.watchlist} to="/watchlist">
           {watchBody}
         </HomeCard>
-        <HomeCard
-          theme="research"
-          icon="research"
-          title={t.cards.research}
-          to="/research"
-        >
-          {researchBody}
+        <HomeCard theme="news" icon="news" title={t.cards.news} to="/news">
+          {cardBody(feedState, (feed) => <NewsList feed={feed} />)}
+        </HomeCard>
+        <HomeCard theme="pulse" icon="pulse" title={t.cards.pulse} to="/market">
+          {cardBody(pulseState, (pulse) => <PulseList metrics={pulse.metrics} />)}
         </HomeCard>
       </div>
     </div>

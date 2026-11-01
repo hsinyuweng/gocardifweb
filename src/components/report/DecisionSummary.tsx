@@ -93,10 +93,12 @@ export function ReportReasons({ summary: s }: { summary: DecisionSummaryViewMode
           ) : null}
         </p>
       ) : null}
-      <p className="border-t border-line pt-2.5 text-[13px] text-ink2">
-        <span className="font-medium text-ink">{t.mechanism}：</span>
-        {orDash(s.mechanismSummary)}
-      </p>
+      {s.mechanismSummary ? (
+        <p className="border-t border-line pt-2.5 text-[13px] text-ink2">
+          <span className="font-medium text-ink">{t.mechanism}：</span>
+          {s.mechanismSummary}
+        </p>
+      ) : null}
       <GradeNote>{confidenceNote(levels)}</GradeNote>
     </div>
   );

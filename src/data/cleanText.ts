@@ -164,10 +164,13 @@ export function cleanReport(r: Report): Report {
 
 export function cleanReportIndex(index: ReportIndex): ReportIndex {
   const reports = index.reports.map((e) => {
-    const ds = e?.dimension_scores;
-    if (!ds) return e;
+    if (!e) return e;
+    const ds = e.dimension_scores;
+    const top = e.top_blocker ? { top_blocker: stripLeadingCode(e.top_blocker) as string } : {};
+    if (!ds) return { ...e, ...top };
     return {
       ...e,
+      ...top,
       dimension_scores: {
         ...ds,
         market_size: splitSourceUrl(ds.market_size),

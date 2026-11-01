@@ -2,7 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { useLocation } from 'react-router';
 import type { AppMetaViewModel } from '../../types/viewModel';
 import { themeForPath } from '../../lib/pageTheme';
-import { Sidebar, type MyUnitControl } from './Sidebar';
+import { Sidebar } from './Sidebar';
 import { TopBar, type BreadcrumbItem, type TopBarNotice } from './TopBar';
 
 interface AppShellProps {
@@ -10,7 +10,6 @@ interface AppShellProps {
   showRoadmapNav: boolean;
   breadcrumb: BreadcrumbItem[];
   notices: TopBarNotice[];
-  myUnit: MyUnitControl;
   actionSlotRef: (el: HTMLDivElement | null) => void;
   children: ReactNode;
 }
@@ -20,7 +19,7 @@ interface AppShellProps {
  * 寬度 1024px 以下：側邊導覽收合為選單按鈕，點開後由左側滑出（第 4 節 RWD）。
  * 整頁底色＝目前頁面代表色的極淡色（2026-10-27 視覺改版，lib/pageTheme.ts）。
  */
-export function AppShell({ meta, showRoadmapNav, breadcrumb, notices, myUnit, actionSlotRef, children }: AppShellProps) {
+export function AppShell({ meta, showRoadmapNav, breadcrumb, notices, actionSlotRef, children }: AppShellProps) {
   const [navOpen, setNavOpen] = useState(false);
   const location = useLocation();
 
@@ -44,7 +43,6 @@ export function AppShell({ meta, showRoadmapNav, breadcrumb, notices, myUnit, ac
       <Sidebar
         meta={meta}
         showRoadmapNav={showRoadmapNav}
-        myUnit={myUnit}
         mobileOpen={navOpen}
         onClose={() => setNavOpen(false)}
       />

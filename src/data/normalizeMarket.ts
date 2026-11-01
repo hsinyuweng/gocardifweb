@@ -80,12 +80,31 @@ export function normalizeFeed(feed: Feed): FeedViewModel {
 
 const PULSE_GROUPS: readonly PulseGroup[] = ['growth', 'pricing', 'channel', 'health', 'brand'];
 
-/** 非數字的點略過 */
+/**
+ * 圖表統一期間（2026-11-01 顯示資料整理）：只留最新一期往回 12 個月。
+ * 月「YYYY-MM」留最後 12 期；日「YYYY-MM-DD」留最新一天往前一年內；週「YYYY-Www」留最後 52 期；其他格式不裁。
+ * 資料須由舊到新。
+ */
+export function lastTwelveMonths<T>(list: T[], periodOf: (x: T) => string | null): T[] {
+  const last = list.length > 0 ? periodOf(list[list.length - 1]!) : null;
+  if (!last) return list;
+  if (/^\d{4}-\d{2}$/.test(last)) return list.slice(-12);
+  if (/^\d{4}-W\d{2}$/.test(last)) return list.slice(-52);
+  const d = /^(\d{4})-(\d{2}-\d{2})$/.exec(last);
+  if (d) {
+    const from = `${+d[1]! - 1}-${d[2]}`;
+    return list.filter((x) => (periodOf(x) ?? '') > from);
+  }
+  return list;
+}
+
+/** 非數字的點略過；只留近 12 個月 */
 function points(series: RawPulsePoint[] | null | undefined): PulsePointViewModel[] {
-  return objList(series).flatMap((p) => {
+  const all = objList(series).flatMap((p) => {
     const value = num(p.value);
     return value === null ? [] : [{ period: str(p.period), value }];
   });
+  return lastTwelveMonths(all, (p) => p.period);
 }
 
 function normalizeMetric(m: RawPulseMetric, i: number): PulseMetricViewModel | null {
@@ -114,7 +133,7 @@ function normalizeMetric(m: RawPulseMetric, i: number): PulseMetricViewModel | n
     return {
       ...base,
       type,
-      periods: objList(m.periods).map((p) => ({
+      periods: lastTwelveMonths(objList(m.periods), (p) => str(p.period)).map((p) => ({
         period: str(p.period),
         parts: objList(p.parts).flatMap((part) => {
           const sharePct = num(part.share_pct);

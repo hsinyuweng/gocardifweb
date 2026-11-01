@@ -1,10 +1,9 @@
 import type { KeyboardEvent } from 'react';
-import type { BlockerCounts, OverviewRow } from '../../types/viewModel';
+import type { OverviewRow } from '../../types/viewModel';
 import type { SortDir, SortKey } from '../../lib/overviewFilter';
 import { zhTW } from '../../i18n/zh-TW';
 import { orDash } from '../../lib/format';
 import { DOT_CLASS, SOFT_BADGE_CLASS } from '../../lib/signalColor';
-import { SignalLabel } from '../common/SignalLabel';
 import { WatchToggle } from './WatchToggle';
 
 const t = zhTW.overview;
@@ -52,22 +51,9 @@ function SortHeader({
   );
 }
 
-/** 待解決：「阻斷 n · 注意 m」；有重大時前面加紅字「重大 k」 */
-function BlockerCell({ counts }: { counts: BlockerCounts }) {
-  return (
-    <span className="whitespace-nowrap">
-      {counts.critical > 0 ? (
-        <>
-          <span className="font-medium text-coral">{t.blockerCritical(counts.critical)}</span>
-          {' · '}
-        </>
-      ) : null}
-      {t.blockerBlocking(counts.blocking)} · {t.blockerWarning(counts.warning)}
-    </span>
-  );
-}
+const muted = <span className="text-muted">{zhTW.common.dash}</span>;
 
-/** 案件表格（第 11.2 節第 4 點） */
+/** 案件表格（第 11.2 節第 4 點；2026-11-01 欄位改成能比較商品的：建議、潛在市場、法規可行性、阻斷、台灣競品） */
 export function ReportTable({ rows, sortKey, sortDir, onSort, onOpen, unreadIds, highlightId = null }: ReportTableProps) {
   const handleKey = (e: KeyboardEvent, id: string | null) => {
     if (id && (e.key === 'Enter' || e.key === ' ')) {
@@ -78,24 +64,22 @@ export function ReportTable({ rows, sortKey, sortDir, onSort, onOpen, unreadIds,
 
   return (
     <div className="overflow-x-auto rounded-xl border border-line bg-white">
-      <table className="w-full min-w-[1100px] border-collapse text-left">
+      <table className="w-full min-w-[960px] border-collapse text-left">
         <thead className="border-b border-line bg-p-faint text-ink2">
           <tr className="h-10">
             <th scope="col" className="w-24 pl-4 pr-1 font-medium">{zhTW.watchlist.column}</th>
             <SortHeader label={c.product} column="name" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
-            <th scope="col" className="px-3 font-medium">{c.country}</th>
-            <th scope="col" className="px-3 font-medium">{c.category}</th>
-            <th scope="col" className="px-3 font-medium">{c.marketDemand}</th>
-            <th scope="col" className="px-3 font-medium">{c.actuarial}</th>
-            <th scope="col" className="px-3 font-medium">{c.regulatory}</th>
-            <th scope="col" className="px-3 font-medium">{c.recommendation}</th>
-            <th scope="col" className="px-3 font-medium">{c.blockers}</th>
-            <SortHeader label={c.generatedDate} column="generatedDate" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
+            <SortHeader label={c.recommendation} column="recommendation" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
+            <SortHeader label={c.market} column="market" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
+            <SortHeader label={c.feasibility} column="feasibility" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
+            <SortHeader label={c.blocking} column="blocking" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
+            <SortHeader label={c.competitors} column="competitors" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
           </tr>
         </thead>
         <tbody>
           {rows.map((r, i) => {
             const clickable = r.reportId !== null;
+            const blocking = r.blockerCounts.critical + r.blockerCounts.blocking;
             return (
               <tr
                 key={r.reportId ?? `row-${i}`}
@@ -119,13 +103,8 @@ export function ReportTable({ rows, sortKey, sortDir, onSort, onOpen, unreadIds,
                     ) : null}
                     {orDash(r.name)}
                   </div>
-                  <div className="text-xs text-muted">{orDash(r.issuer)}</div>
+                  <div className="text-xs text-muted">{[r.countryLabel, r.category].filter(Boolean).join(' · ')}</div>
                 </td>
-                <td className="px-3 py-2 whitespace-nowrap">{orDash(r.countryLabel)}</td>
-                <td className="px-3 py-2">{orDash(r.category)}</td>
-                <td className="px-3 py-2"><SignalLabel signal={r.marketDemand} /></td>
-                <td className="px-3 py-2"><SignalLabel signal={r.actuarial} /></td>
-                <td className="px-3 py-2"><SignalLabel signal={r.regulatory} /></td>
                 <td className="px-3 py-2">
                   <span
                     className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-2 py-0.5 text-[13px] ring-1 ${
@@ -136,8 +115,15 @@ export function ReportTable({ rows, sortKey, sortDir, onSort, onOpen, unreadIds,
                     {orDash(r.recommendation.text)}
                   </span>
                 </td>
-                <td className="px-3 py-2"><BlockerCell counts={r.blockerCounts} /></td>
-                <td className="px-3 py-2 whitespace-nowrap tabular-nums">{orDash(r.generatedDate)}</td>
+                <td className="px-3 py-2 whitespace-nowrap tabular-nums">{r.dimensionScores?.marketSize?.valueText ?? muted}</td>
+                <td className="px-3 py-2 whitespace-nowrap tabular-nums">
+                  {r.dimensionScores?.feasibility?.score != null ? t.points(r.dimensionScores.feasibility.score) : muted}
+                </td>
+                <td className="px-3 py-2">
+                  <span className={`tabular-nums ${blocking > 0 ? 'text-ink' : 'text-muted'}`}>{t.blockingCount(blocking)}</span>
+                  {r.topBlocker ? <div className="max-w-[260px] text-xs text-muted">{r.topBlocker}</div> : null}
+                </td>
+                <td className="px-3 py-2 whitespace-nowrap tabular-nums">{r.directCompetitors !== null ? t.competitorCount(r.directCompetitors) : muted}</td>
               </tr>
             );
           })}

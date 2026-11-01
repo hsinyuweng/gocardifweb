@@ -307,25 +307,6 @@ export function trendHeading(m: PulseTrendViewModel): string | null {
   return t.heading.highLow(p(high), trendValue(m, high.value), p(low), trendValue(m, low.value));
 }
 
-/** 主要指標以外、有 2 期以上的月資料單線（例：成長動能的新契約保費金額），各畫一張直條圖 */
-export function extraMonthlyTrends(list: PulseMetricViewModel[]): PulseTrendViewModel[] {
-  const main = mainTrend(list);
-  return list
-    .filter(isTrend)
-    .filter((m) => m !== main && m.points.length >= 2 && /^\d{4}-\d{2}$/.test(m.points.at(-1)!.period ?? '') && !isRank(m));
-}
-
-/** 金額圖的標題：有去年同月時「8 月新契約保費 1,245.9 億元，比去年同期 +68.5%」，否則同 trendHeading */
-export function amountHeading(m: PulseTrendViewModel): string | null {
-  const last = m.points.at(-1);
-  const ym = /^(\d{4})-(\d{2})$/.exec(last?.period ?? '');
-  if (!last || !ym || !m.label) return trendHeading(m);
-  const before = m.points.find((p) => p.period === `${+ym[1]! - 1}-${ym[2]}`);
-  if (!before || before.value === 0) return trendHeading(m);
-  const yoy = (last.value / before.value - 1) * 100;
-  return t.heading.amountYoy(zhTW.insights.lead(periodText(last.period), m.label), trendValue(m, last.value), `${yoy > 0 ? '+' : ''}${formatSharePct(yoy)}`);
-}
-
 /** 細節的占比段落標題：年增最快的項目＋（同一項目時）占比比上期多或少幾個百分點 */
 export function shareDetailHeading(share: PulseShareViewModel): string {
   const lead = growthLeaders(share);

@@ -13,8 +13,6 @@ import {
   subscribeConnection,
 } from '../data';
 import { zhTW } from '../i18n/zh-TW';
-import { readOwnerPreference, subscribeOwnerPreference, writeOwnerPreference } from '../lib/ownerPreference';
-import { countOwners } from '../lib/tasks';
 import { useOnDemand } from './useOnDemand';
 import { PageChromeContext, type AllReportsState, type IndexState, type LayoutOutletContext } from './pageChrome';
 
@@ -28,8 +26,7 @@ export function RootLayout() {
   const [actionSlot, setActionSlot] = useState<HTMLElement | null>(null);
   // api 模式改讀離線資料時為 true（第 6.3 節）
   const offline = useSyncExternalStore(subscribeConnection, isOffline);
-  const myUnit = useSyncExternalStore(subscribeOwnerPreference, readOwnerPreference);
-  // 全部報告只在需要時讀取一次（我的待辦、設定我的單位）
+  // 全部報告只在需要時讀取一次（我的待辦）
   const [allRequested, setAllRequested] = useState(false);
   const [allReportsState, setAllReportsState] = useState<AllReportsState>({ status: 'idle' });
 
@@ -80,10 +77,6 @@ export function RootLayout() {
     () => (offline ? [{ tone: 'warning', text: zhTW.offlineNotice }, ...pageNotices] : pageNotices),
     [offline, pageNotices],
   );
-  const unitOptions = useMemo(
-    () => (allReportsState.status === 'ok' ? countOwners(allReportsState.result.reports).map((c) => c.owner) : null),
-    [allReportsState],
-  );
   const chrome = useMemo(() => ({ setBreadcrumb, setPageNotices, actionSlot }), [actionSlot]);
   const outletContext: LayoutOutletContext = {
     indexState,
@@ -102,12 +95,6 @@ export function RootLayout() {
         showRoadmapNav={config.showRoadmapNav}
         breadcrumb={breadcrumb}
         notices={notices}
-        myUnit={{
-          value: myUnit,
-          options: unitOptions,
-          onRequestOptions: requestAllReports,
-          onChange: writeOwnerPreference,
-        }}
         actionSlotRef={setActionSlot}
       >
         <Outlet context={outletContext} />

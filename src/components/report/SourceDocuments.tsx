@@ -1,25 +1,15 @@
 import type { SourceDocumentViewModel } from '../../types/viewModel';
 import { zhTW } from '../../i18n/zh-TW';
 import { orDash } from '../../lib/format';
-import { StorySection } from '../story/StorySection';
 
 const t = zhTW.report.sourceDocs;
 
-/** 商品原始資料（2026-10-31）：類型、標題（新分頁）、發布日期。列印時附網址 */
-export function SourceDocuments({ docs, id, onBack }: { docs: SourceDocumentViewModel[]; id?: string; onBack: () => void }) {
+/** 商品原始資料（2026-11-01 收成一行，點開才列）：類型、標題（新分頁）、發布日期。列印時附網址 */
+export function SourceDocuments({ docs, id }: { docs: SourceDocumentViewModel[]; id?: string }) {
   return (
-    <StorySection
-      id={id}
-      heading={
-        <span className="flex flex-wrap items-baseline justify-between gap-2">
-          <span>{t.title(docs.length)}</span>
-          <button type="button" onClick={onBack} className="text-[13px] font-normal text-ink2 hover:text-ink hover:underline print:hidden">
-            {t.back}
-          </button>
-        </span>
-      }
-    >
-      <p className="-mt-2 text-[13px] text-ink2">{t.note}</p>
+    <details id={id} className="scroll-mt-28 rounded-xl border border-line bg-white px-7 py-4">
+      <summary className="cursor-pointer text-[15px] text-ink marker:text-muted">{zhTW.report.sourceDocsToggle(docs.length)}</summary>
+      <p className="mt-2 text-[13px] text-ink2">{t.note}</p>
       <ul className="divide-y divide-line">
         {docs.map((d, i) => (
           <li key={i} className="flex flex-wrap items-baseline gap-x-3 gap-y-1 py-2">
@@ -32,6 +22,13 @@ export function SourceDocuments({ docs, id, onBack }: { docs: SourceDocumentView
           </li>
         ))}
       </ul>
-    </StorySection>
+      <button
+        type="button"
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        className="mt-1 text-[13px] text-ink2 hover:text-ink hover:underline print:hidden"
+      >
+        {t.back}
+      </button>
+    </details>
   );
 }

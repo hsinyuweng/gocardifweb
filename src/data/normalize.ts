@@ -113,6 +113,8 @@ function normalizeIndexEntry(entry: RawReportIndexEntry): OverviewRow {
     generatedAt: formatDateTimeTaipei(str(entry.generated_at)),
     generatedTime: timeOf(str(entry.generated_at)),
     dimensionScores: normalizeDimensionScores(entry.dimension_scores),
+    directCompetitors: num(entry.direct_competitor_count),
+    topBlocker: str(entry.top_blocker),
   };
 }
 
@@ -145,6 +147,7 @@ function normalizeDimensionScores(raw: RawDimensionScores | null | undefined): B
       rationale: str(d.rationale),
       confidence: str(d.confidence),
       valueText: formatScoreValue(num(d.value), str(d.unit)),
+      value: num(d.value),
       source: sourceRef({ name: d.source, url: d.source_url, as_of: d.as_of }),
     };
   }
@@ -514,6 +517,7 @@ export function normalizeReport(raw: Report): ReportViewModel {
     dataQuality: normalizeDataQuality(r),
     dataGaps: normalizeDataGaps(r),
     details: normalizeDetails(r),
+    dimensionScores: normalizeDimensionScores(r.dimension_scores),
     competitors: normalizeCompetitors(r),
     sourceDocuments: normalizeSourceDocuments(r),
     disclaimer: str(r.disclaimer),

@@ -62,6 +62,10 @@ function toIndexEntry(report) {
   const rg = isObject(sc.regulatory) ? sc.regulatory : {};
   const blockers = Array.isArray(report.blockers) ? report.blockers : [];
   const countSeverity = (s) => blockers.filter((b) => isObject(b) && b.severity === s).length;
+  // 清單比較用（2026-11-01）：台灣直接競品件數、最嚴重的一項待解決事項
+  const cc = isObject(report.sections?.market_demand?.competitor_comparison) ? report.sections.market_demand.competitor_comparison : null;
+  const competitors = Array.isArray(cc?.competitors) ? cc.competitors.filter(isObject) : null;
+  const topBlocker = ['critical', 'blocking'].flatMap((s) => blockers.filter((b) => isObject(b) && b.severity === s))[0];
 
   return {
     report_id: orNull(meta.report_id),
@@ -86,6 +90,8 @@ function toIndexEntry(report) {
       blocking: countSeverity('blocking'),
       warning: countSeverity('warning'),
     },
+    direct_competitor_count: competitors ? competitors.filter((c) => c.is_direct === true).length : null,
+    top_blocker: topBlocker ? orNull(topBlocker.title) : null,
   };
 }
 

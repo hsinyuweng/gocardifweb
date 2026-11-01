@@ -1,17 +1,11 @@
-import type { OverviewRow, RecommendationGroup, SignalColor } from '../types/viewModel';
+import type { OverviewRow, RecommendationGroup } from '../types/viewModel';
 import { zhTW } from '../i18n/zh-TW';
 import type { HeadlinePart } from './insights';
 import type { KeyNumber } from './marketStory';
-import { scoreRow, type Weights } from './score';
 
-// 競品研究頁的閱讀路徑內容（2026-10-27 V6）：結論句、數字磚、圖表標題、三面向燈號表。只用報告清單的欄位。
+// 競品研究頁的閱讀路徑內容（2026-11-01 顯示資料整理）：結論句、數字磚。只用報告清單的欄位。
 
 const t = zhTW.overview.story;
-
-/** 件數最多的建議（同數取第一個） */
-function topGroup(groups: RecommendationGroup[]): RecommendationGroup | null {
-  return groups.reduce<RecommendationGroup | null>((a, b) => (a === null || b.count > a.count ? b : a), null);
-}
 
 /** 建議由好到壞（後端 legend.recommendation 的代碼）；不認得的排最後 */
 const REC_ORDER = ['go', 'conditional_go', 'hold_missing_info', 'hold_resolve_red_flag', 'incomplete_review', 'not_recommended'];
@@ -20,10 +14,10 @@ export const recRank = (key: string | null) => {
   return i === -1 ? REC_ORDER.length : i;
 };
 
-/** 依建議由好到壞，再依綜合分數由高到低 */
-export function rankRows(rows: OverviewRow[], weights: Weights): OverviewRow[] {
-  const total = (r: OverviewRow) => scoreRow(r, weights).total ?? -1;
-  return [...rows].sort((a, b) => recRank(a.recommendationKey) - recRank(b.recommendationKey) || total(b) - total(a));
+/** 依建議由好到壞，再依法規可行性由高到低（2026-11-01，與競品研究列表預設排序一致） */
+export function rankRows(rows: OverviewRow[]): OverviewRow[] {
+  const feas = (r: OverviewRow) => r.dimensionScores?.feasibility?.score ?? -1;
+  return [...rows].sort((a, b) => recRank(a.recommendationKey) - recRank(b.recommendationKey) || feas(b) - feas(a));
 }
 
 /** 建議分組，由好到壞 */
@@ -49,59 +43,29 @@ export function researchHeadline(rows: OverviewRow[], groups: RecommendationGrou
   return parts;
 }
 
-/** 數字磚：最好的建議（珊瑚）、次一種建議、待解決事項、綜合分數最高 */
-export function researchNumbers(rows: OverviewRow[], groups: RecommendationGroup[], weights: Weights): KeyNumber[] {
-  const ranked = groupsByRank(groups);
-  const sum = (k: 'critical' | 'blocking' | 'warning') => rows.reduce((n, r) => n + r.blockerCounts[k], 0);
-  const out: KeyNumber[] = ranked.slice(0, 2).map((g, i) => ({
-    key: `rec-${g.key ?? 'none'}`,
-    label: g.label ?? t.missing,
-    value: t.count(g.count),
-    note: g.count <= NAME_LIMIT ? names(rows, g.key).join('、') : t.tile.ofTotal(rows.length),
-    coral: i === 0,
-  }));
-  const critical = sum('critical');
-  out.push({
-    key: 'blockers',
-    label: t.tile.blockers,
-    value: t.tile.blocking(sum('blocking')),
-    note: critical > 0 ? t.tile.withCritical(critical, sum('warning')) : t.tile.warning(sum('warning')),
-  });
-  const top = rows
-    .map((r) => ({ r, total: scoreRow(r, weights).total }))
-    .filter((x): x is { r: OverviewRow; total: number } => x.total !== null)
-    .sort((a, b) => b.total - a.total)[0];
-  if (top) out.push({ key: 'top-score', label: t.tile.topScore, value: String(top.total), note: top.r.name ?? t.missing });
-  return out;
-}
-
-export type ModuleField = 'marketDemand' | 'actuarial' | 'regulatory';
-export const MODULE_FIELDS: readonly ModuleField[] = ['marketDemand', 'actuarial', 'regulatory'];
-
-const COLOR_ORDER: Record<SignalColor, number> = { green: 0, yellow: 1, orange: 2, red: 3, gray: 4 };
-
-/** 一個面向的燈號分布：同色同字算一組，依綠→黃→橘→紅→灰 */
-export function moduleSignals(rows: OverviewRow[], field: ModuleField): { color: SignalColor; text: string | null; count: number }[] {
-  const map = new Map<string, { color: SignalColor; text: string | null; count: number }>();
-  for (const r of rows) {
-    const s = r[field];
-    const k = `${s.color}|${s.text ?? ''}`;
-    const cur = map.get(k);
-    if (cur) cur.count++;
-    else map.set(k, { color: s.color, text: s.text, count: 1 });
+/** 數字磚（2026-11-01 顯示資料整理）：最值得看（最好的建議，珊瑚）、法規可行性最高、潛在市場最大 */
+export function researchNumbers(rows: OverviewRow[], groups: RecommendationGroup[]): KeyNumber[] {
+  const out: KeyNumber[] = [];
+  const best = groupsByRank(groups)[0];
+  if (best) {
+    out.push({
+      key: 'best',
+      label: t.tile.best(best.label ?? t.missing),
+      value: t.count(best.count),
+      note: best.count <= NAME_LIMIT ? names(rows, best.key).join('、') : t.tile.ofTotal(rows.length),
+      coral: true,
+    });
   }
-  return [...map.values()].sort((a, b) => COLOR_ORDER[a.color] - COLOR_ORDER[b.color] || b.count - a.count);
-}
-
-/** 圖表段落標題：「暫緩，待補資料最多，共 6 份；法規適用沒有一份是綠燈」（後半取非綠燈最多的面向） */
-export function researchHeading(rows: OverviewRow[], groups: RecommendationGroup[]): string | null {
-  const top = topGroup(groups);
-  if (!top || rows.length === 0) return null;
-  const labels = zhTW.overview.columns;
-  const worst = MODULE_FIELDS.map((f) => ({ f, n: rows.filter((r) => r[f].color !== 'green').length })).reduce((a, b) =>
-    b.n > a.n ? b : a,
-  );
-  const head = t.headingTop(top.label ?? t.missing, top.count);
-  if (worst.n === 0) return head;
-  return head + (worst.n === rows.length ? t.headingNoGreen(labels[worst.f]) : t.headingNotGreen(labels[worst.f], worst.n));
+  const top = <T,>(get: (r: OverviewRow) => T | null | undefined, by: (v: T) => number) =>
+    rows
+      .flatMap((r) => {
+        const v = get(r);
+        return v === null || v === undefined ? [] : [{ r, v }];
+      })
+      .sort((a, b) => by(b.v) - by(a.v))[0];
+  const feas = top((r) => r.dimensionScores?.feasibility?.score, (v) => v);
+  if (feas) out.push({ key: 'feasibility', label: t.tile.topFeasibility, value: t.tile.points(feas.v), note: feas.r.name ?? t.missing });
+  const market = top((r) => r.dimensionScores?.marketSize, (d) => d.value ?? -1);
+  if (market?.v.valueText) out.push({ key: 'market', label: t.tile.topMarket, value: market.v.valueText, note: market.r.name ?? t.missing });
+  return out;
 }

@@ -11,19 +11,21 @@ import { readFromPath } from '../lib/ownerParam';
 import { readWatchlist, subscribeWatchlist } from '../lib/watchlist';
 import { errorText, useBreadcrumb, useFeed, useIndexState } from './pageChrome';
 import { PageHeader } from '../components/layout/PageHeader';
-import { ColumnChart } from '../components/charts/ColumnChart';
-import { HBarList } from '../components/charts/HBarList';
 import { KeyNumbers } from '../components/story/KeyNumbers';
 import { Lead } from '../components/story/Lead';
 import { NextStep } from '../components/story/NextStep';
-import { ChartTitle, DetailDivider, StorySection } from '../components/story/StorySection';
+import { DetailDivider } from '../components/story/StorySection';
 import { feedDay, recentDays, recentFeed } from '../lib/feedSummary';
-import { newsHeading, newsHeadline, newsNumbers } from '../lib/newsStory';
+import { newsHeadline, newsNumbers } from '../lib/newsStory';
 
 const t = zhTW.news;
 const PAGE_SIZE = 10;
 const LIST_ID = 'news-all';
-const DOMAINS: readonly FeedDomain[] = ['product_channel', 'market_macro', 'regulation', 'claims_consumer', 'customer_brand'];
+// 2026-11-01：法規在最前面，其次同業商品與通路；品牌公關預設收起
+const DOMAINS: readonly FeedDomain[] = ['regulation', 'product_channel', 'market_macro', 'claims_consumer', 'customer_brand'];
+const DEFAULT_CLOSED: readonly GroupKey[] = ['customer_brand'];
+/** 網址 closed=none 表示全部展開（沒有 closed 參數時用預設收起） */
+const NONE_CLOSED = 'none';
 type GroupKey = FeedDomain | 'none';
 const GROUP_KEYS: readonly GroupKey[] = [...DOMAINS, 'none'];
 
@@ -95,7 +97,10 @@ export function NewsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const date = searchParams.get('date');
   const affectsParam = searchParams.get('affects') === '1';
-  const closed = new Set((searchParams.get('closed') ?? '').split(',').filter((x): x is GroupKey => (GROUP_KEYS as readonly string[]).includes(x)));
+  const closedParam = searchParams.get('closed');
+  const closed = new Set(
+    closedParam === null ? DEFAULT_CLOSED : closedParam.split(',').filter((x): x is GroupKey => (GROUP_KEYS as readonly string[]).includes(x)),
+  );
   const update = (next: { date?: string | null; affects?: boolean; closed?: Set<GroupKey> }) => {
     const d = next.date !== undefined ? next.date : date;
     const a = next.affects ?? affectsParam;
@@ -103,7 +108,8 @@ export function NewsPage() {
     const p = new URLSearchParams();
     if (d) p.set('date', d);
     if (a) p.set('affects', '1');
-    if (c.size > 0) p.set('closed', GROUP_KEYS.filter((k) => c.has(k)).join(','));
+    const same = c.size === DEFAULT_CLOSED.length && DEFAULT_CLOSED.every((k) => c.has(k));
+    if (!same) p.set('closed', c.size > 0 ? GROUP_KEYS.filter((k) => c.has(k)).join(',') : NONE_CLOSED);
     setSearchParams(p, { replace: true, state: location.state });
   };
   const toggleGroup = (k: GroupKey) => {
@@ -177,49 +183,11 @@ export function NewsPage() {
     body = <StatusMessage tone="info" message={zhTW.common.loading} />;
   } else {
     const headline = recent ? newsHeadline(recent) : null;
-    const heading = recent ? newsHeading(recent) : null;
-    // 各領域則數：五個領域都列（0 也列，監理法規 0 則時珊瑚色），沒有領域的另列「未分類」
-    const domainRows = recent
-      ? [...DOMAINS.map((d) => ({ d, n: recent.domains.find((x) => x.domain === d)?.count ?? 0 })),
-          ...(recent.domains.some((x) => x.domain === null) ? [{ d: null, n: recent.domains.find((x) => x.domain === null)!.count }] : [])]
-          .sort((a, b) => b.n - a.n)
-          .map(({ d, n }) => ({ key: d ?? 'none', name: zhTW.home.domainShort[d ?? 'none'], value: n, strong: d === 'regulation' && n === 0 }))
-      : [];
     const story =
       recent && recent.items.length > 0 ? (
         <>
           {headline ? <Lead parts={headline} /> : null}
           <KeyNumbers items={newsNumbers(recent)} />
-          {heading ? (
-            <StorySection heading={heading}>
-              <div className="grid grid-cols-1 gap-10 lg:grid-cols-3">
-                <div>
-                  <ChartTitle>{t.charts.domains}</ChartTitle>
-                  <HBarList rows={domainRows} ariaLabel={t.charts.domains} unit={zhTW.home.countUnit} />
-                </div>
-                <div>
-                  <ChartTitle>{t.charts.companies}</ChartTitle>
-                  <HBarList
-                    rows={recent.companies.map((c) => ({ key: c.name, name: c.name, value: c.count }))}
-                    ariaLabel={t.charts.companies}
-                    unit={zhTW.home.countUnit}
-                  />
-                </div>
-                {recent.weeks.length >= 2 ? (
-                  <div>
-                    <ChartTitle note={t.charts.weeklyNote}>{t.charts.weekly}</ChartTitle>
-                    <ColumnChart
-                      values={recent.weeks.map((w) => w.count)}
-                      labels={recent.weeks.map((w) => w.label)}
-                      formatValue={(v) => String(v)}
-                      height={140}
-                      ariaLabel={t.charts.weekly}
-                    />
-                  </div>
-                ) : null}
-              </div>
-            </StorySection>
-          ) : null}
           <NextStep
             down={{ label: t.down(recent.items.length), targetId: LIST_ID }}
             links={[{ to: '/watchlist', label: t.toWatchlist }]}

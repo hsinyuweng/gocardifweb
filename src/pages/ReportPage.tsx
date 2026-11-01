@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
-import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import { StatusMessage } from '../components/common/StatusMessage';
 import { ReportNav } from '../components/report/ReportNav';
 import { ReportView } from '../components/report/ReportView';
@@ -11,18 +11,11 @@ import { getDataSource, normalizeReport, normalizeReportIndex } from '../data';
 import type { ReportViewModel } from '../types/viewModel';
 import { zhTW } from '../i18n/zh-TW';
 import { orDash } from '../lib/format';
-import { readOwnerPreference, subscribeOwnerPreference } from '../lib/ownerPreference';
 import { markReviewed } from '../lib/reviewed';
 import { readOrder, setLastReport } from '../lib/listReturn';
 import { sortRows } from '../lib/overviewFilter';
 import { addToWatchlist, readWatchlist, removeFromWatchlist, subscribeWatchlist } from '../lib/watchlist';
-import {
-  OWNER_PARAM,
-  ownerParamValue,
-  readFromPath,
-  readFromState,
-  requestedOwner as resolveOwner,
-} from '../lib/ownerParam';
+import { readFromPath, readFromState } from '../lib/ownerParam';
 import { errorText, useBreadcrumb, useIndexState, usePageActionSlot, usePageNotices } from './pageChrome';
 
 type ReportState =
@@ -35,9 +28,7 @@ export function ReportPage() {
   const { reportId = '' } = useParams();
   const config = useConfig();
   const [state, setState] = useState<ReportState>({ status: 'loading' });
-  const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
-  const myUnit = useSyncExternalStore(subscribeOwnerPreference, readOwnerPreference);
   const watchlist = useSyncExternalStore(subscribeWatchlist, readWatchlist);
   const actionSlot = usePageActionSlot();
   const [headerButtonVisible, setHeaderButtonVisible] = useState(true);
@@ -69,12 +60,12 @@ export function ReportPage() {
     setLastReport(reportId);
   }, [vm, indexState, reportId]);
 
-  // 上一份／下一份（2026-10-27 V3）：照清單帶來的順序；沒有時用競品研究預設排序（產出日期新到舊）
+  // 上一份／下一份（2026-10-27 V3）：照清單帶來的順序；沒有時用競品研究預設排序（整體建議好到壞）
   const order = useMemo(() => {
     const fromList = readOrder(location.state);
     if (fromList) return fromList;
     if (indexState.status !== 'ok') return [];
-    return sortRows(normalizeReportIndex(indexState.index).rows, 'generatedDate', 'desc').flatMap((r) => (r.reportId ? [r.reportId] : []));
+    return sortRows(normalizeReportIndex(indexState.index).rows, 'recommendation', 'asc').flatMap((r) => (r.reportId ? [r.reportId] : []));
   }, [location.state, indexState]);
   const at = order.indexOf(reportId);
   // 切換報告用 replace：瀏覽器上一頁與「← 回…」都直接回清單
@@ -110,34 +101,6 @@ export function ReportPage() {
     />
   );
   usePageNotices(vm?.schemaVersionMismatch ? [{ tone: 'warning', text: zhTW.schemaMismatch }] : []);
-
-  // 負責單位（D7）：網址優先 → 我的單位 → 全部；不在本報告選項內時視為「全部」
-  const urlOwner = searchParams.get(OWNER_PARAM);
-  const requestedOwner = resolveOwner(urlOwner, myUnit);
-  const owner = useMemo(
-    () => (vm && requestedOwner !== null && vm.ownerOptions.includes(requestedOwner) ? requestedOwner : null),
-    [vm, requestedOwner],
-  );
-
-  const setOwnerParam = useCallback(
-    (next: string | null) => {
-      setSearchParams(
-        (prev) => {
-          const p = new URLSearchParams(prev);
-          p.set(OWNER_PARAM, ownerParamValue(next));
-          return p;
-        },
-        // 保留來源頁資訊，麵包屑才不會跑掉
-        { replace: true, state: location.state },
-      );
-    },
-    [setSearchParams, location.state],
-  );
-
-  // 由我的單位取得的值同步寫入網址，方便分享
-  useEffect(() => {
-    if (urlOwner === null && owner !== null) setOwnerParam(owner);
-  }, [urlOwner, owner, setOwnerParam]);
 
   if (state.status === 'loading')
     return (
@@ -184,9 +147,6 @@ export function ReportPage() {
             <WatchlistButton {...watch} size="large" />
           </VisibilityProbe>
         }
-        owner={owner}
-        onOwnerChange={setOwnerParam}
-        tasksLinkState={{ from: location.pathname + location.search, fromState: location.state, fromLabel: orDash(state.vm.summary.name) }}
       />
     </div>
   );

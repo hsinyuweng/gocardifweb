@@ -38,6 +38,10 @@ export interface OverviewRow {
   generatedTime: number | null;
   /** 後端數值分數（S10）；報告沒有 dimension_scores 時為 null */
   dimensionScores: BackendDimensionScores | null;
+  /** 台灣直接競品件數；沒有比較資料時為 null */
+  directCompetitors: number | null;
+  /** 最嚴重的一項待解決事項（重大或阻斷）；沒有時為 null */
+  topBlocker: string | null;
 }
 
 /** 追蹤清單維度（顯示與滑桿順序見 lib/score.ts） */
@@ -54,6 +58,8 @@ export interface BackendDimensionScore {
   confidence: string | null;
   /** 原始數值（已加單位，例如「960 億元」「113.5%」） */
   valueText: string | null;
+  /** 原始數值（排序用；不是數字時 null） */
+  value: number | null;
   source: SourceRefViewModel | null;
 }
 
@@ -300,6 +306,8 @@ export interface ReportViewModel {
   dataQuality: DataQualityViewModel;
   dataGaps: DataGapViewModel[];
   details: ReportDetailsViewModel;
+  /** 後端數值分數（市場規模、法規可行性等）；沒有時為 null */
+  dimensionScores: BackendDimensionScores | null;
   /** 台灣競品比較；後端沒提供時為 null */
   competitors: CompetitorComparisonViewModel | null;
   /** 商品原始資料（有網址的才列） */

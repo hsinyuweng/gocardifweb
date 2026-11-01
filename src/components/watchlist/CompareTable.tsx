@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import type { Candidate, CompareSortKey, DimensionKey, DimensionScore } from '../../lib/score';
 import { zhTW } from '../../i18n/zh-TW';
 import { orDash } from '../../lib/format';
+import { DOT_CLASS } from '../../lib/signalColor';
 import { CandidateBreakdown } from './CandidateBreakdown';
 
 const t = zhTW.watchlist;
@@ -24,16 +25,19 @@ interface CompareTableProps {
   linkState: unknown;
 }
 
-/** 一格分數：數字＋小橫條；燈號換算加灰色「燈號」；沒有資料寫「無資料」 */
+/** 一格分數：數字＋小橫條；燈號換算加灰色「燈號」；沒有資料寫「無資料」。市場規模另列潛在市場金額 */
 function ScoreCell({ d }: { d: DimensionScore | undefined }) {
   if (!d || d.score === null) return <span className="text-xs text-muted">{t.noData}</span>;
   return (
+    <span className="block">
+    {d.key === 'marketSize' && d.backend?.valueText ? <span className="block text-ink tabular-nums">{d.backend.valueText}</span> : null}
     <span className="flex items-center gap-2">
       <span className="w-7 text-right tabular-nums text-ink">{d.score}</span>
       <span className="h-2 w-20 overflow-hidden rounded-full bg-p-faint">
         <span className="block h-full rounded-full bg-p-mid" style={{ width: `${Math.max(2, d.score)}%` }} />
       </span>
       {d.scoreSource === 'signal' ? <span className="text-[11px] text-muted">{t.signalTag}</span> : null}
+    </span>
     </span>
   );
 }
@@ -52,7 +56,7 @@ function SortHeader({ label, col, sortKey, sortDir, onSort }: { label: string; c
   );
 }
 
-/** 追蹤清單比較表（2026-10-27 V4）：每列一件商品，每欄一個面向＋綜合；點欄位標題排序，「明細 ▾」展開計算過程 */
+/** 追蹤清單比較表（2026-10-27 V4；2026-11-01 加整體建議、阻斷、台灣競品，與競品研究列表一致）：點欄位標題排序，「明細 ▾」展開計算過程 */
 export function CompareTable({ rows, rankOf, dims, sortKey, sortDir, onSort, expanded, onToggle, onRemove, linkState }: CompareTableProps) {
   const sortProps = { sortKey, sortDir, onSort };
   return (
@@ -62,9 +66,12 @@ export function CompareTable({ rows, rankOf, dims, sortKey, sortDir, onSort, exp
           <tr className="h-11">
             <th scope="col" className="w-14 px-3 text-right font-medium">{t.compare.rank}</th>
             <th scope="col" className="px-3 font-medium">{t.compare.product}</th>
+            <th scope="col" className="px-3 font-medium">{zhTW.overview.columns.recommendation}</th>
             {dims.map((k) => (
               <SortHeader key={k} label={t.dimensions[k]} col={k} {...sortProps} />
             ))}
+            <th scope="col" className="px-3 font-medium">{zhTW.overview.columns.blocking}</th>
+            <th scope="col" className="px-3 font-medium">{zhTW.overview.columns.competitors}</th>
             <SortHeader label={t.compare.total} col="total" {...sortProps} />
             <th scope="col" className="px-3 font-medium">
               <span className="sr-only">{t.compare.actions}</span>
@@ -91,11 +98,23 @@ export function CompareTable({ rows, rankOf, dims, sortKey, sortDir, onSort, exp
                       {orDash(c.row.issuer)} · {orDash(c.row.countryLabel)}
                     </div>
                   </td>
+                  <td className="px-3 py-3">
+                    <span className="inline-flex items-center gap-1.5 whitespace-nowrap text-[13px] text-ink">
+                      <span aria-hidden className={`inline-block size-2 rounded-full ${DOT_CLASS[c.row.recommendation.color]}`} />
+                      {orDash(c.row.recommendation.text)}
+                    </span>
+                  </td>
                   {dims.map((k) => (
                     <td key={k} className="px-3 py-3">
                       <ScoreCell d={c.score.dims.find((d) => d.key === k)} />
                     </td>
                   ))}
+                  <td className="px-3 py-3 whitespace-nowrap tabular-nums">
+                    {zhTW.overview.blockingCount(c.row.blockerCounts.critical + c.row.blockerCounts.blocking)}
+                  </td>
+                  <td className="px-3 py-3 whitespace-nowrap tabular-nums">
+                    {c.row.directCompetitors !== null ? zhTW.overview.competitorCount(c.row.directCompetitors) : zhTW.common.dash}
+                  </td>
                   <td className="px-3 py-3 text-[20px] font-medium tabular-nums text-ink">{orDash(c.score.total)}</td>
                   <td className="px-3 py-3 whitespace-nowrap">
                     <button type="button" aria-expanded={open} onClick={() => onToggle(id)} className={linkButton}>
@@ -109,7 +128,7 @@ export function CompareTable({ rows, rankOf, dims, sortKey, sortDir, onSort, exp
                 {open ? (
                   <tr className="border-b border-line bg-p-faint/40 last:border-b-0">
                     <td />
-                    <td colSpan={dims.length + 3} className="px-3 py-3">
+                    <td colSpan={dims.length + 6} className="px-3 py-3">
                       <CandidateBreakdown score={c.score} />
                     </td>
                   </tr>

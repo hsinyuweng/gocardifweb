@@ -6,10 +6,10 @@ import { MetricChart } from './MetricChart';
 import { StaleTag } from './StaleTag';
 
 const t = zhTW.market.table;
-const COLS = 7;
+const COLS = 5;
 
 /**
- * 市場脈動指標表（2026-10-27 視覺改版 V5）：指標｜最新｜上期｜變化｜資料期間｜頻率｜來源。
+ * 市場脈動指標表（2026-10-27 視覺改版 V5；2026-11-01 拿掉頻率與來源欄）：指標｜最新｜上期｜變化｜資料期間，來源列在表格下方一行。
  * 占比與多線的項目縮排列在指標下方；「看圖 ▾」在該列下方展開原本的圖，一次只展開一個。
  */
 export function MetricTable({ metrics }: { metrics: PulseMetricViewModel[] }) {
@@ -17,18 +17,19 @@ export function MetricTable({ metrics }: { metrics: PulseMetricViewModel[] }) {
   const rows = pulseTableRows(metrics);
   const byKey = new Map(metrics.map((m) => [m.key, m]));
   const th = 'px-3 py-2 text-left font-normal whitespace-nowrap';
+  // 來源（同名只列一次）
+  const sources = [...new Map(rows.flatMap((r) => (r.level === 'metric' && r.source?.name ? [[r.source.name, r.source] as const] : []))).values()];
   return (
+    <div className="space-y-2">
     <div className="overflow-x-auto rounded-xl border border-line bg-white">
-      <table className="w-full min-w-[860px] text-[13.5px]">
+      <table className="w-full min-w-[640px] text-[13.5px]">
         <thead className="border-b border-line bg-p-faint text-[12.5px] text-ink2">
           <tr>
             <th className={`${th} pl-5`}>{t.cols.label}</th>
             <th className={`${th} text-right`}>{t.cols.latest}</th>
             <th className={`${th} text-right`}>{t.cols.prev}</th>
             <th className={`${th} text-right`}>{t.cols.change}</th>
-            <th className={th}>{t.cols.period}</th>
-            <th className={th}>{t.cols.frequency}</th>
-            <th className={`${th} pr-5`}>{t.cols.source}</th>
+            <th className={`${th} pr-5`}>{t.cols.period}</th>
           </tr>
         </thead>
         <tbody>
@@ -58,17 +59,7 @@ export function MetricTable({ metrics }: { metrics: PulseMetricViewModel[] }) {
                   <td className="px-3 py-2 text-right whitespace-nowrap tabular-nums">{r.latest}</td>
                   <td className="px-3 py-2 text-right whitespace-nowrap text-ink2 tabular-nums">{r.prev}</td>
                   <td className="px-3 py-2 text-right whitespace-nowrap tabular-nums">{r.change}</td>
-                  <td className="px-3 py-2 whitespace-nowrap text-ink2">{r.period}</td>
-                  <td className="px-3 py-2 whitespace-nowrap text-ink2">{r.frequency}</td>
-                  <td className="py-2 pr-5 pl-3 text-ink2">
-                    {item || !r.source ? null : r.source.url ? (
-                      <a href={r.source.url} target="_blank" rel="noopener noreferrer" className="hover:text-ink hover:underline">
-                        {r.source.name}
-                      </a>
-                    ) : (
-                      r.source.name
-                    )}
-                  </td>
+                  <td className="py-2 pr-5 pl-3 whitespace-nowrap text-ink2">{r.period}</td>
                 </tr>
                 {isOpen && metric ? (
                   <tr>
@@ -85,6 +76,24 @@ export function MetricTable({ metrics }: { metrics: PulseMetricViewModel[] }) {
           })}
         </tbody>
       </table>
+    </div>
+      {sources.length > 0 ? (
+        <p className="px-1 text-xs text-muted">
+          {t.sources}
+          {sources.map((src, i) => (
+            <span key={src.name}>
+              {i > 0 ? '、' : null}
+              {src.url ? (
+                <a href={src.url} target="_blank" rel="noopener noreferrer" className="hover:text-ink hover:underline">
+                  {src.name}
+                </a>
+              ) : (
+                src.name
+              )}
+            </span>
+          ))}
+        </p>
+      ) : null}
     </div>
   );
 }

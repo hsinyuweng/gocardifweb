@@ -1,8 +1,11 @@
 import type { OverviewRow } from '../types/viewModel';
+import { recRank } from './researchStory';
 
 // 競品研究（全部報告）的篩選與排序（只處理 ViewModel，不讀原始 JSON）
 
-export type SortKey = 'name' | 'generatedDate';
+/** 2026-11-01：預設依整體建議（好到壞，同建議再依法規可行性高到低） */
+export type SortKey = 'recommendation' | 'name' | 'market' | 'feasibility' | 'blocking' | 'competitors' | 'generatedDate';
+const SORT_KEYS: readonly SortKey[] = ['recommendation', 'name', 'market', 'feasibility', 'blocking', 'competitors', 'generatedDate'];
 export type SortDir = 'asc' | 'desc';
 
 export interface OverviewFilters {
@@ -25,7 +28,27 @@ export const DEFAULT_FILTERS: OverviewFilters = {
 };
 
 /** 切換欄位時的預設方向：商品 A→Z、產出日期新→舊 */
-export const DEFAULT_SORT_DIR: Record<SortKey, SortDir> = { name: 'asc', generatedDate: 'desc' };
+export const DEFAULT_SORT_DIR: Record<SortKey, SortDir> = {
+  recommendation: 'asc',
+  name: 'asc',
+  market: 'desc',
+  feasibility: 'desc',
+  blocking: 'asc',
+  competitors: 'asc',
+  generatedDate: 'desc',
+};
+export const DEFAULT_SORT_KEY: SortKey = 'recommendation';
+
+const feasibility = (r: OverviewRow) => r.dimensionScores?.feasibility?.score ?? null;
+const blockingCount = (r: OverviewRow) => r.blockerCounts.critical + r.blockerCounts.blocking;
+/** 數字欄位的取值；null 一律排最後 */
+const NUMERIC: Partial<Record<SortKey, (r: OverviewRow) => number | null>> = {
+  recommendation: (r) => recRank(r.recommendationKey),
+  market: (r) => r.dimensionScores?.marketSize?.value ?? null,
+  feasibility,
+  blocking: blockingCount,
+  competitors: (r) => r.directCompetitors,
+};
 
 /** isUnread：判斷某列是否未審閱（未審閱篩選開啟時使用） */
 export function filterRows(rows: OverviewRow[], f: OverviewFilters, isUnread: (r: OverviewRow) => boolean): OverviewRow[] {
@@ -46,13 +69,18 @@ export function filterRows(rows: OverviewRow[], f: OverviewFilters, isUnread: (r
 /** null 一律排在最後 */
 export function sortRows(rows: OverviewRow[], key: SortKey, dir: SortDir): OverviewRow[] {
   const sign = dir === 'asc' ? 1 : -1;
-  return [...rows].sort((a, b) => {
-    const va = a[key];
-    const vb = b[key];
+  const numeric = NUMERIC[key];
+  const cmp = (va: number | string | null, vb: number | string | null) => {
     if (va === vb) return 0;
     if (va === null) return 1;
     if (vb === null) return -1;
-    return sign * va.localeCompare(vb, 'zh-Hant-TW');
+    return sign * (typeof va === 'number' && typeof vb === 'number' ? va - vb : String(va).localeCompare(String(vb), 'zh-Hant-TW'));
+  };
+  return [...rows].sort((a, b) => {
+    const main = numeric ? cmp(numeric(a), numeric(b)) : cmp(a[key as 'name' | 'generatedDate'], b[key as 'name' | 'generatedDate']);
+    if (main !== 0 || key !== 'recommendation') return main;
+    // 同一種建議：法規可行性高的在前
+    return (feasibility(b) ?? -1) - (feasibility(a) ?? -1);
   });
 }
 
@@ -78,7 +106,7 @@ export interface OverviewUrlState {
 export function readOverviewParams(params: URLSearchParams): OverviewUrlState {
   const rec = params.get(P.rec);
   const sortParam = params.get(P.sort);
-  const sortKey: SortKey = sortParam === 'name' || sortParam === 'generatedDate' ? sortParam : 'generatedDate';
+  const sortKey: SortKey = SORT_KEYS.includes(sortParam as SortKey) ? (sortParam as SortKey) : DEFAULT_SORT_KEY;
   const dirParam = params.get(P.dir);
   return {
     filters: {
@@ -101,7 +129,7 @@ export function writeOverviewParams(s: OverviewUrlState): URLSearchParams {
   if (f.category !== '') p.set(P.category, f.category);
   if (f.recommendation !== null) p.set(P.rec, f.recommendation.key ?? REC_MISSING);
   if (f.unread) p.set(P.unread, '1');
-  if (s.sortKey !== 'generatedDate') p.set(P.sort, s.sortKey);
+  if (s.sortKey !== DEFAULT_SORT_KEY) p.set(P.sort, s.sortKey);
   if (s.sortDir !== DEFAULT_SORT_DIR[s.sortKey]) p.set(P.dir, s.sortDir);
   return p;
 }

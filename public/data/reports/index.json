@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-30T17:58:44.045Z",
+  "generated_at": "2026-11-01T07:26:21.091Z",
   "reports": [
     {
       "report_id": "16d18d51-488a-4805-a5eb-074f4402de14",
@@ -107,7 +107,9 @@
         "critical": 0,
         "blocking": 1,
         "warning": 7
-      }
+      },
+      "direct_competitor_count": 3,
+      "top_blocker": "G-RATE-01：保證回報率與定價預定利率未提供"
     },
     {
       "report_id": "2326cc3d-d9c6-40d4-bc34-6d7fa949ad79",
@@ -214,7 +216,9 @@
         "critical": 0,
         "blocking": 2,
         "warning": 3
-      }
+      },
+      "direct_competitor_count": 3,
+      "top_blocker": "連結標的"
     },
     {
       "report_id": "3646b5be-4159-46e0-814e-767ec9713e19",
@@ -322,7 +326,9 @@
         "critical": 0,
         "blocking": 2,
         "warning": 7
-      }
+      },
+      "direct_competitor_count": 3,
+      "top_blocker": "保證利率／預定利率"
     },
     {
       "report_id": "61187f98-be85-46f3-a280-0fd61533116f",
@@ -426,7 +432,9 @@
         "critical": 0,
         "blocking": 0,
         "warning": 5
-      }
+      },
+      "direct_competitor_count": 4,
+      "top_blocker": null
     },
     {
       "report_id": "907202d9-4ceb-4961-a199-ec9b443823d6",
@@ -533,7 +541,9 @@
         "critical": 0,
         "blocking": 11,
         "warning": 10
-      }
+      },
+      "direct_competitor_count": 3,
+      "top_blocker": "G-CLS-01：險種歸類與可銷售性"
     },
     {
       "report_id": "ac1f9932-f267-4af7-85cf-157629dc2906",
@@ -640,7 +650,9 @@
         "critical": 0,
         "blocking": 3,
         "warning": 2
-      }
+      },
+      "direct_competitor_count": 2,
+      "top_blocker": "險種歸類與可銷售性"
     },
     {
       "report_id": "c302f7ec-bba8-4830-944e-07e220ae9b48",
@@ -748,7 +760,9 @@
         "critical": 0,
         "blocking": 6,
         "warning": 5
-      }
+      },
+      "direct_competitor_count": 3,
+      "top_blocker": "保證利率／預定利率與臺灣版計價幣別未提供"
     },
     {
       "report_id": "e04a643f-d9b1-426a-b54f-95b818a2c746",
@@ -855,7 +869,9 @@
         "critical": 0,
         "blocking": 2,
         "warning": 8
-      }
+      },
+      "direct_competitor_count": 2,
+      "top_blocker": "保證利率／預定利率"
     }
   ]
 }

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Navigate, useLocation, useParams, useSearchParams } from 'react-router';
+import { Navigate, useLocation, useParams } from 'react-router';
 import { PendingContent } from '../components/home/HomeCard';
 import { StatusMessage } from '../components/common/StatusMessage';
 import { PageHeader } from '../components/layout/PageHeader';
@@ -21,12 +21,9 @@ import { zhTW } from '../i18n/zh-TW';
 import { formatPulseTick, formatSharePct, orDash, shortPeriodLabels } from '../lib/format';
 import { overviewHeadline, tabHeadline } from '../lib/insights';
 import {
-  amountHeading,
   availableGroups,
-  extraMonthlyTrends,
   growthLeaders,
   isRank,
-  isTrend,
   mainTrend,
   periodLong,
   periodText,
@@ -52,6 +49,7 @@ const DETAILS_ID = 'market-details';
 const FULL_PERIODS = 6;
 
 const isGroup = (x: string): x is PulseGroup => (PULSE_GROUP_ORDER as readonly string[]).includes(x);
+// 月資料主圖統一近 12 個月（裁切在 data/normalizeMarket.ts）
 const isMonthly = (period: string | null | undefined) => !!period && /^\d{4}-\d{2}$/.test(period);
 const isDaily = (period: string | null | undefined) => !!period && /^\d{4}-\d{2}-\d{2}$/.test(period);
 
@@ -118,65 +116,56 @@ function cardFallback(list: PulseMetricViewModel[]): ReactNode {
   );
 }
 
-/** 總覽的指標表：膠囊篩組別（網址 `?group=`，replace） */
-function TableSection({ metrics, groups }: { metrics: PulseMetricViewModel[]; groups: PulseGroup[] }) {
-  const location = useLocation();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const param = searchParams.get('group');
-  const current = param !== null && isGroup(param) && groups.includes(param) ? param : null;
-  const select = (g: PulseGroup | null) => {
-    const p = new URLSearchParams(searchParams);
-    if (g === null) p.delete('group');
-    else p.set('group', g);
-    setSearchParams(p, { replace: true, state: location.state });
-  };
-  const chip = (on: boolean) =>
-    `shrink-0 rounded-full border px-3 py-0.5 text-[13px] whitespace-nowrap transition-colors ${
-      on ? 'border-p bg-p text-white' : 'border-line bg-white text-ink2 hover:border-p-mid hover:text-ink'
-    }`;
-  return (
-    <section id={DETAILS_ID} className="scroll-mt-28 space-y-3">
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <h2 className="text-[18px] font-medium text-ink">{t.table.title(metrics.length)}</h2>
-        <div role="group" aria-label={t.table.filter} className="flex gap-1.5 overflow-x-auto px-px py-1">
-          {([null, ...groups] as const).map((g) => (
-            <button key={g ?? 'all'} type="button" aria-pressed={current === g} onClick={() => select(g)} className={chip(current === g)}>
-              {g === null ? t.table.all : t.groups[g].title}
-            </button>
-          ))}
-        </div>
-      </div>
-      <MetricTable metrics={current === null ? metrics : metrics.filter((m) => m.group === current)} />
-    </section>
-  );
-}
+/** 總覽的重點指標卡只放影響引進判斷的組（2026-11-01）：成長動能、定價環境、品牌與競爭的主要指標各一張 */
+const CARD_GROUPS: readonly PulseGroup[] = ['growth', 'pricing', 'brand'];
 
+/**
+ * 總覽（2026-11-01 顯示資料整理）：一句結論、3 張重點指標卡、各險種年增率與通路占比（對應商品的險種與法巴的通路）。
+ * 全部指標表拿掉，各分頁只列自己的指標。
+ */
 function Overview({ metrics, groups }: { metrics: PulseMetricViewModel[]; groups: PulseGroup[] }) {
   const headline = overviewHeadline(metrics);
-  const missing = PULSE_GROUP_ORDER.filter((g) => !groups.includes(g));
-  // 重點指標卡：每個有最新值的單線指標，依組別順序
   const byGroup = metricsByGroup(metrics);
-  const cards = groups.flatMap((g) => byGroup.get(g)!.filter(isTrend).filter((m) => m.latestValue !== null));
+  const cards = CARD_GROUPS.filter((g) => groups.includes(g)).flatMap((g) => {
+    const m = mainTrend(byGroup.get(g) ?? []);
+    return m && m.latestValue !== null ? [{ m, g }] : [];
+  });
+  const growth = shareMetrics(byGroup.get('growth') ?? []).find((x) => growthLeaders(x) !== null);
+  const channel = shareMetrics(byGroup.get('channel') ?? [])[0];
+  const channelPeriod = channel?.periods.at(-1)?.period ?? null;
   return (
     <>
       {headline ? <Lead parts={headline.parts} /> : null}
       {cards.length > 0 ? (
         <div className="grid grid-cols-1 gap-3.5 lg:grid-cols-3">
-          {cards.map((m) => (
+          {cards.map(({ m, g }) => (
             <KeyMetricCard
               key={m.key}
               metric={m}
               coral={m.key === headline?.metricKey}
-              fallback={m.points.length < 2 ? cardFallback(byGroup.get(m.group)!) : null}
+              fallback={m.points.length < 2 ? cardFallback(byGroup.get(g) ?? []) : null}
             />
           ))}
         </div>
       ) : null}
-      <NextStep
-        down={{ label: t.table.down(metrics.length), targetId: DETAILS_ID }}
-        note={missing.length > 0 ? missing.map((g) => t.missingGroup(t.groups[g].title, t.groups[g].desc)).join('；') : null}
-      />
-      <TableSection metrics={metrics} groups={groups} />
+      {growth || channel ? (
+        <StorySection heading={growth ? shareDetailHeading(growth) : t.heading.shareLatest(periodLong(channelPeriod) ?? '')}>
+          <div className={`grid grid-cols-1 gap-12 ${growth && channel ? 'lg:grid-cols-2' : ''}`}>
+            {growth ? (
+              <div className="min-w-0">
+                <ChartTitle>{t.heading.growthLatest(periodText(growth.periods.at(-1)!.period) ?? '')}</ChartTitle>
+                <GrowthBars share={growth} />
+              </div>
+            ) : null}
+            {channel ? (
+              <div className="min-w-0">
+                <ChartTitle note={periodLong(channelPeriod) ?? undefined}>{orDash(channel.label)}</ChartTitle>
+                <LatestShareBar share={channel} />
+              </div>
+            ) : null}
+          </div>
+        </StorySection>
+      ) : null}
     </>
   );
 }
@@ -236,32 +225,26 @@ function GroupTab({ list }: { list: PulseMetricViewModel[] }) {
       </StorySection>
     ) : null;
 
+  // 健康度（保險業財務體質）不影響單一商品引進：只留結論與指標表（2026-11-01）
+  if (list[0]?.group === 'health') {
+    return (
+      <>
+        {headline ? <Lead parts={headline.parts} /> : null}
+        <MetricTable metrics={list} />
+      </>
+    );
+  }
+
   return (
     <>
       {headline ? <Lead parts={headline.parts} /> : null}
       <KeyNumbers items={tabNumbers(list)} />
       {main}
-      {extraMonthlyTrends(list).map((x) => (
-        <StorySection key={x.key} heading={amountHeading(x)}>
-          <div>
-            <ChartTitle note={unitNote(x)}>{x.label ? t.heading.amountChart(x.label) : orDash(x.label)}</ChartTitle>
-            <MonthlyColumns m={x} />
-          </div>
-        </StorySection>
-      ))}
       {rankingSection}
       <NextStep
         down={{ label: multiShares.length > 0 ? t.downShare : t.downPlain, targetId: DETAILS_ID }}
       />
       <DetailDivider id={DETAILS_ID} label={t.details} />
-      {ranked && rankFmt ? (
-        <StorySection heading={t.ranking.all(ranked.m.rows.length, periodLong(ranked.m.period) ?? '')}>
-          <div className="max-w-3xl">
-            <ChartTitle note={orDash(ranked.m.label)}>{orDash(ranked.m.source)}</ChartTitle>
-            <RankingBars rows={ranked.m.rows} formatValue={rankFmt} ariaLabel={orDash(ranked.m.label)} />
-          </div>
-        </StorySection>
-      ) : null}
       {multiShares.map((s) => {
         const lead = growthLeaders(s);
         return (
