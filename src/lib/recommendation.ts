@@ -2,7 +2,7 @@ import type { SignalText } from '../types/viewModel';
 import { toSignalColor } from './signalColor';
 
 // 整體建議的顯示（2026-11-01 使用者回饋）：後端「有條件推進」與「暫緩」都給黃色，看不出差別。
-// 依建議代碼改用全站好壞色：推進＝好（藍）、不建議＝壞（紅）、暫緩與未完成＝灰；標籤改白話。
+// 依建議代碼改用全站好壞色：推進＝好（綠）、不建議＝壞（紅）、暫緩與未完成＝灰；標籤改白話。
 
 const COLOR_BY_KEY: Record<string, SignalText['color']> = {
   go: 'green',

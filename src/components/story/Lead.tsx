@@ -16,7 +16,7 @@ const Parts = ({ parts }: { parts: HeadlinePart[] }) => (
 );
 
 /**
- * 閱讀路徑 ②「一句結論」：本頁最大的字。好的結果藍色、壞的珊瑚紅、中性重點用代表色深色（2026-11-01）。
+ * 閱讀路徑 ②「一句結論」：本頁最大的字。好的結果綠色、壞的珊瑚紅、中性重點用代表色深色（2026-11-01）。
  * sub：第二行較小的補充（例如「其餘 7 件暫緩：缺商品資料」）。
  */
 export function Lead({ parts, sub }: { parts: HeadlinePart[]; sub?: HeadlinePart[] | null }) {

@@ -3,7 +3,7 @@ import type { OverviewRow, SignalColor } from '../../types/viewModel';
 import { zhTW } from '../../i18n/zh-TW';
 import { orDash } from '../../lib/format';
 
-// 引進分數（lib/introScore.ts）的顯示：數字＋長條。顏色跟整體建議一致：推進藍、不建議紅、其他灰。
+// 引進分數（lib/introScore.ts）的顯示：數字＋長條。顏色跟整體建議一致：推進綠、不建議紅、其他灰。
 
 const BAR: Record<SignalColor, string> = {
   green: 'bg-good',
@@ -49,7 +49,7 @@ export function ScoreBar({ row, barClass = 'w-16' }: { row: OverviewRow; barClas
 
 /**
  * 所有商品的分數橫條圖（競品研究第一個畫面）：簡稱（連報告頁）｜長條（0–100）｜分數。
- * 推薦的商品藍色，一眼看出哪件最好。rows 已排好。
+ * 推薦的商品綠色，一眼看出哪件最好。rows 已排好。
  */
 export function ScoreChart({ rows }: { rows: OverviewRow[] }) {
   const location = useLocation();

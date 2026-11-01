@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>市場脈動樣稿</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600&display=swap">
+<style>
+/* 樣稿：市場脈動加「險種結構」（新）與險種卡的逐月小折線（改）。法巴排名卡保留。只做淺色。
+   資料是 2026-11-01 public/data/market-pulse.json 的實際數字。好＝深綠 #1b6e43、壞＝珊瑚紅、重點＝市場脈動天空藍。 */
+:root { --ink:#2a3142; --ink2:#5a6275; --muted:#8a92a3; --line:#e8eaf1; --axis:#c3c8d4;
+  --p:#5b8def; --p-pale:#dbe7fd; --p-faint:#f0f5ff; --p-ink:#3466c9; --good:#1b6e43; --bad:#ec6a60;
+  --new:#9a640f; --new-bg:#fbecc8; color-scheme: light; }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--p-faint); color:var(--ink); font:14px/1.6 "Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif; }
+.wrap { max-width:1180px; margin:0 auto; padding:28px 16px 64px; display:grid; grid-template-columns:minmax(0,1fr); gap:18px; }
+.note { background:#fff; border:2px dashed var(--new); border-radius:12px; padding:12px 16px; display:grid; gap:4px; }
+.note b { font-size:15px; }
+.note p { margin:0; color:var(--ink2); font-size:13.5px; }
+.chip { display:inline-block; border-radius:6px; padding:0 7px; font-size:12px; font-weight:600; margin-right:4px; }
+.chip.new { background:var(--new-bg); color:var(--new); }
+.chip.chg { background:#ebe3fd; color:#6b4fc0; }
+.chip.keep { background:var(--line); color:var(--ink2); }
+header.ph { display:flex; align-items:center; gap:14px; border-bottom:1px solid var(--p-pale); padding-bottom:14px; }
+.badge { width:40px; height:40px; border-radius:12px; background:var(--p); display:grid; place-items:center; }
+.ph h1 { margin:0; font-size:24px; font-weight:600; line-height:1.2; }
+.ph p { margin:2px 0 0; font-size:13px; color:var(--ink2); }
+.ph .aside { margin-left:auto; align-self:end; font-size:12px; color:var(--muted); }
+.lead { font-size:28px; font-weight:500; margin:0; }
+.lead em { font-style:normal; color:var(--good); }
+.card { background:#fff; border:1px solid var(--line); border-radius:12px; padding:16px 24px 20px; display:flex; flex-direction:column; gap:12px; min-width:0; position:relative; }
+.card h2 { margin:0; font-size:17px; font-weight:500; line-height:1.45; }
+.card h2 .good { color:var(--good); font-weight:600; } .card h2 .key { color:var(--p-ink); font-weight:600; }
+.card .sub { margin:2px 0 0; font-size:12.5px; color:var(--muted); }
+.card > .chip { position:absolute; top:-10px; right:16px; margin:0; }
+.card.is-new { border:2px solid var(--new); } .card.is-chg { border:2px solid #9a7ee6; }
+.hero { display:grid; grid-template-columns:minmax(0,15rem) 1fr; gap:24px; align-items:center; }
+.big { font-size:56px; line-height:1; font-weight:600; color:var(--good); letter-spacing:-.02em; }
+.grid { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; }
+.full { grid-column:1 / -1; }
+/* 險種卡 */
+.lines { display:grid; grid-template-columns:auto 1fr auto auto; align-items:center; gap:10px 12px; font-size:14px; }
+.ln { white-space:nowrap; color:var(--ink2); display:flex; align-items:center; gap:6px; } .ln.strong { color:var(--ink); font-weight:500; }
+.tag { font-style:normal; font-size:11px; background:var(--p-pale); color:var(--p-ink); border-radius:4px; padding:0 6px; font-weight:400; }
+.lbar { position:relative; height:14px; } .lbar .zero { position:absolute; top:-4px; bottom:-4px; width:1px; background:var(--axis); }
+.lbar .fill { position:absolute; top:0; bottom:0; border-radius:6px; }
+.lval { width:4.2rem; text-align:right; font-variant-numeric:tabular-nums; font-weight:600; }
+.lspark { display:flex; align-items:center; padding:0 4px; border-radius:6px; background:#f7f3ff; }
+.colhead { font-size:11.5px; color:var(--muted); }
+/* 結構卡 */
+.legend { display:flex; gap:14px; flex-wrap:wrap; font-size:12.5px; color:var(--ink2); }
+.legend i { display:inline-block; width:12px; height:12px; border-radius:3px; margin-right:5px; vertical-align:-1px; }
+.struct { display:grid; grid-template-columns:auto 1fr; gap:6px 10px; align-items:center; }
+.sm { font-size:12.5px; color:var(--muted); text-align:right; }
+.sbar { display:flex; gap:2px; height:20px; }
+.sbar span { display:flex; align-items:center; justify-content:center; border-radius:4px; font-size:11.5px; overflow:hidden; white-space:nowrap; font-variant-numeric:tabular-nums; }
+/* 排名 */
+.rank { display:grid; grid-template-columns:auto auto 1fr; gap:8px 12px; align-items:center; font-size:13.5px; }
+.rn { text-align:right; color:var(--muted); } .rname { color:var(--ink2); max-width:11rem; }
+.rn.self, .rname.self, .rbar b.self { color:var(--p-ink); font-weight:500; }
+.rbar { display:flex; align-items:center; gap:8px; } .rbar span { height:10px; border-radius:6px; min-width:4px; } .rbar b { font-weight:400; color:var(--ink2); }
+.gap { grid-column:1/-1; color:var(--muted); line-height:1; padding-left:4px; }
+/* 通路 */
+.ch { display:grid; grid-template-columns:auto 1fr auto; gap:8px 12px; align-items:center; font-size:13.5px; }
+.ch .bar { height:12px; border-radius:6px; }
+.src { font-size:12px; color:var(--muted); }
+@media (max-width: 860px) {
+  .grid { grid-template-columns:minmax(0,1fr); } .hero { grid-template-columns:minmax(0,1fr); }
+  .ph { flex-wrap:wrap; } .card { padding:14px 16px 18px; } .big { font-size:48px; }
+  .lines { grid-template-columns:auto 1fr auto; } .lspark { grid-column:1/-1; justify-self:end; } .colhead.sp { display:none; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="note">
+    <b>樣稿：網站本身還沒改</b>
+    <p><span class="chip new">新</span>① 險種結構：每個月錢流向哪個險種（年金實心）。<span class="chip chg">改</span>② 險種卡：右邊加 1–8 月逐月小折線，看出是一直成長還是只有這個月好。<span class="chip keep">保留</span>其他卡片照現在的網站（含法巴排名）。</p>
+    <p>數字都是目前網站資料（8 月）。好＝深綠、壞＝珊瑚紅、圖上的重點＝市場脈動天空藍。</p>
+  </div>
+
+  <header class="ph">
+    <span class="badge"><svg viewBox="0 0 20 20" width="22" height="22" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15l4-5 3 3 4-6 3 3M3 17h14"/></svg></span>
+    <div><h1>市場脈動</h1><p>台灣壽險市場的成長、利率、通路與同業競爭</p></div>
+    <div class="aside">2026 年 8 月 · 資料更新於 2026-10-29 20:14</div>
+  </header>
+
+  <p class="lead">新契約保費<em>連續 8 個月成長</em></p>
+
+  <section class="card"><span class="chip keep">保留</span>
+    <div class="hero">
+      <div><div class="sub" style="margin:0">8 月比去年同期</div><div class="big">+68.5%</div><div style="margin-top:8px;color:var(--ink2)">新契約保費 1,245.9 億元</div></div>
+      <div><div class="sub" style="margin:0 0 6px;color:var(--ink2)">每月新契約保費比去年同期</div><svg viewBox="0 0 820 180" width="100%" role="img" aria-label="每月新契約保費比去年同期"><line x1="0" x2="820" y1="158" y2="158" stroke="#c3c8d4"/><rect x="31.25" y="66.10509031198688" width="40" height="91.89490968801312" rx="4" fill="#a9cfb8"/><text x="51.25" y="175" text-anchor="middle" font-size="11.5" fill="#8a92a3">1 月</text><rect x="133.75" y="151.6602809706258" width="40" height="6.339719029374202" rx="4" fill="#a9cfb8"/><text x="153.75" y="175" text-anchor="middle" font-size="11.5" fill="#8a92a3">2 月</text><rect x="236.25" y="123.84491881043606" width="40" height="34.155081189563944" rx="4" fill="#a9cfb8"/><text x="256.25" y="175" text-anchor="middle" font-size="11.5" fill="#8a92a3">3 月</text><rect x="338.75" y="77.80441525269111" width="40" height="80.19558474730889" rx="4" fill="#a9cfb8"/><text x="358.75" y="175" text-anchor="middle" font-size="11.5" fill="#8a92a3">4 月</text><rect x="441.25" y="58.83488414522897" width="40" height="99.16511585477103" rx="4" fill="#a9cfb8"/><text x="461.25" y="175" text-anchor="middle" font-size="11.5" fill="#8a92a3">5 月</text><rect x="543.75" y="77.40740740740742" width="40" height="80.59259259259258" rx="4" fill="#a9cfb8"/><text x="563.75" y="175" text-anchor="middle" font-size="11.5" fill="#8a92a3">6 月</text><rect x="646.25" y="22" width="40" height="136" rx="4" fill="#a9cfb8"/><text x="666.25" y="16" text-anchor="middle" font-size="12" fill="#5a6275" font-weight="400">+109.6%</text><text x="666.25" y="175" text-anchor="middle" font-size="11.5" fill="#8a92a3">7 月</text><rect x="748.75" y="73.05272760445175" width="40" height="84.94727239554825" rx="4" fill="#1b6e43"/><text x="768.75" y="67.05272760445175" text-anchor="middle" font-size="12" fill="#1b6e43" font-weight="600">+68.5%</text><text x="768.75" y="175" text-anchor="middle" font-size="11.5" fill="#8a92a3">8 月</text></svg></div>
+    </div>
+  </section>
+
+  <div class="grid">
+    <section class="card is-chg"><span class="chip chg">② 改</span>
+      <div><h2>7 件候選商品屬於人壽保險，比去年同期 <span class="good">+51.9%</span></h2>
+      <p class="sub">8 月 各險種新契約保費比去年同期；右邊小線是 1–8 月每個月的變化</p></div>
+      <div class="lines">
+        <span class="colhead"></span><span class="colhead"></span><span class="colhead" style="text-align:right">8 月</span><span class="colhead sp" style="text-align:center">1–8 月</span>
+        <div class="ln ">年金保險</div>
+      <div class="lbar"><span class="zero" style="left:1.8852932678416638%"></span><span class="fill" style="left:1.8852932678416638%;width:max(98.11470673215833%,3px);background:#a9cfb8"></span></div>
+      <div class="lval" style="color:#1b6e43">+135.8%</div>
+      <div class="lspark new2" title="1–8 月每月比去年同期"><svg viewBox="0 0 96 26" width="96" height="26" aria-hidden="true"><line x1="0" x2="96" y1="24" y2="24" stroke="#c3c8d4" stroke-dasharray="2 2"/><polyline points="2.0,17.2 15.1,23.0 28.3,21.4 41.4,13.0 54.6,6.4 67.7,4.5 80.9,2.0 94.0,14.2" fill="none" stroke="#1b6e43" stroke-width="1.6" stroke-linejoin="round"/><circle cx="94" cy="14.158218884826926" r="2.4" fill="#1b6e43"/></svg></div><div class="ln strong">人壽保險<i class="tag">7 件候選</i></div>
+      <div class="lbar"><span class="zero" style="left:1.8852932678416638%"></span><span class="fill" style="left:1.8852932678416638%;width:max(37.518058364634484%,3px);background:#1b6e43"></span></div>
+      <div class="lval" style="color:#1b6e43">+51.9%</div>
+      <div class="lspark new2" title="1–8 月每月比去年同期"><svg viewBox="0 0 96 26" width="96" height="26" aria-hidden="true"><line x1="0" x2="96" y1="24" y2="24" stroke="#c3c8d4" stroke-dasharray="2 2"/><polyline points="2.0,2.0 15.1,22.8 28.3,15.6 41.4,12.0 54.6,11.1 67.7,15.6 80.9,5.7 94.0,7.3" fill="none" stroke="#1b6e43" stroke-width="1.6" stroke-linejoin="round"/><circle cx="94" cy="7.3428571428571425" r="2.4" fill="#1b6e43"/></svg></div><div class="ln strong">健康保險<i class="tag">1 件候選</i></div>
+      <div class="lbar"><span class="zero" style="left:1.8852932678416638%"></span><span class="fill" style="right:98.11470673215834%;width:max(1.2857555619763072%,3px);background:#ec6a60"></span></div>
+      <div class="lval" style="color:#ec6a60">-1.8%</div>
+      <div class="lspark new2" title="1–8 月每月比去年同期"><svg viewBox="0 0 96 26" width="96" height="26" aria-hidden="true"><line x1="0" x2="96" y1="14.893676441252744" y2="14.893676441252744" stroke="#c3c8d4" stroke-dasharray="2 2"/><polyline points="2.0,2.0 15.1,24.0 28.3,14.8 41.4,4.8 54.6,4.6 67.7,8.1 80.9,13.4 94.0,15.7" fill="none" stroke="#ec6a60" stroke-width="1.6" stroke-linejoin="round"/><circle cx="94" cy="15.674845401954919" r="2.4" fill="#ec6a60"/></svg></div><div class="ln ">傷害保險</div>
+      <div class="lbar"><span class="zero" style="left:1.8852932678416638%"></span><span class="fill" style="right:98.11470673215834%;width:max(1.8852932678416638%,3px);background:#f7c3be"></span></div>
+      <div class="lval" style="color:#ec6a60">-2.6%</div>
+      <div class="lspark new2" title="1–8 月每月比去年同期"><svg viewBox="0 0 96 26" width="96" height="26" aria-hidden="true"><line x1="0" x2="96" y1="13.788471177944862" y2="13.788471177944862" stroke="#c3c8d4" stroke-dasharray="2 2"/><polyline points="2.0,2.0 15.1,24.0 28.3,13.6 41.4,18.0 54.6,13.2 67.7,18.8 80.9,15.0 94.0,15.2" fill="none" stroke="#ec6a60" stroke-width="1.6" stroke-linejoin="round"/><circle cx="94" cy="15.227568922305764" r="2.4" fill="#ec6a60"/></svg></div>
+      </div>
+    </section>
+
+    <section class="card is-new"><span class="chip new">① 新</span>
+      <div><h2>年金保險占比從 1 月 31.8% 升到 7 月 <span class="key">43.9%</span>，8 月回到 33.6%</h2>
+      <p class="sub">每個月新契約保費分到各險種的比例（加起來 100%）</p></div>
+      <div class="legend"><span><i style="background:#dbe7fd"></i>人壽保險</span><span><i style="background:#5b8def"></i>年金保險</span><span><i style="background:#a9c5f7"></i>健康保險</span><span><i style="background:#c3c8d4"></i>傷害保險</span></div>
+      <div class="struct"><div class="sm">1 月</div><div class="sbar"><span style="flex:64.92;background:#dbe7fd;color:#3466c9;font-weight:400" title="人壽保險 64.92%">64.9%</span><span style="flex:31.81;background:#5b8def;color:#fff;font-weight:600" title="年金保險 31.81%">31.8%</span><span style="flex:2.41;background:#a9c5f7;color:#3466c9;font-weight:400" title="健康保險 2.41%"></span><span style="flex:0.86;background:#c3c8d4;color:#3466c9;font-weight:400" title="傷害保險 0.86%"></span></div><div class="sm">2 月</div><div class="sbar"><span style="flex:65.52;background:#dbe7fd;color:#3466c9;font-weight:400" title="人壽保險 65.52%">65.5%</span><span style="flex:30.16;background:#5b8def;color:#fff;font-weight:600" title="年金保險 30.16%">30.2%</span><span style="flex:3.06;background:#a9c5f7;color:#3466c9;font-weight:400" title="健康保險 3.06%"></span><span style="flex:1.26;background:#c3c8d4;color:#3466c9;font-weight:400" title="傷害保險 1.26%"></span></div><div class="sm">3 月</div><div class="sbar"><span style="flex:63.2;background:#dbe7fd;color:#3466c9;font-weight:400" title="人壽保險 63.2%">63.2%</span><span style="flex:32.21;background:#5b8def;color:#fff;font-weight:600" title="年金保險 32.21%">32.2%</span><span style="flex:3.4;background:#a9c5f7;color:#3466c9;font-weight:400" title="健康保險 3.4%"></span><span style="flex:1.18;background:#c3c8d4;color:#3466c9;font-weight:400" title="傷害保險 1.18%"></span></div><div class="sm">4 月</div><div class="sbar"><span style="flex:56.78;background:#dbe7fd;color:#3466c9;font-weight:400" title="人壽保險 56.78%">56.8%</span><span style="flex:38.57;background:#5b8def;color:#fff;font-weight:600" title="年金保險 38.57%">38.6%</span><span style="flex:3.59;background:#a9c5f7;color:#3466c9;font-weight:400" title="健康保險 3.59%"></span><span style="flex:1.07;background:#c3c8d4;color:#3466c9;font-weight:400" title="傷害保險 1.07%"></span></div><div class="sm">5 月</div><div class="sbar"><span style="flex:56.36;background:#dbe7fd;color:#3466c9;font-weight:400" title="人壽保險 56.36%">56.4%</span><span style="flex:38.9;background:#5b8def;color:#fff;font-weight:600" title="年金保險 38.9%">38.9%</span><span style="flex:3.51;background:#a9c5f7;color:#3466c9;font-weight:400" title="健康保險 3.51%"></span><span style="flex:1.23;background:#c3c8d4;color:#3466c9;font-weight:400" title="傷害保險 1.23%"></span></div><div class="sm">6 月</div><div class="sbar"><span style="flex:59.44;background:#dbe7fd;color:#3466c9;font-weight:400" title="人壽保險 59.44%">59.4%</span><span style="flex:36.74;background:#5b8def;color:#fff;font-weight:600" title="年金保險 36.74%">36.7%</span><span style="flex:2.97;background:#a9c5f7;color:#3466c9;font-weight:400" title="健康保險 2.97%"></span><span style="flex:0.86;background:#c3c8d4;color:#3466c9;font-weight:400" title="傷害保險 0.86%"></span></div><div class="sm">7 月</div><div class="sbar"><span style="flex:52.95;background:#dbe7fd;color:#3466c9;font-weight:400" title="人壽保險 52.95%">53.0%</span><span style="flex:43.89;background:#5b8def;color:#fff;font-weight:600" title="年金保險 43.89%">43.9%</span><span style="flex:2.35;background:#a9c5f7;color:#3466c9;font-weight:400" title="健康保險 2.35%"></span><span style="flex:0.8;background:#c3c8d4;color:#3466c9;font-weight:400" title="傷害保險 0.8%"></span></div><div class="sm">8 月</div><div class="sbar"><span style="flex:62.52;background:#dbe7fd;color:#3466c9;font-weight:400" title="人壽保險 62.52%">62.5%</span><span style="flex:33.59;background:#5b8def;color:#fff;font-weight:600" title="年金保險 33.59%">33.6%</span><span style="flex:2.92;background:#a9c5f7;color:#3466c9;font-weight:400" title="健康保險 2.92%"></span><span style="flex:0.96;background:#c3c8d4;color:#3466c9;font-weight:400" title="傷害保險 0.96%"></span></div></div>
+    </section>
+
+    <section class="card"><span class="chip keep">保留</span>
+      <div><h2>10年期公債殖利率一年 <span class="good">+0.78%</span></h2><p class="sub">目前 2.03%，儲蓄型商品較有定價空間</p></div>
+      <svg viewBox="0 0 520 160" width="100%" role="img" aria-label="10 年期公債殖利率"><line x1="44" x2="470" y1="138" y2="138" stroke="#e2e8f0"/><text x="38" y="138" dy="0.32em" text-anchor="end" font-size="11" fill="#64748b">1.20%</text><line x1="44" x2="470" y1="112.80000000000001" y2="112.80000000000001" stroke="#e2e8f0"/><text x="38" y="112.80000000000001" dy="0.32em" text-anchor="end" font-size="11" fill="#64748b">1.40%</text><line x1="44" x2="470" y1="87.60000000000002" y2="87.60000000000002" stroke="#e2e8f0"/><text x="38" y="87.60000000000002" dy="0.32em" text-anchor="end" font-size="11" fill="#64748b">1.60%</text><line x1="44" x2="470" y1="62.400000000000034" y2="62.400000000000034" stroke="#e2e8f0"/><text x="38" y="62.400000000000034" dy="0.32em" text-anchor="end" font-size="11" fill="#64748b">1.80%</text><line x1="44" x2="470" y1="37.200000000000045" y2="37.200000000000045" stroke="#e2e8f0"/><text x="38" y="37.200000000000045" dy="0.32em" text-anchor="end" font-size="11" fill="#64748b">2.00%</text><line x1="44" x2="470" y1="12.000000000000055" y2="12.000000000000055" stroke="#e2e8f0"/><text x="38" y="12.000000000000055" dy="0.32em" text-anchor="end" font-size="11" fill="#64748b">2.20%</text><polyline points="44.0,131.9 45.8,131.9 47.5,131.9 49.3,127.4 51.1,129.0 52.9,126.7 54.6,126.7 56.4,126.7 58.2,129.1 60.0,128.6 61.8,126.9 63.5,126.9 65.3,123.8 67.1,123.1 68.8,123.4 70.6,125.2 72.4,125.2 74.2,125.2 76.0,125.4 77.7,125.6 79.5,124.8 81.3,123.4 83.0,121.5 84.8,122.8 86.6,122.8 88.4,122.8 90.2,120.2 91.9,119.5 93.7,119.0 95.5,118.1 97.3,118.1 99.0,118.1 100.8,116.5 102.6,116.5 104.3,116.5 106.1,116.6 107.9,116.9 109.7,116.9 111.5,116.9 113.2,116.9 115.0,117.1 116.8,117.1 118.5,117.1 120.3,113.4 122.1,112.8 123.9,112.0 125.7,111.9 127.4,112.8 129.2,112.8 131.0,112.2 132.8,112.2 134.5,112.8 136.3,112.8 138.1,112.8 139.8,112.8 141.6,112.8 143.4,112.8 145.2,111.0 146.9,111.4 148.7,110.3 150.5,110.3 152.3,110.3 154.1,110.3 155.8,110.3 157.6,110.3 159.4,109.9 161.2,110.1 162.9,109.0 164.7,109.6 166.5,111.4 168.3,111.4 170.0,111.4 171.8,111.4 173.6,111.4 175.3,111.4 177.1,110.9 178.9,110.9 180.7,110.9 182.4,110.6 184.2,109.7 186.0,109.7 187.8,109.7 189.6,107.8 191.3,107.8 193.1,107.8 194.9,107.8 196.7,107.8 198.4,107.8 200.2,107.8 202.0,107.8 203.8,107.8 205.5,107.8 207.3,107.8 209.1,100.2 210.8,98.8 212.6,93.9 214.4,91.3 216.2,89.8 217.9,96.0 219.7,97.7 221.5,96.6 223.3,96.6 225.1,96.6 226.8,96.6 228.6,98.1 230.4,98.1 232.2,98.1 233.9,98.1 235.7,98.1 237.5,98.1 239.3,98.1 241.0,100.2 242.8,100.6 244.6,100.6 246.3,101.5 248.1,100.2 249.9,99.9 251.7,99.9 253.4,99.9 255.2,99.9 257.0,99.9 258.8,99.9 260.6,95.8 262.3,95.8 264.1,95.8 265.9,95.8 267.6,95.8 269.4,88.3 271.2,83.2 273.0,83.2 274.8,83.2 276.5,83.2 278.3,83.2 280.1,83.2 281.9,83.2 283.6,83.2 285.4,83.2 287.2,83.2 288.9,83.2 290.7,83.2 292.5,83.2 294.3,71.2 296.1,71.2 297.8,71.2 299.6,64.9 301.4,63.8 303.1,65.3 304.9,65.3 306.7,65.3 308.5,65.3 310.3,65.3 312.0,65.3 313.8,65.3 315.6,65.3 317.4,65.3 319.1,65.3 320.9,65.3 322.7,65.3 324.4,65.3 326.2,75.0 328.0,75.0 329.8,75.0 331.6,75.0 333.3,75.0 335.1,75.0 336.9,75.0 338.6,75.0 340.4,75.0 342.2,75.0 344.0,75.0 345.8,75.0 347.5,75.0 349.3,75.0 351.1,75.0 352.9,75.0 354.6,59.9 356.4,47.2 358.2,47.2 359.9,47.2 361.7,47.2 363.5,47.2 365.3,47.2 367.1,47.2 368.8,47.2 370.6,47.2 372.4,37.2 374.1,41.5 375.9,41.7 377.7,41.7 379.5,41.5 381.3,42.1 383.0,42.1 384.8,42.1 386.6,49.0 388.4,49.0 390.1,54.2 391.9,52.3 393.7,52.3 395.4,52.3 397.2,52.3 399.0,52.3 400.8,52.3 402.6,52.3 404.3,52.3 406.1,52.3 407.9,52.3 409.6,52.3 411.4,47.2 413.2,47.2 415.0,47.2 416.8,47.2 418.5,47.2 420.3,47.2 422.1,47.2 423.9,47.2 425.6,47.2 427.4,47.2 429.2,47.2 430.9,47.2 432.7,47.2 434.5,47.2 436.3,47.2 438.1,47.2 439.8,47.2 441.6,47.2 443.4,47.2 445.1,47.2 446.9,47.2 448.7,34.2 450.5,34.2 452.3,34.2 454.0,34.2 455.8,34.4 457.6,34.4 459.4,34.4 461.1,37.1 462.9,37.0 464.7,37.0 466.4,37.0 468.2,33.4 470.0,33.4" fill="none" stroke="#5b8def" stroke-width="2"/><circle cx="470" cy="33.420000000000044" r="4.5" fill="#3466c9" stroke="#fff" stroke-width="1.5"/><text x="479" y="33.420000000000044" dy="0.32em" font-size="12" font-weight="500" fill="#2a3142">2.03%</text><text x="44" y="154" text-anchor="start" font-size="11" fill="#64748b">2025/10/30</text><text x="257" y="154" text-anchor="middle" font-size="11" fill="#64748b">2026/5/5</text><text x="470" y="154" text-anchor="end" font-size="11" fill="#64748b">2026/10/29</text></svg>
+    </section>
+
+    <section class="card"><span class="chip keep">保留</span>
+      <div><h2>法國巴黎人壽排<span class="key">第 10 名</span>，市占率 3.56%</h2>
+      <p class="sub">比第 9 名三商美邦人壽少 0.08%，比第 11 名安達國際人壽多 0.09%</p></div>
+      <div class="rank"><div class="rn ">1</div><div class="rname ">國泰人壽</div><div class="rbar"><span style="width:calc((100% - 3.5rem)*1);background:#dbe7fd"></span><b class="">24.40%</b></div><div class="rn ">2</div><div class="rname ">富邦人壽</div><div class="rbar"><span style="width:calc((100% - 3.5rem)*0.43688524590163935);background:#dbe7fd"></span><b class="">10.66%</b></div><div class="rn ">3</div><div class="rname ">新光人壽</div><div class="rbar"><span style="width:calc((100% - 3.5rem)*0.3725409836065574);background:#dbe7fd"></span><b class="">9.09%</b></div><div class="gap">⋯</div><div class="rn ">9</div><div class="rname ">三商美邦人壽</div><div class="rbar"><span style="width:calc((100% - 3.5rem)*0.14918032786885246);background:#dbe7fd"></span><b class="">3.64%</b></div><div class="rn self">10</div><div class="rname self">法國巴黎人壽</div><div class="rbar"><span style="width:calc((100% - 3.5rem)*0.1459016393442623);background:#5b8def"></span><b class="self">3.56%</b></div><div class="rn ">11</div><div class="rname ">安達國際人壽</div><div class="rbar"><span style="width:calc((100% - 3.5rem)*0.14221311475409837);background:#dbe7fd"></span><b class="">3.47%</b></div></div>
+    </section>
+
+    <section class="card full"><span class="chip keep">保留</span>
+      <div><h2>銀行通路占 37.0%，是法巴的主力通路</h2><p class="sub">新契約保費通路占比（全業界，當年1月起累計） · 2026 年 9 月</p></div>
+      <div class="ch"><span style="color:var(--ink2);font-weight:400">壽險公司本身行銷體系</span><span class="bar" style="width:100%;background:#dbe7fd"></span><span style="text-align:right;color:var(--ink2);font-weight:400">46.4%</span><span style="color:#3466c9;font-weight:500">銀行經代保代通路</span><span class="bar" style="width:79.69389954731622%;background:#5b8def"></span><span style="text-align:right;color:#3466c9;font-weight:600">37.0%</span><span style="color:var(--ink2);font-weight:400">傳統保險經紀人、代理人</span><span class="bar" style="width:35.86979952575986%;background:#dbe7fd"></span><span style="text-align:right;color:var(--ink2);font-weight:400">16.6%</span></div>
+    </section>
+  </div>
+
+  <p class="src">資料來源：保險事業發展中心、櫃買中心、壽險公會</p>
+</div>
+</body>
+</html>

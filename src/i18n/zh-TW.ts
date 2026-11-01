@@ -61,7 +61,7 @@ export const zhTW = {
     go: '前往 →',
     colorsTitle: '顏色怎麼看',
     colors: [
-      { key: 'good', name: '藍色＝好', body: '成長、可推進、可引進' },
+      { key: 'good', name: '綠色＝好', body: '成長、可推進、可引進' },
       { key: 'bad', name: '紅色＝壞', body: '衰退、不建議、不可引進' },
       { key: 'gray', name: '灰色＝還不能判斷', body: '暫緩、待確認' },
       { key: 'key', name: '實心＝重點', body: '圖上要看的那一項，用該頁的代表色' },
