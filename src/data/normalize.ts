@@ -50,6 +50,7 @@ import { cleanReport, cleanReportIndex } from './cleanText';
 import { productLineOf, shortNameOf } from '../lib/productNames';
 import { recommendationDisplay } from '../lib/recommendation';
 import { withIntroScores } from '../lib/introScore';
+import { productIntro } from '../lib/productIntro';
 
 export function str(v: unknown): string | null {
   return typeof v === 'string' && v !== '' ? v : null;
@@ -541,6 +542,7 @@ export function normalizeReport(raw: Report): ReportViewModel {
     legal: legalJudgement(r.dimension_scores, r.scorecard?.regulatory?.overall_verdict),
     competitors: normalizeCompetitors(r),
     sourceDocuments: normalizeSourceDocuments(r),
+    intro: productIntro(r.product_snapshot?.profile, str(r.product_snapshot?.mechanism_summary)),
     disclaimer: str(r.disclaimer),
   };
 }

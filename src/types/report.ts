@@ -70,6 +70,23 @@ export interface RawProductSnapshot {
   mechanism_summary?: Nullable<string>;
   /** 商品原始資料（官方新聞稿、說明書等）；目前由 import-agentdata 從 1.json 補上 */
   source_documents?: Nullable<RawSourceDocument[]>;
+  /** 報告頁「商品概要」的商品資料（2026-11-01）；目前由 import-agentdata 從 1.json 補上 */
+  profile?: Nullable<RawProductProfile>;
+}
+
+export interface RawProductProfile {
+  launch_date?: Nullable<string>;
+  mechanism?: Nullable<string>;
+  target_segment?: Nullable<string>;
+  /** 數字或文字（例如「0歲（最近生日年齡）」） */
+  issue_age_min?: Nullable<number | string>;
+  issue_age_max?: Nullable<number | string>;
+  premium_mode?: Nullable<string>;
+  benefit_period?: Nullable<string>;
+  payout_type?: Nullable<string>;
+  trigger_condition?: Nullable<string>;
+  guarantees?: Nullable<Array<Nullable<{ feature?: Nullable<string>; value?: Nullable<string> }>>>;
+  riders?: Nullable<string[]>;
 }
 
 export interface RawSourceDocument {

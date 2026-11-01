@@ -5,7 +5,8 @@
 // 讀（後端資料夾結構，見 docs/progress/data-status.md）：
 //   <商品 id>/3.json                          統整報告（sync 驗證後原樣匯入）
 //   <商品 id>/1.json                          商品原始資料 → 報告沒有 product_snapshot.source_documents 時補上；
-//                                              發行公司、國家、幣別、繳費方式是空的時也從這裡補
+//                                              發行公司、國家、幣別、繳費方式是空的時也從這裡補；
+//                                              報告頁「商品概要」的 product_snapshot.profile 也從這裡來
 //   news-monitor-work/news-regulatory-monitor.json → feed.json
 //   market-pulse.json                          → market-pulse.json
 //   market-pulse-work/output/pulse.json        → 同業排名（market-pulse 沒有 ranking 指標時補上，格式同後端需求 M7）
@@ -71,6 +72,38 @@ function fillSnapshot(snap, one) {
   }
 }
 
+const text = (v) => (typeof v === 'string' && v.trim() ? v.trim() : null);
+const textOrNum = (v) => (typeof v === 'number' && Number.isFinite(v) ? v : text(v));
+const textList = (v) => (Array.isArray(v) ? v.map(text).filter((x) => x !== null) : []);
+
+/**
+ * 報告頁「商品概要」用的商品資料（2026-11-01）：從 1.json 取機制、目標客群、承保年齡、繳費、保障期間、
+ * 給付方式與條件、保證項目、附約。只搬原文，組句在前端（lib/productIntro.ts）。後端日後直接交 profile 時不覆蓋。
+ */
+function productProfile(one) {
+  if (!isObject(one?.core)) return null;
+  const core = one.core;
+  const risk = one['for_塗_發生率暨獲利調查'] ?? {};
+  const legal = one['for_孫_法規']?.compliance_key_attributes ?? {};
+  const profile = {
+    launch_date: text(core.source_market?.launch_date),
+    mechanism: text(core.mechanism?.summary),
+    target_segment: text(core.target_customer_analysis?.primary_segment),
+    issue_age_min: textOrNum(legal.min_insured_age),
+    issue_age_max: textOrNum(legal.max_insured_age),
+    premium_mode: text(core.mechanism?.premium_payment_mode),
+    benefit_period: text(core.mechanism?.benefit_period),
+    payout_type: text(risk.benefit_payout_type),
+    trigger_condition: text(risk.underlying_risk_coverage?.trigger_condition),
+    guarantees: (Array.isArray(core.mechanism?.guarantee_features) ? core.mechanism.guarantee_features : [])
+      .filter(isObject)
+      .map((g) => ({ feature: text(g.feature), value: text(g.value) }))
+      .filter((g) => g.feature && g.value),
+    riders: textList(core.mechanism?.riders_available),
+  };
+  return profile.mechanism || profile.target_segment ? profile : null;
+}
+
 /** 同一商品（原文名稱＋發行公司）有兩份報告時提醒，請在 SKIP 選定 */
 function productKey(one) {
   const core = isObject(one?.core) ? one.core : {};
@@ -102,6 +135,10 @@ async function importReports(fromDir) {
     if (!Array.isArray(snap.source_documents)) {
       const docs = sourceDocuments(one);
       if (docs.length > 0) snap.source_documents = docs;
+    }
+    if (!isObject(snap.profile)) {
+      const profile = productProfile(one);
+      if (profile) snap.profile = profile;
     }
     await writeJson(`${dir}.json`, report);
     count += 1;

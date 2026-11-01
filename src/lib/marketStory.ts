@@ -64,7 +64,9 @@ export function pickMetrics(metrics: PulseMetricViewModel[]) {
   const yieldM = trends(pricing).find((m) => isDaily(m.points.at(-1)?.period)) ?? trends(pricing)[0];
   const brand = g.get('brand') ?? [];
   const channel = shareMetrics(g.get('channel') ?? [])[0];
-  return { yoy, amount, mix, yieldM, ranking: selfRanking(brand), channel };
+  // 法巴市占率（品牌組的百分比趨勢；2026-11-01 要畫過去五年）
+  const selfShare = trends(brand).find((m) => m.unit === '%');
+  return { yoy, amount, mix, yieldM, ranking: selfRanking(brand), channel, selfShare };
 }
 
 // ───────── 成長 ─────────
@@ -188,6 +190,18 @@ export function rankingHeadline(r: NonNullable<ReturnType<typeof selfRanking>>):
     { text: t.ranking.selfLead(orDash(r.self.name)) },
     { text: t.rank(String(r.self.rank)), tone: 'key' },
     { text: t.ranking.shareTail(rankingValue(r.m, r.self.value)) },
+  ];
+}
+
+/** 法巴市占率卡標題：「法巴新契約保費市占率近 5 年從 2.80% 升到 3.56%」；資料涵蓋不到 2 年時寫期間 */
+export function selfShareHeading(m: PulseTrendViewModel): HeadlinePart[] {
+  const first = m.points[0]!;
+  const last = m.points.at(-1)!;
+  const years = new Set(m.points.map((p) => /^(\d{4})/.exec(p.period ?? '')?.[1]).filter(Boolean)).size;
+  const span = years >= 2 ? t.selfShare.years(years) : t.selfShare.sincePeriod(first.period ?? '');
+  return [
+    { text: `${orDash(m.label)}${span}${t.selfShare.from(trendValue(m, first.value))}${last.value >= first.value ? t.selfShare.up : t.selfShare.down}` },
+    { text: trendValue(m, last.value), tone: 'key' },
   ];
 }
 

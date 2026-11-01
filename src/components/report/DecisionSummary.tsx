@@ -16,12 +16,15 @@ export function ReportHeader({
   summary: s,
   docsLink = null,
   action = null,
+  hidePremium = false,
 }: {
   summary: DecisionSummaryViewModel;
   docsLink?: ReactNode;
   action?: ReactNode;
+  /** 商品概要已列繳費方式時不重複 */
+  hidePremium?: boolean;
 }) {
-  const meta = [s.issuer, s.countryLabel, s.category, s.currency, s.premiumMode].filter(Boolean).join(' · ');
+  const meta = [s.issuer, s.countryLabel, s.category, s.currency, hidePremium ? null : s.premiumMode].filter(Boolean).join(' · ');
   return (
     <header className="flex flex-col gap-3 border-b border-p-pale pb-3.5 lg:flex-row lg:items-end lg:justify-between lg:gap-6">
       <div className="min-w-0">
@@ -63,8 +66,8 @@ export function ReportLead({ summary: s }: { summary: DecisionSummaryViewModel }
   );
 }
 
-/** ④ 判斷理由：理由清單、品牌定位、商品機制 */
-export function ReportReasons({ summary: s }: { summary: DecisionSummaryViewModel }) {
+/** ④ 判斷理由：理由清單、品牌定位、商品機制（頁首已有商品概要時不重複列商品機制） */
+export function ReportReasons({ summary: s, showMechanism = true }: { summary: DecisionSummaryViewModel; showMechanism?: boolean }) {
   // 理由提到「信心為 C」時，段落最下面小灰字說明等級高低
   const levels = s.reasons.flatMap((r) => /信心(?:等級)?為?\s*([A-E])/.exec(r)?.[1] ?? []);
   return (
@@ -93,7 +96,7 @@ export function ReportReasons({ summary: s }: { summary: DecisionSummaryViewMode
           ) : null}
         </p>
       ) : null}
-      {s.mechanismSummary ? (
+      {showMechanism && s.mechanismSummary ? (
         <p className="border-t border-line pt-2.5 text-[13px] text-ink2">
           <span className="font-medium text-ink">{t.mechanism}：</span>
           {s.mechanismSummary}

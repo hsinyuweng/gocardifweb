@@ -279,6 +279,17 @@ export const zhTW = {
     channel: {
       heading: (v: string) => `銀行通路占 ${v}，是法巴的主力通路`,
     },
+    // 法巴市占率過去五年（2026-11-01）
+    selfShare: {
+      title: '法巴新契約保費市占率（過去五年）',
+      years: (n: number) => `近 ${n} 年`,
+      sincePeriod: (p: string) => `自 ${p} `,
+      from: (v: string) => `從 ${v} `,
+      up: '升到 ',
+      down: '降到 ',
+      pending: '資料準備中',
+      pendingNote: (v: string | null) => (v ? `目前只有最新一期 ${v}，等過去五年的資料` : '等過去五年的資料'),
+    },
     change: {
       up: '▲',
       down: '▼',
@@ -384,6 +395,20 @@ export const zhTW = {
     brandNote: '品牌定位：',
     brandNoteSource: '來源',
     mechanism: '商品機制',
+    // 商品概要（lib/productIntro.ts，2026-11-01）
+    intro: {
+      title: '商品概要',
+      forWhom: '目標客群',
+      trigger: '給付條件',
+      riders: '附約',
+      age: (n: string) => `${n} 歲`,
+      ageRange: (a: string, b: string) => `${a}–${b} 歲`,
+      ageTo: '至',
+      ageFrom: (a: string) => `${a}起`,
+      ageUpTo: (b: string) => `最高 ${b}`,
+      launch: (y: number, m: number) => `${y} 年 ${m} 月`,
+      facts: { age: '承保年齡', premium: '繳費', period: '保障期間', payout: '給付', launch: '上市' },
+    },
     notProvided: '未提供',
     rawStatus: (s: string) => `（原始值：${s}）`,
     skipReason: (s: string) => `（原因：${s}）`,

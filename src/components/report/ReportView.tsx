@@ -1,3 +1,4 @@
+import { ProductIntro } from './ProductIntro';
 import { useRef, useState, type ReactNode } from 'react';
 import type { BlockerViewModel, ModuleKey, ReportViewModel } from '../../types/viewModel';
 import { zhTW } from '../../i18n/zh-TW';
@@ -76,6 +77,7 @@ export function ReportView({ vm, headerAction = null }: ReportViewProps) {
       <ReportHeader
         summary={vm.summary}
         action={headerAction}
+        hidePremium={vm.intro?.facts.some((f) => f.label === zhTW.report.intro.facts.premium) ?? false}
         docsLink={
           vm.sourceDocuments.length > 0 ? (
             <button
@@ -91,6 +93,7 @@ export function ReportView({ vm, headerAction = null }: ReportViewProps) {
           ) : null
         }
       />
+      {vm.intro ? <ProductIntro intro={vm.intro} /> : null}
       <ReportLead summary={vm.summary} />
       <div ref={cardsRef} className="scroll-mt-28">
         <AnswerCards
@@ -102,7 +105,7 @@ export function ReportView({ vm, headerAction = null }: ReportViewProps) {
       </div>
 
       <StorySection heading={t.reasonsTitle}>
-        <ReportReasons summary={vm.summary} />
+        <ReportReasons summary={vm.summary} showMechanism={vm.intro === null} />
       </StorySection>
 
       <StorySection id={GAPS_ID} heading={t.gapsTitle(primary.length)}>

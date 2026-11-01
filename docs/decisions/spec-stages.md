@@ -28,7 +28,8 @@
 
 - **版面**（2026-10-27 V4，照閱讀路徑重排，內容不刪；`components/report/ReportView.tsx`）：
   - 最上方「← 回…」與「‹ 上一份 3 / 9 下一份 ›」（見 `tasks-owner-backnav.md`）。
-  - ① 頁首：商品名（24px）、「發行公司 · 國家 · 險種 · 幣別 · 繳費」（沒值的項目不列）；右側「列印／另存 PDF」、產出日期。
+  - ① 頁首：商品名（24px）、「發行公司 · 國家 · 險種 · 幣別 · 繳費」（沒值的項目不列；商品概要已列繳費時這裡不列）；右側「列印／另存 PDF」、產出日期。
+  - **商品概要**（2026-11-01，`ProductIntro`、`lib/productIntro.ts`）：白卡，讓保險專業讀者一眼看懂商品在做什麼，照原文用專業詞、不用表格。左欄：小標「商品概要」→ 商品機制一段（16px）→「目標客群」「給付條件」兩行 → 保證項目小標籤（「指數帳戶下限 0%」）＋「附約 …」；右欄（細線分隔；手機改在下方兩欄）：承保年齡、繳費、保障期間、給付、上市。沒值的項目不列；只有英文原文的欄位不列；去掉「（分析）」註記。資料是 `product_snapshot.profile`（目前由 import 從 1.json 帶入）；沒有時用報告的 `mechanism_summary` 當主句。有概要時，判斷理由段落不再列「商品機制」。
   - ② 整體建議標籤（色點＋文字）＋一句摘要（24px）。
   - ③ 四塊：市場需求、發生率暨獲利、法規適用（燈號＋原本的指標、兩行摘要、「看詳細內容 →」切到 E 區分頁）；第四塊「待解決事項」「12 項」（有重大時珊瑚色）「重大 1 · 阻斷 9 · 注意 2」「看待解決事項 ↓」。
   - ④ 「判斷理由」段落：理由清單、品牌定位、商品機制。「待解決事項」段落（右側負責單位篩選）：預設只列重大與阻斷，下方「看全部 12 項（另有注意 2 項）▾」，展開後「收合 ▴」；沒有重大與阻斷時直接全部列出。
@@ -58,7 +59,7 @@
 ## sync 與 import
 
 - 壞 JSON 或缺 report_id：略過並警告；report_id 含 `/`、`\`、`..` 或為 `index` 也略過；同批 report_id 重複則整批中止。
-- `npm run import`（2026-10-31）：`scripts/import-agentdata.mjs` 把 `agentdata/`（後端整包輸出，gitignore）轉到 `incoming/agentdata/`，再 `sync --replace`（整批換新：刪掉這批沒有的舊報告）。轉換只補後端沒給的欄位：報告的發行公司、國家、幣別、繳費方式空著時用 1.json；`product_snapshot.source_documents` 用 1.json；market-pulse 沒有 `ranking` 時用 `market-pulse-work/output/pulse.json` 的 `company_ranking` 轉成 M7 格式。同商品兩份時在程式的 `SKIP` 選定（目前略過 CareScout `aacd2f35`）；沒有 3.json 的資料夾略過。
+- `npm run import`（2026-10-31）：`scripts/import-agentdata.mjs` 把 `agentdata/`（後端整包輸出，gitignore）轉到 `incoming/agentdata/`，再 `sync --replace`（整批換新：刪掉這批沒有的舊報告）。轉換只補後端沒給的欄位：報告的發行公司、國家、幣別、繳費方式空著時用 1.json；`product_snapshot.source_documents` 與 `product_snapshot.profile`（商品概要：機制、目標客群、承保年齡、繳費、保障期間、給付方式與條件、保證項目、附約）用 1.json；market-pulse 沒有 `ranking` 時用 `market-pulse-work/output/pulse.json` 的 `company_ranking` 轉成 M7 格式。同商品兩份時在程式的 `SKIP` 選定（目前略過 CareScout `aacd2f35`）；沒有 3.json 的資料夾略過。
 
 ## 部署
 

@@ -62,7 +62,39 @@
         "url": "https://jri.pub/witt-awards/2022-robert-c-witt-award",
         "publication_date": "2022"
       }
-    ]
+    ],
+    "profile": {
+      "launch_date": "2025-05",
+      "mechanism": "此為累積導向的指數型萬能壽險。保單以高早期現金價值及早期現金價值批單為設計重點；指數帳戶以S&P 500與Fidelity AIM Dividend指數的點對點表現計息，並有下限、參與率與上限等機制。保費額度與頻率具彈性，但須足以維持正解約金或十年不失效保證。",
+      "target_segment": "需要以保單早期現金價值支援保費融資或企業保險安排的高資產個人與企業主。",
+      "issue_age_min": 20,
+      "issue_age_max": 70,
+      "premium_mode": "彈性繳",
+      "benefit_period": "最長至被保險人達121歲",
+      "payout_type": "一次性給付",
+      "trigger_condition": "身故給付選項以保單載明的指定保額，或指定保額加帳戶價值／已繳保費計算；實際給付依保單條款。",
+      "guarantees": [
+        {
+          "feature": "指數帳戶下限",
+          "value": "0%"
+        },
+        {
+          "feature": "固定／DCA帳戶最低利率",
+          "value": "年利率1%"
+        },
+        {
+          "feature": "十年不失效保證",
+          "value": "10年"
+        }
+      ],
+      "riders": [
+        "Early Cash Value Endorsement（兩種選項）",
+        "Lincoln LifeAssure Accelerated Benefits Rider II（慢性或末期疾病）",
+        "Enhanced Overloan Protection Endorsement",
+        "Performance Multiplier Rider",
+        "Change of Insured Rider"
+      ]
+    }
   },
   "headline": {
     "recommendation": "hold_missing_info",

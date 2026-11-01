@@ -69,7 +69,38 @@
         "url": "https://www.jri.pub/mehr-awards/2016-robert-i-mehr-award/",
         "publication_date": null
       }
-    ]
+    ],
+    "profile": {
+      "launch_date": "2025-05",
+      "mechanism": "終身指數型萬能壽險，保費扣除保險成本後可配置於固定或指數帳戶；指數帳戶有零利率下限。附加的SecureStage以長壽給付基礎支援終身收入、社會安全給付缺口與五年期增額身故給付選項。",
+      "target_segment": "有永久壽險保障與退休收入規劃需求、並可承受指數計息結果波動的美國成年人。",
+      "issue_age_min": null,
+      "issue_age_max": null,
+      "premium_mode": "彈性繳",
+      "benefit_period": "終身",
+      "payout_type": "一次性給付",
+      "trigger_condition": "慢性疾病：6項日常生活活動中有2項無法在無實質協助下完成；重大疾病包括癌症、心臟病發作、腎衰竭或重大器官移植；末期疾病為醫療專業人員認證預期壽命24個月以下。",
+      "guarantees": [
+        {
+          "feature": "固定帳戶最低利率",
+          "value": "1.5%"
+        },
+        {
+          "feature": "指數帳戶下限",
+          "value": "0%"
+        },
+        {
+          "feature": "長壽給付基礎",
+          "value": "淨計息150%調整"
+        }
+      ],
+      "riders": [
+        "SecureStage Supplemental Benefits Endorsement",
+        "Accelerated Death Benefit Endorsement",
+        "Overloan Protection Benefit Endorsement",
+        "Protected Death Benefit Endorsement"
+      ]
+    }
   },
   "headline": {
     "recommendation": "hold_missing_info",

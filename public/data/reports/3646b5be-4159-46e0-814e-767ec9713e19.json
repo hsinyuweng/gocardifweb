@@ -62,7 +62,29 @@
         "url": "https://www.limra.com/en/newsroom/news-releases/2026/limra-u.s.-individual-life-insurance-new-premium-tops-%2417.5-billion-to-set-new-sales-record-in-2025",
         "publication_date": "2026-03-19"
       }
-    ]
+    ],
+    "profile": {
+      "launch_date": "2025-09",
+      "mechanism": "香港市場的萬能壽險；保費扣除費用後由保險公司依投資組合表現按月宣告派息。商品提供0%最低派息率、無上限派息率、彈性繳費與身故保障，並結合保單分拆、更改受保人及指定後備保單持有人等傳承安排。",
+      "target_segment": "有長期資產累積、跨代傳承及身故保障需求的高資產或中高資產客群。",
+      "issue_age_min": null,
+      "issue_age_max": null,
+      "premium_mode": null,
+      "benefit_period": "最長150年",
+      "payout_type": "一次性給付",
+      "trigger_condition": null,
+      "guarantees": [
+        {
+          "feature": "最低派息率",
+          "value": "0% p.a."
+        },
+        {
+          "feature": "派息率上限",
+          "value": "無上限"
+        }
+      ],
+      "riders": []
+    }
   },
   "headline": {
     "recommendation": "hold_missing_info",

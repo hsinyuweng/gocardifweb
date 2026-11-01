@@ -69,7 +69,20 @@
         "url": "https://www.ib.gov.tw/ch/home.jsp?id=64&parentpath=0,8&mcustomize=onemessages_list.jsp",
         "publication_date": null
       }
-    ]
+    ],
+    "profile": {
+      "launch_date": "2025-07",
+      "mechanism": "以兩名被保險人為保障對象，於第二名被保險人身故時給付身故保險金。保費採彈性繳納，保單價值可配置於分離帳戶投資選項及特定情況下的固定選項；其價值與變額給付會受投資表現影響。",
+      "target_segment": "有遺產傳承、特殊需求家屬照護或企業接班資金規劃需求的夫妻、家庭及企業主。",
+      "issue_age_min": null,
+      "issue_age_max": null,
+      "premium_mode": "彈性繳",
+      "benefit_period": "終身（至年輕被保險人121歲生日最接近的保單週年日後，身故給付改為保單價值）",
+      "payout_type": "一次性給付",
+      "trigger_condition": "upon the death of the second of the Insureds to die",
+      "guarantees": [],
+      "riders": []
+    }
   },
   "headline": {
     "recommendation": "hold_missing_info",

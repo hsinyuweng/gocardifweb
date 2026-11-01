@@ -7,6 +7,7 @@ import { BarList } from '../components/charts/BarList';
 import { ColumnChart } from '../components/charts/ColumnChart';
 import { LineBars } from '../components/charts/LineBars';
 import { LineChart } from '../components/charts/LineChart';
+import { PointLine } from '../components/charts/PointLine';
 import { RankingBars } from '../components/charts/RankingBars';
 import { Lead } from '../components/story/Lead';
 import { ChartCard, ChartTitle } from '../components/story/StorySection';
@@ -27,6 +28,7 @@ import {
   rankingHeadline,
   rankingPreview,
   rankingValue,
+  selfShareHeading,
   trendValue,
   yieldChange,
   yieldHeading,
@@ -141,6 +143,26 @@ function YieldCard({ p }: { p: Picked }) {
   );
 }
 
+/** 法巴市占率過去五年：單線折線，每點標數字、最新一點實心。資料不到 2 期時顯示「資料準備中」 */
+function SelfShareCard({ p }: { p: Picked }) {
+  const m = p.selfShare;
+  if (!m) return null;
+  if (m.points.length < 2) {
+    return (
+      <ChartCard heading={t.selfShare.title} note={t.selfShare.pendingNote(m.latestValue !== null ? trendValue(m, m.latestValue) : null)}>
+        <div className="grid h-[180px] place-items-center rounded-lg border-2 border-dashed border-line text-[14px] text-muted">
+          {t.selfShare.pending}
+        </div>
+      </ChartCard>
+    );
+  }
+  return (
+    <ChartCard heading={<HeadingParts parts={selfShareHeading(m)} />} note={orDash(m.label)}>
+      <PointLine points={m.points} formatValue={(v) => trendValue(m, v)} ariaLabel={t.selfShare.title} />
+    </ChartCard>
+  );
+}
+
 /** ③ 法巴排名：前 3 名＋法巴前後各 1 名，法巴實心 */
 function RankingCard({ p }: { p: Picked }) {
   const r = p.ranking;
@@ -178,7 +200,7 @@ function ChannelCard({ p }: { p: Picked }) {
 
 /**
  * 市場脈動（2026-11-01 使用者回饋第二輪：不分頁，一眼看出市場動態）：
- * 大標題＋大卡（最新年增率＋每月直條）→ 2×2 圖卡（候選商品險種、利率、法巴排名、銀行通路）→ 資料來源。
+ * 大標題＋大卡（最新年增率＋每月直條）→ 圖卡（候選商品險種、法巴市占率過去五年、利率、法巴排名、銀行通路整列）→ 資料來源。
  * 舊分頁網址 `#/market/*` 一律 replace 到 `#/market`。
  */
 export function MarketPage() {
@@ -215,11 +237,14 @@ export function MarketPage() {
           <Hero p={p} />
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <LinesCard metrics={metrics} rows={rows} />
+            <SelfShareCard p={p} />
             <YieldCard p={p} />
             <RankingCard p={p} />
-            <ChannelCard p={p} />
+            <div className="lg:col-span-2">
+              <ChannelCard p={p} />
+            </div>
           </div>
-          <Sources metrics={[p.yoy, p.amount, p.mix, p.yieldM, p.ranking?.m, p.channel]} />
+          <Sources metrics={[p.yoy, p.amount, p.mix, p.selfShare, p.yieldM, p.ranking?.m, p.channel]} />
         </>
       );
   }

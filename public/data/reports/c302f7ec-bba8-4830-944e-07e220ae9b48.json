@@ -80,7 +80,29 @@
         "url": "https://www.firstlife.com.tw/FirstOnlineInsuranceWeb/fundrich/product/TLT",
         "publication_date": null
       }
-    ]
+    ],
+    "profile": {
+      "launch_date": "2024-09",
+      "mechanism": "限期繳費的定期壽險；可選5年、10年或繳至65／75歲，保障至99歲。保險期間內因身故或末期疾病給付一筆保險金；保單持有至99歲期滿時，返還主約已繳保費100%。第三保單年度起可依條件申領解約給付。",
+      "target_segment": "希望在工作期間完成保費繳納、並同時保有高齡身故保障的成年人。",
+      "issue_age_min": null,
+      "issue_age_max": null,
+      "premium_mode": "期繳",
+      "benefit_period": "定期至99歲",
+      "payout_type": "一次性給付",
+      "trigger_condition": null,
+      "guarantees": [
+        {
+          "feature": "長壽回饋",
+          "value": "主約已繳總保費100%"
+        },
+        {
+          "feature": "解約給付",
+          "value": "繳費期內30%；繳費期後80%"
+        }
+      ],
+      "riders": []
+    }
   },
   "headline": {
     "recommendation": "hold_missing_info",

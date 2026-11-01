@@ -340,7 +340,23 @@ export interface ReportViewModel {
   competitors: CompetitorComparisonViewModel | null;
   /** 商品原始資料（有網址的才列） */
   sourceDocuments: SourceDocumentViewModel[];
+  /** 報告頁最上面的商品概要；沒有商品機制時為 null */
+  intro: ProductIntroViewModel | null;
   disclaimer: string | null;
+}
+
+/** 商品概要（lib/productIntro.ts） */
+export interface ProductIntroViewModel {
+  /** 主句：商品機制 */
+  mechanism: string;
+  /** 目標客群 */
+  forWhom: string | null;
+  /** 給付條件 */
+  trigger: string | null;
+  /** 一行重點條件：承保年齡、繳費、保障期間、給付方式、上市 */
+  facts: Array<{ label: string; value: string }>;
+  guarantees: Array<{ feature: string; value: string }>;
+  riders: string[];
 }
 
 // ───────── 我的待辦（規格外功能，2026-10-18 經確認） ─────────

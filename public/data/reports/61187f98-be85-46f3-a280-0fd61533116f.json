@@ -62,7 +62,20 @@
         "url": "https://www.cathaylife.com.tw/official/products/health-long-term-care/vsc",
         "publication_date": null
       }
-    ]
+    ],
+    "profile": {
+      "launch_date": "2025-10",
+      "mechanism": "此為美國傳統長期照顧保險；符合資格的長照服務採費用補償，並將保險保障與照護資訊、轉介服務及CareScout Quality Network的合格服務提供者網絡連結。",
+      "target_segment": "40至65歲、希望在需要照護前規劃長期照顧費用的成年人（分析）。",
+      "issue_age_min": 40,
+      "issue_age_max": 65,
+      "premium_mode": null,
+      "benefit_period": null,
+      "payout_type": "實支實付",
+      "trigger_condition": "被保險人須為慢性病者，照護與支援服務須依執業醫療專業人員制定的照護計畫提供，並符合適用自付額期間。",
+      "guarantees": [],
+      "riders": []
+    }
   },
   "headline": {
     "recommendation": "conditional_go",

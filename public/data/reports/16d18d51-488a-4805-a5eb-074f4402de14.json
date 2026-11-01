@@ -74,7 +74,29 @@
         "url": "https://www.orixlife.co.jp/customer/webclause/pdf/webyakkan_yencan_20251202.pdf",
         "publication_date": "2025-12"
       }
-    ]
+    ],
+    "profile": {
+      "launch_date": "2025-12-02",
+      "mechanism": "此商品以日圓收付保費與保險金；在繳費暨低解約返還期間壓低一般死亡／高度失能給付與解約返還金，以換取較低保費。繳費期後，一般死亡或高度失能給付恢復為基本保險金額；另可在符合條件時申請介護或生命末期之前給付。",
+      "target_segment": "重視日圓資產規劃、希望同時配置終身死亡／高度失能保障，並可接受繳費期內一般事故保障及解約返還金受限的日本消費者。",
+      "issue_age_min": 15,
+      "issue_age_max": "男性78歲；女性80歲（依繳費期不同）",
+      "premium_mode": "平準繳；可選10／15／20年或至特定年齡繳清",
+      "benefit_period": "終身",
+      "payout_type": "一次給付；年金給付特約可將保險金轉為5、10或15年定額或5%複利遞增年金。",
+      "trigger_condition": "主約死亡或約定高度失能；介護前付須繳費期滿、年滿65歲且具要介護4或5認定。",
+      "guarantees": [
+        {
+          "feature": "低解約返還期間",
+          "value": "與保費繳納期間相同；期間內解約返還金按未採低解約設計的70%抑制"
+        }
+      ],
+      "riders": [
+        "年金給付特約",
+        "リビング・ニーズ特約（生命末期之前給付）",
+        "介護前払特約"
+      ]
+    }
   },
   "headline": {
     "recommendation": "hold_missing_info",
