@@ -70,6 +70,9 @@ export function filterRows(rows: OverviewRow[], f: OverviewFilters, isUnread: (r
 }
 
 /** null 一律排在最後 */
+/** 主要欄位相同時再比下去的排序 */
+const TIE_BROKEN: ReadonlySet<SortKey> = new Set(['score', 'recommendation', 'market', 'feasibility']);
+
 export function sortRows(rows: OverviewRow[], key: SortKey, dir: SortDir): OverviewRow[] {
   const sign = dir === 'asc' ? 1 : -1;
   const numeric = NUMERIC[key];
@@ -81,9 +84,9 @@ export function sortRows(rows: OverviewRow[], key: SortKey, dir: SortDir): Overv
   };
   return [...rows].sort((a, b) => {
     const main = numeric ? cmp(numeric(a), numeric(b)) : cmp(a[key as 'name' | 'generatedDate'], b[key as 'name' | 'generatedDate']);
-    if (main !== 0 || (key !== 'score' && key !== 'recommendation')) return main;
-    // 同分、同建議：與 lib/researchStory.ts 的 rankRows 一致
-    return tieBreak(a, b);
+    if (main !== 0 || !TIE_BROKEN.has(key)) return main;
+    // 市場、法規相同時先比引進分數；同分、同建議：與 lib/researchStory.ts 的 rankRows 一致
+    return (key === 'market' || key === 'feasibility' ? scoreOf(b) - scoreOf(a) : 0) || tieBreak(a, b);
   });
 }
 

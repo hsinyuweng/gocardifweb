@@ -8,3 +8,4 @@ incoming/
 
 # 後端原始輸出（每次交付的整包資料；npm run import 從這裡轉換）
 agentdata/
+agentdata_*/

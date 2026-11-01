@@ -403,16 +403,23 @@ function normalizeDetails(r: Report): ReportDetailsViewModel {
 
   const findings: FindingViewModel[] = objList(rg?.findings).map((f) => {
     const lightKey = str(f.light);
+    // 新版把法條放在 rule_basis；有網址就當作來源（沒有 sources 時才用）
+    const rb = f.rule_basis;
+    const law = str(f.law) ?? str(rb?.law);
+    const ruleUrls = (Array.isArray(rb?.source_url) ? rb.source_url : [rb?.source_url]).flatMap((u) =>
+      sourceRef({ name: law, url: u, as_of: rb?.verified_date }) ?? [],
+    );
+    const sources = objList(f.sources).flatMap((s) => sourceRef(s) ?? []);
     return {
       itemId: str(f.item_id),
       title: str(f.title),
       lightKey,
       light: { color: legendColor(legend, 'light', lightKey), text: legendLabel(legend, 'light', lightKey) },
       suspectedRed: f.suspected_red === true,
-      law: str(f.law),
+      law,
       remedy: str(f.remedy),
       owner: str(f.owner),
-      sources: objList(f.sources).flatMap((s) => sourceRef(s) ?? []),
+      sources: sources.length > 0 ? sources : ruleUrls,
       evidenceLevel: str(f.evidence_level),
       // legend 的群組名為 evidence_<scheme>（例如 evidence_regulatory_abc）
       evidenceLabel: evidenceLabel(legend, str(f.evidence_scheme), str(f.evidence_level)),

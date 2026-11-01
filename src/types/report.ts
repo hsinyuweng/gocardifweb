@@ -206,6 +206,12 @@ export interface RawFinding {
   evidence_scheme?: Nullable<string>;
   evidence_level?: Nullable<string>;
   sources?: Nullable<RawSourceRef[]>;
+  /** 2026-11-01 起法規模組的法條依據（law 移到這裡；source_url 可能是字串或陣列） */
+  rule_basis?: Nullable<{
+    law?: Nullable<string>;
+    verified_date?: Nullable<string>;
+    source_url?: Nullable<string | string[]>;
+  }>;
 }
 
 export interface RawSections {

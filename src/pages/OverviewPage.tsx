@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router';
-import { RecommendationBar } from '../components/overview/RecommendationBar';
+import { RecommendationBar, type BarChoice } from '../components/overview/RecommendationBar';
 import { OverviewToolbar } from '../components/overview/OverviewToolbar';
 import { ReportTable } from '../components/overview/ReportTable';
 import { StatusMessage } from '../components/common/StatusMessage';
@@ -12,6 +12,7 @@ import { readLastReport, saveListScroll, takeListScroll } from '../lib/listRetur
 import { isUnreviewed, readReviewed, subscribeReviewed } from '../lib/reviewed';
 import {
   DEFAULT_SORT_DIR,
+  DEFAULT_SORT_KEY,
   filterRows,
   readOverviewParams,
   sortRows,
@@ -98,6 +99,24 @@ export function OverviewPage() {
   };
   const patch = (p: Partial<OverviewFilters>) => update({ ...urlState, filters: { ...filters, ...p } });
 
+  // 篩選與排序列一次只選一個（2026-11-02）：選了就清掉其他的；用欄位標題排的市場、法規也會亮
+  const barChoice: BarChoice = filters.unread
+    ? { kind: 'unread' }
+    : filters.recommendation !== null
+      ? { kind: 'rec', key: filters.recommendation.key }
+      : sortKey === 'market' || sortKey === 'feasibility'
+        ? { kind: 'sort', key: sortKey }
+        : { kind: 'all' };
+  const selectBar = (c: BarChoice) => {
+    const sort = c.kind === 'sort' ? c.key : DEFAULT_SORT_KEY;
+    update({
+      ...urlState,
+      filters: { ...filters, recommendation: c.kind === 'rec' ? { key: c.key } : null, unread: c.kind === 'unread' },
+      sortKey: sort,
+      sortDir: DEFAULT_SORT_DIR[sort],
+    });
+  };
+
   let body;
   if (indexState.status === 'loading') {
     body = <StatusMessage tone="info" message={zhTW.common.loading} />;
@@ -125,11 +144,9 @@ export function OverviewPage() {
         {story}
         <RecommendationBar
           groups={vm.recommendationGroups}
-          selected={filters.recommendation}
-          onSelect={(recommendation) => patch({ recommendation })}
+          active={barChoice}
+          onSelect={selectBar}
           unreadCount={unreadIds.size}
-          unreadOn={filters.unread}
-          onToggleUnread={() => patch({ unread: !filters.unread })}
         />
         <OverviewToolbar
           search={filters.search}

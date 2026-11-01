@@ -13,6 +13,8 @@
 
 **2026-11-01 使用者回饋改版兩輪（已實作，待使用者看過與 commit）**：照 `architecture/diagrams/2026-11-01_回饋整理.md`（來源 `2026-11-01_回饋.pdf` 與對話）。目標：一眼看出市場動態，能用圖就不用文字。全站好綠壞紅（`lib/tone.ts`）、寫 % 不寫「個百分點」、商品簡稱、法規只寫能不能、拿掉「下一步」列；首頁四框照側欄順序、兩行結論；**引進分數**（`lib/introScore.ts`）全站排序；市場脈動一頁（大標題＋大圖＋4 張圖卡）；新聞最上面「重點新聞」＋清單 ★；使用說明改圖示卡片。現況寫在 `decisions/market-dashboard.md`、`decisions/spec-stages.md`。
 
+**11-01 新資料先不換**（`agentdata_new/`，gitignore；使用者 2026-11-02 決定）：缺漏太多——市場成長分數全空（`line_growth.json` 舊版）、Yen Can 沒用 2.0 重跑、CareScout 兩份市場規模差 10 倍、存續型競品表欄位改成 `products`、新聞險種標記幾乎全空。等後端補齊再 `npm run import`（換資料時 CareScout 用 `aacd2f35`）。網站已能讀新版法規明細（`rule_basis`）。
+
 **等後端**（使用者已轉達組員，交付後照 `progress/data-status.md` 檢查再 `npm run import`）：CareScout 兩份選哪份、商品 `short_name`、法規項目摘要（feed 的法規沒有 `summary`）、市場規模分數分級太粗（8 件中 5 件 100 分）、正式的引進分數（目前前端自算）、報告的商品概要欄位（目前 import 從 1.json 帶入、前端組句）、重點新聞的相關性判斷（目前前端關鍵字比對）、法規 `affected_categories`／`related_report_ids`、finding 來源、分數鑑別度與分數／結論不一致、理由裡的欄位代號（`verdict.confidence`）、3.json 漏填發行公司與國家、Secure Horizon `af2f7e7a` 沒產出 3.json、各等級（市場需求 A/B/C、精算 T1/T2、信心）的定義。其他等資料的功能見 `backlog/future-features.md`；剩餘階段見 `backlog/roadmap.md`（後端需求文件連結在第 4 節）。
 
 

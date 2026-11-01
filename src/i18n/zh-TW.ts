@@ -94,7 +94,12 @@ export const zhTW = {
     allCategories: '全部險種',
     empty: '目前沒有報告。新增方式請見 README。',
     noMatch: '沒有符合條件的案件。',
-    unread: '沒看過',
+    unread: '新商品',
+    // 篩選列上的兩個排序按鈕（2026-11-02）
+    sortMarket: '市場優先',
+    sortLegal: '法規優先',
+    // 篩選列上的建議按鈕文字（依建議代碼）；沒列到的用後端原文
+    recButton: { hold_missing_info: '暫緩推進', hold_resolve_red_flag: '暫緩推進' } as Record<string, string>,
     unreadHint: '這台瀏覽器還沒打開過這份報告',
     columns: {
       market: '潛在市場',
