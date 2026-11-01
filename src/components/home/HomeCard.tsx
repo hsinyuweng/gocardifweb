@@ -2,6 +2,7 @@ import type { MouseEvent, ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { zhTW } from '../../i18n/zh-TW';
 import type { PageTheme } from '../../lib/pageTheme';
+import { TONE_TEXT, type Tone } from '../../lib/tone';
 import { PageBadge, type PageIconName } from '../common/PageIcon';
 
 interface HomeCardProps {
@@ -50,10 +51,10 @@ export function PendingContent() {
 }
 
 /** 框內第一行：重點數字（大字）＋一句說明 */
-export function KeyLine({ num, coral, children }: { num: ReactNode; coral?: boolean; children: ReactNode }) {
+export function KeyLine({ num, tone, children }: { num: ReactNode; tone?: Tone; children: ReactNode }) {
   return (
     <p className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
-      <span className={`text-[28px] leading-tight font-medium tabular-nums ${coral ? 'text-coral' : 'text-ink'}`}>{num}</span>
+      <span className={`text-[28px] leading-tight font-medium tabular-nums ${tone ? TONE_TEXT[tone] : 'text-ink'}`}>{num}</span>
       <span className="text-ink2">{children}</span>
     </p>
   );

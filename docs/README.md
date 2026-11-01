@@ -5,23 +5,15 @@
 ## 1. 現況
 
 - 網站：https://hsinyuweng.github.io/gocardifweb/（repo `hsinyuweng/gocardifweb`，`main` push 後自動部署）
-- 頁面：首頁「市場總覽」四框、新聞與法規監控 `#/news`、市場脈動 `#/market`（＋分頁 `#/market/:tab`）、追蹤清單 `#/watchlist`、競品研究 `#/research`、報告頁、我的待辦、使用說明（見 `architecture/overview.md`）
-- 已完成：階段 1–4、5A、5B（競品比較表）、視覺改版 V1–V6（`architecture/diagrams/2026-10-27_視覺改版規劃.md`）
+- 頁面：首頁「市場總覽」四框、新聞與法規監控 `#/news`、市場脈動 `#/market`（一頁）、追蹤清單 `#/watchlist`、競品研究 `#/research`、報告頁、我的待辦、使用說明（見 `architecture/overview.md`）
+- 已完成：階段 1–4、5A、5B（競品比較表）、視覺改版 V1–V6（`architecture/diagrams/2026-10-27_視覺改版規劃.md`）、11-01 顯示資料整理與使用者回饋改版
 - 資料（2026-10-31 起一律以後端整包輸出 `agentdata/` 為準，gitignore）：`npm run import` 轉換並整批換新到 `public/data/`。目前 8 份報告（10-30 交付，含 S10 分數、台灣競品比較）、feed 1.2（60 則，含法規 12 則）、market-pulse 2.1＋同業排名（由 `pulse.json` 轉換）。資料夾結構、略過的檔案與已知資料問題見 `progress/data-status.md`
 
 ## 2. 下一步
 
-**2026-11-01 顯示資料整理（已實作，待使用者看過再決定下一步、待 commit）**：全站只回答「這個商品適不適合引進」，照 `architecture/diagrams/2026-11-01_顯示資料整理.md` 第 1–6 節做完。報告頁三張答案卡（潛在市場、法規可行性、台灣競品）＋還差什麼（只列阻斷）＋前 3 步，拿掉資料品質、資料缺口、負責單位；競品研究列表欄位改成建議、潛在市場、法規可行性、阻斷、台灣競品（預設依建議再依法規可行性）；首頁大標改商品結論、競品研究框移左上、新聞框只看法規、市場框不放圖；市場脈動圖表裁成近 12 個月（`data/normalizeMarket.ts` 的 `lastTwelveMonths`）、總覽拿掉全部指標表、健康度只留表格、指標表拿掉頻率與來源欄；新聞頁法規排最前、品牌公關預設收起、拿掉分布圖；追蹤清單加建議、阻斷、台灣競品欄、拿掉市場成長欄。報告清單 `index.json` 多 `direct_competitor_count`、`top_blocker`（`scripts/sync-reports.mjs` 產生）。
+**2026-11-01 使用者回饋改版兩輪（已實作，待使用者看過與 commit）**：照 `architecture/diagrams/2026-11-01_回饋整理.md`（來源 `2026-11-01_回饋.pdf` 與對話）。目標：一眼看出市場動態，能用圖就不用文字。全站好綠壞紅（`lib/tone.ts`）、寫 % 不寫「個百分點」、商品簡稱、法規只寫能不能、拿掉「下一步」列；首頁四框照側欄順序、兩行結論；**引進分數**（`lib/introScore.ts`）全站排序；市場脈動一頁（大標題＋大圖＋4 張圖卡）；新聞最上面「重點新聞」＋清單 ★；使用說明改圖示卡片。現況寫在 `decisions/market-dashboard.md`、`decisions/spec-stages.md`。
 
-**2026-10-31 第四批（待驗證與 commit）**：介面清理——報告頁拿掉流程列與審閱日期、頁首沒值的項目不列；導覽列拿掉「資料來源」與「規劃中」；使用說明拿掉「部門審查（規劃中）」；畫面上不出現「後端」；市場脈動變化為 0 時寫「與前一交易日持平」。
-
-**2026-10-31 第三批（待驗證與 commit）**：報告頁、我的待辦改用競品研究黃色；全站舊樣式（`slate`／`navy`／`amber`、小圓角、粗體）換成新設計的文字色、框線與代表色深淺，新增 `text-p-ink`（連結用的代表色深色）；競品研究列表的整體建議加色點；市場脈動補新契約保費金額（成長動能新圖、指標表各險別金額）與 10 年債日資料（定價環境改日線），由 `pulse.json` 轉換成 schema 2.2。
-
-**2026-10-31 已完成（待使用者驗證與 commit）**：改讀 `agentdata/`（`scripts/import-agentdata.mjs`、`sync --replace`）、市場脈動同業排名（`RankingBars`，品牌與競爭分頁＋總覽卡）、報告頁台灣競品比較（`CompetitorTable`）與商品原始資料（`SourceDocuments`）、新聞頁沒有比對資料時隱藏「只看可能相關」、市場脈動組別說明改成符合現有資料。10-28「只用現有資料、隱藏功能」的計畫已作廢：現有功能都是有資料才出現。
-
-**2026-10-31 第二批（待驗證與 commit）**：後端文字清理（`data/cleanText.ts`，規則見 `decisions/deviations.md`）；競品研究改成建議與卡關、列表最左欄「＋ 追蹤」、「未審閱」改「沒看過」小圓點；報告頁頁首大的「☆ 加入追蹤清單」；等級一律註明高低（`lib/grade.ts`）；法規表拿掉編號欄；首頁追蹤框沒候選時列綜合分數前 3 件可直接加入；頂部列追蹤按鈕只在頁首大按鈕捲出畫面後出現；等級說明改成格子最下面的小灰字。
-
-**等後端**（使用者已轉達組員，交付後照 `progress/data-status.md` 檢查再 `npm run import`）：CareScout 兩份選哪份、法規 `affected_categories`／`related_report_ids`、finding 來源、分數鑑別度與分數／結論不一致、理由裡的欄位代號（`verdict.confidence`）、3.json 漏填發行公司與國家、Secure Horizon `af2f7e7a` 沒產出 3.json、各等級（市場需求 A/B/C、精算 T1/T2、信心）的定義。其他等資料的功能見 `backlog/future-features.md`；剩餘階段見 `backlog/roadmap.md`（後端需求文件連結在第 4 節）。
+**等後端**（使用者已轉達組員，交付後照 `progress/data-status.md` 檢查再 `npm run import`）：CareScout 兩份選哪份、商品 `short_name`、法規項目摘要（feed 的法規沒有 `summary`）、市場規模分數分級太粗（8 件中 5 件 100 分）、正式的引進分數（目前前端自算）、重點新聞的相關性判斷（目前前端關鍵字比對）、法規 `affected_categories`／`related_report_ids`、finding 來源、分數鑑別度與分數／結論不一致、理由裡的欄位代號（`verdict.confidence`）、3.json 漏填發行公司與國家、Secure Horizon `af2f7e7a` 沒產出 3.json、各等級（市場需求 A/B/C、精算 T1/T2、信心）的定義。其他等資料的功能見 `backlog/future-features.md`；剩餘階段見 `backlog/roadmap.md`（後端需求文件連結在第 4 節）。
 
 
 ## 3. 改動前：依範圍讀

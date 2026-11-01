@@ -23,7 +23,7 @@ export function RankingBars({ rows, formatValue, ariaLabel, compact = false }: R
     >
       {rows.map((r, i) => {
         const gap = i > 0 && r.rank - rows[i - 1]!.rank > 1;
-        const tone = r.isSelf ? 'font-medium text-coral' : 'text-ink2';
+        const tone = r.isSelf ? 'font-medium text-p-ink' : 'text-ink2';
         return (
           <Fragment key={`${r.rank}-${r.name ?? i}`}>
             {gap ? (
@@ -32,11 +32,11 @@ export function RankingBars({ rows, formatValue, ariaLabel, compact = false }: R
               </li>
             ) : null}
             <li className="contents" title={`${zhTW.market.rank(String(r.rank))} ${orDash(r.name)}：${formatValue(r.value)}`}>
-              <span className={`text-right tabular-nums ${r.isSelf ? 'text-coral' : 'text-muted'}`}>{r.rank}</span>
+              <span className={`text-right tabular-nums ${r.isSelf ? 'text-p-ink' : 'text-muted'}`}>{r.rank}</span>
               <span className={`max-w-[11rem] truncate ${tone}`}>{orDash(r.name)}</span>
               <span className="flex min-w-0 items-center gap-2">
                 <span
-                  className={`${compact ? 'h-2' : 'h-2.5'} shrink-0 rounded-md ${r.isSelf ? 'bg-coral' : 'bg-p-pale'}`}
+                  className={`${compact ? 'h-2' : 'h-2.5'} shrink-0 rounded-md ${r.isSelf ? 'bg-p' : 'bg-p-pale'}`}
                   style={{ width: `calc((100% - 3.5rem) * ${r.value / max})`, minWidth: 4 }}
                 />
                 <span className={`tabular-nums ${tone}`}>{formatValue(r.value)}</span>

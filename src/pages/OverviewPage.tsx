@@ -24,15 +24,15 @@ import { errorText, useBreadcrumb, useIndexState } from './pageChrome';
 import { PageHeader } from '../components/layout/PageHeader';
 import { KeyNumbers } from '../components/story/KeyNumbers';
 import { Lead } from '../components/story/Lead';
-import { NextStep } from '../components/story/NextStep';
-import { DetailDivider } from '../components/story/StorySection';
-import { researchHeadline, researchNumbers } from '../lib/researchStory';
+import { DetailDivider, StorySection } from '../components/story/StorySection';
+import { ScoreChart } from '../components/common/ScoreBar';
+import { rankRows, researchHeadline, researchNumbers } from '../lib/researchStory';
 
 const t = zhTW.overview;
 const s = t.story;
 const LIST_ID = 'research-all';
 
-/** 競品研究：第一個畫面（2026-11-01：結論、3 個數字、下一步），下方是全部報告表格（第 11.2 節） */
+/** 競品研究：第一個畫面（2026-11-01：兩行結論、3 個數字、各商品引進分數），下方是全部報告表格（第 11.2 節） */
 export function OverviewPage() {
   const navigate = useNavigate();
   const indexState = useIndexState();
@@ -102,11 +102,16 @@ export function OverviewPage() {
   } else if (vm && vm.rows.length === 0) {
     body = <StatusMessage tone="info" message={t.empty} />;
   } else if (vm) {
+    const headline = researchHeadline(vm.rows, vm.recommendationGroups);
     const story = vm.rows.length > 0 ? (
       <>
-        <Lead parts={researchHeadline(vm.rows, vm.recommendationGroups)} />
-        <KeyNumbers items={researchNumbers(vm.rows, vm.recommendationGroups)} />
-        <NextStep down={{ label: s.down(vm.rows.length), targetId: LIST_ID }} />
+        {headline ? <Lead parts={headline.parts} sub={headline.sub} /> : null}
+        <KeyNumbers items={researchNumbers(vm.rows)} />
+        <StorySection heading={s.scoreHeading}>
+          <div className="max-w-4xl">
+            <ScoreChart rows={rankRows(vm.rows)} />
+          </div>
+        </StorySection>
         <DetailDivider id={LIST_ID} label={s.allReports} />
       </>
     ) : null;

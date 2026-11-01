@@ -1,3 +1,4 @@
+import type { ProductLine } from '../lib/productNames';
 // 畫面用資料型別：元件只接收這裡定義的型別作為 props
 
 /** 燈號顏色（第 9.2 節）；未列出的名稱一律轉為 gray */
@@ -19,6 +20,12 @@ export interface OverviewRow {
   /** 缺漏時該列不可點擊 */
   reportId: string | null;
   name: string | null;
+  /** 簡稱（lib/productNames.ts）；沒有時同 name */
+  shortName: string | null;
+  /** 所屬險別（對應市場脈動各險別）；判斷不出來時為 null */
+  productLine: ProductLine | null;
+  /** 法規判斷（dimension_scores.feasibility.value）；沒有時為 null */
+  legal: LegalJudgement | null;
   issuer: string | null;
   countryCode: string | null;
   countryLabel: string | null;
@@ -42,9 +49,28 @@ export interface OverviewRow {
   directCompetitors: number | null;
   /** 最嚴重的一項待解決事項（重大或阻斷）；沒有時為 null */
   topBlocker: string | null;
+  /** 引進分數（lib/introScore.ts）；建議代碼不認得時為 null */
+  score: IntroScore | null;
 }
 
-/** 追蹤清單維度（顯示與滑桿順序見 lib/score.ts） */
+/** 引進分數 0–100 與三個組成 */
+export interface IntroScore {
+  total: number;
+  rec: number;
+  blocking: number;
+  market: number;
+}
+
+/** 法規模組的判斷與燈號件數 */
+export interface LegalJudgement {
+  /** 「修改後可引進」「待確認」等 */
+  verdict: string | null;
+  red: number;
+  yellow: number;
+  blockingPending: number;
+}
+
+/** 後端數值分數的維度 */
 export type DimensionKey = 'feasibility' | 'marketSize' | 'marketGrowth' | 'brandFit';
 
 export interface BackendDimensionScore {
@@ -308,6 +334,8 @@ export interface ReportViewModel {
   details: ReportDetailsViewModel;
   /** 後端數值分數（市場規模、法規可行性等）；沒有時為 null */
   dimensionScores: BackendDimensionScores | null;
+  /** 法規判斷（能不能引進）；沒有時為 null */
+  legal: LegalJudgement | null;
   /** 台灣競品比較；後端沒提供時為 null */
   competitors: CompetitorComparisonViewModel | null;
   /** 商品原始資料（有網址的才列） */

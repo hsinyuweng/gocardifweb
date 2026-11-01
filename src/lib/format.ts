@@ -108,16 +108,17 @@ function fixed(value: number, digits: number): string {
 }
 
 /**
- * 市場脈動的變化，拆成數字與單位（數字磚用）：{ value: '▼ 41.2', unit: '個百分點' }、{ value: '▲ 3.2%', unit: '' }。
+ * 市場脈動的變化，拆成數字與單位（數字磚用）：{ value: '▼ 0.08%', unit: '' }、{ value: '▲ 3.2%', unit: '' }。
  * 百分比 1 位小數；百分點跟著指標的小數位（digits，見 lib/pulse.ts 的 pulseDigits），沒給時最多 2 位並去掉多餘的 0。
  * 四捨五入後為 0 時 value 為「持平」；null 時為「—」。
  */
 export function pulseChangeParts(change: number | null, unit: 'pct' | 'pp' = 'pct', digits?: number): { value: string; unit: string } {
   const t = zhTW.market.change;
-  const unitText = unit === 'pp' ? t.ppUnit : '';
+  // 百分點一律寫「%」（2026-11-01 使用者回饋）
+  const unitText = '';
   if (change === null) return { value: zhTW.common.dash, unit: '' };
   const d = unit === 'pp' ? (digits ?? 2) : 1;
-  const pctSuffix = unit === 'pct' ? '%' : '';
+  const pctSuffix = '%';
   if (isFlatChange(change, unit, digits)) return { value: t.flat, unit: '' };
   const abs =
     unit === 'pp' && digits === undefined
@@ -150,7 +151,7 @@ export function pulseChangeWithLabel(
   return order === 'label-first' ? `${label} ${text}` : `${text}，${label}`;
 }
 
-/** 市場脈動的變化一整句：「▲ 3.2%」「▼ 41.2 個百分點」「持平」；null 顯示「—」 */
+/** 市場脈動的變化一整句：「▲ 3.2%」「▼ 0.08%」「持平」；null 顯示「—」 */
 export function pulseChangeText(change: number | null, unit: 'pct' | 'pp' = 'pct', digits?: number): string {
   const p = pulseChangeParts(change, unit, digits);
   return p.unit ? `${p.value} ${p.unit}` : p.value;

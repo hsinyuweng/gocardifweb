@@ -28,3 +28,19 @@ export function ChartTitle({ children, note }: { children: ReactNode; note?: str
     </p>
   );
 }
+
+/**
+ * 圖卡（2026-11-01 第二輪）：標題是一句結論（結論裡的數字就是圖上標出的重點）、一行小字說明、圖。
+ * 用在市場脈動 2×2 圖卡。
+ */
+export function ChartCard({ heading, note, children }: { heading: ReactNode; note?: ReactNode; children: ReactNode }) {
+  return (
+    <section className="flex min-w-0 flex-col gap-3 rounded-xl border border-line bg-white px-6 pt-4 pb-5">
+      <div>
+        <h2 className="text-[17px] leading-snug font-medium text-ink">{heading}</h2>
+        {note ? <p className="mt-0.5 text-[12.5px] text-muted">{note}</p> : null}
+      </div>
+      {children}
+    </section>
+  );
+}

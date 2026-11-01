@@ -4,7 +4,6 @@ import type { FeedItemViewModel } from '../../types/viewModel';
 import { zhTW } from '../../i18n/zh-TW';
 import { companyOf } from '../../lib/feedSummary';
 import { relativeTimeText } from '../../lib/format';
-import { FeedTitle } from '../home/FeedItemLine';
 import { FeedKindTag } from './FeedKindTag';
 
 const t = zhTW.news;
@@ -19,6 +18,8 @@ interface NewsItemProps {
   sameCategory: ProductLink[];
   /** 進報告頁時帶的 location.state（麵包屑回到新聞與法規監控） */
   linkState: unknown;
+  /** 列在最上面的重點新聞：標題前加 ★ */
+  featured?: boolean;
 }
 
 /** 「可能相關…」「同險種…」的展開按鈕 */
@@ -34,10 +35,11 @@ function ToggleButton({ label, open, onClick }: { label: string; open: boolean; 
 }
 
 /**
- * 新聞與法規監控的一則（2026-10-27 V5，參考 ITIS）：一行「〔新聞〕標題（公司）業者自述 · 5 天前」；
+ * 新聞與法規監控的一則（2026-10-27 V5，參考 ITIS；2026-11-01 加 AI 摘要與「原文 ↗」）：
+ * 一行「〔新聞〕標題（公司）業者自述 · 5 天前 · 原文 ↗」，下一行 AI 摘要；
  * 法規可展開可能相關與同險種的追蹤商品
  */
-export function NewsItem({ item, affected, sameCategory, linkState }: NewsItemProps) {
+export function NewsItem({ item, affected, sameCategory, linkState, featured = false }: NewsItemProps) {
   const [open, setOpen] = useState<'affected' | 'same' | null>(null);
   const toggle = (k: 'affected' | 'same') => setOpen(open === k ? null : k);
   const products = open === 'affected' ? affected : open === 'same' ? sameCategory : [];
@@ -47,13 +49,23 @@ export function NewsItem({ item, affected, sameCategory, linkState }: NewsItemPr
       <p className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
         <FeedKindTag kind={item.kind} />
         <span className="min-w-0">
-          <FeedTitle item={item} />
+          {featured ? (
+            <span className="mr-1 text-amber-500" title={t.pick.starHint}>
+              ★<span className="sr-only">{t.pick.starHint}</span>
+            </span>
+          ) : null}
+          <span className={featured ? 'font-medium text-ink' : 'text-ink'}>{item.title ?? zhTW.common.dash}</span>
           {company ? <span className="text-ink2">{t.company(company)}</span> : null}
         </span>
         <span className="text-xs whitespace-nowrap text-muted">
           {item.selfReported ? <span className="mr-1.5 inline-block rounded-md bg-line px-1 text-[11px]">{t.selfReported}</span> : null}
           {relativeTimeText(item.publishedTime, item.dateOnly, item.publishedAt)}
         </span>
+        {item.url ? (
+          <a href={item.url} target="_blank" rel="noopener noreferrer" className="text-xs whitespace-nowrap text-p-ink hover:underline">
+            {t.original}
+          </a>
+        ) : null}
         {affected.length > 0 || sameCategory.length > 0 ? (
           <span className="text-xs">
             {affected.length > 0 ? (
@@ -65,6 +77,8 @@ export function NewsItem({ item, affected, sameCategory, linkState }: NewsItemPr
           </span>
         ) : null}
       </p>
+      {/* AI 摘要一行（2026-11-01 使用者回饋：先看重點，再到原文）；法規目前沒有摘要 */}
+      {item.summary ? <p className="mt-0.5 pl-12 text-[13px] text-ink2">{item.summary}</p> : null}
       {products.length > 0 ? (
         <ul className="mt-1 ml-12 space-y-0.5 border-l-2 border-line pl-3 text-sm">
           {products.map((p) => (

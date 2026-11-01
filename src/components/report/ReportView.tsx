@@ -10,7 +10,6 @@ import { ReportFooter } from './ReportFooter';
 import { CompetitorTable } from './CompetitorTable';
 import { SourceDocuments } from './SourceDocuments';
 import { SignalLabel } from '../common/SignalLabel';
-import { NextStep } from '../story/NextStep';
 import { DetailDivider, StorySection } from '../story/StorySection';
 
 const t = zhTW.report;
@@ -120,8 +119,6 @@ export function ReportView({ vm, headerAction = null }: ReportViewProps) {
           ) : null}
         </StorySection>
       ) : null}
-
-      <NextStep down={{ label: vm.competitors ? t.downDetailsWithCompetitors : t.downDetails, targetId: DETAILS_ID }} links={[]} />
 
       <DetailDivider id={DETAILS_ID} label={t.detailsDivider} />
       {vm.competitors ? (

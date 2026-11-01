@@ -7,6 +7,8 @@ export interface BigShareSegment {
   value: number;
   /** 完整說明（滑鼠提示） */
   title: string;
+  /** 要標出的那一段（代表色實心） */
+  strong?: boolean;
 }
 
 // 代表色由深到淡；第 5 段以後用框線色
@@ -23,7 +25,7 @@ export function BigShareBar({ segments, ariaLabel }: { segments: BigShareSegment
           title={s.title}
           style={{ flexGrow: s.value, flexBasis: 0 }}
           className={`flex min-w-1 items-center overflow-hidden rounded-[7px] px-2.5 text-xs whitespace-nowrap ${
-            SEGMENT_CLASS[Math.min(i, SEGMENT_CLASS.length - 1)]
+            s.strong ? 'bg-p font-medium text-white' : SEGMENT_CLASS[Math.min(i + 1, SEGMENT_CLASS.length - 1)]
           }`}
         >
           <span className="truncate">{s.label}</span>

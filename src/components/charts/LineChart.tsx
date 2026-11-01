@@ -106,7 +106,16 @@ export function LineChart({ lines, formatValue, formatTick = formatValue, height
     // x 軸標籤：頭尾，寬度夠時加中間
     const xLabels = [0, periods.length - 1];
     if (plotW > 320 && periods.length > 4) xLabels.splice(1, 0, Math.round((periods.length - 1) / 2));
-    const periodText = (k: string) => (k.startsWith('#') ? '' : formatPulsePeriod(k));
+    // 跨年時日期寫年份「2025/10/30」，避免看起來像 10/30 → 10/29 倒過來（2026-11-01 使用者回饋）
+    const crossYear = new Set(periods.map((k) => /^(\d{4})-/.exec(k)?.[1]).filter(Boolean)).size > 1;
+    const periodText = (k: string) => {
+      if (k.startsWith('#')) return '';
+      const d = /^(\d{4})-(\d{2})-(\d{2})$/.exec(k);
+      if (crossYear && d) return `${d[1]}/${+d[2]!}/${+d[3]!}`;
+      const m = /^(\d{4})-(\d{2})$/.exec(k);
+      if (crossYear && m) return `${m[1]}/${+m[2]!}`;
+      return formatPulsePeriod(k);
+    };
 
     const onMove = (e: React.PointerEvent<SVGRectElement>) => {
       const rect = e.currentTarget.getBoundingClientRect();
@@ -178,7 +187,7 @@ export function LineChart({ lines, formatValue, formatTick = formatValue, height
               {lastPts[li] ? (
                 notes ? (
                   <g>
-                    <circle cx={x(lastPts[li].i)} cy={y(lastPts[li].v)} r="4.5" className="fill-coral" stroke="#fff" strokeWidth="1.5" />
+                    <circle cx={x(lastPts[li].i)} cy={y(lastPts[li].v)} r="4.5" className="fill-p-ink" stroke="#fff" strokeWidth="1.5" />
                     <text x={x(lastPts[li].i) + 9} y={y(lastPts[li].v)} dy="0.32em" fontSize={12} className="fill-ink font-medium">
                       {formatValue(lastPts[li].v)}
                     </text>

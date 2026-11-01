@@ -28,6 +28,7 @@ import type {
   KeyPointViewModel,
   LightFilterOption,
   NextStepViewModel,
+  LegalJudgement,
   OverviewRow,
   OverviewViewModel,
   RecommendationGroup,
@@ -46,6 +47,9 @@ import { researchStatusLabel } from '../lib/researchStatus';
 import { toSignalColor } from '../lib/signalColor';
 import { isSchemaVersionSupported } from './validate';
 import { cleanReport, cleanReportIndex } from './cleanText';
+import { productLineOf, shortNameOf } from '../lib/productNames';
+import { recommendationDisplay } from '../lib/recommendation';
+import { withIntroScores } from '../lib/introScore';
 
 export function str(v: unknown): string | null {
   return typeof v === 'string' && v !== '' ? v : null;
@@ -82,6 +86,9 @@ function normalizeIndexEntry(entry: RawReportIndexEntry): OverviewRow {
   return {
     reportId: str(entry.report_id),
     name: str(entry.name),
+    shortName: shortNameOf(str(entry.name)),
+    productLine: productLineOf(str(entry.category), str(entry.name)),
+    legal: legalJudgement(entry.dimension_scores, entry.module_summary?.regulatory?.overall_verdict),
     issuer: str(entry.issuer),
     countryCode: country,
     countryLabel: countryLabel(country),
@@ -100,10 +107,7 @@ function normalizeIndexEntry(entry: RawReportIndexEntry): OverviewRow {
       text: str(ms?.regulatory?.overall_verdict),
     },
     recommendationKey: str(entry.recommendation),
-    recommendation: {
-      color: toSignalColor(entry.signal_color),
-      text: str(entry.label),
-    },
+    recommendation: recommendationDisplay(str(entry.recommendation), str(entry.label), str(entry.signal_color)),
     blockerCounts: {
       critical: count(bc?.critical),
       blocking: count(bc?.blocking),
@@ -115,6 +119,21 @@ function normalizeIndexEntry(entry: RawReportIndexEntry): OverviewRow {
     dimensionScores: normalizeDimensionScores(entry.dimension_scores),
     directCompetitors: num(entry.direct_competitor_count),
     topBlocker: str(entry.top_blocker),
+    score: null,
+  };
+}
+
+/** 法規判斷：dimension_scores.feasibility.value 的紅黃燈件數＋法規模組的判斷（報告清單與報告頁共用） */
+function legalJudgement(dims: RawDimensionScores | null | undefined, verdictRaw: unknown): LegalJudgement | null {
+  const v: unknown = (dims?.feasibility as { value?: unknown } | null | undefined)?.value;
+  const verdict = str(verdictRaw);
+  if (typeof v !== 'object' || v === null) return verdict === null ? null : { verdict, red: 0, yellow: 0, blockingPending: 0 };
+  const o = v as Record<string, unknown>;
+  return {
+    verdict: verdict ?? str(o.overall_verdict),
+    red: (num(o.red) ?? 0) + (num(o.suspected_red) ?? 0),
+    yellow: num(o.yellow) ?? 0,
+    blockingPending: num(o.blocking_pending) ?? 0,
   };
 }
 
@@ -196,9 +215,10 @@ function uniqueOptions(pairs: Array<[string | null, string | null]>): FilterOpti
 
 export function normalizeReportIndex(raw: ReportIndex): OverviewViewModel {
   const index = cleanReportIndex(raw);
-  const rows = index.reports
+  const entries = index.reports
     .filter((e): e is RawReportIndexEntry => typeof e === 'object' && e !== null)
     .map(normalizeIndexEntry);
+  const rows = withIntroScores(entries);
   return {
     generatedAt: formatDateTimeTaipei(str(index.generated_at)),
     rows,
@@ -227,7 +247,7 @@ function normalizeSummary(r: Report): DecisionSummaryViewModel {
     currency: str(snap?.currency),
     premiumMode: str(snap?.premium_mode),
     mechanismSummary: str(snap?.mechanism_summary),
-    recommendation: { color: toSignalColor(head.signal_color), text: str(head.label) },
+    recommendation: recommendationDisplay(str(head.recommendation), str(head.label), str(head.signal_color)),
     oneLineSummary: str(head.one_line_summary),
     // 理由開頭的模組代號（「regulatory：…」）換成模組名稱
     reasons: strList(head.reasons).map((text) =>
@@ -518,6 +538,7 @@ export function normalizeReport(raw: Report): ReportViewModel {
     dataGaps: normalizeDataGaps(r),
     details: normalizeDetails(r),
     dimensionScores: normalizeDimensionScores(r.dimension_scores),
+    legal: legalJudgement(r.dimension_scores, r.scorecard?.regulatory?.overall_verdict),
     competitors: normalizeCompetitors(r),
     sourceDocuments: normalizeSourceDocuments(r),
     disclaimer: str(r.disclaimer),

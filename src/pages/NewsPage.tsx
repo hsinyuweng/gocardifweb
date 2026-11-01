@@ -11,12 +11,12 @@ import { readFromPath } from '../lib/ownerParam';
 import { readWatchlist, subscribeWatchlist } from '../lib/watchlist';
 import { errorText, useBreadcrumb, useFeed, useIndexState } from './pageChrome';
 import { PageHeader } from '../components/layout/PageHeader';
-import { KeyNumbers } from '../components/story/KeyNumbers';
 import { Lead } from '../components/story/Lead';
-import { NextStep } from '../components/story/NextStep';
 import { DetailDivider } from '../components/story/StorySection';
 import { feedDay, recentDays, recentFeed } from '../lib/feedSummary';
-import { newsHeadline, newsNumbers } from '../lib/newsStory';
+import { newsHeadline } from '../lib/newsStory';
+import { newsPicks } from '../lib/newsPicks';
+import { NewsPicks } from '../components/news/NewsPicks';
 
 const t = zhTW.news;
 const PAGE_SIZE = 10;
@@ -87,7 +87,7 @@ function inCategory(reportCategory: string, categories: string[]): boolean {
   return categories.some((c) => reportCategory === c || reportCategory.startsWith(`${c}（`));
 }
 
-/** 新聞與法規監控（2026-10-20 新規劃；2026-10-27 V5 清單改日期膠囊＋依領域分組）：只看可能相關追蹤清單商品、法規展開可能相關與同險種的追蹤商品 */
+/** 新聞與法規監控（2026-10-20 新規劃；2026-10-27 V5 清單改日期膠囊＋依領域分組；2026-11-01 最上面重點新聞）：只看可能相關追蹤清單商品、法規展開可能相關與同險種的追蹤商品 */
 export function NewsPage() {
   const location = useLocation();
   const fromHome = readFromPath(location.state) === '/';
@@ -155,6 +155,8 @@ export function NewsPage() {
   const hasLinks = items.some((i) => i.kind === 'regulation' && (i.relatedReportIds.length > 0 || i.affectedCategories.length > 0));
   const affectsOnly = hasLinks && affectsParam;
   const recent = useMemo(() => (feedState.status === 'ok' ? recentFeed(feedState.data) : null), [feedState]);
+  const picks = useMemo(() => newsPicks(recent?.items ?? []), [recent]);
+  const pickedIds = useMemo(() => new Set(picks.map((p) => p.item.id)), [picks]);
   const days = useMemo(() => recentDays(items), [items]);
   // 網址的日期不在最近 5 天內時回到近 30 天
   const day = days.find((x) => x.date === date)?.date ?? null;
@@ -187,11 +189,7 @@ export function NewsPage() {
       recent && recent.items.length > 0 ? (
         <>
           {headline ? <Lead parts={headline} /> : null}
-          <KeyNumbers items={newsNumbers(recent)} />
-          <NextStep
-            down={{ label: t.down(recent.items.length), targetId: LIST_ID }}
-            links={[{ to: '/watchlist', label: t.toWatchlist }]}
-          />
+          <NewsPicks picks={picks} />
           <DetailDivider id={LIST_ID} label={t.allItems} />
         </>
       ) : null;
@@ -235,7 +233,9 @@ export function NewsPage() {
               items={g.items}
               closed={closed.has(g.key)}
               onToggle={() => toggleGroup(g.key)}
-              render={(item) => <NewsItem key={item.id} item={item} {...productsOf(item)} linkState={linkState} />}
+              render={(item) => (
+                <NewsItem key={item.id} item={item} {...productsOf(item)} linkState={linkState} featured={pickedIds.has(item.id)} />
+              )}
             />
           ))}
         </div>

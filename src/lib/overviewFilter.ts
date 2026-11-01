@@ -1,11 +1,13 @@
 import type { OverviewRow } from '../types/viewModel';
-import { recRank } from './researchStory';
+import { legalRank } from './legal';
+import { scoreOf } from './introScore';
+import { blockingOf, recRank, tieBreak } from './researchStory';
 
 // 競品研究（全部報告）的篩選與排序（只處理 ViewModel，不讀原始 JSON）
 
-/** 2026-11-01：預設依整體建議（好到壞，同建議再依法規可行性高到低） */
-export type SortKey = 'recommendation' | 'name' | 'market' | 'feasibility' | 'blocking' | 'competitors' | 'generatedDate';
-const SORT_KEYS: readonly SortKey[] = ['recommendation', 'name', 'market', 'feasibility', 'blocking', 'competitors', 'generatedDate'];
+/** 2026-11-01 第二輪：預設依引進分數（高到低）；同分依建議、阻斷、潛在市場 */
+export type SortKey = 'score' | 'recommendation' | 'name' | 'market' | 'feasibility' | 'blocking' | 'competitors' | 'generatedDate';
+const SORT_KEYS: readonly SortKey[] = ['score', 'recommendation', 'name', 'market', 'feasibility', 'blocking', 'competitors', 'generatedDate'];
 export type SortDir = 'asc' | 'desc';
 
 export interface OverviewFilters {
@@ -27,26 +29,27 @@ export const DEFAULT_FILTERS: OverviewFilters = {
   unread: false,
 };
 
-/** 切換欄位時的預設方向：商品 A→Z、產出日期新→舊 */
+/** 切換欄位時的預設方向：分數高→低、商品 A→Z、產出日期新→舊 */
 export const DEFAULT_SORT_DIR: Record<SortKey, SortDir> = {
+  score: 'desc',
   recommendation: 'asc',
   name: 'asc',
   market: 'desc',
-  feasibility: 'desc',
+  // 法規：可引進在前（legalRank 小的在前）
+  feasibility: 'asc',
   blocking: 'asc',
   competitors: 'asc',
   generatedDate: 'desc',
 };
-export const DEFAULT_SORT_KEY: SortKey = 'recommendation';
+export const DEFAULT_SORT_KEY: SortKey = 'score';
 
-const feasibility = (r: OverviewRow) => r.dimensionScores?.feasibility?.score ?? null;
-const blockingCount = (r: OverviewRow) => r.blockerCounts.critical + r.blockerCounts.blocking;
 /** 數字欄位的取值；null 一律排最後 */
 const NUMERIC: Partial<Record<SortKey, (r: OverviewRow) => number | null>> = {
+  score: (r) => (r.score === null ? null : scoreOf(r)),
   recommendation: (r) => recRank(r.recommendationKey),
   market: (r) => r.dimensionScores?.marketSize?.value ?? null,
-  feasibility,
-  blocking: blockingCount,
+  feasibility: (r) => (r.legal === null ? null : legalRank(r.legal)),
+  blocking: blockingOf,
   competitors: (r) => r.directCompetitors,
 };
 
@@ -59,7 +62,7 @@ export function filterRows(rows: OverviewRow[], f: OverviewFilters, isUnread: (r
     if (f.country && r.countryCode !== f.country) return false;
     if (f.category && r.category !== f.category) return false;
     if (q) {
-      const hay = `${r.name ?? ''}\n${r.issuer ?? ''}`.toLowerCase();
+      const hay = `${r.name ?? ''}\n${r.shortName ?? ''}\n${r.issuer ?? ''}`.toLowerCase();
       if (!hay.includes(q)) return false;
     }
     return true;
@@ -78,9 +81,9 @@ export function sortRows(rows: OverviewRow[], key: SortKey, dir: SortDir): Overv
   };
   return [...rows].sort((a, b) => {
     const main = numeric ? cmp(numeric(a), numeric(b)) : cmp(a[key as 'name' | 'generatedDate'], b[key as 'name' | 'generatedDate']);
-    if (main !== 0 || key !== 'recommendation') return main;
-    // 同一種建議：法規可行性高的在前
-    return (feasibility(b) ?? -1) - (feasibility(a) ?? -1);
+    if (main !== 0 || (key !== 'score' && key !== 'recommendation')) return main;
+    // 同分、同建議：與 lib/researchStory.ts 的 rankRows 一致
+    return tieBreak(a, b);
   });
 }
 

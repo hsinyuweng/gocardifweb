@@ -1,15 +1,13 @@
 import { useMemo, useState, useSyncExternalStore } from 'react';
-import { Link, useLocation, useSearchParams } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import type { BreadcrumbItem } from '../components/layout/TopBar';
 import { StatusMessage } from '../components/common/StatusMessage';
 import { CompareTable } from '../components/watchlist/CompareTable';
-import { PresetPicker } from '../components/watchlist/PresetPicker';
 import { normalizeReportIndex } from '../data';
 import { zhTW } from '../i18n/zh-TW';
 import { readFromPath, readFromState } from '../lib/ownerParam';
-import { anyBrandFitScore, buildCandidates, dataCoverage, DIMENSIONS, sortCandidates, type CompareSortKey } from '../lib/score';
+import { rankRows } from '../lib/researchStory';
 import { addToWatchlist, readWatchlist, removeFromWatchlist, subscribeWatchlist } from '../lib/watchlist';
-import { PRESET_WEIGHTS, readPreset, setPreset, subscribePreset } from '../lib/weights';
 import { errorText, useBreadcrumb, useIndexState } from './pageChrome';
 import { PageHeader } from '../components/layout/PageHeader';
 
@@ -21,9 +19,7 @@ function readFromLabel(state: unknown): string | null {
   return typeof label === 'string' ? label : null;
 }
 
-const SORT_KEYS: readonly CompareSortKey[] = ['total', ...DIMENSIONS];
-
-/** 追蹤清單（2026-10-20 新規劃；2026-10-27 V4 改為比較表）：候選商品各面向分數並排，點欄位排序，「看重」預設決定綜合分數 */
+/** 追蹤清單（2026-10-20 新規劃；2026-11-01 使用者回饋：拿掉綜合分數與看重切換，固定依建議 → 阻斷少 → 潛在市場大排序） */
 export function WatchlistPage() {
   const location = useLocation();
   const from = readFromPath(location.state);
@@ -36,21 +32,6 @@ export function WatchlistPage() {
 
   const indexState = useIndexState();
   const ids = useSyncExternalStore(subscribeWatchlist, readWatchlist);
-  const preset = useSyncExternalStore(subscribePreset, readPreset);
-  const weights = PRESET_WEIGHTS[preset];
-  // 排序寫進網址（replace），預設依綜合由高到低
-  const [searchParams, setSearchParams] = useSearchParams();
-  const sortParam = searchParams.get('sort');
-  const sortKey: CompareSortKey = SORT_KEYS.includes(sortParam as CompareSortKey) ? (sortParam as CompareSortKey) : 'total';
-  const sortDir = searchParams.get('dir') === 'asc' ? 'asc' : 'desc';
-  const onSort = (key: CompareSortKey) => {
-    const dir = key === sortKey ? (sortDir === 'desc' ? 'asc' : 'desc') : 'desc';
-    const p = new URLSearchParams();
-    if (key !== 'total') p.set('sort', key);
-    if (dir !== 'desc') p.set('dir', dir);
-    setSearchParams(p, { replace: true, state: location.state });
-  };
-  const [expanded, setExpanded] = useState<ReadonlySet<string>>(new Set());
   // 剛移出的商品：可復原，下一個動作後消失
   const [removed, setRemoved] = useState<{ id: string; index: number; name: string } | null>(null);
 
@@ -58,39 +39,22 @@ export function WatchlistPage() {
     () => (indexState.status === 'ok' ? normalizeReportIndex(indexState.index).rows : []),
     [indexState],
   );
-  const { ranked, missing } = useMemo(() => buildCandidates(ids, rows, weights), [ids, rows, weights]);
-  const hasBrandFit = anyBrandFitScore(ranked.map((c) => c.row));
-  // 所有候選都沒有品牌分數時不顯示品牌欄；市場成長各商品都一樣（同一個市場數字），比較表不列（2026-11-01）
-  const dims = DIMENSIONS.filter((k) => k !== 'marketGrowth' && (hasBrandFit || k !== 'brandFit'));
-  const sorted = useMemo(() => sortCandidates(ranked, sortKey, sortDir), [ranked, sortKey, sortDir]);
-  const rankOf = (id: string) => ranked.findIndex((c) => c.row.reportId === id) + 1;
-  // 一行說明：哪些面向還沒有資料
-  const coverage = dataCoverage(ranked, dims);
-  const dimNames = (keys: readonly typeof DIMENSIONS[number][]) => keys.map((k) => t.dimensions[k]).join('、');
-  const coverageText =
-    ranked.length === 0 || coverage.missing.length === 0
-      ? null
-      : coverage.withData.length === 1
-        ? t.coverageOnly(dimNames(coverage.missing), dimNames(coverage.withData), coverage.signalOnly)
-        : t.coveragePartial(dimNames(coverage.missing));
+  const watched = useMemo(() => rankRows(rows.filter((r) => r.reportId !== null && ids.includes(r.reportId))), [rows, ids]);
+  // 清單裡有、報告清單找不到的 report_id
+  const missing = useMemo(
+    () => (indexState.status === 'ok' ? ids.filter((id) => !rows.some((r) => r.reportId === id)) : []),
+    [ids, rows, indexState],
+  );
 
   const remove = (id: string, name: string) => {
     setRemoved({ id, index: ids.indexOf(id), name });
     removeFromWatchlist(id);
   };
-  const toggle = (id: string) => {
-    setRemoved(null);
-    setExpanded((prev) => {
-      const next = new Set(prev);
-      if (!next.delete(id)) next.add(id);
-      return next;
-    });
-  };
-  // order：報告頁「上一份／下一份」照比較表目前的順序
+  // order：報告頁「上一份／下一份」照比較表的順序
   const linkState = {
     from: location.pathname + location.search,
     fromState: location.state,
-    order: sorted.map((c) => c.row.reportId as string),
+    order: watched.map((r) => r.reportId as string),
   };
 
   let body;
@@ -111,18 +75,7 @@ export function WatchlistPage() {
   } else {
     body = (
       <div className="space-y-3">
-        <CompareTable
-          rows={sorted}
-          rankOf={rankOf}
-          dims={dims}
-          sortKey={sortKey}
-          sortDir={sortDir}
-          onSort={onSort}
-          expanded={expanded}
-          onToggle={toggle}
-          onRemove={remove}
-          linkState={linkState}
-        />
+        <CompareTable rows={watched} onRemove={remove} linkState={linkState} />
         {missing.map((id) => (
           <p key={id} className="flex items-center justify-between gap-4 rounded-xl border border-line bg-white px-4 py-3 text-muted">
             <span className="min-w-0 break-all">{t.missing(id)}</span>
@@ -141,20 +94,7 @@ export function WatchlistPage() {
         icon="watchlist"
         title={t.title}
         desc={zhTW.pageDesc.watchlist}
-        aside={indexState.status === 'ok' ? t.metaBackend(ids.length) : null}
       />
-      {ids.length > 0 ? (
-        <div className="space-y-1.5">
-          <PresetPicker
-            value={preset}
-            onChange={(p) => {
-              setRemoved(null);
-              setPreset(p);
-            }}
-          />
-          {coverageText ? <p className="text-[13px] text-ink2">{coverageText}</p> : null}
-        </div>
-      ) : null}
       {removed ? (
         <p className="rounded-md bg-line px-4 py-2 text-sm text-ink" role="status">
           {t.removed(removed.name)}

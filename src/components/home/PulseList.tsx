@@ -1,38 +1,31 @@
-import type { PulseMetricViewModel } from '../../types/viewModel';
+import type { OverviewRow, PulseMetricViewModel } from '../../types/viewModel';
 import { zhTW } from '../../i18n/zh-TW';
-import { formatPulseValue, formatSharePct, orDash } from '../../lib/format';
-import { growthLeaders, periodText, shareMetrics } from '../../lib/marketStory';
-import { homeMetrics, pulseDigits } from '../../lib/pulse';
-import { KeyLine } from './HomeCard';
+import { lineBarRows, lineGrowthRows, periodText, pickMetrics } from '../../lib/marketStory';
+import { signedPct, signTone, TONE_TEXT } from '../../lib/tone';
+import { LineBars } from '../charts/LineBars';
 
 const t = zhTW.home;
 
 /**
- * 市場脈動框（2026-11-01 顯示資料整理）：只留一個結論——哪個險種新契約保費年增最快（對應商品的險種），
- * 下面一行列整體年增率。不放圖。
+ * 市場脈動框（2026-11-01 第二輪：圖比文字一眼看得懂）：
+ * 各險種新契約保費比去年同期的正負橫條（成長綠、衰退紅），有候選商品的險種實心並標件數；最下面一行整體成長。
  */
-export function PulseList({ metrics }: { metrics: PulseMetricViewModel[] }) {
-  const share = shareMetrics(metrics)[0];
-  const lead = share ? growthLeaders(share) : null;
-  const main = homeMetrics(metrics)[0];
-  if (!lead && !main) return <p className="text-muted">{t.noMetrics}</p>;
-  const period = periodText(share?.periods.at(-1)?.period ?? null);
-  const others = lead
-    ? (share!.periods.at(-1)?.parts ?? [])
-        .filter((p) => p.name && p.name !== lead.fastest.name && p.growthPct !== null)
-        .sort((a, b) => b.growthPct! - a.growthPct!)
-        .map((p) => `${p.name} ${formatSharePct(p.growthPct!)}`)
-        .join(t.listSeparator)
-    : null;
+export function PulseList({ metrics, rows }: { metrics: PulseMetricViewModel[]; rows: OverviewRow[] }) {
+  const lines = lineGrowthRows(metrics, rows);
+  const yoy = pickMetrics(metrics).yoy;
+  if (!lines && !yoy) return <p className="text-muted">{t.noMetrics}</p>;
   return (
     <>
-      {lead ? (
-        <KeyLine num={formatSharePct(lead.fastest.growthPct!)}>{t.pulseFastest(period, orDash(lead.fastest.name))}</KeyLine>
+      {lines ? (
+        <div>
+          <p className="mb-2 text-xs text-muted">{zhTW.market.heading.linesNote(periodText(lines.period))}</p>
+          <LineBars rows={lineBarRows(lines.rows)} ariaLabel={zhTW.market.heading.lines} compact />
+        </div>
       ) : null}
-      {others ? <p className="text-[13px] text-ink2">{t.pulseOthers(others)}</p> : null}
-      {main && main.latestValue !== null ? (
+      {yoy && yoy.latestValue !== null ? (
         <p className="mt-auto text-[13px] text-ink2">
-          {t.pulseOverall(orDash(main.label), formatPulseValue(main.latestValue, main.unit, pulseDigits(main.group)))}
+          {t.pulseOverallLine(periodText(yoy.points.at(-1)?.period ?? null))}
+          <span className={`font-semibold ${TONE_TEXT[signTone(yoy.latestValue) ?? 'key']}`}>{signedPct(yoy.latestValue)}</span>
         </p>
       ) : null}
     </>

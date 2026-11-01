@@ -1,24 +1,32 @@
 import { useState } from 'react';
 import { useElementWidth } from './useElementWidth';
 
-// 直條圖（純 SVG，不用圖表套件）。顏色用目前頁面代表色（fill-p-mid），強調的那一根用珊瑚色。
+// 直條圖（純 SVG，不用圖表套件）。顏色用目前頁面代表色，強調的那一根深色；
+// signed：成長率這類有好壞的數字，正值綠、負值珊瑚紅（2026-11-01 全站好壞色），強調的那一根實心、其他淡色。
 
 interface ColumnChartProps {
   /** 由舊到新 */
   values: number[];
   labels: string[];
-  /** 強調哪一根（珊瑚色）；通常是最新一期 */
+  /** 強調哪一根（深色／實心）；通常是最新一期 */
   highlight?: number;
   formatValue: (v: number) => string;
   height?: number;
   ariaLabel: string;
+  signed?: boolean;
 }
 
 const TOP = 20;
 const BOTTOM = 22;
 
+function fillOf(v: number, strong: boolean, hover: boolean, signed: boolean): string {
+  if (!signed) return strong ? 'fill-p-ink' : hover ? 'fill-p' : 'fill-p-mid';
+  if (v >= 0) return strong ? 'fill-good' : hover ? 'fill-good/70' : 'fill-good/40';
+  return strong ? 'fill-coral' : hover ? 'fill-coral/70' : 'fill-coral/40';
+}
+
 /** 直接在圖上標數字：最高那根與強調那根；滑鼠移上去顯示該期數值 */
-export function ColumnChart({ values, labels, highlight, formatValue, height = 130, ariaLabel }: ColumnChartProps) {
+export function ColumnChart({ values, labels, highlight, formatValue, height = 130, ariaLabel, signed = false }: ColumnChartProps) {
   const [ref, width] = useElementWidth<HTMLDivElement>();
   const [hover, setHover] = useState<number | null>(null);
   if (values.length === 0) return null;
@@ -61,14 +69,14 @@ export function ColumnChart({ values, labels, highlight, formatValue, height = 1
               <g key={i} onMouseEnter={() => setHover(i)} onMouseLeave={() => setHover(null)}>
                 {/* 整欄都可滑過，細的柱子也容易指到 */}
                 <rect x={step * i} y={0} width={step} height={height} fill="transparent" />
-                {h > 0 ? <path d={d} className={strong ? 'fill-coral' : hover === i ? 'fill-p' : 'fill-p-mid'} /> : null}
+                {h > 0 ? <path d={d} className={fillOf(v, strong, hover === i, signed)} /> : null}
                 {shown.has(i) ? (
                   <text
                     x={cx}
                     y={v >= 0 ? top - 6 : top + h + 13}
                     textAnchor="middle"
                     fontSize={12}
-                    className={strong ? 'fill-ink font-medium' : 'fill-ink2'}
+                    className={strong ? (signed ? `${v >= 0 ? 'fill-good-ink' : 'fill-coral'} font-semibold` : 'fill-ink font-medium') : 'fill-ink2'}
                   >
                     {formatValue(v)}
                   </text>

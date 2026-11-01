@@ -12,7 +12,10 @@
   --color-muted: #8a92a3;
   --color-line: #e8eaf1;
   --color-axis: #c3c8d4;
-  /* 強調：每個畫面只標最重要的一點 */
+  /* 好壞（2026-11-01 使用者回饋，全站統一）：好＝綠、壞＝珊瑚紅；中性的重點用該頁代表色深色（text-p-ink） */
+  --color-good: #2e9d5b;
+  --color-good-pale: #e2f3e8;
+  --color-good-ink: #1f7a43;
   --color-coral: #ec6a60;
   --color-coral-pale: #fde3e0;
   /* 追蹤清單的代表色（任何頁面上的「加入追蹤」都用它，2026-10-31） */

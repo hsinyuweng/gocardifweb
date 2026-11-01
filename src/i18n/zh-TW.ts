@@ -49,31 +49,34 @@ export const zhTW = {
   // 第 11.4 節：使用說明頁（固定內容）
   guide: {
     title: '使用說明',
-    whatTitle: '這個網站做什麼',
-    whatBody: '彙整國外保險商品在台灣的市場需求、發生率暨獲利、法規適用三面向分析結果，並提供統整建議。',
-    homeTitle: '首頁四區塊與各頁',
-    homeBlocks: [
-      { name: '市場脈動', body: '台灣壽險市場的重點指標：「總覽」看重點指標卡與全部指標表，用最上方頁籤切到成長動能、定價環境、通路結構、健康度、品牌與競爭（含同業排名）；沒有資料的組不出現。' },
-      { name: '新聞與法規監控', body: '同業新聞稿與主管機關法規：先看近 30 天的重點，下方依出版日期選日子、依領域分組瀏覽，每則標 [新聞] 或 [法規]。' },
-      { name: '追蹤清單', body: '你加入的候選商品比較表：選「平均、法規優先、市場優先」決定綜合分數，點欄位標題排序。' },
-      { name: '競品研究', body: '全部國外商品報告：先看哪些可以推進、卡在哪裡，下方可搜尋、篩選，每列最左邊「＋ 追蹤」直接加入追蹤清單；商品名前的小圓點表示這台電腦還沒打開過。打開報告後，也可以按商品名稱右側的「☆ 加入追蹤清單」。' },
+    // 2026-11-01 第二輪：改成圖示卡片，刪掉長段文字
+    what: '國外保險商品適不適合引進台灣：看市場、看新聞法規、比商品。',
+    pagesTitle: '四個頁面',
+    pages: [
+      { key: 'market', body: '台灣壽險市場在成長還是衰退、利率、法巴排第幾' },
+      { key: 'news', body: '最上面是重點新聞（★），下面是全部新聞與法規' },
+      { key: 'watchlist', body: '你追蹤的商品，依引進分數排好' },
+      { key: 'research', body: '全部國外商品：推薦哪件、卡在哪裡、分數多少' },
     ],
-    readTitle: '每一頁怎麼讀',
-    readSteps: [
-      '頁首：頁面名稱與代表色，告訴你在哪一頁',
-      '一句結論：這頁最重要的一件事，珊瑚色是重點',
-      '關鍵數字：3–4 個數字',
-      '圖表：每段標題用一句話說出圖要看什麼',
-      '下一步：往下看細節，或到相關頁面',
+    go: '前往 →',
+    colorsTitle: '顏色怎麼看',
+    colors: [
+      { key: 'good', name: '綠色＝好', body: '成長、可推進、可引進' },
+      { key: 'bad', name: '紅色＝壞', body: '衰退、不建議、不可引進' },
+      { key: 'gray', name: '灰色＝還不能判斷', body: '暫緩、待確認' },
+      { key: 'key', name: '實心＝重點', body: '圖上要看的那一項（例如法巴、銀行通路）' },
     ],
-    flowTitle: '流程',
-    flowSteps: ['資料蒐集', '三面向分析', '統整建議'],
-    questionsTitle: '三個面向回答的問題',
-    questionsColumns: { module: '面向', question: '核心問題' },
-    howTitle: '怎麼看一份報告',
-    howBody: '先看最上方的整體建議與摘要；再看三面向燈號；「待解決事項」先列重大與阻斷，可依負責單位篩選，選了單位後可點「看○○在所有商品的事項」；需要細節時往下看：台灣競品比較、三面向分頁、資料品質與缺口，最後是國外商品的原始資料（官方文件連結）。',
-    noteTitle: '注意',
-    noteBody: '本網站內容為 AI 輔助之內部初審，須經相關部門人員覆核；資料不足不代表負面結論。',
+    scoreTitle: '引進分數怎麼看',
+    scoreBody: '0–100 分，越高越值得引進。三部分加起來：',
+    scoreExample: '例：CareScout 長照險',
+    scoreParts: [
+      { key: 'rec', name: '整體建議', max: 50, body: '推進 50、暫緩 20、不建議 0' },
+      { key: 'blocking', name: '阻斷項目', max: 25, body: '沒有阻斷 25，每 1 項扣 5' },
+      { key: 'market', name: '潛在市場', max: 25, body: '和最大的那件比' },
+    ],
+    reportTitle: '怎麼看一份報告',
+    reportSteps: ['整體建議', '三面向燈號', '待解決事項', '台灣競品與細節'],
+    note: '內容為 AI 輔助的內部初審，須經相關部門覆核；資料不足不代表負面結論。',
   },
 
   placeholder: {
@@ -95,7 +98,7 @@ export const zhTW = {
     unreadHint: '這台瀏覽器還沒打開過這份報告',
     columns: {
       market: '潛在市場',
-      feasibility: '法規可行性',
+      feasibility: '法規',
       blocking: '阻斷',
       competitors: '台灣競品',
       product: '商品',
@@ -118,24 +121,31 @@ export const zhTW = {
     sortDesc: '▼',
     // 第一個畫面（2026-10-27 V6）
     story: {
-      // 2026-10-31：結論與數字改成建議與卡關（取代審閱進度）
-      leadOf: (n: number) => `${n} 件國外商品中，`,
-      quoted: (label: string) => `「${label}」`,
-      restOf: (list: string) => `；其餘 ${list}`,
-      sep: '，',
+      // 2026-11-01 使用者回饋：兩行結論、用簡稱
+      recommend: '推薦：',
+      paren: (label: string) => `（${label}）`,
+      restOf: (list: string) => `其餘 ${list}`,
+      noneRecommended: (n: number) => `${n} 件國外商品目前都還不能推進`,
       count: (n: number) => `${n} 件`,
-      unit: ' 件',
       missing: '未提供建議',
       tile: {
-        ofTotal: (n: number) => `共 ${n} 件商品`,
-        best: (label: string) => `最值得看：${label}`,
-        topFeasibility: '法規可行性最高（滿分 100）',
-        points: (n: number) => `${n} 分`,
+        best: (label: string) => `推薦（${label}）`,
+        bestMany: '推薦',
+        commonBlocker: '最常見的卡關原因',
+        commonBlockerNote: (n: number) => `${n} 件商品卡在這裡`,
         topMarket: '台灣潛在市場最大',
       },
-      down: (n: number) => `往下看：全部 ${n} 件商品，可直接加入追蹤 ↓`,
       allReports: '全部報告',
+      scoreHeading: '引進分數：越高越值得引進',
     },
+  },
+
+  // 引進分數（lib/introScore.ts，2026-11-01 第二輪）
+  score: {
+    column: '引進分數',
+    points: (n: number) => `${n} 分`,
+    chartLabel: '各商品引進分數',
+    breakdown: (rec: number, blocking: number, market: number) => `建議 ${rec}／50 ＋ 阻斷 ${blocking}／25 ＋ 潛在市場 ${market}／25`,
   },
 
   // 我的待辦（規格外功能，2026-10-18 經確認）
@@ -149,6 +159,14 @@ export const zhTW = {
     partialFailure: (n: number, names: string) => `有 ${n} 份報告無法讀取，以下內容不包含：${names}。`,
   },
 
+  // 法規判斷（lib/legal.ts，2026-11-01）
+  legal: {
+    ok: '可引進',
+    okWithFixes: (n: number) => `可引進，需修改 ${n} 處`,
+    pending: '待確認',
+    blocked: (n: number) => `不可引進（違規 ${n} 項）`,
+  },
+
   // 市場總覽（首頁，2026-10-20 新規劃）
   home: {
     title: '市場總覽',
@@ -160,47 +178,28 @@ export const zhTW = {
       watchlist: '追蹤清單',
       research: '競品研究',
     },
-    noFeedItems: '目前沒有新的動態。',
     noMetrics: '目前沒有指標資料。',
     newsTag: '新聞',
     regulationTag: '法規',
-    researchMeta: (country: string, rec: string) => `${country} · ${rec}`,
-    moreUnread: (n: number) => `還有 ${n} 份未審閱`,
-    allReviewed: '所有報告都已審閱。',
     seeAll: '看全部 →',
-    seeAllReports: '看全部報告 →',
-    // 2026-10-27 視覺改版：四框的重點數字一句話
-    newsKey: '則動態，近 30 天 · 法規',
-    countUnit: '則',
-    watchKey: (name: string, score: string) => `件候選商品，最高分 ${name} ${score}`,
-    watchKeyNoScore: '件候選商品',
-    researchBest: (label: string, total: number) => `件「${label}」，共 ${total} 件`,
     // 2026-11-01 顯示資料整理
     stuckOn: (s: string) => `卡在：${s}`,
+    noRecommended: '目前沒有可推進的商品。',
+    restLabel: (list: string) => `其餘 ${list}`,
+    moreItems: (n: number) => `還有 ${n} 件`,
+    latestRegulation: '最新法規',
+    relatedCount: (n: number) => `${n} 件`,
+    pulseOverallLine: (period: string | null) => `${period ? `${period} ` : ''}整體新契約保費比去年同期 `,
     noBlocker: '沒有阻斷項目',
-    pulseFastest: (period: string | null, name: string) => `${period ? `${period} ` : ''}${name}新契約保費年增最快`,
-    pulseOthers: (list: string) => `其他險種：${list}`,
     pulseOverall: (label: string, v: string) => `整體${label} ${v}`,
-    regulationKey: '則法規，近 30 天',
     noRegulation: '近 30 天沒有新的法規。',
-    /** 首頁新聞框橫條用的短名稱 */
-    domainShort: {
-      product_channel: '商品通路',
-      market_macro: '總經',
-      regulation: '監理法規',
-      claims_consumer: '理賠消保',
-      customer_brand: '品牌公關',
-      none: '未分類',
-    },
-    listSeparator: ' · ',
   },
 
   // 每頁頁首的一行說明（2026-10-27 視覺改版）
   pageDesc: {
-    home: '國外商品適不適合引進，重點一次看',
     news: '同業新聞稿、主管機關法規與公告',
     market: '台灣壽險市場的成長、利率、通路與同業競爭',
-    watchlist: '候選商品依你重視的面向排序',
+    watchlist: '你追蹤的商品，依引進分數排序',
     research: '已完成的國外商品分析報告',
     tasks: '依負責單位查看各商品要處理的事項',
     guide: '這個網站做什麼、怎麼看報告',
@@ -209,18 +208,7 @@ export const zhTW = {
   // 一句結論（lib/insights.ts，2026-10-27 視覺改版）
   insights: {
     month: (m: number) => `${m} 月`,
-    // 週期間「10/19 當週」後面接數字開頭的名稱時加空格
-    lead: (period: string | null, label: string) => (period ? `${period}${/^\d/.test(label) ? ' ' : ''}${label} ` : `${label} `),
-    shareUp: (name: string, v: string) => `，${name}占比升到 ${v}`,
-    shareDown: (name: string, v: string) => `，${name}占比回落到 ${v}`,
     news: (n: number, regulation: number) => `近 30 天 ${n} 則動態，法規 ${regulation} 則`,
-    streak: (label: string, n: number, unit: string, positive: boolean) => `${label}連續 ${n} ${unit}${positive ? '為正' : '為負'}`,
-    streakTail: (n: number, unit: string, positive: boolean) => `，連續 ${n} ${unit}${positive ? '為正' : '為負'}`,
-    fastest: (name: string, v: string) => `${name}年增 ${v} 最快`,
-    declined: (names: string) => `，${names}衰退`,
-    shareTop: (name: string) => `${name}占 `,
-    shareSecond: (name: string, v: string) => `，${name} ${v}`,
-    comma: '，',
   },
 
   // 等級說明（2026-10-31：不直觀的等級一律註明哪端高）
@@ -235,16 +223,8 @@ export const zhTW = {
   // 市場脈動（2026-10-20 經確認）
   market: {
     title: '市場脈動',
-    groups: {
-      growth: { title: '成長動能', desc: '新契約保費年增率與各險別占比' },
-      pricing: { title: '定價環境', desc: '10 年期公債殖利率走勢' },
-      channel: { title: '通路結構', desc: '壽險公司自有業務、銀行、經代通路占比' },
-      health: { title: '健康度', desc: '保費收入對保險給付、保單繼續率' },
-      brand: { title: '品牌與競爭', desc: '法巴市占率與同業排名' },
-    },
     noChartData: '資料不足，無法畫圖。',
     stale: '資料較舊',
-    accumulating: '資料累積中',
     /** 週期間（2026-W43）顯示為該週星期一 */
     weekOf: (md: string) => `${md} 當週`,
     /** 直條圖 x 軸的月份 */
@@ -253,89 +233,51 @@ export const zhTW = {
     perTenThousand: (v: string) => `${v}（每萬件簽單）`,
     /** unit「名」 */
     rank: (v: string) => `第 ${v} 名`,
-    source: '來源：',
     asOf: (d: string) => `資料日期 ${d}`,
-    other: '其他',
-    shareTable: { name: '項目', share: '占比', growth: '年增率' },
-    shareLatest: (period: string) => `${period} 占比`,
     upcoming: '預計',
-    moreLines: (n: number) => `另有 ${n} 條未顯示`,
-    // 分頁（2026-10-27 視覺改版 V2）
-    overviewTab: '總覽',
     highest: '最高',
-    tabsLabel: '市場脈動分頁',
-    nextStep: '下一步',
-    // 重點指標卡與指標表（2026-10-27 視覺改版 V5）
-    onePeriod: '只有 1 期資料，累積中',
-    table: {
-      title: (n: number) => `全部 ${n} 項指標`,
-      down: (n: number) => `往下看：全部 ${n} 項指標 ↓`,
-      filter: '依組別篩選',
-      all: '全部',
-      cols: { label: '指標', latest: '最新', prev: '上期', change: '變化', period: '資料期間', frequency: '頻率', source: '來源' },
-      freq: { month: '月', week: '週', day: '日', quarter: '季', year: '年' },
-      /** 占比指標底下的金額列（schema 2.2） */
-      amountOf: (name: string) => `${name}金額`,
-      sources: '資料來源：',
-      showChart: '看圖 ▾',
-      hideChart: '收起 ▴',
-    },
-    downShare: '往下看：各項目占比與年增率、資料來源 ↓',
-    downPlain: '往下看：完整圖表與資料來源 ↓',
-    details: '細節',
-    missingGroup: (title: string, desc: string) => `${title}（${desc}）尚無資料，有資料後會多一個分頁`,
     periodLong: (y: number, m: number) => `${y} 年 ${m} 月`,
-    /** 日資料的完整日期 */
     dayLong: (y: number, m: number, d: number) => `${y} 年 ${m} 月 ${d} 日`,
-    /** 日資料主圖的標題（近 12 個月） */
-    dailyTitle: (label: string) => `近 12 個月每日 ${label}`,
     headerAside: (period: string | null, updated: string) => (period ? `${period} · 資料更新於 ${updated}` : `資料更新於 ${updated}`),
-    tabTitle: (tab: string) => `市場脈動 · ${tab}`,
-    unitMonth: '個月',
-    unitWeek: '週',
-    unitPeriod: '期',
-    unitTradingDay: '個交易日',
-    tile: {
-      latest: '最新',
-      // 日資料（交易日數不固定）一律寫「近 12 個月」（2026-11-01 圖表統一期間）
-      high: (n: number, unit: string) => (unit === '個交易日' ? '近 12 個月最高' : `近 ${n} ${unit}最高`),
-      low: (n: number, unit: string) => (unit === '個交易日' ? '近 12 個月最低' : `近 ${n} ${unit}最低`),
-      shareOf: (name: string) => `${name}占比`,
-      vsPeriod: (p: string) => `較 ${p}`,
-      vsPrev: '較上期',
-      growth: (v: string) => `年增 ${v}`,
+    sources: '資料來源：',
+    // 一句結論（lib/marketStory.ts）
+    vsLastYear: (period: string | null) => `${period ? `${period}` : ''}新契約保費比去年同期`,
+    grow: (v: string) => `成長 ${v}`,
+    shrink: (v: string) => `衰退 ${v}`,
+    streakTail: (n: number, positive: boolean) => `，連續 ${n} 個月${positive ? '成長' : '衰退'}`,
+    // 2026-11-01 第二輪：一頁，大標題＋大圖＋4 張圖卡
+    hero: {
+      lead: '新契約保費',
+      streak: (n: number, positive: boolean) => `連續 ${n} 個月${positive ? '成長' : '衰退'}`,
+      vsLastYear: (period: string | null) => `${period ? `${period}` : ''}比去年同期`,
+      amount: (v: string) => `新契約保費 ${v}`,
+      chart: '每月新契約保費比去年同期',
     },
     heading: {
-      allPositive: (n: number, unit: string, maxP: string, max: string) => `${n} ${unit}都為正，${maxP}最高 ${max}`,
-      allNegative: (n: number, unit: string, minP: string, min: string) => `${n} ${unit}都為負，${minP}最低 ${min}`,
-      highLow: (maxP: string, max: string, minP: string, min: string) => `${maxP}最高 ${max}，${minP}最低 ${min}`,
-      shareLatest: (p: string) => `${p}各項目占比`,
-      shareDetail: '各項目占比',
-      shiftTail: (more: boolean, v: string) => `，占比比上期${more ? '多' : '少'} ${v} 個百分點`,
-      shareByPeriod: '每期占比',
-      /** 金額圖的標題：「8 月新契約保費 1,245.9 億元，比去年同期 +68.5%」 */
-      amountYoy: (lead: string, value: string, yoy: string) => `${lead}${value}，比去年同期 ${yoy}`,
-      amountChart: (label: string) => `每月${label}`,
-      growthLatest: (p: string) => `${p}各項目年增率`,
+      lines: '各險種新契約保費比去年同期',
+      lineTop: (n: number, name: string) => `${n} 件候選商品屬於${name}，比去年同期 `,
+      linesNote: (period: string | null) => `${period ? `${period} ` : ''}各險種新契約保費比去年同期`,
+      yieldNote: (latest: string, meaning: string) => `目前 ${latest}，${meaning}`,
+      yieldChart: '近 12 個月每日',
     },
-    // 同業排名（schema 2.2 ranking；2026-10-31 由 pulse.json 轉換）
+    lineTag: (n: number) => `${n} 件候選`,
+    yield: {
+      inYear: '一年 ',
+      flat: '持平',
+      upMeaning: '儲蓄型商品較有定價空間',
+      downMeaning: '儲蓄型商品定價空間縮小',
+      flatMeaning: '儲蓄型商品定價環境不變',
+    },
+    // 同業排名
     ranking: {
       gap: '⋯',
-      tileRank: '同業排名',
-      ofTotal: (n: number) => `共 ${n} 家`,
-      tileGap: '與前一名差距',
-      tileLead: '領先第 2 名',
-      neighbor: (rank: number, name: string) => `第 ${rank} 名 ${name}`,
-      tileTop: (n: number) => `前 ${n} 名合計`,
-      topNote: (name: string, v: string) => `第 1 名 ${name} ${v}`,
-      shareOf: (name: string) => `${name}市占率`,
-      headTail: (rank: number) => `，同業排第 ${rank} 名`,
-      pp: (v: string) => `${v} 個百分點`,
-      behind: (rank: number, name: string, v: string) => `比第 ${rank} 名${name}少 ${v} 個百分點`,
-      ahead: (rank: number, name: string, v: string) => `比第 ${rank} 名${name}多 ${v} 個百分點`,
-      previewHeading: (name: string, rank: number) => `前 5 名與${name}（第 ${rank} 名）前後`,
-      all: (n: number, period: string) => `全部 ${n} 家（${period}）`,
-      rankOf: (rank: number, total: number) => `第 ${rank} 名／${total} 家`,
+      selfLead: (name: string) => `${name}排`,
+      shareTail: (v: string) => `，市占率 ${v}`,
+      behind: (rank: number, name: string, v: string) => `比第 ${rank} 名${name}少 ${v}%`,
+      ahead: (rank: number, name: string, v: string) => `比第 ${rank} 名${name}多 ${v}%`,
+    },
+    channel: {
+      heading: (v: string) => `銀行通路占 ${v}，是法巴的主力通路`,
     },
     change: {
       up: '▲',
@@ -343,7 +285,6 @@ export const zhTW = {
       flat: '持平',
       /** 「較前一交易日」→「與前一交易日持平」；沒有基準時只寫「持平」 */
       flatWith: (label: string | null) => (label ? `與${label.replace(/^較/, '')}持平` : '持平'),
-      ppUnit: '個百分點',
     },
   },
 
@@ -374,20 +315,21 @@ export const zhTW = {
     emptyAffects: '目前沒有與追蹤清單商品可能相關的項目。',
     // 第一個畫面（2026-11-01 顯示資料整理）
     leadRecent: '近 30 天',
+    original: '原文 ↗',
     regulationCount: (n: number) => `法規 ${n} 則`,
     productTail: (n: number) => `、同業商品與通路動態 ${n} 則`,
     count: (n: number) => `${n} 則`,
-    tile: {
-      regulation: '法規',
-      noRegulation: '近 30 天沒有新的法規',
-      product: '同業商品與通路動態',
-      others: '其他動態',
-      othersNote: '市場、理賠消保、品牌公關',
-    },
     range: (from: string, to: string) => `${from}–${to}`,
-    down: (n: number) => `往下看：全部 ${n} 則，法規在最前面 ↓`,
-    toWatchlist: '追蹤清單 →',
     allItems: '全部動態',
+    // 重點新聞（lib/newsPicks.ts，2026-11-01 第二輪）
+    pick: {
+      heading: '重點新聞',
+      note: '和法巴、候選商品最有關的幾則',
+      starHint: '重點新聞',
+      self: '和法巴有關',
+      bank: '銀行通路',
+      product: (theme: string) => `和候選商品有關：${theme}`,
+    },
   },
 
   // 相對時間（市場總覽動態）
@@ -402,43 +344,7 @@ export const zhTW = {
   // 追蹤清單（2026-10-20 經確認）
   watchlist: {
     title: '追蹤清單',
-    metaBackend: (n: number) => `${n} 件候選商品`,
-    // 比較表與「看重」預設（2026-10-27 V4，取代權重拉桿）
-    presetLabel: '看重',
-    presets: { balanced: '平均', regulatory: '法規優先', market: '市場優先' },
-    presetHint: {
-      balanced: '每個面向一樣重要',
-      regulatory: '法規可行性的權重是其他面向的 3 倍',
-      market: '市場規模、市場成長的權重是法規可行性的 2 倍',
-    },
-    coverageOnly: (missing: string, only: string, signal: boolean) =>
-      `目前候選商品都還沒有${missing}的分數，綜合分數暫時等於${only}${signal ? '（用燈號換算）' : ''}。`,
-    coveragePartial: (missing: string) => `目前候選商品都還沒有${missing}的分數，綜合分數只用其他面向計算。`,
-    compare: { rank: '名次', product: '商品', total: '綜合', actions: '操作', sortBy: (col: string) => `依${col}排序` },
-    noData: '無資料',
-    signalTag: '燈號',
-    dimensions: { feasibility: '法規可行性', marketSize: '市場規模', marketGrowth: '市場成長', brandFit: '品牌／通路契合度' },
-    basis: {
-      feasibility: '法規適用',
-      marketSize: '市場需求（潛在保費）',
-      marketGrowth: '市場需求（同險別新契約）',
-      brandFit: '尚無資料',
-    },
-    basisBrandFitBackend: '研究評分',
-    basisMarketPulse: '市場脈動',
-    level: (n: number) => `（${n} 級）`,
-    detailValue: (v: string) => `數值 ${v}`,
-    detailAsOf: (d: string) => `資料日期 ${d}`,
-    detailSource: '來源 ',
-    missingDims: (names: string) => `未計入：${names}（無資料）`,
-    breakdown: '計算明細',
-    breakdownColumns: { dimension: '維度', basis: '依據', signal: '燈號', score: '分數', weight: '權重', rationale: '說明' },
-    signalConverted: '燈號換算',
-    confidence: (c: string) => `（可信度 ${c}）`,
-    notCounted: '不計入',
-    formula:
-      '綜合分數 ＝ Σ（分數 × 權重）÷ Σ 權重；無資料的維度不計入。分數 ＝（級數 − 1）× 25。沒有評分時，法規可行性用燈號換算：綠 100、黃 67、橘 33、紅 0。',
-    scoreLabel: '綜合分數',
+    compare: { rank: '名次', product: '商品', actions: '操作' },
     remove: '移出',
     removed: (name: string) => `已移出「${name}」。`,
     undo: '復原',
@@ -446,9 +352,8 @@ export const zhTW = {
     empty: '還沒有追蹤的商品。到「競品研究」打開報告，按右上角「加入追蹤清單」。',
     goResearch: '前往競品研究 →',
     homeEmpty: '還沒有追蹤的商品。在報告頁右上角按「加入追蹤清單」。',
-    homeSuggestLead: (n: number) => `還沒有追蹤的商品。綜合分數最高的 ${n} 件，可以直接加入：`,
+    homeSuggestLead: (n: number) => `還沒有追蹤的商品。最值得看的 ${n} 件，可以直接加入：`,
     homeSuggestNote: '也可以在競品研究列表或報告頁加入。',
-    homeMeta: (country: string) => `${country} · 綜合分數`,
     add: '☆ 加入追蹤清單',
     added: '★ 已在追蹤清單',
     addedShort: '★ 已追蹤',
@@ -495,18 +400,16 @@ export const zhTW = {
       marketLabel: '台灣潛在市場（中間情境，年繳保費）',
       marketLink: '看市場估算 ↓',
       regulatoryQ: '法規過得了嗎？',
-      regulatoryLabel: '法規可行性（滿分 100）',
+      regulatoryLabel: '法規判斷',
       regulatoryLink: '看卡在哪裡 ↓',
       competitorQ: '台灣已經有誰在賣？',
       competitorLabel: '台灣直接競品',
       competitorLink: '看競品比較 ↓',
-      score: (n: number) => `市場規模分數 ${n}（滿分 100）`,
-      points: (n: number) => `${n} 分`,
       count: (n: number) => `${n} 件`,
       blocking: (n: number) => `還有 ${n} 項阻斷要先解決`,
       noBlocking: '沒有阻斷項目',
       similarOnly: (n: number) => `沒有直接競品，有 ${n} 項類似商品`,
-      noScore: '尚未評分',
+      noScore: '尚未判斷',
       noData: '沒有資料',
     },
     gapsTitle: (n: number) => (n > 0 ? `還差什麼才能決定（阻斷 ${n} 項）` : '還差什麼才能決定'),
@@ -521,8 +424,6 @@ export const zhTW = {
     showAllSteps: (n: number) => `看全部 ${n} 項 ▾`,
     collapse: '收合 ▴',
     reasonsTitle: '判斷理由',
-    downDetails: '往下看：三面向細節 ↓',
-    downDetailsWithCompetitors: '往下看：台灣競品比較、三面向細節 ↓',
     // 台灣競品比較（後端需求 M1；2026-10-31）
     competitors: {
       headingDirect: (direct: number, other: number) => `台灣有 ${direct} 項直接競品${other > 0 ? `、${other} 項類似商品` : ''}`,
@@ -622,13 +523,6 @@ export const zhTW = {
 
   charts: {
     noData: '無資料',
-  },
-
-  // 第 9.1 節：各模組核心問題
-  coreQuestion: {
-    market_demand: '產品是否有需求',
-    actuarial: '產品是否能獲利',
-    regulatory: '產品是否能引入',
   },
 
   // 第 9.1 節：research_status 固定標籤（legend 查不到時使用）

@@ -1,5 +1,5 @@
 import type {
-  PulseGroup,
+  OverviewRow,
   PulseMetricViewModel,
   PulsePointViewModel,
   PulseRankingViewModel,
@@ -8,37 +8,161 @@ import type {
   PulseTrendViewModel,
 } from '../types/viewModel';
 import { zhTW } from '../i18n/zh-TW';
-import { formatPulsePeriod, formatPulseValue, formatSharePct, isFlatChange, orDash, pulseChangeParts, pulseChangeWithLabel } from './format';
-import { metricsByGroup, PULSE_GROUP_ORDER, pulseDigits } from './pulse';
+import { formatPulsePeriod, formatPulseValue, formatSharePct, orDash } from './format';
+import type { HeadlinePart } from './insights';
+import { metricsByGroup, pulseDigits } from './pulse';
+import type { Tone } from './tone';
+import { signedPct, signTone } from './tone';
 
-// 市場脈動分頁的閱讀路徑內容（2026-10-27 視覺改版 V2）：數字磚、圖表標題。
-// 只用資料裡的數字；哪個指標放哪裡由 type 與 group 決定，不寫死指標代號。
+// 市場脈動的閱讀路徑內容（2026-11-01 使用者回饋第二輪：一頁、大標題＋大圖＋4 張圖卡；
+// 每張卡的標題是一句結論，結論裡的數字就是圖上標出的重點）。
+// 只用資料裡的數字；哪個指標放哪裡由 type、group、unit 決定，不寫死指標代號。
 
 const t = zhTW.market;
 
-/** 市場脈動分頁：總覽＋各組 */
-export type MarketTab = 'overview' | PulseGroup;
+// ───────── 期間 ─────────
 
-/** 有指標的組（分頁只顯示這些；健康度等沒有資料時不出現） */
-export function availableGroups(metrics: PulseMetricViewModel[]): PulseGroup[] {
-  const groups = metricsByGroup(metrics);
-  return PULSE_GROUP_ORDER.filter((g) => groups.get(g)!.length > 0);
+/** 頁首右側的資料期間：「2026-08」→「2026 年 8 月」；日「2026 年 10 月 29 日」；其他照原文 */
+export function periodLong(period: string | null): string | null {
+  if (period === null) return null;
+  const m = /^(\d{4})-(\d{2})$/.exec(period);
+  if (m) return t.periodLong(+m[1]!, +m[2]!);
+  const d = /^(\d{4})-(\d{2})-(\d{2})$/.exec(period);
+  if (d) return t.dayLong(+d[1]!, +d[2]!, +d[3]!);
+  return formatPulsePeriod(period);
 }
 
-export function isTrend(m: PulseMetricViewModel): m is PulseTrendViewModel {
-  return m.type === 'trend';
+/** 期間的口語寫法：「2026-08」→「8 月」；其他照原文 */
+export function periodText(period: string | null): string | null {
+  if (period === null) return null;
+  const m = /^\d{4}-(\d{2})$/.exec(period);
+  if (m) return zhTW.insights.month(+m[1]!);
+  return formatPulsePeriod(period);
 }
 
-/** 一組的主要指標：第一個有最新值的單線趨勢 */
-export function mainTrend(list: PulseMetricViewModel[]): PulseTrendViewModel | undefined {
-  return list.filter(isTrend).find((m) => m.latestValue !== null);
+const isMonthly = (p: string | null | undefined) => !!p && /^\d{4}-\d{2}$/.test(p);
+const isDaily = (p: string | null | undefined) => !!p && /^\d{4}-\d{2}-\d{2}$/.test(p);
+
+// ───────── 取指標 ─────────
+
+const trends = (list: PulseMetricViewModel[]) =>
+  list.filter((m): m is PulseTrendViewModel => m.type === 'trend' && m.latestValue !== null);
+export const shareMetrics = (list: PulseMetricViewModel[]) =>
+  list.filter((m): m is PulseShareViewModel => m.type === 'share' && m.periods.length > 0);
+
+export const trendValue = (m: PulseTrendViewModel, v: number | null) => formatPulseValue(v, m.unit, pulseDigits(m.group));
+
+/** 市場脈動用到的指標，依用途取出；沒有資料的為 null/undefined */
+export function pickMetrics(metrics: PulseMetricViewModel[]) {
+  const g = metricsByGroup(metrics);
+  const growth = g.get('growth') ?? [];
+  const pricing = g.get('pricing') ?? [];
+  const yoy = trends(growth).find((m) => m.unit === '%');
+  const amount = trends(growth).find((m) => m.unit === zhTW.units.ntd);
+  const mix = shareMetrics(growth).find((s) => s.periods.at(-1)?.parts.some((p) => p.growthPct !== null));
+  // 利率：日資料優先（近 12 個月每日）
+  const yieldM = trends(pricing).find((m) => isDaily(m.points.at(-1)?.period)) ?? trends(pricing)[0];
+  const brand = g.get('brand') ?? [];
+  const channel = shareMetrics(g.get('channel') ?? [])[0];
+  return { yoy, amount, mix, yieldM, ranking: selfRanking(brand), channel };
 }
 
-export function shareMetrics(list: PulseMetricViewModel[]): PulseShareViewModel[] {
-  return list.filter((m): m is PulseShareViewModel => m.type === 'share' && m.periods.length > 0);
+// ───────── 成長 ─────────
+
+/** 最後連續同號（正或負）的期數 */
+export function streak(points: PulsePointViewModel[]): { n: number; positive: boolean } {
+  const last = points.at(-1)?.value ?? 0;
+  if (last === 0) return { n: 0, positive: true };
+  const positive = last > 0;
+  let n = 0;
+  for (let i = points.length - 1; i >= 0 && (positive ? points[i]!.value > 0 : points[i]!.value < 0); i--) n++;
+  return { n, positive };
 }
 
-// ───────── 同業排名 ─────────
+/** 「成長 68.5%」（好）／「衰退 3.2%」（壞） */
+const growthPart = (v: number): HeadlinePart => ({
+  text: v >= 0 ? t.grow(formatSharePct(v)) : t.shrink(formatSharePct(-v)),
+  tone: v >= 0 ? 'good' : 'bad',
+});
+
+/** 總覽結論：「8 月新契約保費比去年同期成長 68.5%，連續 8 個月成長」 */
+export function growthHeadline(yoy: PulseTrendViewModel): HeadlinePart[] {
+  const v = yoy.latestValue!;
+  const s = streak(yoy.points);
+  const parts: HeadlinePart[] = [{ text: t.vsLastYear(periodText(yoy.points.at(-1)?.period ?? null)) }, growthPart(v)];
+  if (s.n >= 3) parts.push({ text: t.streakTail(s.n, s.positive) });
+  return parts;
+}
+
+/** 大標題：「新契約保費連續 8 個月成長」；沒有連續 3 期以上時同 growthHeadline */
+export function heroHeadline(yoy: PulseTrendViewModel): HeadlinePart[] {
+  const s = streak(yoy.points);
+  if (s.n < 3) return growthHeadline(yoy);
+  return [{ text: t.hero.lead }, { text: t.hero.streak(s.n, s.positive), tone: s.positive ? 'good' : 'bad' }];
+}
+
+/** 各險種年增率與候選商品對應（首頁市場框、市場脈動共用） */
+export interface LineGrowthRow {
+  name: string;
+  growthPct: number;
+  sharePct: number;
+  /** 屬於這個險種的候選商品件數 */
+  related: number;
+}
+
+/** 有候選商品的險種排前面，再依年增率高到低 */
+export function lineGrowthRows(metrics: PulseMetricViewModel[], rows: OverviewRow[]): { period: string | null; rows: LineGrowthRow[] } | null {
+  const mix = pickMetrics(metrics).mix;
+  const latest = mix?.periods.at(-1);
+  if (!latest) return null;
+  const out = latest.parts
+    .filter((p) => p.name && p.growthPct !== null)
+    .map((p) => ({ name: p.name!, growthPct: p.growthPct!, sharePct: p.sharePct, related: rows.filter((r) => r.productLine === p.name).length }))
+    .sort((a, b) => Number(b.related > 0) - Number(a.related > 0) || b.growthPct - a.growthPct);
+  return out.length > 0 ? { period: latest.period, rows: out } : null;
+}
+
+/** 正負橫條的列：依年增率高到低，有候選商品的險種實心並標「7 件候選」 */
+export function lineBarRows(lines: LineGrowthRow[]) {
+  return [...lines]
+    .sort((a, b) => b.growthPct - a.growthPct)
+    .map((r) => ({ name: r.name, value: r.growthPct, strong: r.related > 0, tag: r.related > 0 ? t.lineTag(r.related) : null }));
+}
+
+/** 險種卡標題：「7 件候選商品屬於人壽保險，比去年同期 +51.9%」 */
+export function lineHeading(lines: LineGrowthRow[]): HeadlinePart[] {
+  const top = [...lines].sort((a, b) => b.related - a.related)[0];
+  if (!top || top.related === 0) return [{ text: t.heading.lines }];
+  return [{ text: t.heading.lineTop(top.related, top.name) }, { text: signedPct(top.growthPct), tone: signTone(top.growthPct) }];
+}
+
+// ───────── 利率 ─────────
+
+/** 利率一年來的變化（近 12 個月的第一點到最新）；上升對儲蓄型商品定價是好事 */
+export function yieldChange(m: PulseTrendViewModel): { latest: string; diff: number; diffText: string; tone?: Tone; meaning: string } | null {
+  const first = m.points[0];
+  const last = m.points.at(-1);
+  if (!first || !last || m.points.length < 2) return null;
+  const diff = last.value - first.value;
+  const digits = pulseDigits(m.group);
+  const flat = Math.abs(diff) < 0.5 * 10 ** -digits;
+  return {
+    latest: trendValue(m, last.value),
+    diff,
+    diffText: flat ? t.yield.flat : `${diff > 0 ? '+' : '-'}${Math.abs(diff).toFixed(digits)}%`,
+    tone: flat ? undefined : diff > 0 ? 'good' : 'bad',
+    meaning: flat ? t.yield.flatMeaning : diff > 0 ? t.yield.upMeaning : t.yield.downMeaning,
+  };
+}
+
+/** 利率卡標題：「10 年期公債殖利率一年 +0.78%」 */
+export function yieldHeading(m: PulseTrendViewModel): HeadlinePart[] {
+  const c = yieldChange(m);
+  if (!c) return [{ text: `${orDash(m.label)} ${trendValue(m, m.latestValue)}` }];
+  return [{ text: `${orDash(m.label)}${t.yield.inYear}` }, { text: c.diffText, tone: c.tone }];
+}
+
+// ───────── 競爭 ─────────
 
 /** 一組裡第一個有自家公司（法巴）的排名 */
 export function selfRanking(list: PulseMetricViewModel[]): { m: PulseRankingViewModel; self: PulseRankRowViewModel; index: number } | null {
@@ -52,269 +176,55 @@ export function selfRanking(list: PulseMetricViewModel[]): { m: PulseRankingView
 
 export const rankingValue = (m: PulseRankingViewModel, v: number) => formatPulseValue(v, m.unit, pulseDigits(m.group));
 
-/** 差距的數字（不帶符號與單位）：「0.08」 */
-const gapNumber = (m: PulseRankingViewModel, v: number) => rankingValue(m, Math.abs(v)).replace(/%$/, '');
-
-/** 排名預覽：前 top 名＋自家前後各 around 名（重點指標卡用 around=2、只列自家附近） */
+/** 排名預覽：前 top 名＋自家前後各 around 名 */
 export function rankingPreview(m: PulseRankingViewModel, top: number, around: number): PulseRankRowViewModel[] {
   const selfIdx = m.rows.findIndex((r) => r.isSelf);
   return m.rows.filter((_, i) => i < top || (selfIdx !== -1 && Math.abs(i - selfIdx) <= around));
 }
 
-/** 與前後名次的差距：「比第 9 名三商美邦人壽少 0.08 個百分點，比第 11 名安達國際人壽多 0.09 個百分點」 */
-export function rankingGapHeading(list: PulseMetricViewModel[]): string | null {
-  const r = selfRanking(list);
-  if (!r) return null;
+/** 排名卡標題：「法國巴黎人壽排第 10 名，市占率 3.56%」 */
+export function rankingHeadline(r: NonNullable<ReturnType<typeof selfRanking>>): HeadlinePart[] {
+  return [
+    { text: t.ranking.selfLead(orDash(r.self.name)) },
+    { text: t.rank(String(r.self.rank)), tone: 'key' },
+    { text: t.ranking.shareTail(rankingValue(r.m, r.self.value)) },
+  ];
+}
+
+/** 與前後名次的差距：「比第 9 名三商美邦人壽少 0.08%，比第 11 名安達國際人壽多 0.09%」 */
+export function rankingGapHeading(r: NonNullable<ReturnType<typeof selfRanking>>): string | null {
   const { m, self, index } = r;
   const prev = m.rows[index - 1];
   const next = m.rows[index + 1];
-  const tr = t.ranking;
+  const gap = (v: number) => rankingValue(m, Math.abs(v)).replace(/%$/, '');
   const parts = [
-    prev ? tr.behind(prev.rank, orDash(prev.name), gapNumber(m, prev.value - self.value)) : null,
-    next ? tr.ahead(next.rank, orDash(next.name), gapNumber(m, self.value - next.value)) : null,
+    prev ? t.ranking.behind(prev.rank, orDash(prev.name), gap(prev.value - self.value)) : null,
+    next ? t.ranking.ahead(next.rank, orDash(next.name), gap(self.value - next.value)) : null,
   ].filter((x): x is string => x !== null);
   return parts.length > 0 ? parts.join('，') : null;
 }
 
-/** 排名的數字磚：（沒有單線市占率時）自家數值、名次、與前一名差距、前 5 名合計 */
-function rankingTiles(list: PulseMetricViewModel[], withShare: boolean): KeyNumber[] {
-  const r = selfRanking(list);
-  if (!r) return [];
-  const { m, self, index } = r;
-  const tr = t.ranking;
-  const out: KeyNumber[] = [];
-  if (withShare) {
-    out.push({ key: `${m.key}-self`, label: tr.shareOf(orDash(self.name)), value: rankingValue(m, self.value), note: periodLong(m.period), coral: true });
-  }
-  out.push({ key: `${m.key}-rank`, label: tr.tileRank, value: zhTW.market.rank(String(self.rank)), note: tr.ofTotal(m.rows.length) });
-  const prev = m.rows[index - 1];
-  const next = m.rows[index + 1];
-  if (prev) {
-    out.push({ key: `${m.key}-gap`, label: tr.tileGap, value: tr.pp(gapNumber(m, prev.value - self.value)), note: tr.neighbor(prev.rank, orDash(prev.name)) });
-  } else if (next) {
-    out.push({ key: `${m.key}-gap`, label: tr.tileLead, value: tr.pp(gapNumber(m, self.value - next.value)), note: tr.neighbor(next.rank, orDash(next.name)) });
-  }
-  const top = m.rows.slice(0, 5);
-  if (top.length === 5 && m.unit === '%') {
-    const first = m.rows[0]!;
-    out.push({
-      key: `${m.key}-top`,
-      label: tr.tileTop(5),
-      value: rankingValue(m, top.reduce((s, x) => s + x.value, 0)),
-      note: tr.topNote(orDash(first.name), rankingValue(m, first.value)),
-    });
-  }
-  return out;
+/** 銀行通路（法巴的主力通路）在通路占比裡的那一段 */
+export function bankChannel(share: PulseShareViewModel) {
+  return share.periods.at(-1)?.parts.find((p) => p.name?.includes('銀行')) ?? null;
 }
 
-/** 期間的數量詞：月「個月」、週「週」、其他「期」 */
-export function periodUnit(period: string | null): string {
-  if (period && /^\d{4}-\d{2}$/.test(period)) return t.unitMonth;
-  if (period && /^\d{4}-\d{2}-\d{2}$/.test(period)) return t.unitTradingDay;
-  if (period && /^\d{4}-W\d{2}$/.test(period)) return t.unitWeek;
-  return t.unitPeriod;
-}
-
-/** 頁首右側的資料期間：「2026-08」→「2026 年 8 月」；週「10/19 當週」；其他照原文 */
-export function periodLong(period: string | null): string | null {
-  if (period === null) return null;
-  const m = /^(\d{4})-(\d{2})$/.exec(period);
-  if (m) return t.periodLong(+m[1]!, +m[2]!);
-  const d = /^(\d{4})-(\d{2})-(\d{2})$/.exec(period);
-  if (d) return t.dayLong(+d[1]!, +d[2]!, +d[3]!);
-  return formatPulsePeriod(period);
-}
-
-/** 期間的口語寫法：「2026-08」→「8 月」；週「10/19 當週」；其他照原文 */
-export function periodText(period: string | null): string | null {
-  if (period === null) return null;
-  const m = /^\d{4}-(\d{2})$/.exec(period);
-  if (m) return zhTW.insights.month(+m[1]!);
-  return formatPulsePeriod(period);
-}
-
-/** 正負有意義的指標：成長動能組（年增率等）。利率、市占率永遠是正的，不寫「連續 N 期為正」 */
-export function signMatters(m: PulseTrendViewModel): boolean {
-  return m.group === 'growth';
-}
-
-/** 最後連續同號（正或負）的期數；最新值為 0 時為 0 */
-export function streak(points: PulsePointViewModel[]): { n: number; positive: boolean } {
-  const last = points.at(-1)?.value ?? 0;
-  if (last === 0) return { n: 0, positive: true };
-  const positive = last > 0;
-  let n = 0;
-  for (let i = points.length - 1; i >= 0 && (positive ? points[i]!.value > 0 : points[i]!.value < 0); i--) n++;
-  return { n, positive };
-}
-
-export const trendDigits = (m: PulseTrendViewModel) => pulseDigits(m.group);
-
-/** 名次：數字越小越好，「最高」是最小的數字 */
-export const isRank = (m: PulseTrendViewModel) => m.unit === zhTW.units.rank;
-
-/** 期間最高（名次為最好）與最低的點 */
-export function extremes(m: PulseTrendViewModel): { high: PulsePointViewModel; low: PulsePointViewModel } | null {
-  if (m.points.length === 0) return null;
-  const sign = isRank(m) ? -1 : 1;
-  const high = m.points.reduce((a, b) => (sign * b.value > sign * a.value ? b : a));
-  const low = m.points.reduce((a, b) => (sign * b.value < sign * a.value ? b : a));
-  return { high, low };
-}
-
-/** 跨年的月資料寫成「2025 年 10 月」、日資料「2025 年 10 月 21 日」，否則「10 月」「10/29」 */
-function pointPeriod(points: PulsePointViewModel[], period: string | null): string {
-  const years = new Set(points.map((p) => /^(\d{4})-\d{2}(?:-\d{2})?$/.exec(p.period ?? '')?.[1]).filter(Boolean));
-  return (years.size > 1 ? periodLong(period) : periodText(period)) ?? '';
-}
-export const trendValue = (m: PulseTrendViewModel, v: number | null) => formatPulseValue(v, m.unit, trendDigits(m));
-
-/** 占比變化最大的項目（最近兩期，依名稱比對）；變化不到 0.05 個百分點時為 null */
-export function biggestShareShift(share: PulseShareViewModel) {
-  if (share.periods.length < 2) return null;
-  const [prev, last] = share.periods.slice(-2) as [PulseShareViewModel['periods'][number], PulseShareViewModel['periods'][number]];
-  let best: { name: string; sharePct: number; diff: number; prevPeriod: string | null; values: number[] } | null = null;
-  for (const part of last.parts) {
-    const before = prev.parts.find((p) => p.name === part.name);
-    if (!part.name || !before) continue;
-    const diff = part.sharePct - before.sharePct;
-    if (best === null || Math.abs(diff) > Math.abs(best.diff)) {
-      const values = share.periods.flatMap((p) => p.parts.filter((x) => x.name === part.name).map((x) => x.sharePct));
-      best = { name: part.name, sharePct: part.sharePct, diff, prevPeriod: prev.period, values };
-    }
-  }
-  return best !== null && Math.abs(best.diff) >= 0.05 ? best : null;
-}
-
-/** 最新一期年增率最快的項目，以及衰退的項目（沒有年增率時為 null） */
-export function growthLeaders(share: PulseShareViewModel) {
-  const parts = (share.periods.at(-1)?.parts ?? []).filter((p) => p.growthPct !== null && p.name);
-  if (parts.length === 0) return null;
-  const fastest = parts.reduce((a, b) => (b.growthPct! > a.growthPct! ? b : a));
-  return { fastest, declined: parts.filter((p) => p.growthPct! < 0).map((p) => p.name!) };
-}
-
-/** 年增率：1 位小數「135.8%」「-1.8%」 */
-const growthText = (v: number) => formatSharePct(v);
-
-// ───────── 數字磚 ─────────
+// ───────── 數字卡 ─────────
 
 export interface KeyNumber {
   key: string;
   label: string;
   value: string;
-  /** 數字下方的小字（變化、期間） */
+  /** 數字下方的小字 */
   note: string | null;
-  coral?: boolean;
-  /** 迷你線（由舊到新） */
+  /** 好壞色（lib/tone.ts）；沒有時一般文字色 */
+  tone?: Tone;
+  /** 數字可點（例如商品名連到報告頁） */
+  href?: string;
+  /** 迷你線（由舊到新），放卡片右上角 */
   spark?: number[];
+  /** 數字是一段文字（例如卡關原因）：字小一點，不截斷 */
+  small?: boolean;
 }
 
-const MAX_NUMBERS = 4;
-
-function trendTile(m: PulseTrendViewModel, coral: boolean): KeyNumber {
-  return {
-    key: m.key,
-    label: orDash(m.label),
-    value: trendValue(m, m.latestValue),
-    note:
-      m.change !== null
-        ? pulseChangeWithLabel(m.change, m.changeUnit, trendDigits(m), m.changeLabel, 'label-last')
-        : periodLong(m.points.at(-1)?.period ?? null),
-    coral,
-    spark: m.points.length >= 2 ? m.points.map((p) => p.value) : undefined,
-  };
-}
-
-function shiftTile(share: PulseShareViewModel): KeyNumber | null {
-  const s = biggestShareShift(share);
-  if (!s) return null;
-  const change = pulseChangeParts(s.diff, 'pp', 1);
-  const prev = periodText(s.prevPeriod);
-  return {
-    key: `${share.key}-${s.name}`,
-    label: t.tile.shareOf(s.name),
-    value: formatSharePct(s.sharePct),
-    note: `${change.value} ${change.unit}，${prev ? t.tile.vsPeriod(prev) : t.tile.vsPrev}`,
-    spark: s.values.length >= 2 ? s.values : undefined,
-  };
-}
-
-/** 分頁：主要指標的最新值、變化、期間最高；再補同組其他指標與占比變化，最後是期間最低。只有占比時列最新一期前幾名 */
-export function tabNumbers(list: PulseMetricViewModel[]): KeyNumber[] {
-  const m = mainTrend(list);
-  const out: KeyNumber[] = [];
-  if (m) {
-    const period = m.points.at(-1)?.period ?? null;
-    out.push({ key: `${m.key}-latest`, label: orDash(m.label), value: trendValue(m, m.latestValue), note: periodLong(period), coral: true });
-    if (m.change !== null) {
-      const c = pulseChangeParts(m.change, m.changeUnit, trendDigits(m));
-      const label = m.changeLabel ?? t.tile.vsPrev;
-      // 持平時讀成「與前一交易日／持平」
-      const flat = isFlatChange(m.change, m.changeUnit, trendDigits(m));
-      out.push({ key: `${m.key}-change`, label: flat ? label.replace(/^較/, '與') : label, value: c.value, note: c.unit || null });
-    }
-    const ext = extremes(m)!;
-    const extreme = (pick: 'max' | 'min') => {
-      const p = pick === 'max' ? ext.high : ext.low;
-      const unit = periodUnit(p.period);
-      return {
-        key: `${m.key}-${pick}`,
-        label: (pick === 'max' ? t.tile.high : t.tile.low)(m.points.length, unit),
-        value: trendValue(m, p.value),
-        note: periodLong(p.period),
-      };
-    };
-    if (m.points.length >= 3) out.push(extreme('max'));
-    for (const other of list.filter(isTrend).filter((x) => x !== m && x.latestValue !== null)) out.push(trendTile(other, false));
-    for (const s of shareMetrics(list)) {
-      const tile = shiftTile(s);
-      if (tile) out.push(tile);
-    }
-    // 只有 1 期的單線（市占率）＋同組排名：名次、差距、前 5 名比最低值更有用
-    out.push(...rankingTiles(list, false));
-    if (m.points.length >= 3) out.push(extreme('min'));
-    return out.slice(0, MAX_NUMBERS);
-  }
-  const ranked = rankingTiles(list, true);
-  if (ranked.length > 0) return ranked.slice(0, MAX_NUMBERS);
-  const share = shareMetrics(list)[0];
-  const latest = share?.periods.at(-1);
-  if (!share || !latest) return [];
-  return [...latest.parts]
-    .sort((a, b) => b.sharePct - a.sharePct)
-    .slice(0, MAX_NUMBERS)
-    .map((p, i) => ({
-      key: `${share.key}-${p.name ?? i}`,
-      label: t.tile.shareOf(orDash(p.name)),
-      value: formatSharePct(p.sharePct),
-      note: p.growthPct !== null ? t.tile.growth(growthText(p.growthPct)) : periodLong(latest.period),
-      coral: i === 0,
-    }));
-}
-
-// ───────── 一句話 ─────────
-
-/** 主要指標圖的標題：成長動能都為正（負）時寫期數與最高（最低）；否則寫最高與最低（名次：最好與最差） */
-export function trendHeading(m: PulseTrendViewModel): string | null {
-  const pts = m.points;
-  if (pts.length < 2) return null;
-  const { high, low } = extremes(m)!;
-  const unit = periodUnit(pts.at(-1)!.period);
-  const p = (x: PulsePointViewModel) => pointPeriod(pts, x.period);
-  if (signMatters(m) && pts.every((x) => x.value > 0)) return t.heading.allPositive(pts.length, unit, p(high), trendValue(m, high.value));
-  if (signMatters(m) && pts.every((x) => x.value < 0)) return t.heading.allNegative(pts.length, unit, p(low), trendValue(m, low.value));
-  return t.heading.highLow(p(high), trendValue(m, high.value), p(low), trendValue(m, low.value));
-}
-
-/** 細節的占比段落標題：年增最快的項目＋（同一項目時）占比比上期多或少幾個百分點 */
-export function shareDetailHeading(share: PulseShareViewModel): string {
-  const lead = growthLeaders(share);
-  if (!lead) return t.heading.shareDetail;
-  const shift = biggestShareShift(share);
-  const tail =
-    shift && shift.name === lead.fastest.name
-      ? t.heading.shiftTail(shift.diff > 0, formatSharePct(Math.abs(shift.diff)).replace('%', ''))
-      : '';
-  return zhTW.insights.fastest(lead.fastest.name!, growthText(lead.fastest.growthPct!)) + tail;
-}
+export { isDaily, isMonthly };

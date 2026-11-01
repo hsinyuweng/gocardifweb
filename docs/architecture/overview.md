@@ -8,8 +8,8 @@
 |---|---|---|
 | `#/` | 市場總覽：一句結論＋四框（市場脈動、新聞與法規監控、追蹤清單、競品研究，整框可點） | `pages/MarketHomePage.tsx` |
 | `#/news` | 新聞與法規監控：頁籤、影響篩選寫進網址（`tab`、`affects`） | `pages/NewsPage.tsx` |
-| `#/market`、`#/market/:tab` | 市場脈動：總覽＋各組分頁（growth、pricing、channel、health、brand；只顯示有指標的組，其他 replace 回總覽） | `pages/MarketPage.tsx` |
-| `#/watchlist` | 追蹤清單：權重滑桿、綜合分數排序 | `pages/WatchlistPage.tsx` |
+| `#/market` | 市場脈動：一頁（大標題＋大圖＋4 張圖卡）；舊分頁網址 `#/market/*` 一律 replace 到 `#/market` | `pages/MarketPage.tsx` |
+| `#/watchlist` | 追蹤清單：比較表，依引進分數排序 | `pages/WatchlistPage.tsx` |
 | `#/research` | 競品研究：全部報告，篩選與排序寫進網址（`q`、`country`、`category`、`rec`、`unread`、`sort`、`dir`） | `pages/OverviewPage.tsx` |
 | `#/cases` | 舊網址，replace 轉到 `#/research`（保留查詢字串） | `main.tsx` |
 | `#/report/:reportId` | 報告頁，A–F 區，可帶 `?owner=` | `pages/ReportPage.tsx` |
@@ -38,9 +38,8 @@
         ─ 市場脈動「看全部 →」▶ 市場脈動                        麵包屑「市場總覽 / 市場脈動」
         ─ 新聞標題 ───────────▶ 外部原文（新分頁）
 競品研究 ─ 點一列 ───────────▶ 報告頁                          麵包屑「競品研究 / 商品」，回到原篩選
-市場脈動 ─ 頂部頁籤（唯一入口）▶ 分頁（push）                麵包屑「市場總覽 / 市場脈動 / 分頁」，「市場脈動」回總覽
 新聞頁 ─ 受影響商品 ─────────▶ 報告頁                          麵包屑「新聞與法規監控 / 商品」，回到原頁籤
-追蹤清單 ─ 商品名稱 ─────────▶ 報告頁                          麵包屑「追蹤清單 / 商品」，權重不變
+追蹤清單 ─ 商品名稱 ─────────▶ 報告頁                          麵包屑「追蹤清單 / 商品」，上一份／下一份照表的順序
 報告頁 ─ ← 回…（上一頁）／上一份・下一份（replace，順序由清單帶入）
 報告頁 ─ 看追蹤清單 → ───────▶ 追蹤清單                        麵包屑「商品 / 追蹤清單」
 報告頁 ─ 看○○在所有商品的事項 → ▶ 我的待辦（帶 ?owner=）    麵包屑「商品 / 我的待辦」
@@ -89,11 +88,10 @@ src/
 ├── i18n/zh-TW.ts            所有介面文字
 ├── components/
 │   ├── layout/              AppShell（依網址設 data-theme，整頁底色）、Sidebar、TopBar、PageHeader（每頁頁首）
-│   ├── common/              SignalLabel、StatusMessage、PageIcon（頁面圖示）
-│   ├── charts/              HBarList、MarketSizingBar、RegulatoryDistributionBar、Sparkline、LineChart、ShareBars、Timeline、ColumnChart、BigShareBar、DivergingBars、StackedColumns、RankingBars（純 CSS／SVG，不用套件）
-│   ├── story/               閱讀路徑元件：Lead（一句結論）、KeyNumbers、StorySection、NextStep
-│   ├── market/              市場脈動分頁頁籤（MarketTabs）、指標卡片
-│   ├── news/                新聞與法規監控（標籤、每則）
+│   ├── common/              SignalLabel、StatusMessage、PageIcon（頁面圖示）、ScoreBar（引進分數）
+│   ├── charts/              MarketSizingBar、Sparkline、LineChart、ColumnChart、BigShareBar、RankingBars、LineBars（正負橫條）、BarList（占比橫條）（純 CSS／SVG，不用套件）
+│   ├── story/               閱讀路徑元件：Lead（一句結論）、KeyNumbers、StorySection、ChartCard（圖卡）
+│   ├── news/                新聞與法規監控（標籤、每則、重點新聞 NewsPicks）
 │   ├── home/                市場總覽四框（HomeCard 整框可點）
 │   ├── overview/            競品研究頁（原案件總覽；列表的加入追蹤 WatchToggle）
 │   ├── report/              報告頁 A–F 區、台灣競品比較（CompetitorTable）、商品原始資料（SourceDocuments）
