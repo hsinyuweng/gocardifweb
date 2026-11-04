@@ -1,5 +1,5 @@
 {
-  "_說明": "法巴歷年市場占有率（使用者提供，手動從 法巴_23-25市占率.pdf 抄錄）。npm run import 會把「合計・初年度」轉成市場脈動指標 self_market_share_history。單位 %。",
+  "_說明": "法巴歷年市場占有率（使用者提供，手動從 法巴_23-25市占率.pdf 抄錄）。「合計・初年度」已寫進 scripts/build-public-data.mjs 的 SELF_MARKET_SHARE，改這裡要同步改程式。單位 %。",
   "source": "法國巴黎人壽",
   "source_file": "法巴_23-25市占率.pdf",
   "unit": "%",

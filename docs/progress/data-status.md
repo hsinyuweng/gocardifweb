@@ -2,7 +2,7 @@
 
 ## 來源與匯入
 
-- 唯一來源：後端整包輸出放在 `agentdata/`（gitignore，原樣保留不刪）。新資料到了就整包換掉，再 `npm run import`（轉換到 `incoming/agentdata/` → 驗證 → 整批換新到 `public/data/`）。規則見 `decisions/spec-stages.md`「sync 與 import」。
+- 唯一來源：後端整包輸出放在 `agentdata/`（gitignore，原樣保留不刪）。新資料到了就整包換掉，再 `npm run import`（`scripts/build-public-data.mjs`：轉換 → 驗證 → 整批換新到 `public/data/`；後端自動更新也用同一個檔案）。規則見 `decisions/spec-stages.md`「sync 與 import」。
 - `agentdata/` 結構與網站用到的檔：
 
 | 位置 | 網站用途 |
@@ -18,7 +18,7 @@
 ## 目前資料（2026-10-30 交付）
 
 - 報告 8 份（schema 1.1／1.2，`report_id` 是 UUID）：都有 `dimension_scores`（品牌契合度全 null）與 `competitor_comparison`（2–4 家台灣競品）；7 份「暫緩，待補資料」、1 份「有條件推進」。
-- 略過：CareScout 第二份 `aacd2f35`（與 `61187f98` 同商品、結論不同，`import-agentdata.mjs` 的 `SKIP`）；Secure Horizon 第二份 `af2f7e7a`（統整沒產出 3.json）。
+- 略過：CareScout 第二份 `aacd2f35`（與 `61187f98` 同商品、結論不同，`build-public-data.mjs` 的 `SKIP`）；Secure Horizon 第二份 `af2f7e7a`（統整沒產出 3.json）。
 - feed 1.2：60 則（新聞 48、法規 12，2026-10-01～10-29），5 個領域都有；15 則沒有摘要；`related_report_ids`、`affected_categories` 全空。
 - market-pulse 2.1：7 個指標（成長 2、定價 1、通路 1、健康度 2、品牌 1）＋由 `pulse.json` 轉換的同業排名（2026-08，20 家，法巴第 10 名）、新契約保費金額（20 個月）、各險別金額、10 年債日資料（250 天）；通路占比、法巴市占率只有 1 期；繼續率只有 2025 年 1 期。
 

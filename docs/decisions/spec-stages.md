@@ -59,8 +59,8 @@
 ## sync 與 import
 
 - 壞 JSON 或缺 report_id：略過並警告；report_id 含 `/`、`\`、`..` 或為 `index` 也略過；同批 report_id 重複則整批中止。
-- `npm run import`（2026-10-31）：`scripts/import-agentdata.mjs` 把 `agentdata/`（後端整包輸出，gitignore）轉到 `incoming/agentdata/`，再 `sync --replace`（整批換新：刪掉這批沒有的舊報告）。轉換只補後端沒給的欄位：報告的發行公司、國家、幣別、繳費方式空著時用 1.json；`product_snapshot.source_documents` 與 `product_snapshot.profile`（商品概要：機制、目標客群、承保年齡、繳費、保障期間、給付方式與條件、保證項目、附約）用 1.json；法巴歷年市占率用本專案 `manual-data/self-market-share.json`（使用者提供，非後端）加成指標 `self_market_share_history`；market-pulse 沒有 `ranking` 時用 `market-pulse-work/output/pulse.json` 的 `company_ranking` 轉成 M7 格式。同商品兩份時在程式的 `SKIP` 選定（目前略過 CareScout `aacd2f35`）；沒有 3.json 的資料夾略過。
-- 給後端自動更新用（2026-11-03）：`scripts/build-public-data.mjs` 是上面 import＋sync 合成的單一檔案（只用 Node 內建模組、不需要本專案其他檔案；法巴歷年市占率直接寫在檔內 `SELF_MARKET_SHARE`）。`node build-public-data.mjs --from <agentdata> --out <public>` 直接寫好 `public/data/`（feed、market-pulse、reports＋index），輸出與 `npm run import` 相同。沒有任何報告或 report_id 重複時不改動 public。改轉換規則時兩邊要一起改（或日後讓 `npm run import` 改用此檔）。
+- `npm run import`：`scripts/build-public-data.mjs --from agentdata --out public` 把 `agentdata/`（後端整包輸出，gitignore）轉換、驗證後整批換新 `public/data/`（刪掉這批沒有的舊報告）。轉換只補後端沒給的欄位：報告的發行公司、國家、幣別、繳費方式空著時用 1.json；`product_snapshot.source_documents` 與 `product_snapshot.profile`（商品概要：機制、目標客群、承保年齡、繳費、保障期間、給付方式與條件、保證項目、附約）用 1.json；法巴歷年市占率用檔內 `SELF_MARKET_SHARE`（抄自 `manual-data/self-market-share.json`，使用者提供，非後端）加成指標 `self_market_share_history`；market-pulse 沒有 `ranking` 時用 `market-pulse-work/output/pulse.json` 的 `company_ranking` 轉成 M7 格式。同商品兩份時在程式的 `SKIP` 選定（目前略過 CareScout `aacd2f35`）；沒有 3.json 的資料夾略過。
+- 給後端自動更新（2026-11-03）：同一個 `build-public-data.mjs` 交給後端（只用 Node 內建模組、不依賴本專案其他檔案），後端執行 `node build-public-data.mjs --from <agentdata> --out <public>`。沒有任何報告或 report_id 重複時不改動 public。改轉換規則後要把新版檔案再交給後端。
 
 ## 部署
 

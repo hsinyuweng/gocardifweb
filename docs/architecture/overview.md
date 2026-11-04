@@ -98,8 +98,8 @@ src/
 │   ├── tasks/               我的待辦
 │   └── watchlist/           追蹤清單（權重滑桿、清單列）
 └── pages/                   各頁面、RootLayout、pageChrome（共用狀態 hooks）、useOnDemand
-manual-data/                 使用者手動提供的資料（非後端）：self-market-share.json（法巴歷年市占率，抄自同資料夾的 PDF），import 時併入市場脈動
-scripts/                     import-agentdata.mjs（agentdata/ → incoming/agentdata/）、sync-reports.mjs（驗證並匯入報告、feed、market-pulse；--replace 整批換新）、mock-api.mjs（本機模擬後端）
+manual-data/                 使用者手動提供的資料（非後端）：self-market-share.json（法巴歷年市占率，抄自同資料夾的 PDF；「合計・初年度」已寫進 build-public-data.mjs 的 SELF_MARKET_SHARE，改這裡要同步改程式）
+scripts/                     build-public-data.mjs（npm run import；agentdata/ 轉換、驗證後整批換新 public/data/，單一檔案也交給後端自動更新用）、sync-reports.mjs（npm run sync，匯入 incoming/ 的單份報告測試用）、mock-api.mjs（本機模擬後端）
 ```
 
 ## 6. 視覺規則摘要
