@@ -111,7 +111,7 @@
     "matched_rule": 4,
     "one_line_summary": "需求有限且關鍵送審資料未備，暫緩推進。",
     "reasons": [
-      "regulatory：G-RATE-01缺臺灣版計價幣別、保證／預定利率與準備金資料",
+      "regulatory：G-RATE-01缺臺灣版計價幣別準備金資料",
       "market_demand：需求結論信心為C級",
       "regulatory：4項黃燈、10項待補"
     ]
@@ -529,7 +529,7 @@
           "light": "pending",
           "suspected_red": false,
           "law": "人身保險商品審查應注意事項，壹、基本事項第五點及第六點",
-          "remedy": "補計價幣別、保證回報率、預定利率、準備金計算、現金流與簽署精算意見。",
+          "remedy": "補計價幣別、準備金計算、現金流與簽署精算意見。",
           "owner": "精算",
           "source_ref": "regulatory:findings[G-RATE-01]"
         },
@@ -786,14 +786,6 @@
     }
   ],
   "next_steps": [
-    {
-      "id": "ns-1",
-      "priority": 1,
-      "action": "補臺灣版計價幣別、保證／預定利率、責任準備金及簽署精算意見。",
-      "owner": "精算",
-      "source_module": "regulatory",
-      "source_ref": "regulatory:missing_inputs[0]"
-    },
     {
       "id": "ns-2",
       "priority": 2,
