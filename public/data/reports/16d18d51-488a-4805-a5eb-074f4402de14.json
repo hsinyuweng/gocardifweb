@@ -675,14 +675,6 @@
   },
   "blockers": [
     {
-      "id": "bl-reg-G-RATE-01",
-      "module": "regulatory",
-      "title": "G-RATE-01：保證回報率與定價預定利率未提供",
-      "severity": "blocking",
-      "owner": "精算",
-      "action": "補具臺灣版保證給付、準備金、定價利率、日圓資產配置及精算簽證意見。"
-    },
-    {
       "id": "bl-reg-G-CCY-01",
       "module": "regulatory",
       "title": "G-CCY-01：臺灣版外幣收付與揭露未提供",

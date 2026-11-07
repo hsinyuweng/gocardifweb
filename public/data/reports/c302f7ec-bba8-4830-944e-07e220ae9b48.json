@@ -695,15 +695,6 @@
   },
   "blockers": [
     {
-      "id": "bl-reg-G-RATE-01",
-      "module": "regulatory",
-      "title": "保證利率／預定利率與臺灣版計價幣別未提供",
-      "severity": "blocking",
-      "owner": "精算",
-      "action": "補計價幣別、保證／預定利率、責任準備金與簽署精算意見。",
-      "source_ref": "regulatory:missing_inputs[0]"
-    },
-    {
       "id": "bl-reg-G-AGE-01",
       "module": "regulatory",
       "title": "未成年給付與承保年齡資料未提供",

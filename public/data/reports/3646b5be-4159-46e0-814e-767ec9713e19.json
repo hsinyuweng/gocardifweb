@@ -654,14 +654,6 @@
   },
   "blockers": [
     {
-      "id": "bl-reg-G-RATE-01",
-      "module": "regulatory",
-      "title": "保證利率／預定利率",
-      "severity": "blocking",
-      "owner": "精算",
-      "action": "補提臺灣版計價幣別、定價預定利率、責任準備金基礎、宣告利率機制及資產負債配置計畫，並以送審當日有效上限複核。"
-    },
-    {
       "id": "bl-reg-LIFE-01",
       "module": "regulatory",
       "title": "保險利益與被保險人書面同意",

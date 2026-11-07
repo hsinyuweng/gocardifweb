@@ -575,14 +575,6 @@
       "action": "提交臺灣版現金價值歸屬、投資損益承擔、指數計息公式、帳簿及送審名稱的書面分類意見。"
     },
     {
-      "id": "bl-reg-G-RATE-01",
-      "module": "regulatory",
-      "title": "保證利率／預定利率",
-      "severity": "blocking",
-      "owner": "精算",
-      "action": "補臺灣版計價幣別、定價預定利率、保證利率、利率規則、準備金及資產配置說明。"
-    },
-    {
       "id": "bl-reg-INV-01",
       "module": "regulatory",
       "title": "連結標的",
